@@ -1,0 +1,6 @@
+data/me.ppvan.helloworld.desktop.in
+data/me.ppvan.helloworld.appdata.xml.in
+data/me.ppvan.helloworld.gschema.xml
+src/main.vala
+src/window.vala
+src/window.ui
