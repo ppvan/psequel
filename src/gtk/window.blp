@@ -2,8 +2,8 @@ using Gtk 4.0;
 using Adw 1;
 
 template $HellowolrdWindow : Adw.ApplicationWindow {
-  default-width: 640;
-  default-height: 480;
+  default-width: 960;
+  default-height: 640;
   title: "Hello World";
 
   Box {
@@ -23,17 +23,31 @@ template $HellowolrdWindow : Adw.ApplicationWindow {
       }
     }
     
-    ScrolledWindow {
-      hexpand: true;
-      vexpand: true;
-      margin-top: 6;
-      margin-bottom: 6;
-      margin-start: 6;
-      margin-end: 6;
-      
-      TextView textviewer {
-        monospace: true;
-      }
+    Paned paned {
+        // hexpand: true;
+        resize-start-child: false;
+        shrink-start-child: false;
+        resize-end-child: true;
+        shrink-end-child: false;
+        position: 200;
+        [start]
+        Box firstBox {
+          hexpand: true;
+          vexpand: true;
+          width-request: 200;
+          height-request: -1;
+          // width: 100;
+          Label {
+            label: "First Panel";
+          }
+        }
+        
+        [end]
+        Box secondBox {
+          Label {
+            label: "Second Panel";
+          }
+        }
     }
    
   }

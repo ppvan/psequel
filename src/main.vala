@@ -21,8 +21,5 @@
 int main (string[] args) {
     var app = new Hellowolrd.Application ();
 
-    int x = 10;
-
-
     return app.run (args);
 }
