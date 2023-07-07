@@ -1,0 +1,46 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $SequelizeIndexView : Gtk.Box {
+
+  width-request: 960;
+  height-request: 640;
+
+  Box sidebar {
+      orientation: vertical;
+      spacing: 4;
+
+    Label {
+      margin-top: 4;
+      margin-bottom: 4;
+      use-markup: true;
+      label: "<b>Connections</b>";
+    }
+    
+    ListBox connections {
+      vexpand: true;
+      width-request: 250; 
+        
+    }
+  }
+  
+  Button {
+    label: "Click me";
+    hexpand: true;
+  }
+}
+
+
+Box conn {
+  orientation: horizontal;
+  spacing: 12;
+  margin-start: 12;
+  
+  Image {
+    icon-name: "text-sql-symbolic";
+  }
+  
+  Label {
+    label: "Local";
+  }
+}

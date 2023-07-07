@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="hellowolrd">
-	<schema id="me.ppvan.helloworld" path="/me/ppvan/helloworld/">
+	<schema id="me.ppvan.sequelize" path="/me/ppvan/sequelize/">
 	</schema>
 </schemalist>

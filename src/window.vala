@@ -20,37 +20,22 @@
 
 using GLib;
 
-namespace Hellowolrd {
-    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/window.ui")]
-    public class Window : Adw.ApplicationWindow {
-        [GtkChild]
-        private unowned Gtk.Paned paned;
+namespace Sequelize {
 
-        [GtkChild]
-        private unowned Gtk.Button open_button;
+    public class Window : Adw.ApplicationWindow {
 
         public Window (Gtk.Application app) {
             Object (application: app);
+
+            var handle = new Gtk.WindowHandle ();
+            var indexview = new IndexView ();
+            handle.child = indexview;
+
+            this.content = handle;
+            this.set_size_request (960, 640);
         }
 
         construct {
-            paned.set_position (200);
-            paned.accept_position.connect ((_ok) => {
-                print ("Ok");
-            });
-        }
-    }
-
-    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/box.ui")]
-    public class Box : Gtk.Box {
-        [GtkChild]
-        private unowned Gtk.Label label;
-
-        public Box () {
-        }
-
-        construct {
-            print ("Label: %s\n", label.get_label ());
         }
     }
 }

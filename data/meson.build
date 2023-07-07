@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
-        input: 'me.ppvan.helloworld.desktop.in',
-       output: 'me.ppvan.helloworld.desktop',
+        input: 'me.ppvan.sequelize.desktop.in',
+       output: 'me.ppvan.sequelize.desktop',
          type: 'desktop',
        po_dir: '../po',
       install: true,
@@ -13,8 +13,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-        input: 'me.ppvan.helloworld.appdata.xml.in',
-       output: 'me.ppvan.helloworld.appdata.xml',
+        input: 'me.ppvan.sequelize.appdata.xml.in',
+       output: 'me.ppvan.sequelize.appdata.xml',
        po_dir: '../po',
       install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
@@ -25,7 +25,7 @@ if appstream_util.found()
   test('Validate appstream file', appstream_util, args: ['validate', appstream_file])
 endif
 
-install_data('me.ppvan.helloworld.gschema.xml',
+install_data('me.ppvan.sequelize.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 

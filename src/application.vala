@@ -18,10 +18,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-namespace Hellowolrd {
+namespace Sequelize {
     public class Application : Adw.Application {
         public Application () {
-            Object (application_id: "me.ppvan.helloworld", flags: ApplicationFlags.DEFAULT_FLAGS);
+            Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
         construct {
@@ -39,7 +39,7 @@ namespace Hellowolrd {
             base.activate ();
             var win = this.active_window;
             if (win == null) {
-                win = new Hellowolrd.Window (this);
+                win = new Sequelize.Window (this);
             }
             win.present ();
         }
@@ -48,8 +48,8 @@ namespace Hellowolrd {
             string[] developers = { "Unknown" };
             var about = new Adw.AboutWindow () {
                 transient_for = this.active_window,
-                application_name = "hellowolrd",
-                application_icon = "me.ppvan.helloworld",
+                application_name = "sequelize",
+                application_icon = "me.ppvan.sequelize",
                 developer_name = "Unknown",
                 version = "0.1.0",
                 developers = developers,

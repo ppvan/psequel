@@ -3,12 +3,14 @@ sequelize_sources = [
   'main.vala',
   'application.vala',
   'window.vala',
+  'ui/index.vala',
 ]
 
 # UI code?
 blueprints = files(
     'gtk/window.blp',
     'gtk/box.blp',
+    'gtk/index.blp',
 )
 
 blp_target = custom_target(

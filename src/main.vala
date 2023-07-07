@@ -19,7 +19,7 @@
  */
 
 int main (string[] args) {
-    var app = new Hellowolrd.Application ();
+    var app = new Sequelize.Application ();
 
     return app.run (args);
 }
