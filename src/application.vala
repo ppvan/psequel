@@ -25,14 +25,6 @@ namespace Sequelize {
         }
 
         construct {
-            ActionEntry[] action_entries = {
-                { "about", this.on_about_action },
-                { "preferences", this.on_preferences_action },
-                { "quit", this.quit }
-            };
-            this.add_action_entries (action_entries, this);
-            this.set_accels_for_action ("app.quit", { "<primary>q" });
-            this.set_accels_for_action ("win.open", { "<Ctrl>o" });
         }
 
         public override void activate () {
@@ -42,25 +34,6 @@ namespace Sequelize {
                 win = new Sequelize.Window (this);
             }
             win.present ();
-        }
-
-        private void on_about_action () {
-            string[] developers = { "Unknown" };
-            var about = new Adw.AboutWindow () {
-                transient_for = this.active_window,
-                application_name = "sequelize",
-                application_icon = "me.ppvan.sequelize",
-                developer_name = "Unknown",
-                version = "0.1.0",
-                developers = developers,
-                copyright = "© 2023 Unknown",
-            };
-
-            about.present ();
-        }
-
-        private void on_preferences_action () {
-            message ("app.preferences action activated");
         }
     }
 }

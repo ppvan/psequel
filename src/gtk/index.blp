@@ -1,46 +1,108 @@
 using Gtk 4.0;
+using Gio 2.0;
 using Adw 1;
 
 template $SequelizeIndexView : Gtk.Box {
+    width-request: 960;
+    height-request: 600;
 
-  width-request: 960;
-  height-request: 640;
+    Box sidebar {
+        orientation: vertical;
+        spacing: 4;
 
-  Box sidebar {
-      orientation: vertical;
-      spacing: 4;
+        Label {
+            margin-top: 4;
+            margin-start: 8;
+            halign: start;
+            margin-bottom: 4;
+            use-markup: true;
+            label: "<b>Connections</b>";
+        }
 
-    Label {
-      margin-top: 4;
-      margin-bottom: 4;
-      use-markup: true;
-      label: "<b>Connections</b>";
+
+        ListBox connections {
+            vexpand: true;
+            selection-mode: single;
+            activate-on-single-click: true;
+            width-request: 250; 
+            
+            row-activated => $connection_clicked();
+        }
     }
+
+    Separator {
+
+    }
+
+    Adw.ToastOverlay overlay {
+        Adw.Clamp {
+            maximum-size: 500;
+            can-focus: true;
+            Box {
+                can-focus: true;
+                hexpand: true;
+                orientation: vertical;
+                valign: center;
+                spacing: 20;
+            
+            Label {
+                label: "New Connections";
+            }
+            
+            ListBox connection_form {
+                selection-mode: none;
+                styles ["boxed-list"]
+                
+                Adw.EntryRow conn_name {
+                    title: "Connection";
+                }
+                
+                Adw.EntryRow conn_host {
+                    title: "Hostname";
+                    hexpand: true;
+                }
+                
+                Adw.EntryRow conn_port {
+                    title: "Port";
+                }
     
-    ListBox connections {
-      vexpand: true;
-      width-request: 250; 
-        
+                
+                Adw.EntryRow conn_user {
+                    title: "User";
+                }
+                
+                Adw.PasswordEntryRow conn_password {
+                    title: "Password";
+                }
+                
+                Adw.EntryRow conn_db {
+                    title: "Database";
+                }
+                
+                Adw.ActionRow {
+                    title: "Use SSL";
+                
+                    [suffix]
+                    Box {
+                        orientation: vertical;
+                        valign: center;
+                        Switch conn_use_ssl {
+                        
+                        }
+                    }
+                }
+            }
+            
+            Box {
+                halign: end;
+                Button connect_btn {
+                    styles ["suggested-action"]
+                    label: "Connect";
+                    clicked => $on_connect_clicked();
+                }
+            }
+            
+        }
     }
-  }
-  
-  Button {
-    label: "Click me";
-    hexpand: true;
-  }
 }
-
-
-Box conn {
-  orientation: horizontal;
-  spacing: 12;
-  margin-start: 12;
-  
-  Image {
-    icon-name: "text-sql-symbolic";
-  }
-  
-  Label {
-    label: "Local";
-  }
 }

@@ -1,73 +1,18 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $HellowolrdWindow : Adw.ApplicationWindow {
-  default-width: 960;
-  default-height: 640;
-  title: "Hello World";
+template $SequelizeWindow : Adw.ApplicationWindow {
+    default-width: 960;
+    default-height: 640;
+    title: "Hello World";
 
-  Box {
-    orientation: vertical;
+    Box main {
+        orientation: vertical;
 
-    HeaderBar header_bar {
-      [start]
-      Button open_button {
-        label: "Open";
-        action-name: "win.open";
-      }
-    
-      [end]
-      MenuButton {
-        icon-name: "open-menu-symbolic";
-        menu-model: primary_menu;
-      }
-    }
-    
-    Paned paned {
-        // hexpand: true;
-        resize-start-child: false;
-        shrink-start-child: false;
-        resize-end-child: true;
-        shrink-end-child: false;
-        position: 200;
-        [start]
-        Box firstBox {
-          hexpand: true;
-          vexpand: true;
-          width-request: 200;
-          height-request: -1;
-          // width: 100;
-          Label {
-            label: "First Panel";
-          }
+        Adw.HeaderBar header_bar {
+            decoration-layout: "icon:close";
         }
-        
-        [end]
-        Box secondBox {
-          Label {
-            label: "Second Panel";
-          }
-        }
-    }
-   
-  }
-}
 
-menu primary_menu {
-  section {
-    item {
-      label: _("_Preferences");
-      action: "app.preferences";
+        // Index view place holder
     }
-
-    item {
-      label: _("_Keyboard Shortcuts");
-      action: "win.show-help-overlay";
-    }
-
-    item {
-      label: _("_About Hellowolrd");
-      action: "app.about";
-    }
-  }
 }

@@ -22,20 +22,28 @@ using GLib;
 
 namespace Sequelize {
 
+    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
+
+        [GtkChild]
+        private Gtk.Box main;
+
 
         public Window (Gtk.Application app) {
             Object (application: app);
 
-            var handle = new Gtk.WindowHandle ();
-            var indexview = new IndexView ();
-            handle.child = indexview;
+            // var handle = new Gtk.WindowHandle ();
+            // var indexview = new IndexView ();
+            // handle.child = indexview;
 
-            this.content = handle;
-            this.set_size_request (960, 640);
+            // this.content = handle;
+            // this.set_size_request (960, 640);
         }
 
         construct {
+            var indexview = new IndexView ();
+            // var label = new Gtk.Label ("Hello");
+            main.append (indexview);
         }
     }
 }
