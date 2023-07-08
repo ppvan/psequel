@@ -23,12 +23,12 @@ using Gee;
 
 namespace Sequelize.Models {
 
-    public class Connection {
+    public class Connection : Object {
         private string error;
 
         public string name { get; set; default = ""; }
         public string host { get; set; default = "localhost"; }
-        public int port { get; set; default = 5432; }
+        public string port { get; set; default = "5432"; }
         public string user { get; set; default = "postgres"; }
         public string password { get; set; default = ""; }
         public string database { get; set; default = ""; }
@@ -51,7 +51,7 @@ namespace Sequelize.Models {
             require (host, "Host required.");
             require (user, "Username required.");
 
-            return this.error == null;
+            return this.error == "";
         }
 
         public string get_error () {
@@ -60,7 +60,7 @@ namespace Sequelize.Models {
 
         public void to_string () {
             stdout.printf (
-                           "Name: '%s'\nHost: '%s'\nPort: %d\nUser: '%s'\nPassword: '%s'\nDatabase: '%s'\n",
+                           "Name: '%s'\nHost: '%s'\nPort: %s\nUser: '%s'\nPassword: '%s'\nDatabase: '%s'\n",
                            name, host, port, user, password, database
             );
         }

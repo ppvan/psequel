@@ -11,6 +11,7 @@ template $SequelizeViewIndex : Gtk.Box {
         spacing: 4;
 
         Label {
+            styles ["text-bold"]
             margin-top: 4;
             margin-start: 8;
             halign: start;
@@ -19,8 +20,13 @@ template $SequelizeViewIndex : Gtk.Box {
             label: "<b>Connections</b>";
         }
 
+        Separator {
+
+        }
+
 
         ListBox connections {
+            styles ["navigation-sidebar"]
             vexpand: true;
             selection-mode: single;
             activate-on-single-click: true;
@@ -100,7 +106,7 @@ template $SequelizeViewIndex : Gtk.Box {
                     hexpand: true;
                     vexpand: true;
                     halign: start;
-                    label: "hi";
+                    label: "";
                 }
                 Button connect_btn {
                     styles ["suggested-action"]

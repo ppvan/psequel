@@ -26,7 +26,7 @@ namespace Sequelize {
     public class Window : Adw.ApplicationWindow {
 
         [GtkChild]
-        private Gtk.Box main;
+        private unowned Gtk.Box main;
 
 
         public Window (Application app) {

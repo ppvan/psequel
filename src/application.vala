@@ -18,11 +18,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-namespace Sequelize {
+ namespace Sequelize {
+
+    // public string APP_ID = "me.ppvan.sequelize";
+
     public class Application : Adw.Application {
-
-        public static string APP_ID = "me.ppvan.sequelize";
-
 
         public Settings settings;
 
@@ -31,11 +31,10 @@ namespace Sequelize {
             Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
-        construct {
-        }
 
         public override void activate () {
             base.activate ();
+            print ("Activate");
 
             this.settings = new Settings (this.application_id);
 
