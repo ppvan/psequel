@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/me/ppvan/sequelize">
-    <file preprocess="xml-stripblanks">gtk/box.ui</file>
     <file preprocess="xml-stripblanks">gtk/index.ui</file>
-    <file preprocess="xml-stripblanks">gtk/help-overlay.ui</file>
     <file preprocess="xml-stripblanks">gtk/window.ui</file>
   </gresource>
 </gresources>

@@ -4,12 +4,12 @@ sequelize_sources = [
   'application.vala',
   'window.vala',
   'ui/index.vala',
+  'models/connection.vala',
 ]
 
 # UI code?
 blueprints = files(
     'gtk/window.blp',
-    'gtk/box.blp',
     'gtk/index.blp',
 )
 
@@ -24,6 +24,7 @@ blp_target = custom_target(
 sequelize_deps = [
   dependency('gtk4'),
   dependency('libadwaita-1', version: '>= 1.2'),
+  dependency('gee-0.8')
 ]
 
 sequelize_sources += gnome.compile_resources('sequelize-resources',

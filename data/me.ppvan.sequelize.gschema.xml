@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="hellowolrd">
+<schemalist gettext-domain="sequelize">
 	<schema id="me.ppvan.sequelize" path="/me/ppvan/sequelize/">
+        <key name="number" type="i">
+            <default>0</default>
+            <summary>Automatically install updates</summary>
+            <description>
+                If enabled, updates will automatically be downlaoded and installed.
+                If disabled, updates will still be downloaded, but the user will be
+                asked to install them manually.
+            </description>
+        </key>
 	</schema>
 </schemalist>

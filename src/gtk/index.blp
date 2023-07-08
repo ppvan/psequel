@@ -2,7 +2,7 @@ using Gtk 4.0;
 using Gio 2.0;
 using Adw 1;
 
-template $SequelizeIndexView : Gtk.Box {
+template $SequelizeViewIndex : Gtk.Box {
     width-request: 960;
     height-request: 600;
 
@@ -94,7 +94,14 @@ template $SequelizeIndexView : Gtk.Box {
             }
             
             Box {
-                halign: end;
+                spacing: 12;
+                Label message {
+                    styles ["error"]
+                    hexpand: true;
+                    vexpand: true;
+                    halign: start;
+                    label: "hi";
+                }
                 Button connect_btn {
                     styles ["suggested-action"]
                     label: "Connect";

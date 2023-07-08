@@ -15,3 +15,7 @@ Remind future me:
 └──  window.vala
 
 ```
+
+Remind me 2:
+ Please install the schema for each change.
+ `ninja install`

@@ -20,7 +20,14 @@
 
 namespace Sequelize {
     public class Application : Adw.Application {
+
+        public static string APP_ID = "me.ppvan.sequelize";
+
+
+        public Settings settings;
+
         public Application () {
+
             Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
@@ -29,6 +36,9 @@ namespace Sequelize {
 
         public override void activate () {
             base.activate ();
+
+            this.settings = new Settings (this.application_id);
+
             var win = this.active_window;
             if (win == null) {
                 win = new Sequelize.Window (this);

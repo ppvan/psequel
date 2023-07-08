@@ -29,19 +29,10 @@ namespace Sequelize {
         private Gtk.Box main;
 
 
-        public Window (Gtk.Application app) {
+        public Window (Application app) {
             Object (application: app);
 
-            // var handle = new Gtk.WindowHandle ();
-            // var indexview = new IndexView ();
-            // handle.child = indexview;
-
-            // this.content = handle;
-            // this.set_size_request (960, 640);
-        }
-
-        construct {
-            var indexview = new IndexView ();
+            var indexview = new View.Index (app);
             // var label = new Gtk.Label ("Hello");
             main.append (indexview);
         }
