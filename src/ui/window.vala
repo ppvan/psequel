@@ -1,4 +1,4 @@
-/* main.vala
+/* window.vala
  *
  * Copyright 2023 Unknown
  *
@@ -18,8 +18,19 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-int main (string[] args) {
-    var app = new Sequelize.Application ();
+using GLib;
 
-    return app.run (args);
+namespace Sequelize {
+
+    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/window.ui")]
+    public class Window : Adw.ApplicationWindow {
+
+        // [GtkChild]
+        // unowned Sequelize.View.Index main;
+
+
+        public Window (Application app) {
+            Object (application: app);
+        }
+    }
 }

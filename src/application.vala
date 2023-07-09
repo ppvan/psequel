@@ -18,7 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
- namespace Sequelize {
+namespace Sequelize {
 
     // public string APP_ID = "me.ppvan.sequelize";
 
@@ -31,7 +31,6 @@
             Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
-
         public override void activate () {
             base.activate ();
             print ("Activate");
@@ -43,6 +42,20 @@
                 win = new Sequelize.Window (this);
             }
             win.present ();
+        }
+
+        public static int main (string[] args) {
+
+            ensure_types ();
+
+            var app = new Sequelize.Application ();
+
+            return app.run (args);
+        }
+
+        /* register needed types, allow me to ref a template inside a template */
+        private static void ensure_types () {
+            typeof (Sequelize.View.Index).ensure ();
         }
     }
 }

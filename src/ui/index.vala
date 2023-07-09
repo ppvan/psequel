@@ -6,126 +6,69 @@ namespace Sequelize.View {
     [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/index.ui")]
     public class Index : Gtk.Box {
 
-        Application app;
-        ListStore connArray;
-
         // horizontal
+        private BindingGroup binddings = new BindingGroup ();
+        private Models.Connection current;
 
         public Index (Application app) {
             Object ();
 
-
-            print ("index()\n");
-
-            // foreach (var conn in connArray) {
-            // var conn_entry = new ConnEntry (conn.name);
-            //// connections is Gtk.ListBox
-            // connections.append (conn_entry);
-            // }
+            // name_entry.bind_property ("text", info, "label", BindingFlags.BIDIRECTIONAL);
+            // build_ui ();
         }
 
         construct {
 
-            this.connArray = new ListStore (Type.OBJECT);
-            var conn = new Models.Connection ();
+            this.current = new Models.Connection ();
+            this.binddings = new BindingGroup ();
 
-            conn_name.set_text (conn.name);
-            conn_host.set_text (conn.host);
-            conn_port.set_text (conn.port.to_string ());
-            conn_user.set_text (conn.user);
-            conn_password.set_text (conn.password);
-            conn_db.set_text (conn.database);
-            conn_use_ssl.set_active (conn.use_ssl);
+            print ("construct\n");
+            binddings.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("port", port_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("user", user_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
 
-
-            // connArray.append (conn);
-
-            connections.bind_model (connArray, (item) => {
-
-                var data = item as Models.Connection;
-
-                var row = new Gtk.ListBoxRow ();
-
-                var conn_entry = new ConnEntry (data);
-                row.child = conn_entry;
-
-                return row;
-            });
+            binddings.source = current;
         }
 
-        // UI code
+        public void build_ui () {
 
-        [GtkCallback]
-        private void on_connect_clicked (Gtk.Button btn) {
-            // var toast = new Adw.Toast ("Connected");
-            // toast.set_timeout (2);
-
-            // overlay.add_toast (toast);
-
-            var conn = new Sequelize.Models.Connection ();
-            conn.name = conn_name.get_text ();
-            conn.host = conn_host.get_text ();
-            conn.port = conn_port.get_text ();
-            conn.user = conn_user.get_text ();
-            conn.database = conn_db.get_text ();
-            conn.password = conn_password.get_text ();
-            conn.use_ssl = conn_use_ssl.get_active ();
+            print ("bindding\n");
+            // binddings.bind ("label", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
 
 
-            if (!conn.valid ()) {
-                message.set_text (conn.get_error ());
-                return;
-            }
-
-            // validate connections
-
-            // save connections
-
-            connArray.append (conn);
-
-            // print("%s\n", connections.selection_mode.)
-            print ("The lenth: %u\n", connArray.get_n_items ());
-
-            // try to connect to postgres
+            // binddings.source = info;
         }
 
         [GtkCallback]
-        private void connection_clicked (Gtk.ListBox list, Gtk.ListBoxRow row) {
-            var entry = row.get_child () as ConnEntry;
-
-            message.bind_property ("label", conn_name, "text", BindingFlags.DEFAULT);
-
-            // print ("CLicled %s\n", entry.get_label ());
+        private void on_connect (Gtk.Button btn) {
+            // name_entry.buffer.text = "Hello world";
+            current.to_string ();
+            info.label = "Hello world";
         }
 
         [GtkChild]
-        private unowned Gtk.ListBox connections;
-
-        // [GtkChild]
-        // private unowned Gtk.Box sidebar;
-
-        // Inputs binds
+        private unowned Gtk.Entry name_entry;
         [GtkChild]
-        private unowned Adw.EntryRow conn_name;
+        private unowned Gtk.Entry host_entry;
         [GtkChild]
-        private unowned Adw.EntryRow conn_host;
+        private unowned Gtk.Entry port_entry;
         [GtkChild]
-        private unowned Adw.EntryRow conn_port;
+        private unowned Gtk.Entry user_entry;
         [GtkChild]
-        private unowned Adw.EntryRow conn_user;
-        [GtkChild]
-        private unowned Adw.PasswordEntryRow conn_password;
-        [GtkChild]
-        private unowned Adw.EntryRow conn_db;
-        [GtkChild]
-        private unowned Gtk.Switch conn_use_ssl;
+        private unowned Gtk.PasswordEntry password_entry;
 
         [GtkChild]
-        private unowned Gtk.Label message;
-
+        private unowned Gtk.Entry database_entry;
 
         [GtkChild]
-        private unowned Adw.ToastOverlay overlay;
+        private unowned Gtk.Switch ssl_switch;
+
+        [GtkChild]
+        private unowned Gtk.Label info;
     }
 
     public class ConnEntry : Gtk.Box {
@@ -153,6 +96,9 @@ namespace Sequelize.View {
         private void build_ui () {
             var icon = new Gtk.Image.from_icon_name ("network-server-database-symbolic");
             var label = new Gtk.Label (conn_data.name);
+
+            conn_data.bind_property ("name", label, "label", BindingFlags.SYNC_CREATE);
+
             this.append (icon);
             this.append (label);
         }

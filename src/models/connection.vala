@@ -31,8 +31,8 @@ namespace Sequelize.Models {
         public string port { get; set; default = "5432"; }
         public string user { get; set; default = "postgres"; }
         public string password { get; set; default = ""; }
-        public string database { get; set; default = ""; }
-        public bool use_ssl { get; set; default = false; }
+        public string database { get; set; default = "postgres"; }
+        public bool use_ssl { get; set; default = true; }
 
         public Connection () {
             this.error = "";

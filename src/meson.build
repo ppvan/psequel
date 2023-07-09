@@ -1,8 +1,7 @@
 # Source code
 sequelize_sources = [
-  'main.vala',
   'application.vala',
-  'window.vala',
+  'ui/window.vala',
   'ui/index.vala',
   'models/connection.vala',
 ]
