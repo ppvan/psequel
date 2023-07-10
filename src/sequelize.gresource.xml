@@ -5,4 +5,9 @@
     <file preprocess="xml-stripblanks">gtk/index.ui</file>
     <file preprocess="xml-stripblanks">gtk/window.ui</file>
   </gresource>
+
+  <gresource prefix="/me/ppvan/sequelize/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="plus-large-symbolic.svg">gtk/plus-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="minus-large-symbolic.svg">gtk/minus-large-symbolic.svg</file>
+  </gresource>
 </gresources>

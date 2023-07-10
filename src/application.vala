@@ -27,13 +27,11 @@ namespace Sequelize {
         public Settings settings;
 
         public Application () {
-
             Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
         public override void activate () {
             base.activate ();
-            print ("Activate");
 
             this.settings = new Settings (this.application_id);
 
@@ -44,10 +42,14 @@ namespace Sequelize {
             win.present ();
         }
 
+        public override void startup () {
+            base.startup ();
+            print ("%s\n", Environment.get_user_state_dir ());
+        }
+
         public static int main (string[] args) {
-
             ensure_types ();
-
+            print (Config.VERSION);
             var app = new Sequelize.Application ();
 
             return app.run (args);
