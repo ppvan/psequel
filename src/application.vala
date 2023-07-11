@@ -57,7 +57,8 @@ namespace Sequelize {
 
         /* register needed types, allow me to ref a template inside a template */
         private static void ensure_types () {
-            typeof (Sequelize.View.Index).ensure ();
+            typeof (Sequelize.ConnectionView).ensure ();
+            typeof (Sequelize.ConnectionSidebar).ensure ();
         }
     }
 }

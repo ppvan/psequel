@@ -2,15 +2,20 @@
 sequelize_sources = [
   'application.vala',
   'ui/window.vala',
-  'ui/index.vala',
+  'ui/welcome.vala',
+  'ui/connlist.vala',
+  'ui/connform.vala',
 #   'utils/config.vala',
   'models/connection.vala',
+
 ]
 
 # UI code?
 blueprints = files(
     'gtk/window.blp',
-    'gtk/index.blp',
+    'gtk/welcome.blp',
+    'gtk/conn-sidebar.blp',
+    'gtk/conn-form.blp',
 )
 
 blp_target = custom_target(
@@ -25,6 +30,7 @@ sequelize_deps = [
   dependency('libadwaita-1', version: '>= 1.2'),
   dependency('gee-0.8'),
   dependency('json-glib-1.0'),
+  dependency('libpq'),
 
 
   valac.find_library('config', dirs: vapi_dir),
@@ -36,8 +42,8 @@ sequelize_sources += gnome.compile_resources('sequelize-resources',
   dependencies: blp_target
 )
 
+add_project_arguments(['--gresourcesdir', 'src/' ], language: 'vala')
 executable('sequelize', sequelize_sources,
-vala_args: [ '--gresourcesdir=src/'],
 c_args: [
     '-DVERSION="' + meson.project_version() + '"',
     '-DGETTEXT_PACKAGE="' + meson.project_name() + '"',

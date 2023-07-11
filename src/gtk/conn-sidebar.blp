@@ -1,0 +1,51 @@
+using Gtk 4.0;
+
+template $SequelizeConnectionSidebar : Gtk.Box {
+    orientation: vertical;
+    spacing: 4;
+
+    Box {
+        Label {
+            styles ["text-bold"]
+            margin-top: 4;
+            margin-start: 8;
+            halign: start;
+            margin-bottom: 4;
+            use-markup: true;
+            label: "<b>Connections</b>";
+        }
+
+        Box {
+            spacing: 4;
+            hexpand: true;
+            halign: end;
+            
+            Button {
+                styles ["flat"]
+                icon-name: "plus-large-symbolic";
+                clicked => $on_add_connection();
+            }
+
+            Button {
+                styles ["flat"]
+                icon-name: "minus-large-symbolic";
+                clicked => $on_remove_connection();
+            }
+        }
+    }
+
+    Separator {
+
+    }
+
+
+    ListBox connections {
+        styles ["navigation-sidebar"]
+        vexpand: true;
+        selection-mode: single;
+        activate-on-single-click: true;
+        width-request: 250; 
+        
+    //   row-activated => $connection_clicked();
+    }
+}

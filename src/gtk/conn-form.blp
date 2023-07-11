@@ -1,0 +1,189 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $SequelizeConnectionForm : Gtk.Box {
+    orientation: vertical;
+    Adw.Clamp {
+        valign: center;
+            Box {
+                orientation: vertical;
+                vexpand: true;
+                Grid {
+            
+                    hexpand: true;
+                    // vexpand: true;
+                    row-homogeneous: true;
+                    row-spacing: 8;
+                    column-spacing: 8;
+                    margin-start: 4;
+                    margin-end: 4;
+                
+                    Label {
+                        halign: end;
+                        label: "Name:";
+                        
+                        layout {
+                            row: 0;
+                            column: 0;
+                            column-span: 3;
+                        }
+                    }
+                    
+                    Label {
+                        halign: end;
+                        label: "Host:";
+                        
+                        layout {
+                            row: 1;
+                            column: 0;
+                            column-span: 3;
+                        }
+                    }
+                    
+                    Label {
+                        halign: end;
+                        label: "User:";
+                        
+                        layout {
+                            row: 2;
+                            column: 0;
+                            column-span: 3;
+                        }
+                    }
+                    
+                    Label {
+                        halign: end;
+                        label: "Password:";
+                        
+                        layout {
+                            row: 3;
+                            column: 0;
+                            column-span: 3;
+                        }
+                    }
+                    
+                    Label {
+                        halign: end;
+                        label: "Database:";
+                        
+                        layout {
+                            row: 4;
+                            column: 0;
+                            column-span: 3;
+                        }
+                    }
+                    
+                    Entry name_entry {
+                        placeholder-text: "Connection name";
+                        hexpand: true;
+                        
+                        layout {
+                            row: 0;
+                            column: 3;
+                            column-span: 7;
+                        }
+                    }
+                    
+                    Entry host_entry {
+                        placeholder-text: "localhost";
+                        
+                        layout {
+                            row: 1;
+                            column: 3;
+                            column-span: 5;
+                        }
+                    }
+                    
+                    Label {
+                        label: "Port";
+                        halign: end;
+                        layout {
+                            row: 1;
+                            column: 8;
+                        }
+                    }
+                    
+                    Entry port_entry {
+                        placeholder-text: "5432";
+                        
+                        layout {
+                            row: 1;
+                            column: 9;
+                            column-span: 1;
+                        }
+                    }
+                    
+                    Entry user_entry {
+                        placeholder-text: "postgres";
+                        
+                        layout {
+                            row: 2;
+                            column: 3;
+                            column-span: 7;
+                        }
+                    }
+                    
+                    PasswordEntry password_entry {
+                        placeholder-text: "";
+                        
+                        layout {
+                            row: 3;
+                            column: 3;
+                            column-span: 7;
+                        }
+                    }
+                    
+                    
+                    Entry database_entry {
+                        placeholder-text: "postgres";
+                        
+                        layout {
+                            row: 4;
+                            column: 3;
+                            column-span: 7;
+                        }
+                    }
+                    
+                    Label {
+                        label: "SSL:";
+                        halign: end;
+                        layout {
+                            row: 5;
+                            column: 0;
+                            column-span: 3;
+                        }
+                    }
+                    
+                    Box {
+                        orientation: horizontal;
+                        Box {
+                            valign: center;
+                            orientation: vertical;
+                            Switch ssl_switch {}
+                        }
+                        layout {
+                            row: 5;
+                            column: 3;
+                        }
+                    }
+            }
+            
+            Box {
+                [start]
+                Label info {
+                    label: "Info";
+                    halign: start;
+                    hexpand: true;
+                }
+            
+                [end]
+                Button {
+                    styles ["suggested-action"]
+                    label: "Connect";
+                    clicked => $on_connect_clicked();
+                }
+            }
+
+        }
+    }
+}
