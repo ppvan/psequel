@@ -7,6 +7,7 @@ sequelize_sources = [
   'ui/connform.vala',
 #   'utils/config.vala',
   'models/connection.vala',
+  'models/utils.vala',
 
 ]
 

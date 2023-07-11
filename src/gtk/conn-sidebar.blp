@@ -39,13 +39,15 @@ template $SequelizeConnectionSidebar : Gtk.Box {
     }
 
 
-    ListBox connections {
-        styles ["navigation-sidebar"]
-        vexpand: true;
-        selection-mode: single;
-        activate-on-single-click: true;
-        width-request: 250; 
-        
-    //   row-activated => $connection_clicked();
+    ScrolledWindow {
+        ListBox conn_list {
+            styles ["navigation-sidebar"]
+            vexpand: true;
+            selection-mode: browse;
+            activate-on-single-click: true;
+            width-request: 250; 
+            
+            row-selected => $on_row_selected();
+        }
     }
 }

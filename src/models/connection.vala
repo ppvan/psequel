@@ -21,48 +21,22 @@
 using GLib;
 using Gee;
 
-namespace Sequelize.Models {
+namespace Sequelize {
 
     public class Connection : Object {
-        private string error;
+
+        public static ArrayList<Connection> connections;
 
         public string name { get; set; default = ""; }
-        public string host { get; set; default = "localhost"; }
-        public string port { get; set; default = "5432"; }
-        public string user { get; set; default = "postgres"; }
+        public string host { get; set; default = ""; }
+        public string port { get; set; default = ""; }
+        public string user { get; set; default = ""; }
         public string password { get; set; default = ""; }
-        public string database { get; set; default = "postgres"; }
+        public string database { get; set; default = ""; }
         public bool use_ssl { get; set; default = true; }
 
-        public Connection () {
-            this.error = "";
-        }
-
-        private void require (string field, string msg) {
-
-            if (field.length == 0 && this.error.length == 0) {
-                this.error = msg;
-            }
-        }
-
-        public bool valid () {
-            this.error = "";
-            require (name, "Connection name required.");
-            require (host, "Host required.");
-            require (user, "Username required.");
-
-            return this.error == "";
-        }
-
-        public string get_error () {
-            return this.error;
-        }
-
-        public void to_string () {
-            stdout.printf (
-                           "Name: '%s'\nHost: '%s'\nPort: %s\nUser: '%s'\nPassword: '%s'\nDatabase: '%s'\n",
-                           name, host, port, user, password, database
-            );
+        public Connection (string name = "New Connection") {
+            this._name = name;
         }
     }
 }

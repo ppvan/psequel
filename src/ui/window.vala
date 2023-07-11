@@ -25,12 +25,12 @@ namespace Sequelize {
     [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
-        // [GtkChild]
-        // unowned Sequelize.View.Index main;
-
-
         public Window (Application app) {
             Object (application: app);
+        }
+
+        construct {
+            print ("%s\n", this.name);
         }
     }
 }

@@ -18,13 +18,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+using Gee;
+
 namespace Sequelize {
 
     // public string APP_ID = "me.ppvan.sequelize";
 
     public class Application : Adw.Application {
 
-        public Settings settings;
+        public static ArrayList<Connection> connections;
 
         public Application () {
             Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
@@ -32,8 +34,6 @@ namespace Sequelize {
 
         public override void activate () {
             base.activate ();
-
-            this.settings = new Settings (this.application_id);
 
             var win = this.active_window;
             if (win == null) {
@@ -45,11 +45,13 @@ namespace Sequelize {
         public override void startup () {
             base.startup ();
             print ("%s\n", Environment.get_user_state_dir ());
+
+            //  TODO: load last connections
+            Connection.connections = new ArrayList<Connection> ();
         }
 
         public static int main (string[] args) {
             ensure_types ();
-            print (Config.VERSION);
             var app = new Sequelize.Application ();
 
             return app.run (args);

@@ -11,7 +11,7 @@ namespace Sequelize {
         }
 
         construct {
-
+            print ("%s\n", name);
         }
 
         [GtkChild]

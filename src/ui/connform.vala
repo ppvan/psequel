@@ -3,18 +3,16 @@ namespace Sequelize {
     [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/conn-form.ui")]
     public class ConnectionForm : Gtk.Box {
 
-        private BindingGroup binddings = new BindingGroup ();
-        private Models.Connection current;
+        BindingGroup binddings;
 
         public ConnectionForm() {
             Object();
         }
 
         construct {
-            this.current = new Models.Connection ();
-            this.binddings = new BindingGroup ();
 
-            print ("construct\n");
+            print ("%s\n", this.name);
+            this.binddings = new BindingGroup ();
             binddings.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("port", port_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
@@ -23,13 +21,12 @@ namespace Sequelize {
             binddings.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
 
-            binddings.source = current;
+            //  binddings.source = current;
         }
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
             // name_entry.buffer.text = "Hello world";
-            current.to_string ();
             info.label = "Hello world";
         }
 
