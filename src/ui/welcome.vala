@@ -12,6 +12,9 @@ namespace Sequelize {
 
         construct {
             print ("%s\n", name);
+            sidebar.form = form;
+
+            sidebar.setup_bindings ();
         }
 
         [GtkChild]

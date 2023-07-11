@@ -8,13 +8,17 @@ namespace Sequelize {
         [GtkChild] unowned Gtk.ListBox conn_list;
         ObservableArrayList<Connection> conns;
 
+        public ConnectionForm form {get; set;}
+
         public ConnectionSidebar () {
             Object ();
         }
 
         construct {
             print ("%s\n", this.name);
+        }
 
+        public void setup_bindings () {
             conns = new ObservableArrayList<Connection> ();
 
             if (conns.size == 0) {
@@ -28,10 +32,13 @@ namespace Sequelize {
 
         [GtkCallback]
         public void on_row_selected (Gtk.ListBoxRow? row) {
-            if (row == null) {
+
+            var conn_row = row as ConnectionRow;
+            if (conn_row == null) {
                 return;
             }
 
+            form.conn = conn_row.conn_data;
 
 
             print ("ROw chaned\n");
@@ -65,7 +72,7 @@ namespace Sequelize {
             
         }
 
-        private Gtk.ListBoxRow row_factory(Object item) {
+        private Gtk.ListBoxRow row_factory (Object item) {
             if (item is Connection) {
                 return new ConnectionRow (item as Connection);
             } else {

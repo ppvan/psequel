@@ -5,6 +5,18 @@ namespace Sequelize {
 
         BindingGroup binddings;
 
+        private Connection _conn;
+        public Connection conn {
+            get {
+                return _conn;
+            }
+
+            set {
+                _conn = value;
+                binddings.source = _conn;
+            }
+        }
+
         public ConnectionForm() {
             Object();
         }

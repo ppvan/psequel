@@ -3,14 +3,16 @@ using Gio 2.0;
 using Adw 1;
 
 template $SequelizeConnectionView : Gtk.Box {
-    width-request: 960;
-    height-request: 600;
+    hexpand: true;
+    vexpand: true;
 
     Paned {
+        shrink-start-child: false;
+        // can-shrink: false;
 
         [start]
         $SequelizeConnectionSidebar sidebar {
-
+            width-request: 320;
         }
 
         [end]
