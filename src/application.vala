@@ -26,8 +26,6 @@ namespace Sequelize {
 
     public class Application : Adw.Application {
 
-        public static ArrayList<Connection> connections;
-
         public Application () {
             Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
@@ -44,10 +42,11 @@ namespace Sequelize {
 
         public override void startup () {
             base.startup ();
-            print ("%s\n", Environment.get_user_state_dir ());
 
-            //  TODO: load last connections
-            Connection.connections = new ArrayList<Connection> ();
+            // Load recent conns if exists.
+            with (ResourceManager.instance ()) {
+                recent_connections = new ObservableArrayList<Connection> ();
+            };
         }
 
         public static int main (string[] args) {

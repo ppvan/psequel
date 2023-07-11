@@ -13,7 +13,7 @@ valac = meson.get_compiler('vala')
 
 vapi_dir = join_paths (meson.project_source_root(), 'src', 'vapi')
 
-
+add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
 
 subdir('data')
 subdir('src')

@@ -6,7 +6,7 @@ namespace Sequelize {
         BindingGroup binddings;
 
         private Connection _conn;
-        public Connection conn {
+        public Connection mapped_conn {
             get {
                 return _conn;
             }
@@ -17,13 +17,14 @@ namespace Sequelize {
             }
         }
 
-        public ConnectionForm() {
-            Object();
+        public ConnectionForm () {
+            Object ();
         }
 
         construct {
-
             print ("%s\n", this.name);
+
+            // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
             binddings.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
@@ -32,14 +33,12 @@ namespace Sequelize {
             binddings.bind ("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
-
-            //  binddings.source = current;
         }
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
             // name_entry.buffer.text = "Hello world";
-            info.label = "Hello world";
+            mapped_conn.connect_db ();
         }
 
         [GtkChild]

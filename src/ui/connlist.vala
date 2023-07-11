@@ -6,9 +6,8 @@ namespace Sequelize {
     public class ConnectionSidebar : Gtk.Box {
 
         [GtkChild] unowned Gtk.ListBox conn_list;
-        ObservableArrayList<Connection> conns;
 
-        public ConnectionForm form {get; set;}
+        public ConnectionForm form { get; set; }
 
         public ConnectionSidebar () {
             Object ();
@@ -19,17 +18,24 @@ namespace Sequelize {
         }
 
         public void setup_bindings () {
-            conns = new ObservableArrayList<Connection> ();
+            var conns = ResourceManager.instance ().recent_connections;
 
+            // Auto create a conn and focus it on first install.
             if (conns.size == 0) {
                 conns.add (new Connection ());
             }
 
+            // Bind the conns model to the list view.
             conn_list.bind_model (conns, row_factory);
+
+            // Auto select created row.
             var first_row = conn_list.get_row_at_index (0);
             conn_list.select_row (first_row);
         }
 
+        /**
+         * If the list view selection changes.
+         */
         [GtkCallback]
         public void on_row_selected (Gtk.ListBoxRow? row) {
 
@@ -38,46 +44,50 @@ namespace Sequelize {
                 return;
             }
 
-            form.conn = conn_row.conn_data;
+            // Bind the selected row to the form.
+            form.mapped_conn = conn_row.conn_data;
 
-
-            print ("ROw chaned\n");
+            print ("Row changed\n");
         }
 
+        // On add, create new connection and select it.
         [GtkCallback]
         public void on_add_connection (Gtk.Button btn) {
-            print ("size = %zu\n", conns.size);
-
+            var conns = ResourceManager.instance ().recent_connections;
             conns.add (new Connection ());
+
             var last_row = conn_list.get_row_at_index (conns.size - 1);
             conn_list.select_row (last_row);
         }
 
+        // On remove, remove selected connection and select pos - 1.
         [GtkCallback]
         public void on_remove_connection (Gtk.Button btn) {
-            print ("size = %zu\n", conns.size);
 
-            if (conns.size == 0) {
+            var conns = ResourceManager.instance ().recent_connections;
+
+            if (conns.size <= 0) {
                 return;
             }
 
             var selected = conn_list.get_selected_row ();
-            conns.remove_at (selected.get_index ());
-            var last_row = conn_list.get_row_at_index (conns.size - 1);
+            return_if_fail (selected != null);
+
+            int pos = selected.get_index ();
+            conns.remove_at (pos);
+
+            var last_row = conn_list.get_row_at_index (pos - 1);
             conn_list.select_row (last_row);
         }
 
-
-        private void set_up_bindings() {
-            
-        }
-
         private Gtk.ListBoxRow row_factory (Object item) {
+
             if (item is Connection) {
                 return new ConnectionRow (item as Connection);
             } else {
                 var row = new Gtk.ListBoxRow ();
                 row.child = new Gtk.Label ("Not good");
+                debug ("Expect Connection, got unknown");
                 return row;
             }
         }
@@ -101,10 +111,6 @@ namespace Sequelize {
         }
 
         private void build_ui () {
-            //orientation: Gtk.Orientation.HORIZONTAL,
-            // spacing: 12,
-            // margin_start: 16,
-            // height_request: 30
             var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
             box.set_margin_start (16);
             box.set_size_request (-1, 30);

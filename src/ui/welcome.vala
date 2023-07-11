@@ -11,16 +11,15 @@ namespace Sequelize {
         }
 
         construct {
-            print ("%s\n", name);
             sidebar.form = form;
 
             sidebar.setup_bindings ();
         }
 
         [GtkChild]
-        private unowned Sequelize.ConnectionForm form;
+        unowned Sequelize.ConnectionForm form;
 
         [GtkChild]
-        private unowned Sequelize.ConnectionSidebar sidebar;
+        unowned Sequelize.ConnectionSidebar sidebar;
     }
 }

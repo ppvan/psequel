@@ -33,10 +33,55 @@ namespace Sequelize {
         public string user { get; set; default = ""; }
         public string password { get; set; default = ""; }
         public string database { get; set; default = ""; }
-        public bool use_ssl { get; set; default = true; }
+        public bool use_ssl { get; set; default = false; }
 
         public Connection (string name = "New Connection") {
             this._name = name;
+        }
+
+        public Postgres.Database connect_db () {
+
+            var db = Postgres.connect_db (this.conninfo ());
+            if (db.get_status () == Postgres.ConnectionStatus.OK) {
+                int version = db.get_server_version ();
+                print ("Postgres version: %d\n", version);
+
+                string query = "SELECT NOW();";
+                var results = db.exec (query);
+                var now = results.get_value (0, 0);
+                print ("Now: %s\n", now);
+
+                //
+            } else {
+                var err_msg = db.get_error_message ();
+                stderr.printf ("%s\n", err_msg);
+            }
+
+            return db;
+        }
+
+        public string conninfo () {
+            var ts = @"host=$host port=$port dbname=$database user=$user password=$password connect_timeout=10";
+            return ts.dup ();
+        }
+    }
+
+    public class ResourceManager : Object {
+
+        /**
+         * Recent connections info in last sessions.
+         */
+        public ObservableArrayList<Connection> recent_connections;
+
+
+        private static Once<ResourceManager> _instance;
+
+        public static unowned ResourceManager instance () {
+            return _instance.once (() => { return new ResourceManager (); });
+        }
+
+        private ResourceManager () {
+            Object ();
         }
     }
 }
