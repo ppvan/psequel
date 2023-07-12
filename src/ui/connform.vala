@@ -39,6 +39,8 @@ namespace Sequelize {
         private void on_connect_clicked (Gtk.Button btn) {
             // name_entry.buffer.text = "Hello world";
             mapped_conn.connect_db ();
+
+            print ("%s\n", ResourceManager.instance ().stringify ());
         }
 
         [GtkChild]

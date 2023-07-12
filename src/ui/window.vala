@@ -30,7 +30,12 @@ namespace Sequelize {
         }
 
         construct {
-            print ("%s\n", this.name);
+            with (ResourceManager.instance ()) {
+                settings.bind ("window-width", this,
+                               "default-width", SettingsBindFlags.DEFAULT);
+                settings.bind ("window-height", this,
+                               "default-height", SettingsBindFlags.DEFAULT);
+            }
         }
     }
 }

@@ -27,6 +27,7 @@ blp_target = custom_target(
 )
 
 sequelize_deps = [
+  dependency('glib-2.0', version: '>=2.74'),
   dependency('gtk4'),
   dependency('libadwaita-1', version: '>= 1.2'),
   dependency('gee-0.8'),
@@ -44,6 +45,7 @@ sequelize_sources += gnome.compile_resources('sequelize-resources',
 )
 
 add_project_arguments(['--gresourcesdir', 'src/' ], language: 'vala')
+add_project_arguments(['--enable-experimental' ], language: 'vala')
 executable('sequelize', sequelize_sources,
 c_args: [
     '-DVERSION="' + meson.project_version() + '"',

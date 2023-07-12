@@ -42,5 +42,9 @@ namespace Sequelize {
             _data.remove_at (index);
             items_changed (index, 1, 0);
         }
+
+        public Iterator<T> iterator () {
+            return _data.iterator ();
+        }
     }
 }

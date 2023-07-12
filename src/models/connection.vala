@@ -23,17 +23,19 @@ using Gee;
 
 namespace Sequelize {
 
-    public class Connection : Object {
+    public class Connection : Object, Json.Serializable {
 
-        public static ArrayList<Connection> connections;
+        // public static ArrayList<Connection> connections;
+        public const string DEFAULT = "";
 
-        public string name { get; set; default = ""; }
-        public string host { get; set; default = ""; }
-        public string port { get; set; default = ""; }
-        public string user { get; set; default = ""; }
-        public string password { get; set; default = ""; }
-        public string database { get; set; default = ""; }
+        public string name { get; set; default = DEFAULT; }
+        public string host { get; set; default = DEFAULT; }
+        public string port { get; set; default = DEFAULT; }
+        public string user { get; set; default = DEFAULT; }
+        public string password { get; set; default = DEFAULT; }
+        public string database { get; set; default = DEFAULT; }
         public bool use_ssl { get; set; default = false; }
+
 
         public Connection (string name = "New Connection") {
             this._name = name;
@@ -41,7 +43,11 @@ namespace Sequelize {
 
         public Postgres.Database connect_db () {
 
-            var db = Postgres.connect_db (this.conninfo ());
+            var conn_info = this.build_conninfo ();
+            var db = Postgres.connect_db (conn_info);
+
+            print ("%s\n", conn_info);
+
             if (db.get_status () == Postgres.ConnectionStatus.OK) {
                 int version = db.get_server_version ();
                 print ("Postgres version: %d\n", version);
@@ -60,10 +66,55 @@ namespace Sequelize {
             return db;
         }
 
-        public string conninfo () {
-            var ts = @"host=$host port=$port dbname=$database user=$user password=$password connect_timeout=10";
-            return ts.dup ();
+        public string build_conninfo () {
+            var builder = new StringBuilder ();
+            if (host != DEFAULT) {
+                builder.append (@"host=$host");
+            } else {
+                builder.append ("host=localhost");
+            }
+
+            builder.append (" ");
+
+            if (port != DEFAULT) {
+                builder.append (@"port=$port");
+            } else {
+                builder.append ("port=5432");
+            }
+
+            builder.append (" ");
+
+            if (database != DEFAULT) {
+                builder.append (@"dbname=$database");
+            } else {
+                builder.append ("dbname=postgres");
+            }
+
+            builder.append (" ");
+
+            if (user != DEFAULT) {
+                builder.append (@"user=$user");
+            } else {
+                builder.append ("user=postgres");
+            }
+
+            builder.append (" ");
+
+            if (password != DEFAULT) {
+                builder.append (@"password=$password");
+            } else {
+                builder.append ("password=''");
+            }
+
+            return builder.free_and_steal ();
         }
+
+        /**
+         * Convert connection to JSON string.
+         */
+        // public string stringify () {
+        //// var Json.Bui
+        // }
     }
 
     public class ResourceManager : Object {
@@ -71,7 +122,17 @@ namespace Sequelize {
         /**
          * Recent connections info in last sessions.
          */
-        public ObservableArrayList<Connection> recent_connections;
+        public ObservableArrayList<Connection> recent_connections { get; set; }
+
+        /**
+         * Application setting.
+         */
+        public Settings settings { get; set; }
+
+        public string serialize_data {
+            get;
+            set;
+        }
 
 
         private static Once<ResourceManager> _instance;
@@ -82,6 +143,64 @@ namespace Sequelize {
 
         private ResourceManager () {
             Object ();
+        }
+
+        public string stringify (bool pretty = true) {
+            var root = build_json ();
+            return Json.to_string (root, pretty);
+        }
+
+        public void save_user_data () {
+            settings.set_string ("data", stringify (false));
+        }
+
+        public void load_user_data () {
+
+            print ("Load data\n");
+
+            var parser = new Json.Parser ();
+            recent_connections = new ObservableArrayList<Connection> ();
+
+            try {
+                var buff = settings.get_string ("data");
+                parser.load_from_data (buff);
+                var root = parser.get_root ();
+                var obj = root.get_object ();
+                var conns = obj.get_array_member ("recent_connections");
+
+                conns.foreach_element ((array, index, node) => {
+                    var conn = (Connection) Json.gobject_deserialize (typeof (Connection), node);
+                    recent_connections.add (conn);
+                });
+
+                print (root.type_name ());
+            } catch (Error err) {
+                debug (err.message);
+            }
+        }
+
+        /**
+         * Load all resource from file.
+         * If path is not exist or error, default everything like new install.
+         * Because this can't violate singleton, it will init the properties data only.
+         */
+        public void load_from_file (string file_path) {
+        }
+
+        private Json.Node build_json () {
+            var builder = new Json.Builder ();
+            builder.begin_object ();
+            builder.set_member_name ("recent_connections");
+            builder.begin_array ();
+
+            foreach (var conn in recent_connections) {
+                builder.add_value (Json.gobject_serialize (conn));
+            }
+
+            builder.end_array ();
+            builder.end_object ();
+
+            return builder.get_root ();
         }
     }
 }

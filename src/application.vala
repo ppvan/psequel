@@ -42,11 +42,20 @@ namespace Sequelize {
 
         public override void startup () {
             base.startup ();
-
-            // Load recent conns if exists.
+            // Load recent connections
             with (ResourceManager.instance ()) {
-                recent_connections = new ObservableArrayList<Connection> ();
+                settings = new Settings (this.application_id);
+
+                load_user_data ();
             };
+        }
+
+        public override void shutdown () {
+            with (ResourceManager.instance ()) {
+                save_user_data ();
+            };
+
+            base.shutdown ();
         }
 
         public static int main (string[] args) {

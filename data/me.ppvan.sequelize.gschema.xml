@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="sequelize">
 	<schema id="me.ppvan.sequelize" path="/me/ppvan/sequelize/">
-        <key name="number" type="i">
-            <default>0</default>
-            <summary>Automatically install updates</summary>
+        <key name="data" type="s">
+            <default>""</default>
+            <summary>Application data</summary>
             <description>
-                If enabled, updates will automatically be downlaoded and installed.
-                If disabled, updates will still be downloaded, but the user will be
-                asked to install them manually.
+                Application additional data. Should not be changed by user.
+                Format: JSON.
             </description>
         </key>
+
+        <key name="window-width" type="i">
+            <default>1200</default>
+            <summary>Window width</summary>
+            <description>
+                Saved window width.
+            </description>
+        </key>
+
+        <key name="window-height" type="i">
+            <default>900</default>
+            <summary>Window height</summary>
+            <description>
+                Saved window height.
+            </description>
+        </key>
+
 	</schema>
 </schemalist>
