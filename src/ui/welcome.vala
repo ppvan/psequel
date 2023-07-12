@@ -4,7 +4,7 @@ using Gee;
 namespace Sequelize {
 
     [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/welcome.ui")]
-    public class ConnectionView : Gtk.Box {
+    public class ConnectionView : Adw.Bin {
 
         public ConnectionView (Application app) {
             Object ();
@@ -12,9 +12,11 @@ namespace Sequelize {
 
         construct {
             sidebar.form = form;
+            // paned.conn
 
             sidebar.setup_bindings ();
         }
+
 
         [GtkChild]
         unowned Sequelize.ConnectionForm form;

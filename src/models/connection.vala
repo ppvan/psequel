@@ -23,9 +23,11 @@ using Gee;
 
 namespace Sequelize {
 
+    /**
+     * Connection info. Have basic infomation to establish a connection to server.
+     */
     public class Connection : Object, Json.Serializable {
 
-        // public static ArrayList<Connection> connections;
         public const string DEFAULT = "";
 
         public string name { get; set; default = DEFAULT; }
@@ -37,78 +39,49 @@ namespace Sequelize {
         public bool use_ssl { get; set; default = false; }
 
 
+        public Postgres.Database db;
+
         public Connection (string name = "New Connection") {
             this._name = name;
         }
 
-        public Postgres.Database connect_db () {
-
-            var conn_info = this.build_conninfo ();
-            var db = Postgres.connect_db (conn_info);
-
-            print ("%s\n", conn_info);
-
-            if (db.get_status () == Postgres.ConnectionStatus.OK) {
-                int version = db.get_server_version ();
-                print ("Postgres version: %d\n", version);
-
-                string query = "SELECT NOW();";
-                var results = db.exec (query);
-                var now = results.get_value (0, 0);
-                print ("Now: %s\n", now);
-
-                //
-            } else {
-                var err_msg = db.get_error_message ();
-                stderr.printf ("%s\n", err_msg);
+        /**
+         * build the postgres url form properties.
+         *
+         * Format = postgresql://[user[:password]@][host][:port][/dbname][?param1=value1&...]
+         */
+        public string url_form () {
+            // postgresql://[user[:password]@][host][:port][/dbname][?param1=value1&...]
+            var builder = new StringBuilder ("postgresql://");
+            if (user != DEFAULT) {
+                builder.append (user);
+                if (password != DEFAULT) {
+                    builder.append (@":$password@");
+                } else {
+                    builder.append ("@");
+                }
             }
 
-            return db;
-        }
-
-        public string build_conninfo () {
-            var builder = new StringBuilder ();
             if (host != DEFAULT) {
-                builder.append (@"host=$host");
-            } else {
-                builder.append ("host=localhost");
+                builder.append (host);
             }
-
-            builder.append (" ");
 
             if (port != DEFAULT) {
-                builder.append (@"port=$port");
-            } else {
-                builder.append ("port=5432");
+                builder.append (port);
             }
-
-            builder.append (" ");
 
             if (database != DEFAULT) {
-                builder.append (@"dbname=$database");
-            } else {
-                builder.append ("dbname=postgres");
+                builder.append (@"/$database");
             }
 
-            builder.append (" ");
-
-            if (user != DEFAULT) {
-                builder.append (@"user=$user");
+            if (use_ssl) {
+                builder.append ("?sslmode=require");
             } else {
-                builder.append ("user=postgres");
-            }
-
-            builder.append (" ");
-
-            if (password != DEFAULT) {
-                builder.append (@"password=$password");
-            } else {
-                builder.append ("password=''");
+                builder.append ("?sslmode=disable");
             }
 
             return builder.free_and_steal ();
         }
-
         /**
          * Convert connection to JSON string.
          */
@@ -124,6 +97,7 @@ namespace Sequelize {
          */
         public ObservableArrayList<Connection> recent_connections { get; set; }
 
+        public Postgres.Database active_db {get; owned set;}
         /**
          * Application setting.
          */
@@ -154,6 +128,10 @@ namespace Sequelize {
             settings.set_string ("data", stringify (false));
         }
 
+        /**
+         * Load all resource from Gsetting.
+         * Because this can't violate singleton, it will init the properties data only.
+         */
         public void load_user_data () {
 
             print ("Load data\n");
@@ -178,16 +156,8 @@ namespace Sequelize {
                 debug (err.message);
             }
         }
-
-        /**
-         * Load all resource from file.
-         * If path is not exist or error, default everything like new install.
-         * Because this can't violate singleton, it will init the properties data only.
-         */
-        public void load_from_file (string file_path) {
-        }
-
         private Json.Node build_json () {
+
             var builder = new Json.Builder ();
             builder.begin_object ();
             builder.set_member_name ("recent_connections");

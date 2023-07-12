@@ -3,6 +3,8 @@ using Adw 1;
 
 template $SequelizeConnectionForm : Gtk.Box {
     orientation: vertical;
+    hexpand: true;
+    vexpand: true;
     Adw.Clamp {
         valign: center;
             Box {
@@ -76,6 +78,7 @@ template $SequelizeConnectionForm : Gtk.Box {
                     Entry name_entry {
                         placeholder-text: "Connection name";
                         hexpand: true;
+                        activate => $on_entry_activated();
                         
                         layout {
                             row: 0;
@@ -86,6 +89,7 @@ template $SequelizeConnectionForm : Gtk.Box {
                     
                     Entry host_entry {
                         placeholder-text: "localhost";
+                        activate => $on_entry_activated();
                         
                         layout {
                             row: 1;
@@ -105,6 +109,7 @@ template $SequelizeConnectionForm : Gtk.Box {
                     
                     Entry port_entry {
                         placeholder-text: "5432";
+                        activate => $on_entry_activated();
                         
                         layout {
                             row: 1;
@@ -115,6 +120,7 @@ template $SequelizeConnectionForm : Gtk.Box {
                     
                     Entry user_entry {
                         placeholder-text: "postgres";
+                        activate => $on_entry_activated();
                         
                         layout {
                             row: 2;
@@ -125,6 +131,8 @@ template $SequelizeConnectionForm : Gtk.Box {
                     
                     PasswordEntry password_entry {
                         placeholder-text: "";
+                        show-peek-icon: true;
+                        activate => $on_entry_activated();
                         
                         layout {
                             row: 3;
@@ -136,6 +144,7 @@ template $SequelizeConnectionForm : Gtk.Box {
                     
                     Entry database_entry {
                         placeholder-text: "postgres";
+                        activate => $on_entry_activated();
                         
                         layout {
                             row: 4;
@@ -177,7 +186,7 @@ template $SequelizeConnectionForm : Gtk.Box {
                 }
             
                 [end]
-                Button {
+                Button connect_btn {
                     styles ["suggested-action"]
                     label: "Connect";
                     clicked => $on_connect_clicked();

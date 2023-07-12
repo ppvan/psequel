@@ -38,13 +38,23 @@ namespace Sequelize {
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
             // name_entry.buffer.text = "Hello world";
-            mapped_conn.connect_db ();
+            // i want to save it
+            with (ResourceManager.instance ()) {
+                //  active_db = mapped_conn.connect_db ();
+            }
+        }
 
-            print ("%s\n", ResourceManager.instance ().stringify ());
+        [GtkCallback]
+        private void on_entry_activated (Gtk.Entry entry) {
+            connect_btn.clicked ();
         }
 
         [GtkChild]
+        unowned Gtk.Button connect_btn;
+
+        [GtkChild]
         private unowned Gtk.Entry name_entry;
+
         [GtkChild]
         private unowned Gtk.Entry host_entry;
         [GtkChild]

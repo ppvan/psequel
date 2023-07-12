@@ -1,14 +1,13 @@
 # Source code
 sequelize_sources = [
   'application.vala',
-  'ui/window.vala',
-  'ui/welcome.vala',
-  'ui/connlist.vala',
-  'ui/connform.vala',
-#   'utils/config.vala',
+   'ui/connection_form.vala',
+   'ui/recent_connection.vala',
+   'ui/welcome.vala',
+   'ui/window.vala',
   'models/connection.vala',
   'models/utils.vala',
-
+  'services/connection_service.vala',
 ]
 
 # UI code?
