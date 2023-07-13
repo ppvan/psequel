@@ -107,11 +107,15 @@ namespace Sequelize {
         public const int POOL_SIZE = 3;
         public ThreadPool<Worker> background;
 
-        public Postgres.Database active_db { get; owned set; }
         /**
          * Application setting.
          */
         public Settings settings { get; set; }
+
+        /**
+         * Application
+         */
+        public Application app { get; set; }
 
         public string serialize_data {
             get;

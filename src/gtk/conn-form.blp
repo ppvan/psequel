@@ -178,18 +178,26 @@ template $SequelizeConnectionForm : Gtk.Box {
             }
             
             Box {
-                [start]
-                Label info {
-                    label: "Info";
+
+                Label status_label {
+                    label: "";
                     halign: start;
                     hexpand: true;
                 }
-            
-                [end]
-                Button connect_btn {
-                    styles ["suggested-action"]
-                    label: "Connect";
-                    clicked => $on_connect_clicked();
+
+                Box {
+
+                    spacing: 8;
+
+                    Spinner spinner {
+                        
+                    }
+
+                    Button connect_btn {
+                        styles ["suggested-action"]
+                        label: "Connect";
+                        clicked => $on_connect_clicked();
+                    }
                 }
             }
 

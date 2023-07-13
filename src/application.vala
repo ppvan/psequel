@@ -52,8 +52,9 @@ namespace Sequelize {
                     worker.task ();
                 }, ResourceManager.POOL_SIZE, false);
 
-
                 query_service = new QueryService (background);
+
+                app = this;
                 load_user_data ();
             };
 

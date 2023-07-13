@@ -14,32 +14,55 @@ namespace Sequelize {
             _active_db = Postgres.connect_db (db_url);
         }
 
-        public async void connect_db_async (Connection conn) {
+        public async void connect_db_async (Connection conn, out string conn_err) {
             string db_url = conn.url_form ();
 
             // Hold reference to closure to keep it from being freed whilst
             // thread is active.
-            SourceFunc callback = connect_db_async.callback;
-            ThreadFunc<void> run = () => {
-                _active_db = Postgres.connect_db (db_url);
-                Idle.add ((owned) callback);
-            };
+            try {
+                SourceFunc callback = connect_db_async.callback;
+                ThreadFunc<void> run = () => {
+                    _active_db = Postgres.connect_db (db_url);
 
-            var worker = new Worker ("connect database", run);
-            background.add (worker);
+                    // Simulate delay
+                    //  Thread.usleep (3 * 1000000);
+                    var status = _active_db.get_status ();
+                    switch (status) {
+                    case Postgres.ConnectionStatus.OK:
+                        _alive = true;
+                        break;
+                    case Postgres.ConnectionStatus.BAD:
+                        _alive = false;
+                        break;
+                    default:
+                        debug ("Programming error: %s not handled", status.to_string ());
+                        break;
+                    }
+
+
+                    Idle.add ((owned) callback);
+                };
+
+                var worker = new Worker ("connect database", (owned) run);
+                background.add (worker);
+            } catch (ThreadError err) {
+                debug (err.message);
+                return_if_reached ();
+            }
 
             // Wait for background thread to schedule our callback
             yield;
+            if (!_alive) {
+                conn_err = _active_db.get_error_message ();
+            }
         }
 
         public async string db_version () {
+
             string stmt = "SELECT version ();";
-
-            string version = null;
-
             var res = yield exec_query (stmt);
-            version = res.get_value (0, 0);
 
+            string version = res.get_value (0, 0);
 
             return version;
         }
@@ -80,6 +103,8 @@ namespace Sequelize {
         }
 
         private Database _active_db;
+        // Connection is good and ready to serve query.
+        private bool _alive;
         private unowned ThreadPool<Worker> background;
     }
 }

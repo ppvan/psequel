@@ -44,6 +44,12 @@ namespace Sequelize {
             group.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             group.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
 
+
+            connect_btn.bind_property ("sensitive", spinner, "spinning", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
+                to.set_boolean (!from.get_boolean ());
+                return true;
+            });
+
             debug ("set_up binddings done");
         }
 
@@ -56,19 +62,32 @@ namespace Sequelize {
 
             TimePerf.begin ();
             with (ResourceManager.instance ()) {
+
+                btn.sensitive = false;
                 query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
-                    btn.set_sensitive (true);
+                    btn.sensitive = true;
                     TimePerf.end ();
+
                     var tmp = obj as QueryService;
-                    tmp.connect_db_async.end (res);
+                    string err = null;
+                    tmp.connect_db_async.end (res, out err);
 
-                    tmp.db_version.begin ((obj, res) => {
-
-                        string version = tmp.db_version.end (res);
-                        debug (version);
-                    });
+                    if (err != null) {
+                        var dialog = create_err_dialog ("Connection error", err);
+                        dialog.present ();
+                    }
                 });
             }
+        }
+
+        private Adw.MessageDialog create_err_dialog (string heading, string body) {
+            var window = ResourceManager.instance ().app.active_window;
+            var dialog = new Adw.MessageDialog (window, heading, body);
+
+            dialog.close_response = "okay";
+            dialog.add_response ("okay", "OK");
+
+            return dialog;
         }
 
         [GtkCallback]
@@ -78,6 +97,9 @@ namespace Sequelize {
 
         [GtkChild]
         unowned Gtk.Button connect_btn;
+
+        [GtkChild]
+        unowned Gtk.Spinner spinner;
 
         [GtkChild]
         private unowned Gtk.Entry name_entry;
@@ -98,6 +120,6 @@ namespace Sequelize {
         private unowned Gtk.Switch ssl_switch;
 
         [GtkChild]
-        private unowned Gtk.Label info;
+        private unowned Gtk.Label status_label;
     }
 }
