@@ -19,6 +19,8 @@ namespace Sequelize {
         }
 
         public void setup_bindings () {
+            debug ("setup bindings");
+
             var conns = ResourceManager.instance ().recent_connections;
 
             // Auto create a conn and focus it on first install.
@@ -32,6 +34,8 @@ namespace Sequelize {
             // Auto select created row.
             var first_row = conn_list.get_row_at_index (0);
             conn_list.select_row (first_row);
+
+            debug ("setup bindings done");
         }
 
         /**
@@ -48,15 +52,17 @@ namespace Sequelize {
             // Bind the selected row to the form.
             form.mapped_conn = conn_row.conn_data;
 
-            print ("Row changed\n");
+            debug ("mapped widget binding to another row");
         }
 
         // On add, create new connection and select it.
         [GtkCallback]
         public void on_add_connection (Gtk.Button btn) {
+
             var conns = ResourceManager.instance ().recent_connections;
             conns.add (new Connection ());
 
+            debug ("auto select last row");
             var last_row = conn_list.get_row_at_index (conns.size - 1);
             conn_list.select_row (last_row);
         }
@@ -77,6 +83,7 @@ namespace Sequelize {
             int pos = selected.get_index ();
             conns.remove_at (pos);
 
+            debug ("auto select last row");
             var last_row = conn_list.get_row_at_index (pos - 1);
             conn_list.select_row (last_row);
         }

@@ -16,7 +16,7 @@ namespace Sequelize {
             }
         }
 
-        public ConnectionSidebar sidebar {get; set;}
+        public ConnectionSidebar sidebar { get; set; }
 
         public ConnectionForm () {
             Object ();
@@ -26,13 +26,21 @@ namespace Sequelize {
 
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
-            binddings.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            binddings.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            binddings.bind ("port", port_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            binddings.bind ("user", user_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            binddings.bind ("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            binddings.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            binddings.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
+            set_up_bindings (binddings);
+        }
+
+        private void set_up_bindings (BindingGroup group) {
+            debug ("set_up connection form bindings group");
+
+            group.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            group.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            group.bind ("port", port_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            group.bind ("user", user_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            group.bind ("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            group.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            group.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
+
+            debug ("set_up binddings done");
         }
 
         [GtkCallback]
@@ -40,7 +48,7 @@ namespace Sequelize {
             // name_entry.buffer.text = "Hello world";
             // i want to save it
             with (ResourceManager.instance ()) {
-                //  active_db = mapped_conn.connect_db ();
+                // active_db = mapped_conn.connect_db ();
             }
         }
 
@@ -72,6 +80,5 @@ namespace Sequelize {
 
         [GtkChild]
         private unowned Gtk.Label info;
-
     }
 }

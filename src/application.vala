@@ -34,7 +34,6 @@ namespace Sequelize {
             base.activate ();
             var win = this.active_window;
             if (win == null) {
-                print ("activate\n");
                 win = new Sequelize.Window (this);
             }
             win.present ();
@@ -43,7 +42,7 @@ namespace Sequelize {
         public override void startup () {
             base.startup ();
             set_up_logging ();
-            print ("startup\n");
+            debug ("Begin to load resources");
 
             // Load recent connections
             with (ResourceManager.instance ()) {
@@ -51,12 +50,18 @@ namespace Sequelize {
 
                 load_user_data ();
             };
+
+            debug ("Resources loaded");
         }
 
         public override void shutdown () {
+            debug ("Saving resources");
+
             with (ResourceManager.instance ()) {
                 save_user_data ();
             };
+
+            debug ("Resources saved");
 
             base.shutdown ();
         }

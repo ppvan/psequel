@@ -138,7 +138,7 @@ namespace Sequelize {
          * Because this can't violate singleton, it will init the properties data only.
          */
         public void load_user_data () {
-            debug ("Load setting data\n");
+            debug ("Load user setting data");
             //  log_structured ("[debug]", LogLevelFlags.LEVEL_DEBUG, "");
             var parser = new Json.Parser ();
             recent_connections = new ObservableArrayList<Connection> ();
@@ -157,6 +157,8 @@ namespace Sequelize {
             } catch (Error err) {
                 debug (err.message);
             }
+
+            debug ("User setting loaded");
         }
 
         private Json.Node build_json () {
