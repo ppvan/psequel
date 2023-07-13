@@ -45,8 +45,13 @@ namespace Sequelize {
             group.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
 
 
-            connect_btn.bind_property ("sensitive", spinner, "spinning", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
-                to.set_boolean (!from.get_boolean ());
+            connect_btn.bind_property ("sensitive", spinner, "spinning", BindingFlags.INVERT_BOOLEAN);
+
+            password_entry.bind_property ("text", password_entry, "show-peek-icon", BindingFlags.SYNC_CREATE, (binding, from_value, ref to_value) => {
+
+                string text = from_value.get_string ();
+                to_value.set_boolean (text.length > 0);
+
                 return true;
             });
 
@@ -57,7 +62,7 @@ namespace Sequelize {
         private void on_connect_clicked (Gtk.Button btn) {
             // name_entry.buffer.text = "Hello world";
             // i want to save it
-            //  btn.set_sensitive (false);
+            // btn.set_sensitive (false);
             debug ("Connecting to %s", mapped_conn.url_form ());
 
             TimePerf.begin ();

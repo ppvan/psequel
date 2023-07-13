@@ -15,8 +15,8 @@ sequelize_sources = [
 blueprints = files(
     'gtk/window.blp',
     'gtk/welcome.blp',
-    'gtk/conn-sidebar.blp',
-    'gtk/conn-form.blp',
+    'gtk/recent-connection.blp',
+    'gtk/connection-form.blp',
 )
 
 blp_target = custom_target(

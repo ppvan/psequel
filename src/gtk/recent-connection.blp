@@ -21,12 +21,14 @@ template $SequelizeConnectionSidebar : Gtk.Box {
             halign: end;
             
             Button {
+                tooltip-text: "Add new connection";
                 styles ["flat"]
                 icon-name: "plus-large-symbolic";
                 clicked => $on_add_connection();
             }
 
             Button {
+                tooltip-text: "Remove selected connection";
                 styles ["flat"]
                 icon-name: "minus-large-symbolic";
                 clicked => $on_remove_connection();
