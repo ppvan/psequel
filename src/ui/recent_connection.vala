@@ -2,7 +2,7 @@
 namespace Sequelize {
 
 
-    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/conn-sidebar.ui")]
+    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/recent-connection.ui")]
     public class ConnectionSidebar : Gtk.Box {
 
         [GtkChild] unowned Gtk.ListBox conn_list;
@@ -14,8 +14,8 @@ namespace Sequelize {
         }
 
         construct {
-            //  print ("%s\n", this.form.name);
-            //  setup_bindings ();
+            // print ("%s\n", this.form.name);
+            // setup_bindings ();
         }
 
         public void setup_bindings () {
@@ -123,7 +123,7 @@ namespace Sequelize {
             box.set_margin_start (16);
             box.set_size_request (-1, 30);
 
-            var icon = new Gtk.Image.from_icon_name ("network-server-database-symbolic");
+            var icon = new Gtk.Image.from_icon_name ("text-sql-symbolic");
             var label = new Gtk.Label (conn_data.name);
 
             conn_data.bind_property ("name", label, "label", BindingFlags.SYNC_CREATE);

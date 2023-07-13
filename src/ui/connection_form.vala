@@ -1,6 +1,6 @@
 namespace Sequelize {
 
-    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/conn-form.ui")]
+    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/connection-form.ui")]
     public class ConnectionForm : Gtk.Box {
 
         BindingGroup binddings;
@@ -47,7 +47,11 @@ namespace Sequelize {
 
             connect_btn.bind_property ("sensitive", spinner, "spinning", BindingFlags.INVERT_BOOLEAN);
 
-            password_entry.bind_property ("text", password_entry, "show-peek-icon", BindingFlags.SYNC_CREATE, (binding, from_value, ref to_value) => {
+            password_entry.bind_property ("text",
+                                          password_entry,
+                                          "show-peek-icon",
+                                          BindingFlags.SYNC_CREATE,
+                                          (binding, from_value, ref to_value) => {
 
                 string text = from_value.get_string ();
                 to_value.set_boolean (text.length > 0);
@@ -123,8 +127,5 @@ namespace Sequelize {
 
         [GtkChild]
         private unowned Gtk.Switch ssl_switch;
-
-        [GtkChild]
-        private unowned Gtk.Label status_label;
     }
 }

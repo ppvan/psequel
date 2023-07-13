@@ -5,16 +5,26 @@ template $SequelizeConnectionForm : Gtk.Box {
     orientation: vertical;
     hexpand: true;
     vexpand: true;
+
+    Adw.HeaderBar header {
+        styles ["flat"]
+
+        [title]
+        Label {
+          label: "";
+        }
+    }
+
     Adw.Clamp {
         valign: center;
             Box {
                 orientation: vertical;
-                vexpand: true;
+                // vexpand: true;
                 spacing: 36;
                 Grid {
             
                     hexpand: true;
-                    // vexpand: true;
+                    vexpand: true;
                     row-homogeneous: true;
                     row-spacing: 8;
                     column-spacing: 8;

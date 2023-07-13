@@ -3,8 +3,8 @@
   <gresource prefix="/me/ppvan/sequelize">
     <file alias="style.css">gtk/style.css</file>
     <file preprocess="xml-stripblanks">gtk/welcome.ui</file>
-    <file preprocess="xml-stripblanks">gtk/conn-sidebar.ui</file>
-    <file preprocess="xml-stripblanks">gtk/conn-form.ui</file>
+    <file preprocess="xml-stripblanks">gtk/recent-connection.ui</file>
+    <file preprocess="xml-stripblanks">gtk/connection-form.ui</file>
     <file preprocess="xml-stripblanks">gtk/window.ui</file>
   </gresource>
 

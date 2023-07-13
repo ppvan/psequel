@@ -17,9 +17,6 @@ namespace Sequelize {
 
 
         [GtkChild]
-        unowned Sequelize.ConnectionForm form;
-
-        [GtkChild]
         unowned Sequelize.ConnectionSidebar sidebar;
     }
 }

@@ -19,6 +19,7 @@ blueprints = files(
     'gtk/connection-form.blp',
 )
 
+
 blp_target = custom_target(
     'blueprints',
     input: blueprints,

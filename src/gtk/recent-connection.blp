@@ -3,14 +3,15 @@ using Gtk 4.0;
 template $SequelizeConnectionSidebar : Gtk.Box {
     orientation: vertical;
     spacing: 4;
+    margin-top: 4;
 
     Box {
         Label {
             styles ["text-bold"]
-            margin-top: 4;
+            margin-top: 6;
             margin-start: 8;
             halign: start;
-            margin-bottom: 4;
+            margin-bottom: 6;
             use-markup: true;
             label: "<b>Connections</b>";
         }
@@ -36,9 +37,9 @@ template $SequelizeConnectionSidebar : Gtk.Box {
         }
     }
 
-    Separator {
+    // Separator {
 
-    }
+    // }
 
 
     ScrolledWindow {

@@ -52,6 +52,7 @@ namespace Sequelize {
 
             // Wait for background thread to schedule our callback
             yield;
+            conn_err = null;
             if (!_alive) {
                 conn_err = _active_db.get_error_message ();
             }

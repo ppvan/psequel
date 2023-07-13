@@ -48,9 +48,14 @@ namespace Sequelize {
             with (ResourceManager.instance ()) {
                 settings = new Settings (this.application_id);
 
-                background = new ThreadPool<Worker>.with_owned_data ((worker) => {
-                    worker.task ();
-                }, ResourceManager.POOL_SIZE, false);
+                try {
+                    background = new ThreadPool<Worker>.with_owned_data ((worker) => {
+                        worker.task ();
+                    }, ResourceManager.POOL_SIZE, false);
+                } catch (ThreadError err) {
+                    debug (err.message);
+                    return_if_reached ();
+                }
 
                 query_service = new QueryService (background);
 
@@ -84,6 +89,7 @@ namespace Sequelize {
         private static void ensure_types () {
             typeof (Sequelize.ConnectionView).ensure ();
             typeof (Sequelize.ConnectionSidebar).ensure ();
+            typeof (Sequelize.ConnectionForm).ensure ();
         }
     }
 }
