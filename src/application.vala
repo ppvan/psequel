@@ -48,6 +48,12 @@ namespace Sequelize {
             with (ResourceManager.instance ()) {
                 settings = new Settings (this.application_id);
 
+                background = new ThreadPool<Worker>.with_owned_data ((worker) => {
+                    worker.task ();
+                }, ResourceManager.POOL_SIZE, false);
+
+
+                query_service = new QueryService (background);
                 load_user_data ();
             };
 

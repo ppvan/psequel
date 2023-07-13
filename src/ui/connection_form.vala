@@ -5,6 +5,8 @@ namespace Sequelize {
 
         BindingGroup binddings;
 
+        private unowned QueryService query_service;
+
         private Connection _conn;
         public Connection mapped_conn {
             get {
@@ -23,6 +25,8 @@ namespace Sequelize {
         }
 
         construct {
+            // init service
+            query_service = ResourceManager.instance ().query_service;
 
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
@@ -47,8 +51,23 @@ namespace Sequelize {
         private void on_connect_clicked (Gtk.Button btn) {
             // name_entry.buffer.text = "Hello world";
             // i want to save it
+            //  btn.set_sensitive (false);
+            debug ("Connecting to %s", mapped_conn.url_form ());
+
+            TimePerf.begin ();
             with (ResourceManager.instance ()) {
-                // active_db = mapped_conn.connect_db ();
+                query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
+                    btn.set_sensitive (true);
+                    TimePerf.end ();
+                    var tmp = obj as QueryService;
+                    tmp.connect_db_async.end (res);
+
+                    tmp.db_version.begin ((obj, res) => {
+
+                        string version = tmp.db_version.end (res);
+                        debug (version);
+                    });
+                });
             }
         }
 

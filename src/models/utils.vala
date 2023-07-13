@@ -48,6 +48,34 @@ namespace Sequelize {
         }
     }
 
+    public class Worker {
+        public string thread_name { private set; get; }
+        public ThreadFunc<void> task;
+
+        public Worker (string name, owned ThreadFunc<void> task) {
+            this.thread_name = name;
+            this.task = (owned)task;
+        }
+    }
+
+    /**
+    * Util class to mesure execution time than log it using debug()
+     */
+    public class TimePerf {
+        private static int64 _start;
+        private static int64 _end;
+
+        public static void begin () {
+            _start = GLib.get_real_time ();
+        }
+        public static void end () {
+            _end = GLib.get_real_time ();
+
+            debug (@"Elapsed: %$(int64.FORMAT) ms", (_end - _start) / 1000);
+        }
+
+    }
+
     public void set_up_logging () {
         Log.set_handler (Config.G_LOG_DOMAIN, LogLevelFlags.LEVEL_DEBUG | LogLevelFlags.LEVEL_WARNING, log_function);
     }

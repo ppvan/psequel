@@ -52,7 +52,7 @@ namespace Sequelize {
          */
         public string url_form () {
             // postgresql://[user[:password]@][host][:port][/dbname][?param1=value1&...]
-            var builder = new StringBuilder ("postgresql://");
+            var builder = new StringBuilder ("postgres://");
             if (user != DEFAULT) {
                 builder.append (user);
                 if (password != DEFAULT) {
@@ -67,7 +67,7 @@ namespace Sequelize {
             }
 
             if (port != DEFAULT) {
-                builder.append (port);
+                builder.append (@":$port");
             }
 
             if (database != DEFAULT) {
@@ -101,6 +101,11 @@ namespace Sequelize {
          * Recent connections info in last sessions.
          */
         public ObservableArrayList<Connection> recent_connections { get; set; }
+
+        public QueryService query_service {get; set;}
+
+        public const int POOL_SIZE = 3;
+        public ThreadPool<Worker> background;
 
         public Postgres.Database active_db { get; owned set; }
         /**

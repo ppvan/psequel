@@ -7,7 +7,7 @@ sequelize_sources = [
    'ui/window.vala',
   'models/connection.vala',
   'models/utils.vala',
-  'services/connection_service.vala',
+  'services/query_service.vala',
 ]
 
 # UI code?
