@@ -10,19 +10,19 @@ namespace Sequelize {
             get {
                 return _conn;
             }
-
             set {
                 _conn = value;
                 binddings.source = _conn;
             }
         }
 
+        public ConnectionSidebar sidebar {get; set;}
+
         public ConnectionForm () {
             Object ();
         }
 
         construct {
-            print ("%s\n", this.name);
 
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
@@ -72,5 +72,6 @@ namespace Sequelize {
 
         [GtkChild]
         private unowned Gtk.Label info;
+
     }
 }

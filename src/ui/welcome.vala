@@ -10,10 +10,8 @@ namespace Sequelize {
             Object ();
         }
 
+        // Connect event.
         construct {
-            sidebar.form = form;
-            // paned.conn
-
             sidebar.setup_bindings ();
         }
 

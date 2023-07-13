@@ -14,7 +14,8 @@ namespace Sequelize {
         }
 
         construct {
-            print ("%s\n", this.name);
+            //  print ("%s\n", this.form.name);
+            //  setup_bindings ();
         }
 
         public void setup_bindings () {

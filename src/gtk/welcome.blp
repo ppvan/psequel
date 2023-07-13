@@ -9,14 +9,15 @@ template $SequelizeConnectionView : Adw.Bin {
     Gtk.Paned paned {
         // can-shrink: false;
 
+        [end]
+        $SequelizeConnectionForm form {
+            sidebar: sidebar;
+        }
+
         [start]
         $SequelizeConnectionSidebar sidebar {
             width-request: 320;
-        }
-
-        [end]
-        $SequelizeConnectionForm form {
-
+            form: form;
         }
     }
 

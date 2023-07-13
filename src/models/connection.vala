@@ -82,6 +82,7 @@ namespace Sequelize {
 
             return builder.free_and_steal ();
         }
+
         /**
          * Convert connection to JSON string.
          */
@@ -90,6 +91,10 @@ namespace Sequelize {
         // }
     }
 
+    /**
+     * Keep and give access to every service in application.
+     * Must be initzalize before the UI class.
+     */
     public class ResourceManager : Object {
 
         /**
@@ -97,7 +102,7 @@ namespace Sequelize {
          */
         public ObservableArrayList<Connection> recent_connections { get; set; }
 
-        public Postgres.Database active_db {get; owned set;}
+        public Postgres.Database active_db { get; owned set; }
         /**
          * Application setting.
          */
@@ -133,9 +138,8 @@ namespace Sequelize {
          * Because this can't violate singleton, it will init the properties data only.
          */
         public void load_user_data () {
-
-            print ("Load data\n");
-
+            debug ("Load setting data\n");
+            //  log_structured ("[debug]", LogLevelFlags.LEVEL_DEBUG, "");
             var parser = new Json.Parser ();
             recent_connections = new ObservableArrayList<Connection> ();
 
@@ -150,12 +154,11 @@ namespace Sequelize {
                     var conn = (Connection) Json.gobject_deserialize (typeof (Connection), node);
                     recent_connections.add (conn);
                 });
-
-                print (root.type_name ());
             } catch (Error err) {
                 debug (err.message);
             }
         }
+
         private Json.Node build_json () {
 
             var builder = new Json.Builder ();

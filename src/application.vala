@@ -32,7 +32,6 @@ namespace Sequelize {
 
         public override void activate () {
             base.activate ();
-            
             var win = this.active_window;
             if (win == null) {
                 print ("activate\n");
@@ -43,7 +42,9 @@ namespace Sequelize {
 
         public override void startup () {
             base.startup ();
+            set_up_logging ();
             print ("startup\n");
+
             // Load recent connections
             with (ResourceManager.instance ()) {
                 settings = new Settings (this.application_id);

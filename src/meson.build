@@ -43,16 +43,27 @@ sequelize_sources += gnome.compile_resources('sequelize-resources',
   dependencies: blp_target
 )
 
+conf = configuration_data()
+conf.set_quoted('APP_ID', app_id)
+conf.set_quoted('APP_NAME', 'Sequelize')
+conf.set_quoted('G_LOG_DOMAIN', 'Sequelize')
+conf.set_quoted('VERSION', meson.project_version())
+conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
+conf.set_quoted('DATADIR', join_paths(get_option('prefix'), get_option('datadir')))
+conf.set_quoted('GNOMELOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
+configure_file(output: 'config.h', configuration: conf)
+
+add_project_arguments(
+    '-include', 'config.h',
+    '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
+    language: 'c'
+)
 add_project_arguments(['--gresourcesdir', 'src/' ], language: 'vala')
 add_project_arguments(['--enable-experimental' ], language: 'vala')
+# add_project_arguments(['-DG_LOG_DOMAIN=\"Sequelize\"' ], language: 'c')
+
+
 executable('sequelize', sequelize_sources,
-c_args: [
-    '-DVERSION="' + meson.project_version() + '"',
-    '-DGETTEXT_PACKAGE="' + meson.project_name() + '"',
-    '-DAPP_NAME="' + meson.project_name() + '"',
-    '-DAPP_ID="' + app_id + '"',
-    '-DGNOMELOCALEDIR="' + get_option('prefix') / get_option('localedir') + '"',
-],
   dependencies: sequelize_deps,
   install: true,
 )

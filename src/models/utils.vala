@@ -47,4 +47,22 @@ namespace Sequelize {
             return _data.iterator ();
         }
     }
+
+    public void set_up_logging () {
+        Log.set_handler (Config.G_LOG_DOMAIN, LogLevelFlags.LEVEL_DEBUG | LogLevelFlags.LEVEL_WARNING, log_function);
+    }
+
+    private void log_function (string? domain, LogLevelFlags level, string message) {
+        switch (level) {
+        case LogLevelFlags.LEVEL_DEBUG:
+            print ("[DEBUG] %s\n", message);
+            break;
+        case LogLevelFlags.LEVEL_WARNING:
+            print ("[WARN] %s\n", message);
+            break;
+
+        default:
+            assert_not_reached ();
+        }
+    }
 }
