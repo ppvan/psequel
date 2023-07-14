@@ -1,6 +1,5 @@
 
 
-
 namespace Sequelize {
 
     [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/query-view.ui")]
