@@ -6,12 +6,23 @@ template $SequelizeWindow : Adw.ApplicationWindow {
     default-height: 800;
     title: "Sequelize";
 
-    Box main {
-        orientation: vertical;
-        // Index view place holder
 
-        $SequelizeConnectionView {
+
+    Stack stack {
+        transition-type: slide_left_right;
+
+        StackPage {
+            name: "label-view";
+            child: Label {
+                label: "Screen 2";
+            };
+        }
+
+        StackPage {
+            name: "connection-view";
+            child: $SequelizeConnectionView {
             
+            };
         }
     }
 }

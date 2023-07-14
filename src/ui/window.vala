@@ -36,6 +36,14 @@ namespace Sequelize {
                 settings.bind ("window-height", this,
                                "default-height", SettingsBindFlags.DEFAULT);
             }
+
+            //  Timeout.add_once (2000, () => {
+            //      stack.set_visible_child_name ("label-view");
+            //  });
         }
+
+
+        [GtkChild]
+        private unowned Gtk.Stack stack;
     }
 }

@@ -1,0 +1,30 @@
+using Gtk 4.0;
+using Gio 2.0;
+using Adw 1;
+
+template $SequelizeQueryView : Adw.Bin {
+    hexpand: true;
+    vexpand: true;
+
+    Adw.HeaderBar {
+        [start]
+        Box {
+            Label {
+                label: "Schema";
+            }
+
+            Adw.ComboRow {
+                model: StringList {
+                    strings [
+                        "public", "private"
+                    ]
+                };
+            }
+        }
+    }
+
+    Label {
+        label: "Screen 2";
+    }
+
+}
