@@ -1,12 +1,12 @@
 {
-    "app-id": "me.ppvan.sequelize",
+    "app-id": "me.ppvan.psequel",
     "runtime": "org.gnome.Platform",
     "runtime-version": "44",
     "sdk": "org.gnome.Sdk",
     "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.vala"
     ],
-    "command": "hellowolrd",
+    "command": "psequel",
     "finish-args": [
         "--share=network",
         "--share=ipc",
@@ -32,13 +32,13 @@
     ],
     "modules": [
         {
-            "name": "hellowolrd",
+            "name": "psequel",
             "builddir": true,
             "buildsystem": "meson",
             "sources": [
                 {
                     "type": "git",
-                    "url": "file:///home/ppvan/Projects"
+                    "url": "file:///home/ppvan/Documents/code/pet-projects/psequel"
                 }
             ]
         }

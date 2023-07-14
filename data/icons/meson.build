@@ -1,4 +1,4 @@
-application_id = 'me.ppvan.sequelize'
+application_id = 'me.ppvan.psequel'
 
 scalable_dir = join_paths('hicolor', 'scalable', 'apps')
 install_data(

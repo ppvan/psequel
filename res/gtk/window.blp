@@ -1,10 +1,10 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $SequelizeWindow : Adw.ApplicationWindow {
+template $PsequelWindow : Adw.ApplicationWindow {
     default-width: 1200;
     default-height: 800;
-    title: "Sequelize";
+    title: "Psequel";
 
 
 
@@ -13,14 +13,14 @@ template $SequelizeWindow : Adw.ApplicationWindow {
 
         StackPage {
             name: "label-view";
-            child: $SequelizeQueryView {
+            child: $PsequelQueryView {
 
             };
         }
 
         StackPage {
             name: "connection-view";
-            child: $SequelizeConnectionView {
+            child: $PsequelConnectionView {
             
             };
         }

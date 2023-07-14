@@ -20,21 +20,21 @@
 
 using Gee;
 
-namespace Sequelize {
+namespace Psequel {
 
-    // public string APP_ID = "me.ppvan.sequelize";
+    // public string APP_ID = "me.ppvan.Psequel";
 
     public class Application : Adw.Application {
 
         public Application () {
-            Object (application_id: "me.ppvan.sequelize", flags: ApplicationFlags.DEFAULT_FLAGS);
+            Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
         public override void activate () {
             base.activate ();
             var win = this.active_window;
             if (win == null) {
-                win = new Sequelize.Window (this);
+                win = new Psequel.Window (this);
             }
             win.present ();
         }
@@ -80,17 +80,17 @@ namespace Sequelize {
 
         public static int main (string[] args) {
             ensure_types ();
-            var app = new Sequelize.Application ();
+            var app = new Psequel.Application ();
 
             return app.run (args);
         }
 
         /* register needed types, allow me to ref a template inside a template */
         private static void ensure_types () {
-            typeof (Sequelize.ConnectionView).ensure ();
-            typeof (Sequelize.ConnectionSidebar).ensure ();
-            typeof (Sequelize.ConnectionForm).ensure ();
-            typeof (Sequelize.QueryView).ensure ();
+            typeof (Psequel.ConnectionView).ensure ();
+            typeof (Psequel.ConnectionSidebar).ensure ();
+            typeof (Psequel.ConnectionForm).ensure ();
+            typeof (Psequel.QueryView).ensure ();
         }
     }
 }

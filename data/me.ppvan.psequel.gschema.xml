@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="sequelize">
-	<schema id="me.ppvan.sequelize" path="/me/ppvan/sequelize/">
+<schemalist gettext-domain="psequel">
+	<schema id="me.ppvan.psequel" path="/me/ppvan/psequel/">
         <key name="data" type="s">
             <default>""</default>
             <summary>Application data</summary>

@@ -1,9 +1,9 @@
 
 using Gee;
 
-namespace Sequelize {
+namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/welcome.ui")]
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/welcome.ui")]
     public class ConnectionView : Adw.Bin {
 
         public ConnectionView (Application app) {
@@ -17,6 +17,6 @@ namespace Sequelize {
 
 
         [GtkChild]
-        unowned Sequelize.ConnectionSidebar sidebar;
+        unowned Psequel.ConnectionSidebar sidebar;
     }
 }

@@ -1,5 +1,5 @@
 # Source code
-sequelize_sources = [
+psequel_sources = [
   'application.vala',
    'ui/connection_form.vala',
    'ui/recent_connection.vala',
@@ -18,15 +18,15 @@ add_project_arguments(['--enable-experimental' ], language: 'vala')
 
 conf = configuration_data()
 conf.set_quoted('APP_ID', app_id)
-conf.set_quoted('APP_NAME', 'Sequelize')
-conf.set_quoted('G_LOG_DOMAIN', 'Sequelize')
+conf.set_quoted('APP_NAME', 'Psequel')
+conf.set_quoted('G_LOG_DOMAIN', 'Psequel')
 conf.set_quoted('VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set_quoted('DATADIR', join_paths(get_option('prefix'), get_option('datadir')))
 conf.set_quoted('GNOMELOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 configure_file(output: 'config.h', configuration: conf)
 
-sequelize_deps = [
+psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
   dependency('gtk4'),
   dependency('libadwaita-1', version: '>= 1.2'),
@@ -45,7 +45,7 @@ add_project_arguments(
 )
 
 
-executable('sequelize', [sequelize_resources, sequelize_sources],
-  dependencies: sequelize_deps,
+executable('psequel', [psequel_resources, psequel_sources],
+  dependencies: psequel_deps,
   install: true,
 )

@@ -1,6 +1,6 @@
 using Gee;
 
-namespace Sequelize {
+namespace Psequel {
 
     public class ObservableArrayList<T>: ListModel, Object {
 

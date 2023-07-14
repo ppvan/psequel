@@ -1,6 +1,6 @@
 using Postgres;
 
-namespace Sequelize {
+namespace Psequel {
     public class QueryService : Object {
 
         public QueryService (ThreadPool<Worker> background) {

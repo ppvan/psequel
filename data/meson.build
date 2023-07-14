@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
-        input: 'me.ppvan.sequelize.desktop.in',
-       output: 'me.ppvan.sequelize.desktop',
+        input: 'me.ppvan.psequel.desktop.in',
+       output: 'me.ppvan.psequel.desktop',
          type: 'desktop',
        po_dir: '../po',
       install: true,
@@ -13,8 +13,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-        input: 'me.ppvan.sequelize.appdata.xml.in',
-       output: 'me.ppvan.sequelize.appdata.xml',
+        input: 'me.ppvan.psequel.appdata.xml.in',
+       output: 'me.ppvan.psequel.appdata.xml',
        po_dir: '../po',
       install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
@@ -26,7 +26,7 @@ if appstream_util.found()
 endif
 
 
-install_data('me.ppvan.sequelize.gschema.xml',
+install_data('me.ppvan.psequel.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 

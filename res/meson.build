@@ -18,8 +18,8 @@ blueprints = custom_target('blueprints',
 )
 
 
-sequelize_resources = gnome.compile_resources('sequelize_resources',
-  'sequelize.gresource.xml',
-  c_name: 'sequelize_resources',
+psequel_resources = gnome.compile_resources('psequel_resources',
+  'psequel.gresource.xml',
+  c_name: 'psequel_resources',
   dependencies: [blueprints],
 )

@@ -2,7 +2,7 @@ using Gtk 4.0;
 using Gio 2.0;
 using Adw 1;
 
-template $SequelizeConnectionView : Adw.Bin {
+template $PsequelConnectionView : Adw.Bin {
     hexpand: true;
     vexpand: true;
 
@@ -13,13 +13,13 @@ template $SequelizeConnectionView : Adw.Bin {
 
 
         [start]
-        $SequelizeConnectionSidebar sidebar {
+        $PsequelConnectionSidebar sidebar {
             width-request: 320;
             form: form;
         }
 
         [end]
-        $SequelizeConnectionForm form {
+        $PsequelConnectionForm form {
             sidebar: sidebar;
         }
     }

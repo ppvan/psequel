@@ -1,6 +1,6 @@
-namespace Sequelize {
+namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/connection-form.ui")]
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-form.ui")]
     public class ConnectionForm : Gtk.Box {
 
         BindingGroup binddings;

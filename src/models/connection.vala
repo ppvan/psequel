@@ -21,7 +21,7 @@
 using GLib;
 using Gee;
 
-namespace Sequelize {
+namespace Psequel {
 
     /**
      * Connection info. Have basic infomation to establish a connection to server.

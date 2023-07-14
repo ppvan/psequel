@@ -1,6 +1,6 @@
-data/me.ppvan.sequelize.desktop.in
-data/me.ppvan.sequelize.appdata.xml.in
-data/me.ppvan.sequelize.gschema.xml
+data/me.ppvan.psequel.desktop.in
+data/me.ppvan.psequel.appdata.xml.in
+data/me.ppvan.psequel.gschema.xml
 src/main.vala
 src/window.vala
 src/window.ui

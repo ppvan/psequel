@@ -20,9 +20,9 @@
 
 using GLib;
 
-namespace Sequelize {
+namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/sequelize/gtk/window.ui")]
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
         public Window (Application app) {
