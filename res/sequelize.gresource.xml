@@ -12,5 +12,9 @@
   <gresource prefix="/me/ppvan/sequelize/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="plus-large-symbolic.svg">gtk/icons/plus-large-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="minus-large-symbolic.svg">gtk/icons/minus-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-symbolic.svg">gtk/icons/library-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="object-rows-symbolic.svg">gtk/icons/object-rows-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="terminal-symbolic.svg">gtk/icons/terminal-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="loupe-large-symbolic.svg">gtk/icons/loupe-large-symbolic.svg</file>
   </gresource>
 </gresources>

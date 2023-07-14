@@ -1,30 +1,156 @@
 using Gtk 4.0;
-using Gio 2.0;
 using Adw 1;
 
 template $SequelizeQueryView : Adw.Bin {
     hexpand: true;
     vexpand: true;
+    width-request: 800;
+    height-request: 600;
+    
+    Box {
+        orientation: vertical;
 
-    Adw.HeaderBar {
-        [start]
-        Box {
-            Label {
-                label: "Schema";
+        Gtk.Paned {
+          
+            Box {
+                orientation: vertical;
+                width-request: 280;
+
+                Box {
+                    margin-start: 8;
+                    margin-end: 8;
+                    margin-top: 8;
+                    margin-bottom: 8;
+                    hexpand: true;
+                    spacing: 12;
+                    Label {
+                        styles ["title-3"]
+                        halign: start;
+                        margin-bottom: 0;
+                        label: "Schema";
+                    }
+                    DropDown {
+                        hexpand: true;
+                        
+                        // width-request: 50;
+                        // show-arrow: false;
+                        model: StringList {
+                            strings [
+                                "public", "private"
+                            ]
+                        };
+                    }
+                }
+                
+                Separator {}
+
+                Box {
+                    margin-start: 8;
+                    margin-end: 8;
+                    margin-top: 4;
+                    margin-bottom: 8;
+                
+                    Label {
+                        styles ["title-3"]
+                        margin-top: 8;
+                        margin-start: 4;
+                        halign: start;
+                        margin-bottom: 0;
+                        label: "Tables";
+                    }
+                    
+                    Separator {
+                        hexpand: true;
+                        styles ["spacer"]
+                    }
+                    
+                    ToggleButton adam {
+                        styles ["flat"]
+                        icon-name: "loupe-large-symbolic";
+                    }
+                
+                }
+                
+                
+
+                SearchBar {
+                    search-mode-enabled: bind adam.active;
+                    show-close-button: true;
+                    styles ["background"]
+                    SearchEntry {
+                        placeholder-text: "Try me";
+                        margin-start: 4;
+                        margin-bottom: 4;
+                    }
+                
+                }
+                
+                ListBox {
+                    styles ["navigation-sidebar"]
+                    
+                    Label {
+                        label: "Item 1";
+                    }
+                    
+                    Label {
+                        label: "Item 1";
+                    }
+                    
+                    Label {
+                        label: "Item 1";
+                    }
+                    
+                    Label {
+                        label: "Item 1";
+                    }
+                } 
             }
 
-            Adw.ComboRow {
-                model: StringList {
-                    strings [
-                        "public", "private"
-                    ]
-                };
+            Box {
+                orientation: vertical;
+            
+                Adw.HeaderBar {
+                    styles ["flat"]
+                    
+                    [title]
+                    Adw.ViewSwitcher {
+                        policy: wide;
+                        stack: stack;
+                    }
+                }
+                
+                Adw.ViewStack stack {
+                    hexpand: true;
+                    vexpand: true;
+                    Adw.ViewStackPage {
+                        name: "structure-view";
+                        icon-name: "library-symbolic";
+                        title: "Structure";
+                        child: Label {
+                            label: "Structure";
+                        };
+                    }
+
+                    Adw.ViewStackPage {
+                        name: "Data";
+                        title: "Data";
+                        icon-name: "object-rows-symbolic";
+                        child: Label {
+                            label: "Data";
+                        };
+                    }
+
+                    Adw.ViewStackPage {
+                        name: "Query";
+                        icon-name: "terminal-symbolic";
+                        title: "Query";
+                        child: Label {
+                            label: "Query";
+                        };
+                    }
+                }
+            
             }
         }
     }
-
-    Label {
-        label: "Screen 2";
-    }
-
 }

@@ -90,6 +90,7 @@ namespace Sequelize {
             typeof (Sequelize.ConnectionView).ensure ();
             typeof (Sequelize.ConnectionSidebar).ensure ();
             typeof (Sequelize.ConnectionForm).ensure ();
+            typeof (Sequelize.QueryView).ensure ();
         }
     }
 }
