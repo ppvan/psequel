@@ -64,32 +64,22 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-            // name_entry.buffer.text = "Hello world";
-            // i want to save it
-            // btn.set_sensitive (false);
-            debug ("Connecting to %s", mapped_conn.url_form ());
 
-            TimePerf.begin ();
+            debug ("Connecting to %s", mapped_conn.url_form ());
 
             btn.sensitive = false;
             query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
-                btn.sensitive = true;
-                TimePerf.end ();
+                try {
+                    btn.sensitive = true;
+                    query_service.connect_db_async.end (res);
 
-                var tmp = obj as QueryService;
-                string err = null;
-                tmp.connect_db_async.end (res, out err);
+                    var window = (Window) ResourceManager.instance ().app.get_active_window ();
 
-                if (err != null) {
-                    var dialog = create_err_dialog ("Connection error", err);
+                    window.navigate_to ("query-view");
+
+                } catch (PsequelError err) {
+                    var dialog = create_err_dialog ("Connection error", err.message);
                     dialog.present ();
-                } else {
-                    query_service.db_tablenames.begin ("public", (obj, res) => {
-
-                        var table = query_service.db_tablenames.end (res);
-
-                        debug (table.to_string ());
-                    });
                 }
             });
         }

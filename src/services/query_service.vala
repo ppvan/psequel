@@ -15,53 +15,57 @@ namespace Psequel {
             this.background = background;
         }
 
-        public async Table db_tablenames (string schema = "public") {
-            string stmt = "SELECT rental_date FROM rental;";
-            var res = yield _exec_query_internal (stmt);
-            
+        public async Table db_tablenames (string schema = "public") throws PsequelError {
+            string stmt = "select tablename from pg_tables where schemaname='public';";
+            var res = yield exec_query_internal (stmt);
+
             var table = new Table ((owned) res);
 
             return table;
         }
 
-        public async string db_version () {
+        public async string db_version () throws PsequelError {
 
             string stmt = "SELECT version ();";
             var table = yield exec_query (stmt);
 
-            string version = table.data[0][0];
+            // TODO fixme
+            string version = "ahihi";
 
             return version;
         }
 
         public void connect_db (Connection conn) {
             string db_url = conn.url_form ();
-            _active_db = Postgres.connect_db (db_url);
+            active_db = Postgres.connect_db (db_url);
         }
 
-        public async void connect_db_async (Connection conn, out string conn_err) {
+        public async void connect_db_async (Connection conn) throws PsequelError {
             string db_url = conn.url_form ();
+
+            string err_msg = null;
 
             // Hold reference to closure to keep it from being freed whilst
             // thread is active.
             try {
                 SourceFunc callback = connect_db_async.callback;
+
                 ThreadFunc<void> run = () => {
-                    _active_db = Postgres.connect_db (db_url);
+                    active_db = Postgres.connect_db (db_url);
 
                     // Simulate delay
                     // Thread.usleep (3 * 1000000);
-                    var status = _active_db.get_status ();
+                    var status = active_db.get_status ();
                     switch (status) {
                     case Postgres.ConnectionStatus.OK:
-                        _alive = true;
+                        // Success
                         break;
                     case Postgres.ConnectionStatus.BAD:
-                        _alive = false;
+                        err_msg = active_db.get_error_message ();
                         break;
                     default:
                         debug ("Programming error: %s not handled", status.to_string ());
-                        break;
+                        assert_not_reached ();
                     }
 
 
@@ -72,28 +76,50 @@ namespace Psequel {
                 background.add (worker);
             } catch (ThreadError err) {
                 debug (err.message);
-                return_if_reached ();
+                assert_not_reached ();
             }
 
             // Wait for background thread to schedule our callback
             yield;
-            conn_err = null;
-            if (!_alive) {
-                conn_err = _active_db.get_error_message ();
+
+            if (err_msg != null) {
+                throw new PsequelError.CONNECTION_ERROR (err_msg);
             }
         }
 
-        private async Table exec_query (string query) {
-            var res = yield _exec_query_internal (query);
-            debug (res.get_value (0, 0));
+        private async Table exec_query (string query) throws PsequelError {
+            var result = yield exec_query_internal (query);
 
-            return new Table ((owned) res);
+            // check query status
+            check_status (result);
+
+            var table = new Table ((owned) result);
+
+            return table;
         }
 
-        private async Result _exec_query_internal (string query) {
+        private void check_status (Result result) throws PsequelError {
+
+            var status = result.get_status ();
+
+            switch (status) {
+            case ExecStatus.TUPLES_OK:
+                // success
+                break;
+            case ExecStatus.FATAL_ERROR:
+                var err_msg = result.get_error_message ();
+                debug ("Fatal error: %s", err_msg);
+                throw new PsequelError.QUERY_FAIL (err_msg.dup ());
+            default:
+                debug ("Programming error: %s not handled", status.to_string ());
+                assert_not_reached ();
+            }
+        }
+
+        private async Result exec_query_internal (string query) throws PsequelError {
 
             // Boilerplate
-            SourceFunc callback = _exec_query_internal.callback;
+            SourceFunc callback = exec_query_internal.callback;
             Result result = null;
             try {
                 ThreadFunc<void> run = () => {
@@ -101,21 +127,8 @@ namespace Psequel {
                     TimePerf.begin ();
 
                     debug ("Exec: %s", query);
-                    result = _active_db.exec (query);
+                    result = active_db.exec (query);
                     TimePerf.end ();
-                    var status = result.get_status ();
-                    switch (status) {
-                    case ExecStatus.TUPLES_OK:
-                        // success
-                        break;
-                    case ExecStatus.FATAL_ERROR:
-                        debug ("Fatal error: %s", result.get_error_message ());
-                        break;
-                    default:
-                        debug ("Programming error: %s not handled", status.to_string ());
-                        break;
-                    }
-
                     Idle.add ((owned) callback);
                 };
 
@@ -124,7 +137,7 @@ namespace Psequel {
                 background.add (worker);
             } catch (ThreadError err) {
                 debug (err.message);
-                return_if_reached ();
+                assert_not_reached ();
             }
 
             yield;
@@ -132,9 +145,7 @@ namespace Psequel {
             return (owned) result;
         }
 
-        private Database _active_db;
-        // Connection is good and ready to serve query.
-        private bool _alive;
+        private Database active_db;
         private unowned ThreadPool<Worker> background;
     }
 }

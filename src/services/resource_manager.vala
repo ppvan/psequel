@@ -68,11 +68,10 @@ namespace Psequel {
                 var conns = obj.get_array_member ("recent_connections");
 
                 conns.foreach_element ((array, index, node) => {
+                    debug (Json.to_string (node, false));
                     var conn = (Connection) Json.gobject_deserialize (typeof (Connection), node);
                     recent_connections.add (conn);
                 });
-
-                debug (buff);
             } catch (Error err) {
                 debug (err.message);
             }

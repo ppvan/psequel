@@ -37,11 +37,17 @@ namespace Psequel {
                                "default-height", SettingsBindFlags.DEFAULT);
             }
 
-            //  Timeout.add_once (2000, () => {
-            //      stack.set_visible_child_name ("label-view");
-            //  });
+            // Timeout.add_once (2000, () => {
+            // stack.set_visible_child_name ("label-view");
+            // });
         }
 
+        /**
+         * Navigate to the stack view.
+         */
+        public void navigate_to (string view_name) {
+            stack.set_visible_child_name (view_name);
+        }
 
         [GtkChild]
         private unowned Gtk.Stack stack;

@@ -9,9 +9,7 @@ template $PsequelWindow : Adw.ApplicationWindow {
 
 
     Stack stack {
-        transition-type: slide_left_right;
-
-        
+        transition-type: slide_up_down;
 
         StackPage {
             name: "connection-view";
@@ -21,7 +19,7 @@ template $PsequelWindow : Adw.ApplicationWindow {
         }
 
         StackPage {
-            name: "label-view";
+            name: "query-view";
             child: $PsequelQueryView {
 
             };

@@ -43,6 +43,12 @@ namespace Psequel {
             items_changed (index, 1, 0);
         }
 
+        public void clear () {
+            var back_up = this.size;
+            _data.clear ();
+            items_changed (0, back_up, 0);
+        }
+
         public Iterator<T> iterator () {
             return _data.iterator ();
         }
@@ -56,6 +62,11 @@ namespace Psequel {
             this.thread_name = name;
             this.task = (owned)task;
         }
+    }
+
+    public errordomain PsequelError {
+        CONNECTION_ERROR,
+        QUERY_FAIL
     }
 
     /**

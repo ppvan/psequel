@@ -29,7 +29,7 @@ template $PsequelQueryView : Adw.Bin {
                         margin-bottom: 0;
                         label: "Schema";
                     }
-                    DropDown {
+                    DropDown schema {
                         hexpand: true;
                         
                         // width-request: 50;
@@ -88,7 +88,7 @@ template $PsequelQueryView : Adw.Bin {
                 
                 ScrolledWindow {
                     vexpand: true;
-                    ListBox {
+                    ListBox table_list {
                         styles ["navigation-sidebar"]
                         
                         Label {
@@ -112,10 +112,12 @@ template $PsequelQueryView : Adw.Bin {
                 
                 Box {
                     spacing: 4;
-                    Button {
+                    Button reload {
                         styles ["flat"]
                         icon-name: "refresh-large-symbolic";
                         tooltip-text: "Reload tables";
+
+                        clicked => $on_reload_clicked();
                     }
                     
                     Button {
