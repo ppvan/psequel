@@ -66,6 +66,7 @@ template $PsequelQueryView : Adw.Bin {
                     
                     ToggleButton adam {
                         styles ["flat"]
+                        tooltip-text: "Search tables";
                         icon-name: "loupe-large-symbolic";
                     }
                 
@@ -73,37 +74,57 @@ template $PsequelQueryView : Adw.Bin {
                 
                 
 
-                SearchBar {
-                    search-mode-enabled: bind adam.active;
-                    show-close-button: true;
+                Revealer {
+                    transition-duration: 300;
+                    reveal-child: bind adam.active;
                     styles ["background"]
                     SearchEntry {
-                        placeholder-text: "Try me";
+                        placeholder-text: "Search Tables";
                         margin-start: 4;
                         margin-bottom: 4;
                     }
                 
                 }
                 
-                ListBox {
-                    styles ["navigation-sidebar"]
-                    
-                    Label {
-                        label: "Item 1";
+                ScrolledWindow {
+                    vexpand: true;
+                    ListBox {
+                        styles ["navigation-sidebar"]
+                        
+                        Label {
+                            label: "Item 1";
+                        }
+                        
+                        Label {
+                            label: "Item 2";
+                        }
+                        
+                        Label {
+                            label: "Item 3";
+                        }
+                        
+                        Label {
+                            label: "Item 4";
+                        }
+                    }
+                
+                }
+                
+                Box {
+                    spacing: 4;
+                    Button {
+                        styles ["flat"]
+                        icon-name: "refresh-large-symbolic";
+                        tooltip-text: "Reload tables";
                     }
                     
-                    Label {
-                        label: "Item 2";
+                    Button {
+                        styles ["flat"]
+                        icon-name: "plus-large-symbolic";
+                        tooltip-text: "Create new table";
                     }
                     
-                    Label {
-                        label: "Item 3";
-                    }
-                    
-                    Label {
-                        label: "Item 4";
-                    }
-                } 
+                }
             }
 
             Box {
@@ -153,4 +174,4 @@ template $PsequelQueryView : Adw.Bin {
             }
         }
     }
-}
+} 
