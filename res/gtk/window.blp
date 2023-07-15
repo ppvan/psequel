@@ -11,17 +11,19 @@ template $PsequelWindow : Adw.ApplicationWindow {
     Stack stack {
         transition-type: slide_left_right;
 
-        StackPage {
-            name: "label-view";
-            child: $PsequelQueryView {
-
-            };
-        }
+        
 
         StackPage {
             name: "connection-view";
             child: $PsequelConnectionView {
             
+            };
+        }
+
+        StackPage {
+            name: "label-view";
+            child: $PsequelQueryView {
+
             };
         }
     }

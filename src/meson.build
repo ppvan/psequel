@@ -1,15 +1,17 @@
 # Source code
 psequel_sources = [
-  'application.vala',
-   'ui/connection_form.vala',
-   'ui/recent_connection.vala',
-   'ui/welcome.vala',
-   'ui/window.vala',
-   'ui/query_view.vala',
-  'models/connection.vala',
-  'models/utils.vala',
-  'services/query_service.vala',
-  'services/resource_manager.vala',
+    'application.vala',
+    'ui/connection_form.vala',
+    'ui/recent_connection.vala',
+    'ui/welcome.vala',
+    'ui/window.vala',
+    'ui/query_view.vala',
+    'models/connection.vala',
+    'models/schema.vala',
+    'models/table.vala',
+    'models/utils.vala',
+    'services/query_service.vala',
+    'services/resource_manager.vala',
 ]
 
 

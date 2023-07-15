@@ -71,6 +71,8 @@ namespace Psequel {
                     var conn = (Connection) Json.gobject_deserialize (typeof (Connection), node);
                     recent_connections.add (conn);
                 });
+
+                debug (buff);
             } catch (Error err) {
                 debug (err.message);
             }

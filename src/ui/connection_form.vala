@@ -70,23 +70,28 @@ namespace Psequel {
             debug ("Connecting to %s", mapped_conn.url_form ());
 
             TimePerf.begin ();
-            with (ResourceManager.instance ()) {
 
-                btn.sensitive = false;
-                query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
-                    btn.sensitive = true;
-                    TimePerf.end ();
+            btn.sensitive = false;
+            query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
+                btn.sensitive = true;
+                TimePerf.end ();
 
-                    var tmp = obj as QueryService;
-                    string err = null;
-                    tmp.connect_db_async.end (res, out err);
+                var tmp = obj as QueryService;
+                string err = null;
+                tmp.connect_db_async.end (res, out err);
 
-                    if (err != null) {
-                        var dialog = create_err_dialog ("Connection error", err);
-                        dialog.present ();
-                    }
-                });
-            }
+                if (err != null) {
+                    var dialog = create_err_dialog ("Connection error", err);
+                    dialog.present ();
+                } else {
+                    query_service.db_tablenames.begin ("public", (obj, res) => {
+
+                        var table = query_service.db_tablenames.end (res);
+
+                        debug (table.to_string ());
+                    });
+                }
+            });
         }
 
         private Adw.MessageDialog create_err_dialog (string heading, string body) {

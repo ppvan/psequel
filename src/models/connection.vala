@@ -64,7 +64,7 @@ namespace Psequel {
 
             builder.append (host != DEFAULT ? host : "localhost");
             builder.append (port != DEFAULT ? @":$port" : ":5432");
-            builder.append (database != DEFAULT ? @"/$database" : "postgres");
+            builder.append (database != DEFAULT ? @"/$database" : "/postgres");
             builder.append (use_ssl ? "?sslmode=require" : "?sslmode=disable");
 
 
