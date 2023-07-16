@@ -29,12 +29,13 @@ template $PsequelQueryView : Adw.Bin {
                         margin-bottom: 0;
                         label: "Schema";
                     }
-                    ComboBoxText schema {
+                    DropDown schema {
                         hexpand: true;
-                        changed => $schema_changed();
                         // width-request: 50;
                         // show-arrow: false;
                     }
+
+                    
                 }
                 
                 Separator {}

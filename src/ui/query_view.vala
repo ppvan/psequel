@@ -10,7 +10,9 @@ namespace Psequel {
 
 
         private ObservableArrayList<Table.Row> table_names;
-        private Gtk.FilterListModel model;
+
+        private Gtk.FilterListModel tablelist_model;
+        private Gtk.StringList schema_model;
 
         public QueryView () {
             Object ();
@@ -20,23 +22,14 @@ namespace Psequel {
             query_service = ResourceManager.instance ().query_service;
             signals = ResourceManager.instance ().signals;
 
+            set_up_table_list ();
 
-            table_names = new ObservableArrayList<Table.Row> ();
+            this.schema_model = new Gtk.StringList (null);
+            //  var expresion = new Gtk.ObjectExpression (GLib.Object object)
 
-            var filter = new Gtk.CustomFilter (search_filter_func);
-            this.model = new Gtk.FilterListModel (table_names, filter);
-            this.table_list.bind_model (model, table_row_factory);
+            schema.set_model (schema_model);
 
-
-            signals.table_list_changed.connect (() => {
-                debug ("Handle table_list_changed.");
-                reload_tables.begin ();
-            });
-
-            signals.database_connected.connect (() => {
-                debug ("Handle database_connected.");
-                reload_schema.begin ();
-            });
+            connect_signals ();
         }
 
         [GtkCallback]
@@ -56,7 +49,7 @@ namespace Psequel {
         [GtkCallback]
         private void on_search (Gtk.SearchEntry entry) {
             debug (entry.text);
-            model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
+            tablelist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
         }
 
         [GtkCallback]
@@ -66,8 +59,7 @@ namespace Psequel {
             }
         }
 
-        [GtkCallback]
-        private void schema_changed (Gtk.ComboBox box) {
+        private void schema_changed () {
             signals.table_list_changed ();
         }
 
@@ -83,24 +75,26 @@ namespace Psequel {
 
         private async void reload_schema () throws PsequelError {
 
-            var relations = yield query_service.db_schemas ();
+            var schema_list = yield query_service.db_schemas ();
 
-            foreach (var row in relations) {
-                var smname = row[0];
-                if (smname == "public") {
-                    schema.prepend_text (smname);
-                    continue;
-                }
-                schema.append_text (smname);
+
+            // Clear last item.
+            for (int i = 0; i < schema_model.get_n_items (); i++) {
+                schema_model.remove (i);
             }
 
-            // Select public as default.
-            schema.set_active (0);
+            // db_schemas always return n x 1 table.
+            foreach (var item in schema_list) {
+                schema_model.append (item[0]);
+            }
+
+            debug ("Schema loaded.");
+
         }
 
         private async void reload_tables () throws PsequelError {
 
-            var cur_schema = schema.get_active_text () ?? "public";
+            var cur_schema = ((Gtk.StringObject) schema.selected_item).string ?? "public";
 
             // debug (cur_schema.to_string ());
 
@@ -132,6 +126,28 @@ namespace Psequel {
             return row;
         }
 
+        private void set_up_table_list () {
+            this.table_names = new ObservableArrayList<Table.Row> ();
+
+            var filter = new Gtk.CustomFilter (search_filter_func);
+            this.tablelist_model = new Gtk.FilterListModel (table_names, filter);
+            this.table_list.bind_model (tablelist_model, table_row_factory);
+        }
+
+        private void connect_signals () {
+            signals.table_list_changed.connect (() => {
+                debug ("Handle table_list_changed.");
+                reload_tables.begin ();
+            });
+
+            signals.database_connected.connect (() => {
+                debug ("Handle database_connected.");
+                reload_schema.begin ();
+            });
+
+            schema.notify["selected"].connect (schema_changed);
+        }
+
         [GtkChild]
         private unowned Gtk.ListBox table_list;
 
@@ -139,6 +155,6 @@ namespace Psequel {
         private unowned Gtk.SearchEntry search_entry;
 
         [GtkChild]
-        private unowned Gtk.ComboBoxText schema;
+        private unowned Gtk.DropDown schema;
     }
 }
