@@ -23,12 +23,7 @@ namespace Psequel {
             signals = ResourceManager.instance ().signals;
 
             set_up_table_list ();
-
-            this.schema_model = new Gtk.StringList (null);
-            //  var expresion = new Gtk.ObjectExpression (GLib.Object object)
-
-            schema.set_model (schema_model);
-
+            set_up_schema ();
             connect_signals ();
         }
 
@@ -48,7 +43,7 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_search (Gtk.SearchEntry entry) {
-            debug (entry.text);
+            debug ("Search tables: %s", entry.text);
             tablelist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
         }
 
@@ -59,10 +54,16 @@ namespace Psequel {
             }
         }
 
+        /**
+         * Function update table list when schema changed.
+         */
         private void schema_changed () {
             signals.table_list_changed ();
         }
 
+        /**
+         * Filter table name base on seach entry.
+         */
         private bool search_filter_func (Object item) {
             assert (item is Table.Row);
 
@@ -73,6 +74,9 @@ namespace Psequel {
             return table_name.contains (search_text);
         }
 
+        /**
+         * Reload schema list to the drop down by fetching database.
+         */
         private async void reload_schema () throws PsequelError {
 
             var schema_list = yield query_service.db_schemas ();
@@ -89,14 +93,14 @@ namespace Psequel {
             }
 
             debug ("Schema loaded.");
-
         }
 
+        /**
+         * Reload tables list by fetch the database.
+         */
         private async void reload_tables () throws PsequelError {
 
             var cur_schema = ((Gtk.StringObject) schema.selected_item).string ?? "public";
-
-            // debug (cur_schema.to_string ());
 
             var relations = yield query_service.db_tablenames (cur_schema);
 
@@ -104,9 +108,11 @@ namespace Psequel {
             foreach (var item in relations) {
                 table_names.add (item);
             }
+
+            debug ("Tables list reloaded, got %d tables in schema %s", table_names.size, cur_schema);
         }
 
-        /** Create row widget from data
+        /** Create row widget from query result.
          */
         private Gtk.ListBoxRow table_row_factory (Object obj) {
             var row_data = obj as Table.Row;
@@ -132,6 +138,11 @@ namespace Psequel {
             var filter = new Gtk.CustomFilter (search_filter_func);
             this.tablelist_model = new Gtk.FilterListModel (table_names, filter);
             this.table_list.bind_model (tablelist_model, table_row_factory);
+        }
+
+        private void set_up_schema () {
+            this.schema_model = new Gtk.StringList (null);
+            this.schema.set_model (schema_model);
         }
 
         private void connect_signals () {

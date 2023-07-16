@@ -66,9 +66,7 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-
-            debug ("Connecting to %s", mapped_conn.url_form ());
-
+            
             btn.sensitive = false;
             query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
                 try {

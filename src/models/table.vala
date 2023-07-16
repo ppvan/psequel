@@ -49,6 +49,10 @@ namespace Psequel {
             return data.iterator ();
         }
 
+        public new Row @get (int index) {
+            return data.get (index);
+        }
+
         /**
          * Helper class for ease of use with Table. DO NOT use it outside of Table class.
          */

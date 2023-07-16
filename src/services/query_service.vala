@@ -42,7 +42,7 @@ namespace Psequel {
             var table = yield exec_query (stmt);
 
             // TODO fixme
-            string version = "ahihi";
+            string version = table[0][0];
 
             return version;
         }
@@ -54,9 +54,8 @@ namespace Psequel {
 
         public async void connect_db_async (Connection conn) throws PsequelError {
             string db_url = conn.url_form ();
-
-            string err_msg = null;
-
+            debug ("Connecting to %s", db_url);
+            TimePerf.begin ();
             // Hold reference to closure to keep it from being freed whilst
             // thread is active.
             try {
@@ -67,20 +66,6 @@ namespace Psequel {
 
                     // Simulate delay
                     // Thread.usleep (3 * 1000000);
-                    var status = active_db.get_status ();
-                    switch (status) {
-                    case Postgres.ConnectionStatus.OK:
-                        // Success
-                        break;
-                    case Postgres.ConnectionStatus.BAD:
-                        err_msg = active_db.get_error_message ();
-                        break;
-                    default:
-                        debug ("Programming error: %s not handled", status.to_string ());
-                        assert_not_reached ();
-                    }
-
-
                     Idle.add ((owned) callback);
                 };
 
@@ -93,24 +78,37 @@ namespace Psequel {
 
             // Wait for background thread to schedule our callback
             yield;
-
-            if (err_msg != null) {
-                throw new PsequelError.CONNECTION_ERROR (err_msg);
-            }
+            TimePerf.end ();
+            check_connection_status ();
         }
 
         private async Table exec_query (string query) throws PsequelError {
             var result = yield exec_query_internal (query);
 
             // check query status
-            check_status (result);
+            check_query_status (result);
 
             var table = new Table ((owned) result);
 
             return table;
         }
 
-        private void check_status (Result result) throws PsequelError {
+        private void check_connection_status () throws PsequelError {
+            var status = active_db.get_status ();
+            switch (status) {
+            case Postgres.ConnectionStatus.OK:
+                // Success
+                break;
+            case Postgres.ConnectionStatus.BAD:
+                var err_msg = active_db.get_error_message ();
+                throw new PsequelError.CONNECTION_ERROR (err_msg);
+            default:
+                debug ("Programming error: %s not handled", status.to_string ());
+                assert_not_reached ();
+            }
+        }
+
+        private void check_query_status (Result result) throws PsequelError {
 
             var status = result.get_status ();
 
@@ -130,17 +128,16 @@ namespace Psequel {
 
         private async Result exec_query_internal (string query) throws PsequelError {
 
+            debug ("Exec: %s", query);
+            TimePerf.begin ();
+
             // Boilerplate
             SourceFunc callback = exec_query_internal.callback;
             Result result = null;
             try {
                 ThreadFunc<void> run = () => {
                     // Important line.
-                    TimePerf.begin ();
-
-                    debug ("Exec: %s", query);
                     result = active_db.exec (query);
-                    TimePerf.end ();
                     Idle.add ((owned) callback);
                 };
 
@@ -153,15 +150,15 @@ namespace Psequel {
             }
 
             yield;
+            TimePerf.end ();
 
             return (owned) result;
         }
 
-
         private async Result exec_query_params_internal (string query, ArrayList<Variant> params) throws PsequelError {
 
             int n_params = params.size;
-            string [] values = new string[n_params];
+            string[] values = new string[n_params];
 
             // TODO: fixme.
             for (int i = 0; i < n_params; i++) {
@@ -179,15 +176,15 @@ namespace Psequel {
                 }
             }
 
+            debug ("Exec Param: %s", query);
+            TimePerf.begin ();
+
             // Boilerplate
             SourceFunc callback = exec_query_params_internal.callback;
             Result result = null;
             try {
                 ThreadFunc<void> run = () => {
                     // Important line.
-                    TimePerf.begin ();
-
-                    debug ("Exec: %s", query);
                     result = active_db.exec_params (query, n_params, null, values, null, null, 0);
                     Idle.add ((owned) callback);
                 };
@@ -201,6 +198,7 @@ namespace Psequel {
             }
 
             yield;
+            TimePerf.end ();
 
             return (owned) result;
         }
