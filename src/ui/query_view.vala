@@ -35,17 +35,7 @@ namespace Psequel {
 
             signals.database_connected.connect (() => {
                 debug ("Handle database_connected.");
-                reload_schema.begin ((obj, res) => {
-                    try {
-                        reload_schema.end (res);
-
-                        // Emit table list change after load schema
-                        signals.table_list_changed ();
-                    } catch (PsequelError err) {
-                        // TODO: create error dialog every where it can happen.
-                        assert_not_reached ();
-                    }
-                });
+                reload_schema.begin ();
             });
         }
 
@@ -110,7 +100,7 @@ namespace Psequel {
 
         private async void reload_tables () throws PsequelError {
 
-            var cur_schema = schema.get_active_text ();
+            var cur_schema = schema.get_active_text () ?? "public";
 
             // debug (cur_schema.to_string ());
 
