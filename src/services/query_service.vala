@@ -15,8 +15,20 @@ namespace Psequel {
             this.background = background;
         }
 
+        public async Table db_schemas () throws PsequelError {
+            var stmt = "select schema_name from information_schema.schemata;";
+
+            var res = yield exec_query (stmt);
+
+            return res;
+        }
+
         public async Table db_tablenames (string schema = "public") throws PsequelError {
-            string stmt = "select tablename from pg_tables where schemaname='public';";
+
+            var builder = new StringBuilder ("select tablename from pg_tables where schemaname=");
+            builder.append (@"\'$schema\';");
+
+            string stmt = builder.free_and_steal ();
             var res = yield exec_query_internal (stmt);
 
             var table = new Table ((owned) res);
@@ -134,6 +146,54 @@ namespace Psequel {
 
                 // Important line.
                 var worker = new Worker ("exec query", run);
+                background.add (worker);
+            } catch (ThreadError err) {
+                debug (err.message);
+                assert_not_reached ();
+            }
+
+            yield;
+
+            return (owned) result;
+        }
+
+
+        private async Result exec_query_params_internal (string query, ArrayList<Variant> params) throws PsequelError {
+
+            int n_params = params.size;
+            string [] values = new string[n_params];
+
+            // TODO: fixme.
+            for (int i = 0; i < n_params; i++) {
+                if (params[i].get_type () == VariantType.STRING) {
+                    values[i] = params[i].get_string ();
+                } else if (params[i].get_type () == VariantType.INT32) {
+                    values[i] = params[i].get_int32 ().to_string (int32.FORMAT);
+                } else if (params[i].get_type () == VariantType.BOOLEAN) {
+                    values[i] = params[i].get_boolean ().to_string ();
+                } else if (params[i].get_type () == VariantType.DOUBLE) {
+                    values[i] = params[i].get_string ().to_string ();
+                } else {
+                    debug ("Programming error, got %s", params[i].get_type_string ());
+                    assert_not_reached ();
+                }
+            }
+
+            // Boilerplate
+            SourceFunc callback = exec_query_params_internal.callback;
+            Result result = null;
+            try {
+                ThreadFunc<void> run = () => {
+                    // Important line.
+                    TimePerf.begin ();
+
+                    debug ("Exec: %s", query);
+                    result = active_db.exec_params (query, n_params, null, values, null, null, 0);
+                    Idle.add ((owned) callback);
+                };
+
+                // Important line.
+                var worker = new Worker ("exec query params", run);
                 background.add (worker);
             } catch (ThreadError err) {
                 debug (err.message);

@@ -75,8 +75,8 @@ namespace Psequel {
                     btn.sensitive = true;
                     query_service.connect_db_async.end (res);
 
-                    debug ("Emit table_list_changed");
-                    signals.table_list_changed ();
+                    debug ("Emit database_connected");
+                    signals.database_connected ();
 
                     var window = (Window) ResourceManager.instance ().app.get_active_window ();
                     window.navigate_to ("query-view");

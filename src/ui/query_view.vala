@@ -27,9 +27,25 @@ namespace Psequel {
             this.model = new Gtk.FilterListModel (table_names, filter);
             this.table_list.bind_model (model, table_row_factory);
 
+
             signals.table_list_changed.connect (() => {
                 debug ("Handle table_list_changed.");
                 reload_tables.begin ();
+            });
+
+            signals.database_connected.connect (() => {
+                debug ("Handle database_connected.");
+                reload_schema.begin ((obj, res) => {
+                    try {
+                        reload_schema.end (res);
+
+                        // Emit table list change after load schema
+                        signals.table_list_changed ();
+                    } catch (PsequelError err) {
+                        // TODO: create error dialog every where it can happen.
+                        assert_not_reached ();
+                    }
+                });
             });
         }
 
@@ -60,23 +76,43 @@ namespace Psequel {
             }
         }
 
+        [GtkCallback]
+        private void schema_changed (Gtk.ComboBox box) {
+            signals.table_list_changed ();
+        }
+
         private bool search_filter_func (Object item) {
             assert (item is Table.Row);
-
-            debug ("Me");
 
             var row = item as Table.Row;
             var table_name = row.get (0);
             var search_text = search_entry.text;
 
-            debug ("%s, %s", table_name, search_text);
-
             return table_name.contains (search_text);
+        }
+
+        private async void reload_schema () throws PsequelError {
+
+            var relations = yield query_service.db_schemas ();
+
+            foreach (var row in relations) {
+                var smname = row[0];
+                if (smname == "public") {
+                    schema.prepend_text (smname);
+                    continue;
+                }
+                schema.append_text (smname);
+            }
+
+            // Select public as default.
+            schema.set_active (0);
         }
 
         private async void reload_tables () throws PsequelError {
 
-            var cur_schema = (string) schema.selected_item;
+            var cur_schema = schema.get_active_text ();
+
+            // debug (cur_schema.to_string ());
 
             var relations = yield query_service.db_tablenames (cur_schema);
 
@@ -113,6 +149,6 @@ namespace Psequel {
         private unowned Gtk.SearchEntry search_entry;
 
         [GtkChild]
-        private unowned Gtk.DropDown schema;
+        private unowned Gtk.ComboBoxText schema;
     }
 }
