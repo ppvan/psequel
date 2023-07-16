@@ -2559,8 +2559,8 @@ existing classes or even new classes with specific responsibilities.</val>
 <ref refid="5bf3a832-1e60-11ee-95d6-11100a297891"/>
 <ref refid="8299b046-1e60-11ee-8f0e-11100a297891"/>
 <ref refid="a4a67308-1e60-11ee-b848-11100a297891"/>
-<ref refid="10c63e73-1e61-11ee-a7d8-11100a297891"/>
 <ref refid="a9d5ce46-1e60-11ee-a4a9-11100a297891"/>
+<ref refid="10c63e73-1e61-11ee-a7d8-11100a297891"/>
 <ref refid="357bc6b9-1e61-11ee-b029-11100a297891"/>
 <ref refid="6cb27161-1e61-11ee-9bf5-11100a297891"/>
 <ref refid="7d41ff14-1e61-11ee-b4d5-11100a297891"/>
@@ -2761,7 +2761,7 @@ existing classes or even new classes with specific responsibilities.</val>
 </UseCase>
 <UseCaseItem id="43ba31a0-1e60-11ee-8d32-11100a297891">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 619.5589192708336, 236.00681541981967)</val>
+<val>(1.0, 0.0, 0.0, 1.0, 619.5589192708335, 236.00681541981967)</val>
 </matrix>
 <top-left>
 <val>(0.0, 0.0)</val>
@@ -2775,6 +2775,9 @@ existing classes or even new classes with specific responsibilities.</val>
 <diagram>
 <ref refid="e94625ec-1e5f-11ee-a385-11100a297891"/>
 </diagram>
+<note>
+<val>done</val>
+</note>
 <subject>
 <ref refid="43b9d367-1e60-11ee-97d1-11100a297891"/>
 </subject>
@@ -3456,7 +3459,7 @@ existing classes or even new classes with specific responsibilities.</val>
 </UseCase>
 <UseCaseItem id="6cb27161-1e61-11ee-9bf5-11100a297891">
 <matrix>
-<val>(1.0, 0.0, 0.0, 1.0, 90.46956221262622, 433.6946614583334)</val>
+<val>(1.0, 0.0, 0.0, 1.0, 90.46956221262623, 433.6946614583334)</val>
 </matrix>
 <top-left>
 <val>(-40.335292816162124, -26.81317647298181)</val>
@@ -3928,6 +3931,10 @@ existing classes or even new classes with specific responsibilities.</val>
 <diagram>
 <ref refid="e94625ec-1e5f-11ee-a385-11100a297891"/>
 </diagram>
+<note>
+<val>done
+</val>
+</note>
 <subject>
 <ref refid="f5a534c3-1e64-11ee-8c86-11100a297891"/>
 </subject>
