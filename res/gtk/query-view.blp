@@ -99,10 +99,11 @@ template $PsequelQueryView : Adw.Bin {
                     margin-bottom: 4;
                     margin-end: 8;
                     
-                    Button {
+                    Button logout {
                         styles ["flat"]
                         icon-name: "step-out-symbolic";
-                        tooltip-text: "Back to login";
+                        tooltip-text: "Logout";
+                        clicked => $on_logout_clicked();
                     }
                     
                     Label {

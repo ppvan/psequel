@@ -30,6 +30,14 @@ namespace Psequel {
             reload_tables.begin ();
         }
 
+        [GtkCallback]
+        private void on_logout_clicked () {
+
+            debug ("clicked");
+            var window = (Window) ResourceManager.instance ().app.get_active_window ();
+            window.navigate_to ("connection-view");
+        }
+
         private async void reload_tables () throws PsequelError {
 
             var cur_schema = (string) schema.selected_item;
@@ -38,7 +46,6 @@ namespace Psequel {
 
             table_names.clear ();
             foreach (var item in relations) {
-                debug (item.to_string ());
                 table_names.add (item);
             }
         }
@@ -65,6 +72,9 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.ListBox table_list;
+
+        [GtkChild]
+        private unowned Gtk.Button logout;
 
         [GtkChild]
         private unowned Gtk.DropDown schema;
