@@ -3,24 +3,21 @@ namespace Psequel {
      * Keep and give access to every service in application.
      * Must be initzalize before the UI class.
      */
-     public class ResourceManager : Object {
+    public class ResourceManager : Object {
+
+
+        /**
+         * Application specific signals.
+         */
+        public AppSignals signals;
 
         /**
          * Recent connections info in last sessions.
          */
         public ObservableArrayList<Connection> recent_connections { get; set; }
 
-        /**
-         * List of table in current schema.
-         */
-        public ObservableArrayList<Table.Row> table_list;
 
-        /**
-         * Emit when the table_list changed.
-         */
-        public signal void tables_changed ();
-
-        public QueryService query_service {get; set;}
+        public QueryService query_service { get; set; }
 
         public const int POOL_SIZE = 3;
         public ThreadPool<Worker> background;
@@ -31,14 +28,14 @@ namespace Psequel {
         public Settings settings { get; set; }
 
         /**
+         * List of table in current schema.
+         */
+        public ObservableArrayList<Table.Row> table_list;
+
+        /**
          * Application
          */
         public Application app { get; set; }
-
-        public string serialize_data {
-            get;
-            set;
-        }
 
 
         private static Once<ResourceManager> _instance;
@@ -66,7 +63,7 @@ namespace Psequel {
          */
         public void load_user_data () {
             debug ("Load user setting data");
-            //  log_structured ("[debug]", LogLevelFlags.LEVEL_DEBUG, "");
+            // log_structured ("[debug]", LogLevelFlags.LEVEL_DEBUG, "");
             var parser = new Json.Parser ();
             recent_connections = new ObservableArrayList<Connection> ();
 

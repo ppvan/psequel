@@ -6,6 +6,7 @@ namespace Psequel {
         BindingGroup binddings;
 
         private unowned QueryService query_service;
+        private unowned AppSignals signals;
 
         private Connection _conn;
         public Connection mapped_conn {
@@ -27,6 +28,7 @@ namespace Psequel {
         construct {
             // init service
             query_service = ResourceManager.instance ().query_service;
+            signals = ResourceManager.instance ().signals;
 
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
@@ -73,7 +75,8 @@ namespace Psequel {
                     btn.sensitive = true;
                     query_service.connect_db_async.end (res);
 
-                    ResourceManager.instance ().tables_changed ();
+                    debug ("Emit table_list_changed");
+                    signals.table_list_changed ();
 
                     var window = (Window) ResourceManager.instance ().app.get_active_window ();
                     window.navigate_to ("query-view");

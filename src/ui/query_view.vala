@@ -6,6 +6,7 @@ namespace Psequel {
     public class QueryView : Adw.Bin {
 
         private unowned QueryService query_service;
+        private unowned AppSignals signals;
 
 
         private ObservableArrayList<Table.Row> table_names;
@@ -16,18 +17,22 @@ namespace Psequel {
 
         construct {
             query_service = ResourceManager.instance ().query_service;
+            signals = ResourceManager.instance ().signals;
             table_names = new ObservableArrayList<Table.Row> ();
 
             table_list.bind_model (table_names, table_row_factory);
 
-            ResourceManager.instance ().tables_changed.connect (() => {
+            signals.table_list_changed.connect (() => {
+                debug ("Handle table_list_changed.");
                 reload_tables.begin ();
             });
         }
 
         [GtkCallback]
         private void on_reload_clicked () {
-            reload_tables.begin ();
+
+            debug ("Emit table_list_changed");
+            signals.table_list_changed ();
         }
 
         [GtkCallback]

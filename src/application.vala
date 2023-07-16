@@ -60,6 +60,7 @@ namespace Psequel {
 
                 query_service = new QueryService (background);
                 table_list = new ObservableArrayList<Table.Row> ();
+                signals = new AppSignals ();
 
                 load_user_data ();
             };

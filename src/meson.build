@@ -11,6 +11,7 @@ psequel_sources = [
     'models/table.vala',
     'models/utils.vala',
     'services/query_service.vala',
+    'services/signal.vala',
     'services/resource_manager.vala',
 ]
 
