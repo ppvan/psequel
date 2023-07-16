@@ -10,6 +10,7 @@ namespace Psequel {
 
 
         private ObservableArrayList<Table.Row> table_names;
+        private Gtk.FilterListModel model;
 
         public QueryView () {
             Object ();
@@ -18,9 +19,13 @@ namespace Psequel {
         construct {
             query_service = ResourceManager.instance ().query_service;
             signals = ResourceManager.instance ().signals;
+
+
             table_names = new ObservableArrayList<Table.Row> ();
 
-            table_list.bind_model (table_names, table_row_factory);
+            var filter = new Gtk.CustomFilter (search_filter_func);
+            this.model = new Gtk.FilterListModel (table_names, filter);
+            this.table_list.bind_model (model, table_row_factory);
 
             signals.table_list_changed.connect (() => {
                 debug ("Handle table_list_changed.");
@@ -38,9 +43,35 @@ namespace Psequel {
         [GtkCallback]
         private void on_logout_clicked () {
 
-            debug ("clicked");
             var window = (Window) ResourceManager.instance ().app.get_active_window ();
             window.navigate_to ("connection-view");
+        }
+
+        [GtkCallback]
+        private void on_search (Gtk.SearchEntry entry) {
+            debug (entry.text);
+            model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
+        }
+
+        [GtkCallback]
+        private void on_show_search (Gtk.ToggleButton btn) {
+            if (btn.active) {
+                search_entry.grab_focus ();
+            }
+        }
+
+        private bool search_filter_func (Object item) {
+            assert (item is Table.Row);
+
+            debug ("Me");
+
+            var row = item as Table.Row;
+            var table_name = row.get (0);
+            var search_text = search_entry.text;
+
+            debug ("%s, %s", table_name, search_text);
+
+            return table_name.contains (search_text);
         }
 
         private async void reload_tables () throws PsequelError {
@@ -79,7 +110,7 @@ namespace Psequel {
         private unowned Gtk.ListBox table_list;
 
         [GtkChild]
-        private unowned Gtk.Button logout;
+        private unowned Gtk.SearchEntry search_entry;
 
         [GtkChild]
         private unowned Gtk.DropDown schema;

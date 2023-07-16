@@ -64,10 +64,12 @@ template $PsequelQueryView : Adw.Bin {
                         styles ["spacer"]
                     }
                     
-                    ToggleButton adam {
+                    ToggleButton search_btn {
                         styles ["flat"]
                         tooltip-text: "Search tables";
                         icon-name: "loupe-large-symbolic";
+
+                        toggled => $on_show_search();
                     }
                 
                 }
@@ -76,12 +78,14 @@ template $PsequelQueryView : Adw.Bin {
 
                 Revealer {
                     transition-duration: 300;
-                    reveal-child: bind adam.active;
+                    reveal-child: bind search_btn.active;
                     styles ["background"]
-                    SearchEntry {
+                    SearchEntry search_entry {
                         placeholder-text: "Search Tables";
                         margin-start: 4;
                         margin-bottom: 4;
+
+                        search-changed => $on_search();
                     }
                 
                 }

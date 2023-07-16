@@ -49,6 +49,7 @@ namespace Psequel {
             var child = stack.get_child_by_name (view_name);
             assert_nonnull (child);
 
+            debug ("navigate_to %s", view_name);
             stack.visible_child = child;
         }
 
