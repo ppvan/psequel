@@ -90,28 +90,25 @@ template $PsequelQueryView : Adw.Bin {
                     vexpand: true;
                     ListBox table_list {
                         styles ["navigation-sidebar"]
-                        
-                        Label {
-                            label: "Item 1";
-                        }
-                        
-                        Label {
-                            label: "Item 2";
-                        }
-                        
-                        Label {
-                            label: "Item 3";
-                        }
-                        
-                        Label {
-                            label: "Item 4";
-                        }
                     }
                 
                 }
                 
                 Box {
                     spacing: 4;
+                    margin-bottom: 4;
+                    margin-end: 8;
+                    
+                    Button {
+                        styles ["flat"]
+                        icon-name: "step-out-symbolic";
+                        tooltip-text: "Back to login";
+                    }
+                    
+                    Label {
+                        hexpand: true;
+                    }
+                    
                     Button reload {
                         styles ["flat"]
                         icon-name: "refresh-large-symbolic";

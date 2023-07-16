@@ -17,5 +17,9 @@
     <file preprocess="xml-stripblanks" alias="terminal-symbolic.svg">gtk/icons/terminal-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="loupe-large-symbolic.svg">gtk/icons/loupe-large-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="refresh-large-symbolic.svg">gtk/icons/refresh-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="table-symbolic.svg">gtk/icons/table-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="columns-symbolic.svg">gtk/icons/columns-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="step-out-symbolic.svg">gtk/icons/step-out-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-into-box-symbolic.svg">gtk/icons/arrow-into-box-symbolic.svg</file>
   </gresource>
 </gresources>

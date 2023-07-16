@@ -46,6 +46,7 @@ namespace Psequel {
 
             // Load recent connections
             with (ResourceManager.instance ()) {
+                app = this;
                 settings = new Settings (this.application_id);
 
                 try {
@@ -58,8 +59,8 @@ namespace Psequel {
                 }
 
                 query_service = new QueryService (background);
+                table_list = new ObservableArrayList<Table.Row> ();
 
-                app = this;
                 load_user_data ();
             };
 

@@ -19,6 +19,10 @@ namespace Psequel {
             table_names = new ObservableArrayList<Table.Row> ();
 
             table_list.bind_model (table_names, table_row_factory);
+
+            ResourceManager.instance ().tables_changed.connect (() => {
+                reload_tables.begin ();
+            });
         }
 
         [GtkCallback]
@@ -46,13 +50,18 @@ namespace Psequel {
 
             var row = new Gtk.ListBoxRow ();
 
-            row.child = new Gtk.Label (row_data[0]);
+            var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 8);
+            var icon = new Gtk.Image ();
+            icon.icon_name = "table-symbolic";
+            var label = new Gtk.Label (row_data[0]);
+
+            box.append (icon);
+            box.append (label);
+
+            row.child = box;
 
             return row;
         }
-
-        [GtkChild]
-        private unowned Gtk.Button reload;
 
         [GtkChild]
         private unowned Gtk.ListBox table_list;

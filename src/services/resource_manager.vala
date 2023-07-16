@@ -10,6 +10,16 @@ namespace Psequel {
          */
         public ObservableArrayList<Connection> recent_connections { get; set; }
 
+        /**
+         * List of table in current schema.
+         */
+        public ObservableArrayList<Table.Row> table_list;
+
+        /**
+         * Emit when the table_list changed.
+         */
+        public signal void tables_changed ();
+
         public QueryService query_service {get; set;}
 
         public const int POOL_SIZE = 3;

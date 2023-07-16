@@ -73,8 +73,9 @@ namespace Psequel {
                     btn.sensitive = true;
                     query_service.connect_db_async.end (res);
 
-                    var window = (Window) ResourceManager.instance ().app.get_active_window ();
+                    ResourceManager.instance ().tables_changed ();
 
+                    var window = (Window) ResourceManager.instance ().app.get_active_window ();
                     window.navigate_to ("query-view");
 
                 } catch (PsequelError err) {

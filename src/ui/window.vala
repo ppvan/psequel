@@ -46,7 +46,10 @@ namespace Psequel {
          * Navigate to the stack view.
          */
         public void navigate_to (string view_name) {
-            stack.set_visible_child_name (view_name);
+            var child = stack.get_child_by_name (view_name);
+            assert_nonnull (child);
+
+            stack.visible_child = child;
         }
 
         [GtkChild]
