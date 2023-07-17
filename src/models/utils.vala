@@ -2,6 +2,8 @@ using Gee;
 
 namespace Psequel {
 
+    public delegate void Job ();
+
     public class ObservableArrayList<T>: ListModel, Object {
 
         private ArrayList<T> _data;
@@ -56,9 +58,9 @@ namespace Psequel {
 
     public class Worker {
         public string thread_name { private set; get; }
-        public ThreadFunc<void> task;
+        public Job task;
 
-        public Worker (string name, owned ThreadFunc<void> task) {
+        public Worker (string name, owned Job task) {
             this.thread_name = name;
             this.task = (owned)task;
         }

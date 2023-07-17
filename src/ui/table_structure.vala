@@ -29,10 +29,10 @@ namespace Psequel {
         }
 
         [GtkChild]
-        private Gtk.ColumnView columns;
+        private unowned Gtk.ColumnView columns;
         [GtkChild]
-        private Gtk.ColumnView indexes;
+        private unowned Gtk.ColumnView indexes;
         [GtkChild]
-        private Gtk.ColumnView foreign_key;
+        private unowned Gtk.ColumnView foreign_key;
     }
 }
