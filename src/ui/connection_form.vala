@@ -66,7 +66,7 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-            
+
             btn.sensitive = false;
             query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
                 try {
@@ -78,7 +78,6 @@ namespace Psequel {
 
                     var window = (Window) ResourceManager.instance ().app.get_active_window ();
                     window.navigate_to ("query-view");
-
                 } catch (PsequelError err) {
                     var dialog = create_err_dialog ("Connection error", err.message);
                     dialog.present ();

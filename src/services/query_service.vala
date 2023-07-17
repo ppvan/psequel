@@ -23,6 +23,26 @@ namespace Psequel {
             return res;
         }
 
+        public async Table db_table_info (string schema, string table_name) throws PsequelError {
+            string stmt = """
+            SELECT column_name AS "Column Name",
+            data_type AS "Type",
+            character_maximum_length AS "Length",
+            is_nullable AS "Nullable",
+            column_default AS "Default Value"
+
+            FROM information_schema.columns
+            WHERE table_schema = $1
+            AND table_name = $2;
+            """;
+
+            var params = new ArrayList<Variant> ();
+            params.add (new Variant.string (schema));
+            params.add (new Variant.string (table_name));
+
+            return yield exec_query_params (stmt, params);
+        }
+
         public async Table db_tablenames (string schema = "public") throws PsequelError {
 
             var builder = new StringBuilder ("select tablename from pg_tables where schemaname=");
@@ -82,8 +102,19 @@ namespace Psequel {
             check_connection_status ();
         }
 
-        private async Table exec_query (string query) throws PsequelError {
+        public async Table exec_query (string query) throws PsequelError {
             var result = yield exec_query_internal (query);
+
+            // check query status
+            check_query_status (result);
+
+            var table = new Table ((owned) result);
+
+            return table;
+        }
+
+        public async Table exec_query_params (string query, ArrayList<Variant> params) throws PsequelError {
+            var result = yield exec_query_params_internal (query, params);
 
             // check query status
             check_query_status (result);
@@ -160,18 +191,13 @@ namespace Psequel {
             int n_params = params.size;
             string[] values = new string[n_params];
 
-            // TODO: fixme.
             for (int i = 0; i < n_params; i++) {
-                if (params[i].get_type () == VariantType.STRING) {
+                if (params[i].is_of_type (VariantType.STRING)) {
                     values[i] = params[i].get_string ();
-                } else if (params[i].get_type () == VariantType.INT32) {
-                    values[i] = params[i].get_int32 ().to_string (int32.FORMAT);
-                } else if (params[i].get_type () == VariantType.BOOLEAN) {
-                    values[i] = params[i].get_boolean ().to_string ();
-                } else if (params[i].get_type () == VariantType.DOUBLE) {
-                    values[i] = params[i].get_string ().to_string ();
+                } else if (params[i].get_type ().is_basic ()) {
+                    values[i] = params[i].print (false);
                 } else {
-                    debug ("Programming error, got %s", params[i].get_type_string ());
+                    debug ("Programming error, got type '%s'", params[i].get_type_string ());
                     assert_not_reached ();
                 }
             }

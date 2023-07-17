@@ -81,8 +81,13 @@ namespace Psequel {
             }
 
             public string to_string () {
-                var row_data = data.fold<string> ((seed, item) => seed + item.dup () + ",", "");
-                return row_data;
+
+                var builder = new StringBuilder ("");
+                for (int i = 0; i < data.size; i++) {
+                    builder.append_printf ("%s\t\t", data[i]);
+                }
+
+                return builder.free_and_steal ();
             }
         }
 

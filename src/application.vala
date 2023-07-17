@@ -93,6 +93,7 @@ namespace Psequel {
             typeof (Psequel.ConnectionSidebar).ensure ();
             typeof (Psequel.ConnectionForm).ensure ();
             typeof (Psequel.QueryView).ensure ();
+            typeof (Psequel.TableStructure).ensure ();
         }
     }
 }

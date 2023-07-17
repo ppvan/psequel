@@ -1,0 +1,55 @@
+using Gtk 4.0;
+using Gio 2.0;
+using Adw 1;
+
+template $PsequelTableStructure : Gtk.Box {
+    orientation: vertical;
+    spacing: 4;
+    margin-start: 8;
+    margin-top: 12;
+    margin-bottom: 12;
+    
+    styles ["frame"]
+    
+    // width-request: 960;
+    // height-request: 800;
+
+    Label {
+        styles ["title-3"]
+        label: "Columns";
+        halign: start;
+    }
+    ColumnView columns {
+
+        show-column-separators: true;
+        show-row-separators: true;
+        vexpand: true;
+        styles ["frame"]
+    }
+    
+    Label {
+        styles ["title-3"]
+        label: "Indexes";
+        halign: start;
+    }
+    ColumnView indexes {
+
+        show-column-separators: true;
+        show-row-separators: true;
+        styles ["frame"]
+        vexpand: true;
+    }
+    
+    Label {
+        styles ["title-3"]
+        label: "Foreign Keys";
+        halign: start;
+    }
+    ColumnView foreign_key {
+
+        show-column-separators: true;
+        show-row-separators: true;
+        styles ["frame"]
+        vexpand: true;
+    }
+}
