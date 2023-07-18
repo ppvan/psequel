@@ -28,7 +28,7 @@ namespace Psequel {
 
         public GLib.Object? get_object (uint position) {
             int index = (int) position;
-            if (index > _data.size) {
+            if (index >= _data.size) {
                 return null;
             }
 

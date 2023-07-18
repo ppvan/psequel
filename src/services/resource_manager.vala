@@ -19,7 +19,8 @@ namespace Psequel {
 
         public QueryService query_service { get; set; }
 
-        public const int POOL_SIZE = 3;
+        //  Should not be > 1 because libpq can't create many query in 1 connection. 
+        public const int POOL_SIZE = 1;
         public ThreadPool<Worker> background;
 
         /**
