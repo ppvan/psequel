@@ -43,6 +43,20 @@ namespace Psequel {
             return yield exec_query_params (stmt, params);
         }
 
+        public async Table db_table_indexes (string schema, string table_name) throws PsequelError {
+            string stmt = """
+            SELECT indexname, indexdef FROM pg_indexes
+            WHERE schemaname = $1
+            AND tablename = $2;
+            """;
+
+            var params = new ArrayList<Variant> ();
+            params.add (new Variant.string (schema));
+            params.add (new Variant.string (table_name));
+
+            return yield exec_query_params (stmt, params);
+        }
+
         public async Table db_tablenames (string schema = "public") throws PsequelError {
 
             var builder = new StringBuilder ("select tablename from pg_tables where schemaname=");

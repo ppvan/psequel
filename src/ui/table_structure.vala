@@ -6,9 +6,10 @@ namespace Psequel {
         private AppSignals signals;
         private QueryService query_service;
 
-        private Table table;
-        private ObservableArrayList<Table.Row> data_model;
-        private Gtk.SingleSelection selection_model;
+        //  private Table table;
+        private ObservableArrayList<Table.Row> columns_model;
+        private ObservableArrayList<Table.Row> index_model;
+        // private Gtk.SingleSelection selection_model;
 
         public TableStructure () {
             Object ();
@@ -19,20 +20,17 @@ namespace Psequel {
             query_service = ResourceManager.instance ().query_service;
             signals = ResourceManager.instance ().signals;
 
+            columns_model = new ObservableArrayList<Table.Row> ();
+            index_model = new ObservableArrayList<Table.Row> ();
+
+
             signals.table_selected_changed.connect ((schema, tbname) => {
                 debug ("%s, %s", schema, tbname);
-
-                query_service.db_table_info.begin (schema, tbname, (obj, res) => {
-                    this.table = query_service.db_table_info.end (res);
-
-                    data_model.clear ();
-                    foreach (var row in table) {
-                        data_model.add (row);
-                    }
-                });
+                reload_table_columns.begin (schema, tbname);
+                reload_table_indexes.begin (schema, tbname);
             });
 
-            var titles = new string[] {
+            var columns_title = new string[] {
                 "Column Name",
                 "Type",
                 "Length",
@@ -40,29 +38,69 @@ namespace Psequel {
                 "Default Value"
             };
 
-            data_model = new ObservableArrayList<Table.Row> ();
+            var index_titles = new string[] {
+                "Index Name",
+                "Index Definition"
+            };
 
-            foreach (var title in titles) {
+            set_up_view (columns_title, columns_model, columns);
+            set_up_view (index_titles, index_model, indexes);
+        }
+
+        void set_up_view (string[] titles, ListModel model, Gtk.ColumnView view) {
+            for (int i = 0; i < titles.length; i++) {
                 var factory = new Gtk.SignalListItemFactory ();
+                factory.set_data<int> ("index", i);
 
                 factory.setup.connect ((_fact, _item) => {
                     var label = new Gtk.Label (null);
+                    label.halign = Gtk.Align.START;
+                    label.margin_start = 8;
                     _item.child = label;
                 });
 
                 factory.bind.connect ((_fact, _item) => {
                     var row = _item.item as Table.Row;
                     var label = _item.child as Gtk.Label;
-                    label.label = row.get_field (title) ?? "UNKNOWN";
+                    int index = _fact.get_data<int> ("index");
+                    label.label = row[index];
                 });
 
-                Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn (title, factory);
+                Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn (titles[i], factory);
                 column.set_expand (true);
-                columns.append_column (column);
+                view.append_column (column);
             }
 
-            selection_model = new Gtk.SingleSelection (data_model);
-            columns.set_model (selection_model);
+            var selection_model = new Gtk.SingleSelection (model);
+            view.set_model (selection_model);
+        }
+
+        private async void reload_table_columns (string schema, string tbname) {
+            try {
+                var relation = yield query_service.db_table_info (schema, tbname);
+                columns_model.clear ();
+                foreach (var row in relation) {
+                    columns_model.add (row);
+                }
+
+            } catch (PsequelError err) {
+                debug (err.message);
+            //  ResourceManager.instance ().app
+            }
+        }
+
+        private async void reload_table_indexes (string schema, string tbname) {
+            try {
+                var relation = yield query_service.db_table_info (schema, tbname);
+                index_model.clear ();
+                foreach (var row in relation) {
+                    index_model.add (row);
+                }
+
+            } catch (PsequelError err) {
+                debug (err.message);
+            //  ResourceManager.instance ().app
+            }
         }
 
         [GtkChild]
@@ -73,33 +111,4 @@ namespace Psequel {
         private unowned Gtk.ColumnView foreign_key;
     }
 
-    public class TableFactory : Object {
-        public Gtk.SignalListItemFactory data { get; private set; }
-
-
-        public TableFactory () {
-            Object ();
-        }
-
-        construct {
-            data = new Gtk.SignalListItemFactory ();
-            data.setup.connect (list_item_setup);
-            data.bind.connect (list_item_bind);
-        }
-
-        public void list_item_setup (Gtk.SignalListItemFactory fact, Gtk.ListItem item) {
-            var switch_ = new Gtk.Switch ();
-            item.set_child (switch_);
-
-            debug ("setup");
-        }
-
-        public void list_item_bind (Gtk.SignalListItemFactory fact, Gtk.ListItem item) {
-            var row = item.item as Table.Row;
-            // var label = item.child as Gtk.Label;
-            // label.set_label ("Ahihi");
-
-            // debug ("bind: %s", label.label);
-        }
-    }
 }
