@@ -61,6 +61,23 @@ namespace Psequel {
             signals.table_list_changed ();
         }
 
+
+        [GtkCallback]
+        private void table_selected () {
+            var row = table_list.get_selected_row ();
+
+            if (row == null) {
+                signals.table_selected_changed ("", "");
+            } else {
+                var cur_schema = schema.get_selected_item () as Gtk.StringObject;
+                assert_nonnull (cur_schema);
+
+                var label = row.child.get_last_child () as Gtk.Label;
+
+                debug ("Emit table_selected_changed");
+                signals.table_selected_changed (cur_schema.string, label.get_label ());
+            }
+        }
         /**
          * Filter table name base on seach entry.
          */
@@ -104,6 +121,7 @@ namespace Psequel {
 
             var relations = yield query_service.db_tablenames (cur_schema);
 
+            table_list.unselect_all ();
             table_names.clear ();
             foreach (var item in relations) {
                 table_names.add (item);

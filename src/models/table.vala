@@ -53,6 +53,7 @@ namespace Psequel {
             return data.get (index);
         }
 
+
         /**
          * Helper class for ease of use with Table. DO NOT use it outside of Table class.
          */
@@ -78,6 +79,16 @@ namespace Psequel {
 
             public new unowned string @get (int index) {
                 return data.get (index);
+            }
+
+            public unowned string? get_field (string name) {
+
+                int index = header.index_of (name);
+                if (index >= 0) {
+                    return @get (index);
+                }
+
+                return null;
             }
 
             public string to_string () {
@@ -107,6 +118,10 @@ namespace Psequel {
 
             public void add_field (string item) {
                 data.add (item);
+            }
+
+            public int index_of (string item) {
+                return data.index_of (item);
             }
 
             public new unowned string @get (int index) {

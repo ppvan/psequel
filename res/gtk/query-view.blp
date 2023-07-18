@@ -90,6 +90,7 @@ template $PsequelQueryView : Adw.Bin {
                     vexpand: true;
                     ListBox table_list {
                         styles ["navigation-sidebar"]
+                        selected-rows-changed => $table_selected();
                     }
                 
                 }
