@@ -9,7 +9,7 @@ namespace Psequel {
         private unowned AppSignals signals;
 
 
-        private ObservableArrayList<Table.Row> table_names;
+        private ObservableArrayList<Relation.Row> table_names;
 
         private Gtk.FilterListModel tablelist_model;
         private Gtk.StringList schema_model;
@@ -82,9 +82,9 @@ namespace Psequel {
          * Filter table name base on seach entry.
          */
         private bool search_filter_func (Object item) {
-            assert (item is Table.Row);
+            assert (item is Relation.Row);
 
-            var row = item as Table.Row;
+            var row = item as Relation.Row;
             var table_name = row.get (0);
             var search_text = search_entry.text;
 
@@ -133,7 +133,7 @@ namespace Psequel {
         /** Create row widget from query result.
          */
         private Gtk.ListBoxRow table_row_factory (Object obj) {
-            var row_data = obj as Table.Row;
+            var row_data = obj as Relation.Row;
 
             var row = new Gtk.ListBoxRow ();
 
@@ -151,7 +151,7 @@ namespace Psequel {
         }
 
         private void set_up_table_list () {
-            this.table_names = new ObservableArrayList<Table.Row> ();
+            this.table_names = new ObservableArrayList<Relation.Row> ();
 
             var filter = new Gtk.CustomFilter (search_filter_func);
             this.tablelist_model = new Gtk.FilterListModel (table_names, filter);

@@ -7,8 +7,8 @@ namespace Psequel {
         private QueryService query_service;
 
         //  private Table table;
-        private ObservableArrayList<Table.Row> columns_model;
-        private ObservableArrayList<Table.Row> index_model;
+        private ObservableArrayList<Relation.Row> columns_model;
+        private ObservableArrayList<Relation.Row> index_model;
         // private Gtk.SingleSelection selection_model;
 
         public TableStructure () {
@@ -20,8 +20,8 @@ namespace Psequel {
             query_service = ResourceManager.instance ().query_service;
             signals = ResourceManager.instance ().signals;
 
-            columns_model = new ObservableArrayList<Table.Row> ();
-            index_model = new ObservableArrayList<Table.Row> ();
+            columns_model = new ObservableArrayList<Relation.Row> ();
+            index_model = new ObservableArrayList<Relation.Row> ();
 
 
             signals.table_selected_changed.connect ((schema, tbname) => {
@@ -42,7 +42,7 @@ namespace Psequel {
                 "Index Name",
                 "Unique",
                 "Type",
-                "Columns",
+                //  "Columns",
             };
 
             set_up_view (columns_title, columns_model, columns);
@@ -62,7 +62,7 @@ namespace Psequel {
                 });
 
                 factory.bind.connect ((_fact, _item) => {
-                    var row = _item.item as Table.Row;
+                    var row = _item.item as Relation.Row;
                     var label = _item.child as Gtk.Label;
                     int index = _fact.get_data<int> ("index");
                     label.label = row[index];
@@ -80,6 +80,8 @@ namespace Psequel {
         private async void reload_table_columns (string schema, string tbname) {
             try {
                 var relation = yield query_service.db_table_info (schema, tbname);
+                warn_if_fail (relation.cols == columns.columns.get_n_items ());
+
                 columns_model.clear ();
                 foreach (var row in relation) {
                     columns_model.add (row);
@@ -94,6 +96,9 @@ namespace Psequel {
         private async void reload_table_indexes (string schema, string tbname) {
             try {
                 var relation = yield query_service.db_table_indexes (schema, tbname);
+
+                warn_if_fail (relation.cols == indexes.columns.get_n_items ());
+
                 index_model.clear ();
                 foreach (var row in relation) {
                     index_model.add (row);

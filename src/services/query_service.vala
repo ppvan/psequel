@@ -15,7 +15,7 @@ namespace Psequel {
             this.background = background;
         }
 
-        public async Table db_schemas () throws PsequelError {
+        public async Relation db_schemas () throws PsequelError {
             var stmt = "select schema_name from information_schema.schemata;";
 
             var res = yield exec_query (stmt);
@@ -23,7 +23,7 @@ namespace Psequel {
             return res;
         }
 
-        public async Table db_table_info (string schema, string table_name) throws PsequelError {
+        public async Relation db_table_info (string schema, string table_name) throws PsequelError {
             string stmt = """
             SELECT column_name AS "Column Name",
             data_type AS "Type",
@@ -43,7 +43,7 @@ namespace Psequel {
             return yield exec_query_params (stmt, params);
         }
 
-        public async Table db_table_indexes (string schema, string table_name) throws PsequelError {
+        public async Relation db_table_indexes (string schema, string table_name) throws PsequelError {
             string stmt = """
             SELECT indexname, indexdef FROM pg_indexes
             WHERE schemaname = $1
@@ -65,7 +65,7 @@ namespace Psequel {
             var raw_result = yield exec_query_params (stmt, params);
 
             var result = raw_result.transform (headers, (old_row) => {
-                var new_row = new Table.Row ();
+                var new_row = new Relation.Row ();
                 new_row.add_field (old_row[0]);
 
                 var indexdef = old_row[1];
@@ -93,7 +93,7 @@ namespace Psequel {
             return result;
         }
 
-        public async Table db_tablenames (string schema = "public") throws PsequelError {
+        public async Relation db_tablenames (string schema = "public") throws PsequelError {
 
             var builder = new StringBuilder ("select tablename from pg_tables where schemaname=");
             builder.append (@"\'$schema\';");
@@ -101,7 +101,7 @@ namespace Psequel {
             string stmt = builder.free_and_steal ();
             var res = yield exec_query_internal (stmt);
 
-            var table = new Table ((owned) res);
+            var table = new Relation ((owned) res);
 
             return table;
         }
@@ -143,24 +143,24 @@ namespace Psequel {
             }
         }
 
-        public async Table exec_query (string query) throws PsequelError {
+        public async Relation exec_query (string query) throws PsequelError {
             var result = yield exec_query_internal (query);
 
             // check query status
             check_query_status (result);
 
-            var table = new Table ((owned) result);
+            var table = new Relation ((owned) result);
 
             return table;
         }
 
-        public async Table exec_query_params (string query, ArrayList<Variant> params) throws PsequelError {
+        public async Relation exec_query_params (string query, ArrayList<Variant> params) throws PsequelError {
             var result = yield exec_query_params_internal (query, params);
 
             // check query status
             check_query_status (result);
 
-            var table = new Table ((owned) result);
+            var table = new Relation ((owned) result);
 
             return table;
         }

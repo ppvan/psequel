@@ -3,22 +3,22 @@ using Gee;
 
 namespace Psequel {
 
-    public delegate Table.Row TransFormsFunc (Table.Row row);
+    public delegate Relation.Row TransFormsFunc (Relation.Row row);
 
-    public class Table : Object {
+    public class Relation : Object {
 
         public int rows { get; private set; }
-        private int cols { get; private set; }
+        public int cols { get; private set; }
 
         private ArrayList<Row> data;
         private ArrayList<string> headers;
 
-        public Table (owned Result res) {
+        public Relation (owned Result res) {
             Object ();
             load_data ((owned) res);
         }
 
-        private Table.from_data (ArrayList<string> headers, ArrayList<Row> data) {
+        private Relation.from_data (ArrayList<string> headers, ArrayList<Row> data) {
             this.headers = headers;
             this.data = data;
             this.rows = data.size;
@@ -46,16 +46,16 @@ namespace Psequel {
             }
         }
 
-        public Table transform (ArrayList<string> new_headers, TransFormsFunc func) {
+        public Relation transform (ArrayList<string> new_headers, TransFormsFunc func) {
 
-            var new_rows = new ArrayList<Table.Row> ();
+            var new_rows = new ArrayList<Relation.Row> ();
 
             assert_nonnull (this.data);
             foreach (var row in this.data) {
                 new_rows.add (func (row));
             }
 
-            return new Table.from_data (new_headers, new_rows);
+            return new Relation.from_data (new_headers, new_rows);
         }
 
         public string to_string () {
