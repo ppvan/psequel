@@ -31,7 +31,7 @@ namespace Psequel {
         /**
          * List of table in current schema.
          */
-        public ObservableArrayList<Table.Row> table_list;
+        public ObservableArrayList<Relation.Row> table_list;
 
         /**
          * Application

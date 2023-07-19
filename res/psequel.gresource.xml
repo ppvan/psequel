@@ -22,5 +22,6 @@
     <file preprocess="xml-stripblanks" alias="columns-symbolic.svg">gtk/icons/columns-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="step-out-symbolic.svg">gtk/icons/step-out-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="arrow-into-box-symbolic.svg">gtk/icons/arrow-into-box-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="category-search-symbolic.svg">gtk/icons/category-search-symbolic.svg</file>
   </gresource>
 </gresources>

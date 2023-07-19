@@ -1,3 +1,7 @@
 .text-bold {
     font-size: 105%;
 }
+
+.big-icon image {
+    -gtk-icon-size: 20px;
+}

@@ -2,41 +2,60 @@ using Postgres;
 using Gee;
 
 namespace Psequel {
-    public class Table : Object {
 
-        // Keep references to result so data is not destroy.
-        private Result result;
+    public delegate Relation.Row TransFormsFunc (Relation.Row row);
+
+    public class Relation : Object {
+
         public int rows { get; private set; }
-        private int cols { get; private set; }
+        public int cols { get; private set; }
 
-        private Header header { get; private set; }
-        public ArrayList<Row> data;
+        private ArrayList<Row> data;
+        private ArrayList<string> headers;
 
-        public Table (owned Result res) {
+        public Relation (owned Result res) {
             Object ();
-            result = (owned) res;
-            load_data ();
+            load_data ((owned) res);
         }
 
-        private void load_data () {
+        private Relation.from_data (ArrayList<string> headers, ArrayList<Row> data) {
+            this.headers = headers;
+            this.data = data;
+            this.rows = data.size;
+            this.cols = headers.size;
+        }
+
+        private void load_data (owned Result result) {
             assert_nonnull (result);
 
             rows = result.get_n_tuples ();
             cols = result.get_n_fields ();
 
-            header = new Header ();
+            this.headers = new ArrayList<string> ();
             for (int i = 0; i < cols; i++) {
-                header.add_field (result.get_field_name (i));
+                headers.add (result.get_field_name (i));
             }
 
             this.data = new ArrayList<Row> ();
 
             for (int i = 0; i < rows; i++) {
-                data.add (new Row (header));
+                data.add (new Row ());
                 for (int j = 0; j < cols; j++) {
                     data[i].add_field (result.get_value (i, j));
                 }
             }
+        }
+
+        public Relation transform (ArrayList<string> new_headers, TransFormsFunc func) {
+
+            var new_rows = new ArrayList<Relation.Row> ();
+
+            assert_nonnull (this.data);
+            foreach (var row in this.data) {
+                new_rows.add (func (row));
+            }
+
+            return new Relation.from_data (new_headers, new_rows);
         }
 
         public string to_string () {
@@ -53,30 +72,39 @@ namespace Psequel {
             return data.get (index);
         }
 
+
         /**
          * Helper class for ease of use with Table. DO NOT use it outside of Table class.
          */
         public class Row : Object {
 
 
-            private ArrayList<unowned string> data;
-            private Header header;
+            private ArrayList<string> data;
 
             public int size {
                 get { return data.size; }
             }
 
-            internal Row (Header header) {
-                this.data = new ArrayList<unowned string> ();
-                this.header = header;
+            internal Row () {
+                this.data = new ArrayList<string> ();
             }
 
             public void add_field (string item) {
-                assert (data.size < header.size);
                 data.add (item);
             }
 
-            public new unowned string @get (int index) {
+            public void insert_field (int index, string item) {
+                data.insert (index, item);
+            }
+
+            public void remove_at (int index) {
+                assert (index < size);
+                assert (index >= 0);
+
+                data.remove_at (index);
+            }
+
+            public new string @get (int index) {
                 return data.get (index);
             }
 
@@ -88,34 +116,6 @@ namespace Psequel {
                 }
 
                 return builder.free_and_steal ();
-            }
-        }
-
-        /**
-         * Helper class for ease of use with Table. DO NOT use it outside of Table class.
-         */
-        public class Header : Object {
-            private ArrayList<unowned string> data;
-
-            public int size {
-                get { return data.size; }
-            }
-
-            internal Header () {
-                this.data = new ArrayList<unowned string> ();
-            }
-
-            public void add_field (string item) {
-                data.add (item);
-            }
-
-            public new unowned string @get (int index) {
-                return data.get (index);
-            }
-
-            public string to_string () {
-                var row_data = data.fold<string> ((seed, item) => seed + item.dup () + ",", "");
-                return row_data;
             }
         }
     }
