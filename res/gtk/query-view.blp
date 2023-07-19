@@ -175,18 +175,13 @@ template $PsequelQueryView : Adw.Bin {
                 
                 Box {
                     spacing: 4;
-                    margin-bottom: 4;
+                    margin-bottom: 8;
                     margin-end: 8;
                     
-                    Button logout {
+                    Button {
                         styles ["flat"]
-                        icon-name: "step-out-symbolic";
-                        tooltip-text: "Logout";
-                        clicked => $on_logout_clicked();
-                    }
-                    
-                    Label {
-                        hexpand: true;
+                        icon-name: "plus-large-symbolic";
+                        tooltip-text: "Create new table";
                     }
                     
                     Button reload {
@@ -197,12 +192,17 @@ template $PsequelQueryView : Adw.Bin {
                         clicked => $on_reload_clicked();
                     }
                     
-                    Button {
-                        styles ["flat"]
-                        icon-name: "plus-large-symbolic";
-                        tooltip-text: "Create new table";
+                    Label {
+                        hexpand: true;
                     }
-                    
+
+                    Button logout {
+                        styles ["flat"]
+                        icon-name: "step-out-symbolic";
+                        tooltip-text: "Logout";
+                        clicked => $on_logout_clicked();
+                    }
+
                 }
             }
 
@@ -235,8 +235,8 @@ template $PsequelQueryView : Adw.Bin {
                         name: "Data";
                         title: "Data";
                         icon-name: "object-rows-symbolic";
-                        child: Label {
-                            label: "Data";
+                        child: $PsequelTableData {
+                                
                         };
                     }
 

@@ -64,7 +64,6 @@ namespace Psequel {
                     debug ("Regex not match: %s", fk_def);
                     assert_not_reached ();
                 }
-                debug ("%s", new_row.to_string ());
 
                 return new_row;
             });

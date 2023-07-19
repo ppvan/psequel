@@ -7,6 +7,7 @@ psequel_sources = [
     'ui/window.vala',
     'ui/query_view.vala',
     'ui/table_structure.vala',
+    'ui/table_data.vala',
     'models/connection.vala',
     'models/schema.vala',
     'models/table.vala',

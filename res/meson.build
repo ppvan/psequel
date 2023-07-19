@@ -12,6 +12,7 @@ blueprints = custom_target('blueprints',
     'gtk/connection-form.blp',
     'gtk/query-view.blp',
     'gtk/table-structure.blp',
+    'gtk/table-data.blp',
   ),
   build_by_default: true,
 #   This does not run if you use an dot (.)

@@ -1,0 +1,75 @@
+using Gtk 4.0;
+
+using Adw 1;
+
+template $PsequelTableData : Gtk.Box {
+
+    width-request: 900;
+    height-request: 600;
+
+    orientation: vertical;
+    spacing: 4;
+    margin-start: 8;
+    margin-top: 8;
+    margin-end: 8;
+    margin-bottom: 8;
+    
+    Box {
+        spacing: 12;
+        margin-top: 8;
+        margin-bottom: 8;
+        Entry {
+            hexpand: true;
+            placeholder-text: "WHERE clause";
+        }
+
+        Button {
+            styles ["suggested-action"]
+            label: "Filter";
+            
+        }
+    }
+
+    ColumnView {
+        vexpand: true;
+    }
+
+
+    Box {
+        spacing: 8;
+        // height-request: 40;
+        Button {
+            styles ["flat"]
+            icon-name: "plus-large-symbolic";
+            tooltip-text: "Insert Row";
+        }
+        
+        Button {
+            styles ["flat"]
+            icon-name: "refresh-large-symbolic";
+            tooltip-text: "Reload Data";
+        }
+        
+        Separator {}
+        
+        Label {
+            label: "Rows 1 - 500";
+            hexpand: true;
+            halign: start;
+        }
+        
+        Separator {}
+        
+        Button {
+            styles ["flat"]
+            icon-name: "left-large-symbolic";
+            tooltip-text: "Last Page";
+        }
+        
+        Button {
+            styles ["flat"]
+            icon-name: "right-large-symbolic";
+            tooltip-text: "Next Page";
+        }
+    }
+}

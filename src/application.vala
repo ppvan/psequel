@@ -94,6 +94,7 @@ namespace Psequel {
             typeof (Psequel.ConnectionForm).ensure ();
             typeof (Psequel.QueryView).ensure ();
             typeof (Psequel.TableStructure).ensure ();
+            typeof (Psequel.TableData).ensure ();
         }
     }
 }
