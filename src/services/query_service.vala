@@ -54,10 +54,43 @@ namespace Psequel {
             params.add (new Variant.string (schema));
             params.add (new Variant.string (table_name));
 
-            var raw_result = yield exec_query_params (stmt, params);
-            
+            var headers = new ArrayList<string> ();
+            headers.add_all_array ({
+                "Index Name",
+                "Unique",
+                "Type",
+                "Columns",
+            });
 
-            return raw_result;
+            var raw_result = yield exec_query_params (stmt, params);
+
+            var result = raw_result.transform (headers, (old_row) => {
+                var new_row = new Table.Row ();
+                new_row.add_field (old_row[0]);
+
+                var indexdef = old_row[1];
+                if (indexdef.contains ("UNIQUE")) {
+                    new_row.add_field ("YES");
+                } else {
+                    new_row.add_field ("NO");
+                }
+
+                //  Match the index type and column from indexdef, group 1 is type, group 2 is the column list.
+                var regex = /USING (btree|hash|gist|spgist|gin|brin|[\w]+) \(([a-zA-Z1-9+\-*\/_, ()]+)\)/;
+                MatchInfo match_info;
+                if (regex.match (indexdef, 0, out match_info)) {
+
+                    new_row.add_field (match_info.fetch (1));
+                    new_row.add_field (match_info.fetch (2));
+                } else {
+                    debug ("Regex not match: %s", indexdef);
+                    assert_not_reached ();
+                }
+
+                return new_row;
+            });
+
+            return result;
         }
 
         public async Table db_tablenames (string schema = "public") throws PsequelError {

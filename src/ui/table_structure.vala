@@ -40,7 +40,9 @@ namespace Psequel {
 
             var index_titles = new string[] {
                 "Index Name",
-                "Index Definition"
+                "Unique",
+                "Type",
+                "Columns",
             };
 
             set_up_view (columns_title, columns_model, columns);
