@@ -54,7 +54,10 @@ namespace Psequel {
             params.add (new Variant.string (schema));
             params.add (new Variant.string (table_name));
 
-            return yield exec_query_params (stmt, params);
+            var raw_result = yield exec_query_params (stmt, params);
+            
+
+            return raw_result;
         }
 
         public async Table db_tablenames (string schema = "public") throws PsequelError {

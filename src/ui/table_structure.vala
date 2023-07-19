@@ -91,7 +91,7 @@ namespace Psequel {
 
         private async void reload_table_indexes (string schema, string tbname) {
             try {
-                var relation = yield query_service.db_table_info (schema, tbname);
+                var relation = yield query_service.db_table_indexes (schema, tbname);
                 index_model.clear ();
                 foreach (var row in relation) {
                     index_model.add (row);

@@ -4,21 +4,18 @@ using Gee;
 namespace Psequel {
     public class Table : Object {
 
-        // Keep references to result so data is not destroy.
-        private Result result;
         public int rows { get; private set; }
         private int cols { get; private set; }
 
         private Header header { get; private set; }
-        public ArrayList<Row> data;
+        private ArrayList<Row> data;
 
         public Table (owned Result res) {
             Object ();
-            result = (owned) res;
-            load_data ();
+            load_data ((owned) res);
         }
 
-        private void load_data () {
+        private void load_data (owned Result result) {
             assert_nonnull (result);
 
             rows = result.get_n_tuples ();
@@ -60,7 +57,7 @@ namespace Psequel {
         public class Row : Object {
 
 
-            private ArrayList<unowned string> data;
+            private ArrayList<string> data;
             private Header header;
 
             public int size {
@@ -68,7 +65,7 @@ namespace Psequel {
             }
 
             internal Row (Header header) {
-                this.data = new ArrayList<unowned string> ();
+                this.data = new ArrayList<string> ();
                 this.header = header;
             }
 
@@ -77,11 +74,11 @@ namespace Psequel {
                 data.add (item);
             }
 
-            public new unowned string @get (int index) {
+            public new string @get (int index) {
                 return data.get (index);
             }
 
-            public unowned string? get_field (string name) {
+            public string? get_field (string name) {
 
                 int index = header.index_of (name);
                 if (index >= 0) {
@@ -106,14 +103,14 @@ namespace Psequel {
          * Helper class for ease of use with Table. DO NOT use it outside of Table class.
          */
         public class Header : Object {
-            private ArrayList<unowned string> data;
+            private ArrayList<string> data;
 
             public int size {
                 get { return data.size; }
             }
 
             internal Header () {
-                this.data = new ArrayList<unowned string> ();
+                this.data = new ArrayList<string> ();
             }
 
             public void add_field (string item) {
@@ -124,7 +121,7 @@ namespace Psequel {
                 return data.index_of (item);
             }
 
-            public new unowned string @get (int index) {
+            public new string @get (int index) {
                 return data.get (index);
             }
 
