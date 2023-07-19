@@ -14,7 +14,7 @@ template $PsequelQueryView : Adw.Bin {
           
             Box {
                 orientation: vertical;
-                width-request: 280;
+                width-request: 300;
 
                 Box {
                     margin-start: 8;
@@ -40,59 +40,136 @@ template $PsequelQueryView : Adw.Bin {
                 
                 Separator {}
 
-                Box {
+                Adw.ViewSwitcher tables_views_switcher {
+
+                    height-request: 40;
                     margin-start: 8;
                     margin-end: 8;
-                    margin-top: 4;
-                    margin-bottom: 8;
-                
-                    Label {
-                        styles ["title-3"]
-                        margin-top: 8;
-                        margin-start: 4;
-                        halign: start;
-                        margin-bottom: 0;
-                        label: "Tables";
-                    }
-                    
-                    Separator {
-                        hexpand: true;
-                        styles ["spacer"]
-                    }
-                    
-                    ToggleButton search_btn {
-                        styles ["flat"]
-                        tooltip-text: "Search tables";
-                        icon-name: "loupe-large-symbolic";
-
-                        toggled => $on_show_search();
-                    }
-                
+                    margin-top: 8;
+                    // margin-bottom: 8;
+                    policy: wide;
+                    stack: sql_views;
                 }
-                
-                
 
-                Revealer {
-                    transition-duration: 300;
-                    reveal-child: bind search_btn.active;
-                    styles ["background"]
-                    SearchEntry search_entry {
-                        placeholder-text: "Search Tables";
-                        margin-start: 4;
-                        margin-bottom: 4;
-
-                        search-changed => $on_search();
-                    }
-                
-                }
-                
-                ScrolledWindow {
+                Adw.ViewStack sql_views {
+                    hexpand: true;
                     vexpand: true;
-                    ListBox table_list {
-                        styles ["navigation-sidebar"]
-                        selected-rows-changed => $table_selected();
+                    Adw.ViewStackPage {
+                        icon-name: "table-symbolic";
+
+                        child: Box {
+                            orientation: vertical;
+                            Box {
+                                margin-start: 8;
+                                margin-end: 8;
+                                margin-top: 4;
+                                margin-bottom: 8;
+                            
+                                Label {
+                                    styles ["title-3"]
+                                    margin-top: 8;
+                                    margin-start: 4;
+                                    halign: start;
+                                    margin-bottom: 0;
+                                    label: "Tables";
+                                }
+                                
+                                Separator {
+                                    hexpand: true;
+                                    styles ["spacer"]
+                                }
+                                
+                                ToggleButton search_btn {
+                                    styles ["flat"]
+                                    tooltip-text: "Search tables";
+                                    icon-name: "loupe-large-symbolic";
+
+                                    toggled => $on_show_search();
+                                }
+                            }
+
+                            Revealer {
+                                transition-duration: 300;
+                                reveal-child: bind search_btn.active;
+                                styles ["background"]
+                                SearchEntry search_table_entry {
+                                    placeholder-text: "Search Tables";
+                                    margin-start: 4;
+                                    margin-bottom: 4;
+
+                                    search-changed => $on_search();
+                                }
+                            
+                            }
+                            
+                            ScrolledWindow {
+                                vexpand: true;
+                                ListBox table_list {
+                                    styles ["navigation-sidebar"]
+                                    selected-rows-changed => $table_selected();
+                                }
+                            
+                            }
+                        };
                     }
-                
+
+                    Adw.ViewStackPage {
+                        icon-name: "category-search-symbolic";
+
+                        child: Box {
+                            orientation: vertical;
+                            Box {
+                                margin-start: 8;
+                                margin-end: 8;
+                                margin-top: 4;
+                                margin-bottom: 8;
+                            
+                                Label {
+                                    styles ["title-3"]
+                                    margin-top: 8;
+                                    margin-start: 4;
+                                    halign: start;
+                                    margin-bottom: 0;
+                                    label: "Views";
+                                }
+                                
+                                Separator {
+                                    hexpand: true;
+                                    styles ["spacer"]
+                                }
+                                
+                                ToggleButton search_views_btn {
+                                    styles ["flat"]
+                                    tooltip-text: "Search tables";
+                                    icon-name: "loupe-large-symbolic";
+
+                                    toggled => $on_show_view_search();
+                                }
+                            }
+
+                            Revealer {
+                                transition-duration: 300;
+                                reveal-child: bind search_views_btn.active;
+                                styles ["background"]
+                                SearchEntry search_views_entry {
+                                    placeholder-text: "Search Views";
+                                    margin-start: 4;
+                                    margin-bottom: 4;
+
+                                    search-changed => $on_view_search();
+                                }
+                            
+                            }
+                            
+                            ScrolledWindow {
+                                vexpand: true;
+                                ListBox views_list {
+                                    styles ["navigation-sidebar"]
+                                    selected-rows-changed => $view_selected();
+                                }
+                            }
+                        };
+                    }
                 }
                 
                 Box {

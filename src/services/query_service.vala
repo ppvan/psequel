@@ -157,6 +157,21 @@ namespace Psequel {
             return table;
         }
 
+        public async Relation db_views (string schema = "public") throws PsequelError {
+
+            string stmt = """
+            select table_name from INFORMATION_SCHEMA.views WHERE table_schema = $1;
+            """;
+            var params = new ArrayList<Variant> ();
+            params.add (new Variant.string (schema));
+
+            var res = yield exec_query_params_internal (stmt, params);
+
+            var table = new Relation ((owned) res);
+
+            return table;
+        }
+
         public async string db_version () throws PsequelError {
 
             string stmt = "SELECT version ();";

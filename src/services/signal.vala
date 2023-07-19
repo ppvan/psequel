@@ -9,6 +9,7 @@ namespace Psequel {
          * Emit when the table list changed.
          */
         public signal void table_list_changed ();
+        public signal void views_list_changed ();
 
 
         public signal void table_selected_changed (string schema, string table);

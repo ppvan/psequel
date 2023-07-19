@@ -10,8 +10,11 @@ namespace Psequel {
 
 
         private ObservableArrayList<Relation.Row> table_names;
+        private ObservableArrayList<Relation.Row> views_names;
+
 
         private Gtk.FilterListModel tablelist_model;
+        private Gtk.FilterListModel viewslist_model;
         private Gtk.StringList schema_model;
 
         public QueryView () {
@@ -21,9 +24,11 @@ namespace Psequel {
         construct {
             query_service = ResourceManager.instance ().query_service;
             signals = ResourceManager.instance ().signals;
+            // tables_views_switcher.get_
 
             set_up_table_list ();
             set_up_schema ();
+            set_up_views_list ();
             connect_signals ();
         }
 
@@ -48,9 +53,27 @@ namespace Psequel {
         }
 
         [GtkCallback]
+        private void on_view_search (Gtk.SearchEntry entry) {
+            debug ("Search views: %s", entry.text);
+            viewslist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
+        }
+
+        [GtkCallback]
+        private void view_selected () {
+            debug ("view selected.");
+        }
+
+        [GtkCallback]
         private void on_show_search (Gtk.ToggleButton btn) {
             if (btn.active) {
-                search_entry.grab_focus ();
+                search_table_entry.grab_focus ();
+            }
+        }
+
+        [GtkCallback]
+        private void on_show_view_search (Gtk.ToggleButton btn) {
+            if (btn.active) {
+                search_views_entry.grab_focus ();
             }
         }
 
@@ -59,6 +82,7 @@ namespace Psequel {
          */
         private void schema_changed () {
             signals.table_list_changed ();
+            signals.views_list_changed ();
         }
 
 
@@ -86,9 +110,22 @@ namespace Psequel {
 
             var row = item as Relation.Row;
             var table_name = row.get (0);
-            var search_text = search_entry.text;
+            var search_text = search_table_entry.text;
 
             return table_name.contains (search_text);
+        }
+
+        /**
+         * Filter table name base on seach entry.
+         */
+         private bool view_filter_func (Object item) {
+            assert (item is Relation.Row);
+
+            var row = item as Relation.Row;
+            var view_name = row.get (0);
+            var search_text = search_views_entry.text;
+
+            return view_name.contains (search_text);
         }
 
         /**
@@ -130,6 +167,21 @@ namespace Psequel {
             debug ("Tables list reloaded, got %d tables in schema %s", table_names.size, cur_schema);
         }
 
+        private async void reload_views () throws PsequelError {
+
+            var cur_schema = ((Gtk.StringObject) schema.selected_item).string ?? "public";
+
+            var relations = yield query_service.db_views (cur_schema);
+
+            views_list.unselect_all ();
+            views_names.clear ();
+            foreach (var item in relations) {
+                views_names.add (item);
+            }
+
+            debug ("Views list reloaded, got %d views in schema %s", table_names.size, cur_schema);
+        }
+
         /** Create row widget from query result.
          */
         private Gtk.ListBoxRow table_row_factory (Object obj) {
@@ -150,12 +202,38 @@ namespace Psequel {
             return row;
         }
 
+        private Gtk.ListBoxRow view_row_factory (Object obj) {
+            var row_data = obj as Relation.Row;
+
+            var row = new Gtk.ListBoxRow ();
+
+            var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 8);
+            var icon = new Gtk.Image ();
+            icon.icon_name = "category-search-symbolic";
+            var label = new Gtk.Label (row_data[0]);
+
+            box.append (icon);
+            box.append (label);
+
+            row.child = box;
+
+            return row;
+        }
+
         private void set_up_table_list () {
             this.table_names = new ObservableArrayList<Relation.Row> ();
 
             var filter = new Gtk.CustomFilter (search_filter_func);
             this.tablelist_model = new Gtk.FilterListModel (table_names, filter);
             this.table_list.bind_model (tablelist_model, table_row_factory);
+        }
+
+        private void set_up_views_list () {
+            this.views_names = new ObservableArrayList<Relation.Row> ();
+
+            var filter = new Gtk.CustomFilter (view_filter_func);
+            this.viewslist_model = new Gtk.FilterListModel (views_names, filter);
+            this.views_list.bind_model (viewslist_model, view_row_factory);
         }
 
         private void set_up_schema () {
@@ -167,6 +245,11 @@ namespace Psequel {
             signals.table_list_changed.connect (() => {
                 debug ("Handle table_list_changed.");
                 reload_tables.begin ();
+            });
+
+            signals.views_list_changed.connect (() => {
+                debug ("Handle views_list_changed.");
+                reload_views.begin ();
             });
 
             signals.database_connected.connect (() => {
@@ -181,7 +264,13 @@ namespace Psequel {
         private unowned Gtk.ListBox table_list;
 
         [GtkChild]
-        private unowned Gtk.SearchEntry search_entry;
+        private unowned Gtk.SearchEntry search_table_entry;
+
+        [GtkChild]
+        private unowned Gtk.ListBox views_list;
+
+        [GtkChild]
+        private unowned Gtk.SearchEntry search_views_entry;
 
         [GtkChild]
         private unowned Gtk.DropDown schema;
