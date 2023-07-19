@@ -9,6 +9,7 @@ namespace Psequel {
         //  private Table table;
         private ObservableArrayList<Relation.Row> columns_model;
         private ObservableArrayList<Relation.Row> index_model;
+        private ObservableArrayList<Relation.Row> fk_model;
         // private Gtk.SingleSelection selection_model;
 
         public TableStructure () {
@@ -22,12 +23,14 @@ namespace Psequel {
 
             columns_model = new ObservableArrayList<Relation.Row> ();
             index_model = new ObservableArrayList<Relation.Row> ();
+            fk_model = new ObservableArrayList<Relation.Row> ();
 
 
             signals.table_selected_changed.connect ((schema, tbname) => {
                 debug ("%s, %s", schema, tbname);
                 reload_table_columns.begin (schema, tbname);
                 reload_table_indexes.begin (schema, tbname);
+                reload_table_fk.begin (schema, tbname);
             });
 
             var columns_title = new string[] {
@@ -42,11 +45,21 @@ namespace Psequel {
                 "Index Name",
                 "Unique",
                 "Type",
-                //  "Columns",
+                "Columns",
+            };
+
+            var fk_titles = new string[] {
+                "Key Name",
+                "Columns",
+                "Foreign Table",
+                "Foreign Columns",
+                "On Update",
+                "On Delete",
             };
 
             set_up_view (columns_title, columns_model, columns);
             set_up_view (index_titles, index_model, indexes);
+            set_up_view (fk_titles, fk_model, foreign_key);
         }
 
         void set_up_view (string[] titles, ListModel model, Gtk.ColumnView view) {
@@ -80,7 +93,11 @@ namespace Psequel {
         private async void reload_table_columns (string schema, string tbname) {
             try {
                 var relation = yield query_service.db_table_info (schema, tbname);
-                warn_if_fail (relation.cols == columns.columns.get_n_items ());
+                
+                if (relation.cols != columns.columns.get_n_items ()) {
+                    debug ("Programming Error: Query result cols != view columns");
+                    assert_not_reached ();
+                }
 
                 columns_model.clear ();
                 foreach (var row in relation) {
@@ -97,11 +114,34 @@ namespace Psequel {
             try {
                 var relation = yield query_service.db_table_indexes (schema, tbname);
 
-                warn_if_fail (relation.cols == indexes.columns.get_n_items ());
+                if (relation.cols != indexes.columns.get_n_items ()) {
+                    debug ("Programming Error: Query result cols != view columns");
+                    assert_not_reached ();
+                }
 
                 index_model.clear ();
                 foreach (var row in relation) {
                     index_model.add (row);
+                }
+
+            } catch (PsequelError err) {
+                debug (err.message);
+            //  ResourceManager.instance ().app
+            }
+        }
+
+        private async void reload_table_fk (string schema, string tbname) {
+            try {
+                var relation = yield query_service.db_table_fk (schema, tbname);
+
+                if (relation.cols != foreign_key.columns.get_n_items ()) {
+                    debug ("Programming Error: Query result cols != view columns");
+                    assert_not_reached ();
+                }
+
+                fk_model.clear ();
+                foreach (var row in relation) {
+                    fk_model.add (row);
                 }
 
             } catch (PsequelError err) {

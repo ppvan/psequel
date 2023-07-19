@@ -23,6 +23,57 @@ namespace Psequel {
             return res;
         }
 
+        public async Relation db_table_fk (string schema, string table_name) throws PsequelError {
+            string stmt = """
+            SELECT conname, pg_catalog.pg_get_constraintdef(r.oid, true) as condef
+            FROM pg_catalog.pg_constraint r
+            WHERE r.conrelid = $1::regclass AND r.contype = 'f';
+            """;
+
+            var params = new ArrayList<Variant> ();
+            params.add (new Variant.string (@"$schema.$table_name"));
+
+            var headers = new ArrayList<string> ();
+            headers.add_all_array ({
+                "Key Name",
+                "Columns",
+                "Foreign Table",
+                "Foreign Columns",
+                "On Update",
+                "On Delete",
+            });
+
+            var raw = yield exec_query_params (stmt, params);
+            var result = raw.transform (headers, (old_row) => {
+                var new_row = new Relation.Row ();
+                new_row.add_field (old_row[0]);
+
+                var fk_def = old_row[1];
+
+                //  Match the index type and column from fk_def
+                var regex = /FOREIGN KEY \(([$a-zA-Z_, ]+)\) REFERENCES ([a-zA-Z_, ]+)\(([a-zA-Z_, ]+)\)( ON UPDATE (CASCADE))?( ON DELETE (RESTRICT))?/;
+                MatchInfo match_info;
+                if (regex.match (fk_def, 0, out match_info)) {
+
+                    new_row.add_field (match_info.fetch (1));
+                    new_row.add_field (match_info.fetch (2));
+                    new_row.add_field (match_info.fetch (3));
+                    new_row.add_field (match_info.fetch (5) == "" ? "NO ACTION" : match_info.fetch (5));
+                    new_row.add_field (match_info.fetch (7) == "" ? "NO ACTION" : match_info.fetch (7));
+                } else {
+                    debug ("Regex not match: %s", fk_def);
+                    assert_not_reached ();
+                }
+                debug ("%s", new_row.to_string ());
+
+                return new_row;
+            });
+
+
+            return result;
+
+        }
+
         public async Relation db_table_info (string schema, string table_name) throws PsequelError {
             string stmt = """
             SELECT column_name AS "Column Name",
