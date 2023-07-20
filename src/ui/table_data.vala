@@ -51,7 +51,7 @@ namespace Psequel {
 
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);
                 column.set_expand (true);
-                col.set_visible (false);
+                column.set_visible (false);
                 data_view.append_column (column);
 
                 var selection_model = new Gtk.SingleSelection (model);
