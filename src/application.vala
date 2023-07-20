@@ -51,7 +51,7 @@ namespace Psequel {
 
                 try {
                     background = new ThreadPool<Worker>.with_owned_data ((worker) => {
-                        worker.task ();
+                        worker.run ();
                     }, ResourceManager.POOL_SIZE, false);
                 } catch (ThreadError err) {
                     debug (err.message);

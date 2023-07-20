@@ -16,7 +16,10 @@ namespace Psequel {
         }
 
         public async Relation db_schemas () throws PsequelError {
-            var stmt = "select schema_name from information_schema.schemata;";
+            var stmt = """
+            SELECT schema_name FROM information_schema.schemata
+            WHERE schema_name NOT IN ('pg_catalog', 'information_schema');
+            """;
 
             var res = yield exec_query (stmt);
 

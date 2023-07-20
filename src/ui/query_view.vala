@@ -95,10 +95,10 @@ namespace Psequel {
                 var cur_schema = schema.get_selected_item () as Gtk.StringObject;
                 assert_nonnull (cur_schema);
 
-                var label = row.child.get_last_child () as Gtk.Label;
+                var tbname = table_names.get_item (row.get_index ()) as Relation.Row;
 
                 debug ("Emit table_selected_changed");
-                signals.table_selected_changed (cur_schema.string, label.get_label ());
+                signals.table_selected_changed (cur_schema.string, tbname[0]);
             }
         }
 
@@ -108,10 +108,10 @@ namespace Psequel {
             var cur_schema = schema.get_selected_item () as Gtk.StringObject;
             assert_nonnull (cur_schema);
 
-            var label = row.child.get_last_child () as Gtk.Label;
 
+            var tbname = table_names.get_item (row.get_index ()) as Relation.Row;
             debug ("Emit table_activated");
-            signals.table_activated (cur_schema.string, label.get_label ());
+            signals.table_activated (cur_schema.string, tbname[0]);
         }
 
         /**
@@ -158,7 +158,7 @@ namespace Psequel {
                 schema_model.append (item[0]);
             }
 
-            debug ("Schema loaded.");
+            debug ("Schema reloaded.");
         }
 
         /**
@@ -210,6 +210,7 @@ namespace Psequel {
             box.append (label);
 
             row.child = box;
+            row.tooltip_text = "Double click to load data";
 
             return row;
         }
@@ -269,6 +270,12 @@ namespace Psequel {
                 reload_schema.begin ();
             });
 
+            signals.table_activated.connect (() => {
+                debug ("handle table_activated");
+
+                stack.set_visible_child_name (Views.TABLE_DATA);
+            });
+
             schema.notify["selected"].connect (schema_changed);
         }
 
@@ -286,5 +293,8 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.DropDown schema;
+
+        [GtkChild]
+        private unowned Adw.ViewStack stack;
     }
 }

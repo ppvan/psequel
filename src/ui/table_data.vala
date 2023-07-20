@@ -66,36 +66,40 @@ namespace Psequel {
         }
 
         public async void load_data (string schema, string table_name) {
-            Relation relation = yield query_service.select (schema, table_name, 500);
 
-            // Show error model.
-            debug (relation.to_string ());
+            try {
+                Relation relation = yield query_service.select (schema, table_name, 500);
 
-            var columns = data_view.columns;
-            uint n = data_view.columns.get_n_items ();
-            for (uint i = 0; i < n; i++) {
-                var col = columns.get_item (i) as Gtk.ColumnViewColumn;
-                if (i >= relation.cols) {
-                    col.set_visible (false);
-                    continue;
+                // Show error model.
+                debug (relation.to_string ());
+
+                var columns = data_view.columns;
+                uint n = data_view.columns.get_n_items ();
+                for (uint i = 0; i < n; i++) {
+                    var col = columns.get_item (i) as Gtk.ColumnViewColumn;
+                    if (i >= relation.cols) {
+                        col.set_visible (false);
+                        continue;
+                    }
+
+
+                    col.set_title (relation.get_header ((int) i));
+                    col.set_visible (true);
                 }
 
+                TimePerf.begin ();
+                model.clear ();
+                foreach (var item in relation) {
+                    model.add (item);
+                }
 
-                col.set_title (relation.get_header ((int)i));
-                col.set_visible (true);
+                TimePerf.end ();
+            } catch (PsequelError.QUERY_FAIL err) {
+                create_dialog ("Query Fail", err.message).present ();
             }
-
-            TimePerf.begin ();
-            model.clear ();
-            foreach (var item in relation) {
-                model.add (item);
-            }
-
-            TimePerf.end ();
         }
 
         [GtkChild]
         private unowned Gtk.ColumnView data_view;
-
     }
 }

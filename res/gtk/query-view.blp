@@ -37,8 +37,7 @@ template $PsequelQueryView : Adw.Bin {
 
                     
                 }
-                
-                Separator {}
+
 
                 Adw.ViewSwitcher tables_views_switcher {
 
@@ -46,11 +45,13 @@ template $PsequelQueryView : Adw.Bin {
                     height-request: 40;
                     margin-start: 8;
                     margin-end: 8;
-                    margin-top: 8;
-                    // margin-bottom: 8;
+                    margin-top: 4;
+                    margin-bottom: 8;
                     policy: wide;
                     stack: sql_views;
                 }
+
+                Separator {}
 
                 Adw.ViewStack sql_views {
                     hexpand: true;
@@ -234,7 +235,7 @@ template $PsequelQueryView : Adw.Bin {
                     }
 
                     Adw.ViewStackPage {
-                        name: "Data";
+                        name: "data-view";
                         title: "Data";
                         icon-name: "object-rows-symbolic";
                         child: $PsequelTableData {
