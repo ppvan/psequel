@@ -22,14 +22,18 @@ namespace Psequel {
             model = new ObservableArrayList<Relation.Row> ();
             backup = new ArrayList<Gtk.ColumnViewColumn> ();
 
-            signals.table_activated.connect ((schema, tbname) => {
+            signals.table_activated.connect_after ((schema, tbname) => {
                 load_data.begin (schema, tbname);
+            });
+
+            signals.view_activated.connect_after ((schema, vname) => {
+                load_data.begin (schema, vname);
             });
 
             int created = 0;
             int binded = 0;
 
-            for (int i = 0; i < 13; i++) {
+            for (int i = 0; i < ResourceManager.MAX_COLUMNS; i++) {
                 var factory = new Gtk.SignalListItemFactory ();
                 factory.set_data<int> ("index", i);
 

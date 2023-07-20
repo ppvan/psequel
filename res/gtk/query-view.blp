@@ -144,7 +144,7 @@ template $PsequelQueryView : Adw.Bin {
                                 
                                 ToggleButton search_views_btn {
                                     styles ["flat"]
-                                    tooltip-text: "Search tables";
+                                    tooltip-text: "Search views";
                                     icon-name: "loupe-large-symbolic";
 
                                     toggled => $on_show_view_search();
@@ -170,6 +170,7 @@ template $PsequelQueryView : Adw.Bin {
                                 ListBox views_list {
                                     styles ["navigation-sidebar"]
                                     selected-rows-changed => $view_selected();
+                                    row-activated => $view_activated();
                                 }
                             }
                         };

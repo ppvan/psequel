@@ -114,6 +114,18 @@ namespace Psequel {
             signals.table_activated (cur_schema.string, tbname[0]);
         }
 
+        [GtkCallback]
+        private void view_activated (Gtk.ListBoxRow row) {
+
+            var cur_schema = schema.get_selected_item () as Gtk.StringObject;
+            assert_nonnull (cur_schema);
+
+
+            var vname = views_names.get_item (row.get_index ()) as Relation.Row;
+            debug ("Emit view_activated");
+            signals.view_activated (cur_schema.string, vname[0]);
+        }
+
         /**
          * Filter table name base on seach entry.
          */
