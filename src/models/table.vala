@@ -58,6 +58,14 @@ namespace Psequel {
             return new Relation.from_data (new_headers, new_rows);
         }
 
+        public string get_header (int index) {
+            if (index >= cols) {
+                return "";
+            }
+
+            return headers.get (index);
+        }
+
         public string to_string () {
             return @"Table ($rows x $cols)";
         }
@@ -104,7 +112,10 @@ namespace Psequel {
                 data.remove_at (index);
             }
 
-            public new string @get (int index) {
+            public new string? @get (int index) {
+                if (index >= size) {
+                    return null;
+                }
                 return data.get (index);
             }
 

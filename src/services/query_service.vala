@@ -23,6 +23,12 @@ namespace Psequel {
             return res;
         }
 
+        public async Relation select (string schema, string table_name, int limit = 500, string where_clause = "") throws PsequelError {
+            string stmt = @"SELECT * FROM $schema.$table_name $where_clause LIMIT $limit";
+
+            return yield exec_query (stmt);
+        }
+
         public async Relation db_table_fk (string schema, string table_name) throws PsequelError {
             string stmt = """
             SELECT conname, pg_catalog.pg_get_constraintdef(r.oid, true) as condef
