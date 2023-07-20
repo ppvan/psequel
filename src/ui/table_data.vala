@@ -22,14 +22,14 @@ namespace Psequel {
             model = new ObservableArrayList<Relation.Row> ();
             backup = new ArrayList<Gtk.ColumnViewColumn> ();
 
-            signals.table_selected_changed.connect ((schema, tbname) => {
+            signals.table_activated.connect ((schema, tbname) => {
                 load_data.begin (schema, tbname);
             });
 
             int created = 0;
             int binded = 0;
 
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 13; i++) {
                 var factory = new Gtk.SignalListItemFactory ();
                 factory.set_data<int> ("index", i);
 
@@ -39,8 +39,6 @@ namespace Psequel {
                     label.margin_start = 8;
                     _item.child = label;
                     created++;
-
-                    debug ("Create %d", created);
                 });
 
                 factory.bind.connect ((_fact, _item) => {
@@ -49,21 +47,11 @@ namespace Psequel {
                     int index = _fact.get_data<int> ("index");
                     label.label = row[index];
                     binded++;
-
-                    debug ("Bind %d", binded);
-                });
-
-                factory.unbind.connect ((_fact, _item) => {
-                    binded--;
-                });
-
-
-                factory.teardown.connect ((_fact, _item) => {
-                    created--;
                 });
 
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);
                 column.set_expand (true);
+                col.set_visible (false);
                 data_view.append_column (column);
 
                 var selection_model = new Gtk.SingleSelection (model);
@@ -72,19 +60,38 @@ namespace Psequel {
         }
 
 
+
         public void table_double_clicked () {
             debug ("Activated");
         }
 
         public async void load_data (string schema, string table_name) {
-            Relation relation = yield query_service.select (schema, table_name, 1000);
+            Relation relation = yield query_service.select (schema, table_name, 500);
 
+            // Show error model.
             debug (relation.to_string ());
 
+            var columns = data_view.columns;
+            uint n = data_view.columns.get_n_items ();
+            for (uint i = 0; i < n; i++) {
+                var col = columns.get_item (i) as Gtk.ColumnViewColumn;
+                if (i >= relation.cols) {
+                    col.set_visible (false);
+                    continue;
+                }
+
+
+                col.set_title (relation.get_header ((int)i));
+                col.set_visible (true);
+            }
+
+            TimePerf.begin ();
             model.clear ();
             foreach (var item in relation) {
                 model.add (item);
             }
+
+            TimePerf.end ();
         }
 
         [GtkChild]

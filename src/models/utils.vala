@@ -4,6 +4,27 @@ namespace Psequel {
 
     public delegate void Job ();
 
+    /* Model specialize for storeing query result. */
+    public class BinddingArray: ListModel, Object {
+        private Array<string> _data;
+
+        public BinddingArray (int capacity) {
+            _data = new Array<string>.sized (true, false, sizeof (string), capacity);
+        }
+
+        public GLib.Object? get_item (uint position) {
+            return (GLib.Object)_data.index (position);
+        }
+
+        public GLib.Type get_item_type () {
+            return Type.STRING;
+        }
+
+        public uint get_n_items () {
+            return _data.length;
+        }
+    }
+
     public class ObservableArrayList<T>: ListModel, Object {
 
         private ArrayList<T> _data;

@@ -85,7 +85,6 @@ namespace Psequel {
             signals.views_list_changed ();
         }
 
-
         [GtkCallback]
         private void table_selected () {
             var row = table_list.get_selected_row ();
@@ -102,6 +101,19 @@ namespace Psequel {
                 signals.table_selected_changed (cur_schema.string, label.get_label ());
             }
         }
+
+        [GtkCallback]
+        private void table_activated (Gtk.ListBoxRow row) {
+
+            var cur_schema = schema.get_selected_item () as Gtk.StringObject;
+            assert_nonnull (cur_schema);
+
+            var label = row.child.get_last_child () as Gtk.Label;
+
+            debug ("Emit table_activated");
+            signals.table_activated (cur_schema.string, label.get_label ());
+        }
+
         /**
          * Filter table name base on seach entry.
          */
@@ -118,7 +130,7 @@ namespace Psequel {
         /**
          * Filter table name base on seach entry.
          */
-         private bool view_filter_func (Object item) {
+        private bool view_filter_func (Object item) {
             assert (item is Relation.Row);
 
             var row = item as Relation.Row;

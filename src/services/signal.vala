@@ -13,6 +13,7 @@ namespace Psequel {
 
 
         public signal void table_selected_changed (string schema, string table);
+        public signal void table_activated (string schema, string table);
 
         public signal void database_connected ();
         /**
