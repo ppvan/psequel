@@ -288,6 +288,12 @@ namespace Psequel {
                 stack.set_visible_child_name (Views.TABLE_DATA);
             });
 
+            signals.view_activated.connect (() => {
+                debug ("handle table_activated");
+
+                stack.set_visible_child_name (Views.TABLE_DATA);
+            });
+
             schema.notify["selected"].connect (schema_changed);
         }
 

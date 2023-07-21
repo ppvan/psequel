@@ -20,6 +20,8 @@ template $PsequelTableStructure : Gtk.Box {
     }
     ScrolledWindow {
         ColumnView columns {
+
+            styles ["data-table"]
             show-column-separators: true;
             show-row-separators: true;
             vexpand: true;
@@ -35,6 +37,7 @@ template $PsequelTableStructure : Gtk.Box {
     ScrolledWindow {
         ColumnView indexes {
 
+            styles ["data-table"]
             show-column-separators: true;
             show-row-separators: true;
             vexpand: true;
@@ -50,6 +53,7 @@ template $PsequelTableStructure : Gtk.Box {
     ScrolledWindow {
         ColumnView foreign_key {
 
+            styles ["data-table"]
             show-column-separators: true;
             show-row-separators: true;
             vexpand: true;

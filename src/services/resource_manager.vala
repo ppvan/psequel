@@ -83,6 +83,7 @@ namespace Psequel {
                 });
             } catch (Error err) {
                 debug (err.message);
+                recent_connections.clear ();
             }
 
             debug ("User setting loaded");
