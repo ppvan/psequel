@@ -26,10 +26,17 @@ namespace Psequel {
             return res;
         }
 
-        public async Relation select (string schema, string table_name, int limit = 500, string where_clause = "") throws PsequelError {
-            string stmt = @"SELECT * FROM $schema.$table_name $where_clause LIMIT $limit";
+        public async Relation select (string schema, string table_name, int offset = 0, int limit = 500, string where_clause = "") throws PsequelError {
+            
+            if (where_clause == "") {
+                string stmt = @"SELECT * FROM $schema.$table_name LIMIT $limit OFFSET $offset";
+                return yield exec_query (stmt);
+            } else {
+                string stmt = @"SELECT * FROM $schema.$table_name WHERE $where_clause LIMIT $limit OFFSET $offset";
+                return yield exec_query (stmt);
+            }
 
-            return yield exec_query (stmt);
+
         }
 
         public async Relation db_table_fk (string schema, string table_name) throws PsequelError {

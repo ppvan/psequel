@@ -13,6 +13,13 @@ namespace Psequel {
 
         private Gtk.SortListModel sort_model;
 
+
+        public int query_limit { get; set; }
+
+        public string schema {get; private set; default = "public";}
+        public string tbname {get; private set;}
+        public int current_page { get; private set; default = 0; }
+
         public TableData () {
             Object ();
         }
@@ -20,19 +27,26 @@ namespace Psequel {
         construct {
             query_service = ResourceManager.instance ().query_service;
             signals = ResourceManager.instance ().signals;
+            var setting = ResourceManager.instance ().settings;
+            setting.bind ("query-limit", this, "query-limit", SettingsBindFlags.DEFAULT);
 
             model = new ObservableArrayList<Relation.Row> ();
             backup = new ArrayList<Gtk.ColumnViewColumn> ();
 
             signals.table_activated.connect_after ((schema, tbname) => {
+                this.schema = schema;
+                this.tbname = tbname;
+                this.filter_entry.set_text ("");
                 load_data.begin (schema, tbname);
             });
 
             signals.view_activated.connect_after ((schema, vname) => {
+                this.schema = schema;
+                this.tbname = tbname;
+                this.filter_entry.set_text ("");
                 load_data.begin (schema, vname);
             });
 
-            Gtk.Expression[] numbers = new Gtk.Expression[ResourceManager.MAX_COLUMNS];
 
             for (int i = 0; i < ResourceManager.MAX_COLUMNS; i++) {
                 var factory = new Gtk.SignalListItemFactory ();
@@ -60,23 +74,49 @@ namespace Psequel {
 
                 this.sort_model = new Gtk.SortListModel (model, null);
 
-                //  assert_nonnull (model);
+                // assert_nonnull (model);
 
                 var selection_model = new Gtk.SingleSelection (sort_model);
                 data_view.set_model (selection_model);
             }
         }
 
+        [GtkCallback]
+        private void filter_query (Gtk.Button btn) {
+            var where_clause = filter_entry.get_text ();
+            load_data.begin (schema, tbname, current_page, where_clause);
+        }
 
+        [GtkCallback]
+        private void on_entry_activated (Gtk.Entry entry) {
+            filter_btn.clicked ();
+        }
+
+
+        [GtkCallback]
+        private void load_next_page (Gtk.Button btn) {
+            load_data.begin (schema, tbname, ++current_page);
+        }
+
+        [GtkCallback]
+        private void load_previous_page (Gtk.Button btn) {
+            load_data.begin (schema, tbname, --current_page);
+        }
+
+        [GtkCallback]
+        private void reload_data (Gtk.Button btn) {
+            load_data.begin (schema, tbname, current_page);
+        }
 
         public void table_double_clicked () {
             debug ("Activated");
         }
 
-        public async void load_data (string schema, string table_name) {
+        public async void load_data (string schema, string table_name, int page = 0, string where = "") {
 
             try {
-                Relation relation = yield query_service.select (schema, table_name, 500);
+
+                Relation relation = yield query_service.select (schema, table_name, page * query_limit, query_limit, where);
 
                 // Show error model.
                 debug (relation.to_string ());
@@ -90,27 +130,27 @@ namespace Psequel {
                         continue;
                     }
 
-                    switch (relation.get_column_type ((int)i)) {
-                        case Type.BOOLEAN, Type.INT64, Type.FLOAT, Type.DOUBLE:
-                            var constexprs = new Gtk.ConstantExpression (Type.INT, i);
-                            var expresion = new Gtk.CClosureExpression (Type.INT64, null, { constexprs }, (Callback)get_col_by_index_int, null , null);
-        
-                            var sorter = new Gtk.NumericSorter (expresion);
-        
-                            col.set_sorter (sorter);
+                    switch (relation.get_column_type ((int) i)) {
+                    case Type.BOOLEAN, Type.INT64, Type.FLOAT, Type.DOUBLE:
+                        var constexprs = new Gtk.ConstantExpression (Type.INT, i);
+                        var expresion = new Gtk.CClosureExpression (Type.INT64, null, { constexprs }, (Callback) get_col_by_index_int, null, null);
+
+                        var sorter = new Gtk.NumericSorter (expresion);
+
+                        col.set_sorter (sorter);
                         break;
 
-                        default:
-                            var constexprs = new Gtk.ConstantExpression (Type.INT, i);
-                            var expresion = new Gtk.CClosureExpression (Type.STRING, null, { constexprs }, (Callback)get_col_by_index, null , null);
-        
-                            var sorter = new Gtk.StringSorter (expresion);
-        
-                            col.set_sorter (sorter);
+                    default:
+                        var constexprs = new Gtk.ConstantExpression (Type.INT, i);
+                        var expresion = new Gtk.CClosureExpression (Type.STRING, null, { constexprs }, (Callback) get_col_by_index, null, null);
+
+                        var sorter = new Gtk.StringSorter (expresion);
+
+                        col.set_sorter (sorter);
                         break;
                     }
 
-                    
+
                     col.set_title (relation.get_header ((int) i));
                     col.set_visible (true);
                 }
@@ -131,19 +171,21 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.ColumnView data_view;
+
+        [GtkChild]
+        private unowned Gtk.Entry filter_entry;
+
+        [GtkChild]
+        private unowned Gtk.Button filter_btn;
     }
 
     /*
      */
     public string get_col_by_index (Relation.Row row, int index) {
-        debug ("Access index: %d", index);
-
         return row[index];
     }
-    
-    public int64 get_col_by_index_int (Relation.Row row, int index) {
-        debug ("Access index: %d", index);
 
+    public int64 get_col_by_index_int (Relation.Row row, int index) {
         return int64.parse (row[index], 10);
     }
 }

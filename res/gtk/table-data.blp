@@ -18,15 +18,17 @@ template $PsequelTableData : Gtk.Box {
         spacing: 12;
         margin-top: 8;
         margin-bottom: 8;
-        Entry {
+        Entry filter_entry {
             hexpand: true;
             placeholder-text: "WHERE clause";
+            activate => $on_entry_activated();
         }
 
-        Button {
+        Button filter_btn {
             styles ["suggested-action"]
             label: "Filter";
             
+            clicked => $filter_query();
         }
     }
 
@@ -49,10 +51,11 @@ template $PsequelTableData : Gtk.Box {
             tooltip-text: "Insert Row";
         }
         
-        Button {
+        Button reload {
             styles ["flat"]
             icon-name: "refresh-large-symbolic";
             tooltip-text: "Reload Data";
+            clicked => $reload_data();
         }
         
         Separator {}
@@ -65,16 +68,18 @@ template $PsequelTableData : Gtk.Box {
         
         Separator {}
         
-        Button {
+        Button left_page {
             styles ["flat"]
             icon-name: "left-large-symbolic";
             tooltip-text: "Last Page";
+            clicked => $load_previous_page();
         }
         
-        Button {
+        Button right_page {
             styles ["flat"]
             icon-name: "right-large-symbolic";
             tooltip-text: "Next Page";
+            clicked => $load_next_page();
         }
     }
 }

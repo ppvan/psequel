@@ -68,6 +68,10 @@ namespace Psequel {
                     // timestamp
                     this.cols_type.add (Type.STRING);
                     break;
+                    case 1082:
+                    // date
+                    this.cols_type.add (Type.STRING);
+                    break;
 
                     default:
                         debug ("Programming errors, unhandled Oid: %u", (uint)result.get_field_type (i));
