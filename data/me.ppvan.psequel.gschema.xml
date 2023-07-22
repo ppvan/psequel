@@ -26,5 +26,13 @@
             </description>
         </key>
 
+        <key name="query-limit" type="i">
+            <default>200</default>
+            <summary>Select query limit</summary>
+            <description>
+                The limit of select query in the query, get 500 rows max for each query
+            </description>
+        </key>
+
 	</schema>
 </schemalist>

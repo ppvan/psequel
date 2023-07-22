@@ -37,8 +37,7 @@ template $PsequelQueryView : Adw.Bin {
 
                     
                 }
-                
-                Separator {}
+
 
                 Adw.ViewSwitcher tables_views_switcher {
 
@@ -46,11 +45,13 @@ template $PsequelQueryView : Adw.Bin {
                     height-request: 40;
                     margin-start: 8;
                     margin-end: 8;
-                    margin-top: 8;
-                    // margin-bottom: 8;
+                    margin-top: 4;
+                    margin-bottom: 8;
                     policy: wide;
                     stack: sql_views;
                 }
+
+                Separator {}
 
                 Adw.ViewStack sql_views {
                     hexpand: true;
@@ -108,6 +109,8 @@ template $PsequelQueryView : Adw.Bin {
                                 ListBox table_list {
                                     styles ["navigation-sidebar"]
                                     selected-rows-changed => $table_selected();
+                                    row-activated => $table_activated();
+                                    activate-on-single-click: false;
                                 }
                             
                             }
@@ -141,7 +144,7 @@ template $PsequelQueryView : Adw.Bin {
                                 
                                 ToggleButton search_views_btn {
                                     styles ["flat"]
-                                    tooltip-text: "Search tables";
+                                    tooltip-text: "Search views";
                                     icon-name: "loupe-large-symbolic";
 
                                     toggled => $on_show_view_search();
@@ -167,6 +170,7 @@ template $PsequelQueryView : Adw.Bin {
                                 ListBox views_list {
                                     styles ["navigation-sidebar"]
                                     selected-rows-changed => $view_selected();
+                                    row-activated => $view_activated();
                                 }
                             }
                         };
@@ -175,18 +179,13 @@ template $PsequelQueryView : Adw.Bin {
                 
                 Box {
                     spacing: 4;
-                    margin-bottom: 4;
+                    margin-bottom: 8;
                     margin-end: 8;
                     
-                    Button logout {
+                    Button {
                         styles ["flat"]
-                        icon-name: "step-out-symbolic";
-                        tooltip-text: "Logout";
-                        clicked => $on_logout_clicked();
-                    }
-                    
-                    Label {
-                        hexpand: true;
+                        icon-name: "plus-large-symbolic";
+                        tooltip-text: "Create new table";
                     }
                     
                     Button reload {
@@ -197,12 +196,17 @@ template $PsequelQueryView : Adw.Bin {
                         clicked => $on_reload_clicked();
                     }
                     
-                    Button {
-                        styles ["flat"]
-                        icon-name: "plus-large-symbolic";
-                        tooltip-text: "Create new table";
+                    Label {
+                        hexpand: true;
                     }
-                    
+
+                    Button logout {
+                        styles ["flat"]
+                        icon-name: "step-out-symbolic";
+                        tooltip-text: "Logout";
+                        clicked => $on_logout_clicked();
+                    }
+
                 }
             }
 
@@ -232,11 +236,11 @@ template $PsequelQueryView : Adw.Bin {
                     }
 
                     Adw.ViewStackPage {
-                        name: "Data";
+                        name: "data-view";
                         title: "Data";
                         icon-name: "object-rows-symbolic";
-                        child: Label {
-                            label: "Data";
+                        child: $PsequelTableData {
+                                
                         };
                     }
 

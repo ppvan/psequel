@@ -4,6 +4,37 @@ namespace Psequel {
 
     public delegate void Job ();
 
+    public Adw.MessageDialog create_dialog (string heading, string body) {
+        var window = ResourceManager.instance ().app.active_window;
+        var dialog = new Adw.MessageDialog (window, heading, body);
+
+        dialog.close_response = "okay";
+        dialog.add_response ("okay", "OK");
+
+        return dialog;
+    }
+
+    /* Model specialize for storeing query result. */
+    public class BinddingArray: ListModel, Object {
+        private Array<string> _data;
+
+        public BinddingArray (int capacity) {
+            _data = new Array<string>.sized (true, false, sizeof (string), capacity);
+        }
+
+        public GLib.Object? get_item (uint position) {
+            return (GLib.Object)_data.index (position);
+        }
+
+        public GLib.Type get_item_type () {
+            return Type.STRING;
+        }
+
+        public uint get_n_items () {
+            return _data.length;
+        }
+    }
+
     public class ObservableArrayList<T>: ListModel, Object {
 
         private ArrayList<T> _data;
@@ -64,6 +95,19 @@ namespace Psequel {
             this.thread_name = name;
             this.task = (owned)task;
         }
+
+        public void run () {
+
+            //  Thread.usleep ((ulong)1e6);
+            this.task ();
+        }
+    }
+
+    namespace Views {
+        public const string CONNECTION = "connection-view";
+        public const string QUERY = "query-view";
+        public const string TABLE_STRUCTURE = "structure-view";
+        public const string TABLE_DATA = "data-view";
     }
 
     public errordomain PsequelError {

@@ -77,7 +77,7 @@ namespace Psequel {
                     signals.database_connected ();
 
                     var window = (Window) ResourceManager.instance ().app.get_active_window ();
-                    window.navigate_to ("query-view");
+                    window.navigate_to (Views.QUERY);
                 } catch (PsequelError err) {
                     var dialog = create_err_dialog ("Connection error", err.message);
                     dialog.present ();

@@ -85,7 +85,6 @@ namespace Psequel {
             signals.views_list_changed ();
         }
 
-
         [GtkCallback]
         private void table_selected () {
             var row = table_list.get_selected_row ();
@@ -96,12 +95,37 @@ namespace Psequel {
                 var cur_schema = schema.get_selected_item () as Gtk.StringObject;
                 assert_nonnull (cur_schema);
 
-                var label = row.child.get_last_child () as Gtk.Label;
+                var tbname = table_names.get_item (row.get_index ()) as Relation.Row;
 
                 debug ("Emit table_selected_changed");
-                signals.table_selected_changed (cur_schema.string, label.get_label ());
+                signals.table_selected_changed (cur_schema.string, tbname[0]);
             }
         }
+
+        [GtkCallback]
+        private void table_activated (Gtk.ListBoxRow row) {
+
+            var cur_schema = schema.get_selected_item () as Gtk.StringObject;
+            assert_nonnull (cur_schema);
+
+
+            var tbname = table_names.get_item (row.get_index ()) as Relation.Row;
+            debug ("Emit table_activated");
+            signals.table_activated (cur_schema.string, tbname[0]);
+        }
+
+        [GtkCallback]
+        private void view_activated (Gtk.ListBoxRow row) {
+
+            var cur_schema = schema.get_selected_item () as Gtk.StringObject;
+            assert_nonnull (cur_schema);
+
+
+            var vname = views_names.get_item (row.get_index ()) as Relation.Row;
+            debug ("Emit view_activated");
+            signals.view_activated (cur_schema.string, vname[0]);
+        }
+
         /**
          * Filter table name base on seach entry.
          */
@@ -118,7 +142,7 @@ namespace Psequel {
         /**
          * Filter table name base on seach entry.
          */
-         private bool view_filter_func (Object item) {
+        private bool view_filter_func (Object item) {
             assert (item is Relation.Row);
 
             var row = item as Relation.Row;
@@ -146,7 +170,7 @@ namespace Psequel {
                 schema_model.append (item[0]);
             }
 
-            debug ("Schema loaded.");
+            debug ("Schema reloaded.");
         }
 
         /**
@@ -179,7 +203,7 @@ namespace Psequel {
                 views_names.add (item);
             }
 
-            debug ("Views list reloaded, got %d views in schema %s", table_names.size, cur_schema);
+            debug ("Views list reloaded, got %d views in schema %s", views_names.size, cur_schema);
         }
 
         /** Create row widget from query result.
@@ -198,6 +222,7 @@ namespace Psequel {
             box.append (label);
 
             row.child = box;
+            row.tooltip_text = "Double click to load data";
 
             return row;
         }
@@ -257,6 +282,18 @@ namespace Psequel {
                 reload_schema.begin ();
             });
 
+            signals.table_activated.connect (() => {
+                debug ("handle table_activated");
+
+                stack.set_visible_child_name (Views.TABLE_DATA);
+            });
+
+            signals.view_activated.connect (() => {
+                debug ("handle table_activated");
+
+                stack.set_visible_child_name (Views.TABLE_DATA);
+            });
+
             schema.notify["selected"].connect (schema_changed);
         }
 
@@ -274,5 +311,8 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.DropDown schema;
+
+        [GtkChild]
+        private unowned Adw.ViewStack stack;
     }
 }

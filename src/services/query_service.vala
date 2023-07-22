@@ -16,11 +16,27 @@ namespace Psequel {
         }
 
         public async Relation db_schemas () throws PsequelError {
-            var stmt = "select schema_name from information_schema.schemata;";
+            var stmt = """
+            SELECT schema_name FROM information_schema.schemata
+            WHERE schema_name NOT IN ('pg_catalog', 'information_schema');
+            """;
 
             var res = yield exec_query (stmt);
 
             return res;
+        }
+
+        public async Relation select (string schema, string table_name, int offset = 0, int limit = 500, string where_clause = "") throws PsequelError {
+            
+            if (where_clause == "") {
+                string stmt = @"SELECT * FROM $schema.$table_name LIMIT $limit OFFSET $offset";
+                return yield exec_query (stmt);
+            } else {
+                string stmt = @"SELECT * FROM $schema.$table_name WHERE $where_clause LIMIT $limit OFFSET $offset";
+                return yield exec_query (stmt);
+            }
+
+
         }
 
         public async Relation db_table_fk (string schema, string table_name) throws PsequelError {
@@ -64,7 +80,6 @@ namespace Psequel {
                     debug ("Regex not match: %s", fk_def);
                     assert_not_reached ();
                 }
-                debug ("%s", new_row.to_string ());
 
                 return new_row;
             });
