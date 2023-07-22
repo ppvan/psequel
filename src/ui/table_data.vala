@@ -52,13 +52,6 @@ namespace Psequel {
                     label.label = row[index];
                 });
 
-                // Focus point, just ignore every thing else.
-                
-
-                // Create a expression hold it
-                // expectation: MAX_COLUMNS obj is created
-                // actual: seems only one, print ("%p", expresion) looks the same
-                
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);
                 column.set_expand (true);
                 column.set_visible (false);
@@ -97,15 +90,27 @@ namespace Psequel {
                         continue;
                     }
 
-                    var constexprs = new Gtk.ConstantExpression (Type.INT, i);
-                    var expresion = new Gtk.CClosureExpression (Type.STRING, null, { constexprs }, (Callback)get_col_by_index, null , null);
+                    switch (relation.get_column_type ((int)i)) {
+                        case Type.BOOLEAN, Type.INT64, Type.FLOAT, Type.DOUBLE:
+                            var constexprs = new Gtk.ConstantExpression (Type.INT, i);
+                            var expresion = new Gtk.CClosureExpression (Type.INT64, null, { constexprs }, (Callback)get_col_by_index_int, null , null);
+        
+                            var sorter = new Gtk.NumericSorter (expresion);
+        
+                            col.set_sorter (sorter);
+                        break;
 
-                    // create sorter from expresion
-                    // expectation: when evaluate, func is called with i = ?
-                    // actual: always receive i = MAX_COLUMNS - 1.
-                    var sorter = new Gtk.StringSorter (expresion);
+                        default:
+                            var constexprs = new Gtk.ConstantExpression (Type.INT, i);
+                            var expresion = new Gtk.CClosureExpression (Type.STRING, null, { constexprs }, (Callback)get_col_by_index, null , null);
+        
+                            var sorter = new Gtk.StringSorter (expresion);
+        
+                            col.set_sorter (sorter);
+                        break;
+                    }
 
-                    col.set_sorter (sorter);
+                    
                     col.set_title (relation.get_header ((int) i));
                     col.set_visible (true);
                 }
@@ -136,4 +141,9 @@ namespace Psequel {
         return row[index];
     }
     
+    public int64 get_col_by_index_int (Relation.Row row, int index) {
+        debug ("Access index: %d", index);
+
+        return int64.parse (row[index], 10);
+    }
 }

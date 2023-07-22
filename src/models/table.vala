@@ -12,6 +12,7 @@ namespace Psequel {
 
         private ArrayList<Row> data;
         private ArrayList<string> headers;
+        private ArrayList<Type> cols_type;
 
         public Relation (owned Result res) {
             Object ();
@@ -23,6 +24,16 @@ namespace Psequel {
             this.data = data;
             this.rows = data.size;
             this.cols = headers.size;
+
+            this.cols_type = new ArrayList<Type> ();
+            // Fix me in the future
+            for (int i = 0; i < headers.size; i++) {
+                this.cols_type.add (Type.STRING);
+            }
+        }
+
+        public Type get_column_type (int index) {
+            return this.cols_type[index];
         }
 
         private void load_data (owned Result result) {
@@ -32,7 +43,39 @@ namespace Psequel {
             cols = result.get_n_fields ();
 
             this.headers = new ArrayList<string> ();
+            this.cols_type = new ArrayList<Type> ();
             for (int i = 0; i < cols; i++) {
+
+                // Oid, should have enum for value type in VAPI but no.
+                switch ((uint)result.get_field_type (i)) {
+                    case 20, 21, 23:
+                    // int
+                    this.cols_type.add (Type.INT64);
+                    break;
+                    case 16:
+                    // bool
+                    this.cols_type.add (Type.BOOLEAN);
+                    break;
+                    case 700, 701:
+                    // real
+                    this.cols_type.add (Type.DOUBLE);
+                    break;
+                    case 25, 1043, 18, 19, 1700:
+                    // string
+                    this.cols_type.add (Type.STRING);
+                    break;
+                    case 1114:
+                    // timestamp
+                    this.cols_type.add (Type.STRING);
+                    break;
+
+                    default:
+                        debug ("Programming errors, unhandled Oid: %u", (uint)result.get_field_type (i));
+                        this.cols_type.add (Type.STRING);
+                    break;
+                        //  assert_not_reached ();
+                }
+
                 headers.add (result.get_field_name (i));
             }
 
@@ -87,7 +130,6 @@ namespace Psequel {
          */
         public class Row : Object {
 
-            public string ahihi {get; set;}
 
             private ArrayList<string> data;
 
@@ -97,7 +139,6 @@ namespace Psequel {
 
             internal Row () {
                 this.data = new ArrayList<string> ();
-                ahihi = "Hello";
             }
 
             public void add_field (string item) {
