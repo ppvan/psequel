@@ -40,6 +40,7 @@ namespace Psequel {
 
             for (int i = 0; i < rows; i++) {
                 data.add (new Row ());
+
                 for (int j = 0; j < cols; j++) {
                     data[i].add_field (result.get_value (i, j));
                 }
@@ -86,6 +87,7 @@ namespace Psequel {
          */
         public class Row : Object {
 
+            public string ahihi {get; set;}
 
             private ArrayList<string> data;
 
@@ -95,6 +97,7 @@ namespace Psequel {
 
             internal Row () {
                 this.data = new ArrayList<string> ();
+                ahihi = "Hello";
             }
 
             public void add_field (string item) {

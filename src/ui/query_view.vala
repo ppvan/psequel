@@ -203,7 +203,7 @@ namespace Psequel {
                 views_names.add (item);
             }
 
-            debug ("Views list reloaded, got %d views in schema %s", table_names.size, cur_schema);
+            debug ("Views list reloaded, got %d views in schema %s", views_names.size, cur_schema);
         }
 
         /** Create row widget from query result.

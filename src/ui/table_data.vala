@@ -11,6 +11,8 @@ namespace Psequel {
 
         private ArrayList<Gtk.ColumnViewColumn> backup;
 
+        private Gtk.SortListModel sort_model;
+
         public TableData () {
             Object ();
         }
@@ -30,8 +32,7 @@ namespace Psequel {
                 load_data.begin (schema, vname);
             });
 
-            int created = 0;
-            int binded = 0;
+            Gtk.Expression[] numbers = new Gtk.Expression[ResourceManager.MAX_COLUMNS];
 
             for (int i = 0; i < ResourceManager.MAX_COLUMNS; i++) {
                 var factory = new Gtk.SignalListItemFactory ();
@@ -42,7 +43,6 @@ namespace Psequel {
                     label.halign = Gtk.Align.START;
                     label.margin_start = 8;
                     _item.child = label;
-                    created++;
                 });
 
                 factory.bind.connect ((_fact, _item) => {
@@ -50,15 +50,26 @@ namespace Psequel {
                     var label = _item.child as Gtk.Label;
                     int index = _fact.get_data<int> ("index");
                     label.label = row[index];
-                    binded++;
                 });
 
+                // Focus point, just ignore every thing else.
+                
+
+                // Create a expression hold it
+                // expectation: MAX_COLUMNS obj is created
+                // actual: seems only one, print ("%p", expresion) looks the same
+                
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);
                 column.set_expand (true);
                 column.set_visible (false);
+
                 data_view.append_column (column);
 
-                var selection_model = new Gtk.SingleSelection (model);
+                this.sort_model = new Gtk.SortListModel (model, null);
+
+                //  assert_nonnull (model);
+
+                var selection_model = new Gtk.SingleSelection (sort_model);
                 data_view.set_model (selection_model);
             }
         }
@@ -86,10 +97,20 @@ namespace Psequel {
                         continue;
                     }
 
+                    var constexprs = new Gtk.ConstantExpression (Type.INT, i);
+                    var expresion = new Gtk.CClosureExpression (Type.STRING, null, { constexprs }, (Callback)get_col_by_index, null , null);
 
+                    // create sorter from expresion
+                    // expectation: when evaluate, func is called with i = ?
+                    // actual: always receive i = MAX_COLUMNS - 1.
+                    var sorter = new Gtk.StringSorter (expresion);
+
+                    col.set_sorter (sorter);
                     col.set_title (relation.get_header ((int) i));
                     col.set_visible (true);
                 }
+
+                this.sort_model.set_sorter (data_view.get_sorter ());
 
                 TimePerf.begin ();
                 model.clear ();
@@ -106,4 +127,13 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.ColumnView data_view;
     }
+
+    /*
+     */
+    public string get_col_by_index (Relation.Row row, int index) {
+        debug ("Access index: %d", index);
+
+        return row[index];
+    }
+    
 }
