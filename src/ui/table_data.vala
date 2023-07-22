@@ -27,8 +27,23 @@ namespace Psequel {
         construct {
             query_service = ResourceManager.instance ().query_service;
             signals = ResourceManager.instance ().signals;
+
             var setting = ResourceManager.instance ().settings;
             setting.bind ("query-limit", this, "query-limit", SettingsBindFlags.DEFAULT);
+
+            this.bind_property ("current_page", status_label, "label", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
+                int curr_page = from.get_int ();
+                to.set_string (@"Rows $(curr_page * query_limit + 1) - $(query_limit * (curr_page + 1))");
+
+                return true;
+            });
+
+            this.bind_property ("current_page", left_page, "sensitive", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
+                int curr_page = from.get_int ();
+                to.set_boolean (curr_page > 0);
+
+                return true;
+            });
 
             model = new ObservableArrayList<Relation.Row> ();
             backup = new ArrayList<Gtk.ColumnViewColumn> ();
@@ -96,6 +111,8 @@ namespace Psequel {
         [GtkCallback]
         private void load_next_page (Gtk.Button btn) {
             load_data.begin (schema, tbname, ++current_page);
+
+            
         }
 
         [GtkCallback]
@@ -177,6 +194,15 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.Button filter_btn;
+
+        [GtkChild]
+        private unowned Gtk.Button left_page;
+
+        [GtkChild]
+        private unowned Gtk.Button right_page;
+
+        [GtkChild]
+        private unowned Gtk.Label status_label;
     }
 
     /*
