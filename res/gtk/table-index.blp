@@ -1,0 +1,14 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PsequelTableIndexInfo : Adw.Bin {
+    ScrolledWindow {
+        ColumnView view {
+
+            styles ["data-table"]
+            show-column-separators: true;
+            show-row-separators: true;
+            vexpand: true;
+        }
+    }
+}

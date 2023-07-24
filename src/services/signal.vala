@@ -11,10 +11,12 @@ namespace Psequel {
         public signal void table_list_changed ();
         public signal void views_list_changed ();
 
+        public signal void schema_changed (Schema schema);
 
-        public signal void table_selected_changed (string schema, string table);
-        public signal void table_activated (string schema, string table);
-        public signal void view_activated (string schema, string view);
+        public signal void table_selected_changed (string table);
+
+        public signal void table_activated (Schema schema, string table);
+        public signal void view_activated (Schema schema, string view);
 
         public signal void database_connected ();
         /**

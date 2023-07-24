@@ -2,7 +2,7 @@
 namespace Psequel {
 
 
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/recent-connection.ui")]
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-recent.ui")]
     public class ConnectionSidebar : Gtk.Box {
 
         [GtkChild] unowned Gtk.ListBox conn_list;

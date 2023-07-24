@@ -29,7 +29,7 @@ template $PsequelQueryView : Adw.Bin {
                         margin-bottom: 0;
                         label: "Schema";
                     }
-                    DropDown schema {
+                    DropDown schema_dropdown {
                         hexpand: true;
                         // width-request: 50;
                         // show-arrow: false;
@@ -171,6 +171,7 @@ template $PsequelQueryView : Adw.Bin {
                                     styles ["navigation-sidebar"]
                                     selected-rows-changed => $view_selected();
                                     row-activated => $view_activated();
+                                    activate-on-single-click: false;
                                 }
                             }
                         };

@@ -95,6 +95,9 @@ namespace Psequel {
             typeof (Psequel.QueryView).ensure ();
             typeof (Psequel.TableStructure).ensure ();
             typeof (Psequel.TableData).ensure ();
+            typeof (Psequel.TableColInfo).ensure ();
+            typeof (Psequel.TableIndexInfo).ensure ();
+            typeof (Psequel.TableFKInfo).ensure ();
         }
     }
 }

@@ -66,6 +66,10 @@ namespace Psequel {
             return (Object) _data.get (index);
         }
 
+        public new T @get (int index) {
+            return _data.get (index);
+        }
+
         public void add (T item) {
             _data.add (item);
             items_changed (size - 1, 0, 1);
@@ -98,7 +102,7 @@ namespace Psequel {
 
         public void run () {
 
-            //  Thread.usleep ((ulong)1e6);
+            Thread.usleep ((ulong)1e5);
             this.task ();
         }
     }

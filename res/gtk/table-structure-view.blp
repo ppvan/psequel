@@ -1,0 +1,46 @@
+using Gtk 4.0;
+using Gio 2.0;
+using Adw 1;
+
+template $PsequelTableStructure : Gtk.Box {
+    orientation: vertical;
+    spacing: 4;
+    margin-start: 8;
+    margin-top: 12;
+    margin-bottom: 12;
+    
+    
+    // width-request: 960;
+    // height-request: 800;
+
+    Label {
+        styles ["title-3"]
+        label: "Column Info";
+        halign: start;
+    }
+
+    $PsequelTableColInfo columns {
+
+    }
+
+
+    Label {
+        styles ["title-3"]
+        label: "Indexes";
+        halign: start;
+    }
+
+    $PsequelTableIndexInfo indexes {
+
+    }
+
+    Label {
+        styles ["title-3"]
+        label: "Foreign Keys";
+        halign: start;
+    }
+
+    $PsequelTableFKInfo foreign_keys {
+
+    }
+}
