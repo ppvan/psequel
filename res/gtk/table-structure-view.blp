@@ -13,21 +13,11 @@ template $PsequelTableStructure : Gtk.Box {
     // width-request: 960;
     // height-request: 800;
 
-    Label {
-        styles ["title-3"]
-        label: "Columns";
-        halign: start;
+    $PsequelColumnView {
+        label: "Column";
     }
-    ScrolledWindow {
-        ColumnView columns {
 
-            styles ["data-table"]
-            show-column-separators: true;
-            show-row-separators: true;
-            vexpand: true;
-        }
-    }
-    
+
     Label {
         styles ["title-3"]
         label: "Indexes";

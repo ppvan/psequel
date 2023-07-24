@@ -246,6 +246,20 @@ namespace Psequel {
             return table;
         }
 
+        public async Relation exec_query_params_v2 (string query, Variant[] params) throws PsequelError {
+            
+            debug (params[0].get_string ());
+            
+            var result = yield exec_query_params_internal_v2 (query, params);
+
+            // check query status
+            check_query_status (result);
+
+            var table = new Relation ((owned) result);
+
+            return table;
+        }
+
         private void check_connection_status () throws PsequelError {
             var status = active_db.get_status ();
             switch (status) {
@@ -327,6 +341,50 @@ namespace Psequel {
             TimePerf.begin ();
 
             SourceFunc callback = exec_query_params_internal.callback;
+            Result result = null;
+
+            try {
+                var worker = new Worker ("exec query params", () => {
+                    result = active_db.exec_params (query, n_params, null, values, null, null, 0);
+                    // Jump to yield
+                    Idle.add ((owned) callback);
+                });
+                background.add (worker);
+
+                yield;
+
+                //  worker.get_result ();
+
+                TimePerf.end ();
+
+                return (owned) result;
+            } catch (ThreadError err) {
+                debug (err.message);
+                assert_not_reached ();
+            }
+
+        }
+
+        private async Result exec_query_params_internal_v2 (string query, Variant[] params) throws PsequelError {
+
+            int n_params = params.length;
+            string[] values = new string[n_params];
+
+            for (int i = 0; i < n_params; i++) {
+                if (params[i].is_of_type (VariantType.STRING)) {
+                    values[i] = params[i].get_string ();
+                } else if (params[i].get_type ().is_basic ()) {
+                    values[i] = params[i].print (false);
+                } else {
+                    debug ("Programming error, got type '%s'", params[i].get_type_string ());
+                    assert_not_reached ();
+                }
+            }
+
+            debug ("Exec Param: %s", query);
+            TimePerf.begin ();
+
+            SourceFunc callback = exec_query_params_internal_v2.callback;
             Result result = null;
 
             try {

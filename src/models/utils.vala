@@ -66,6 +66,10 @@ namespace Psequel {
             return (Object) _data.get (index);
         }
 
+        public new T @get (int index) {
+            return _data.get (index);
+        }
+
         public void add (T item) {
             _data.add (item);
             items_changed (size - 1, 0, 1);

@@ -6,13 +6,21 @@ output_dir = meson.current_build_dir()
 
 blueprints = custom_target('blueprints',
   input: files(
-    'gtk/window.blp',
-    'gtk/welcome.blp',
-    'gtk/recent-connection.blp',
     'gtk/connection-form.blp',
+    'gtk/connection-recent.blp',
+    'gtk/connection-view.blp',
+
+    'gtk/main.blp',
     'gtk/query-view.blp',
-    'gtk/table-structure.blp',
-    'gtk/table-data.blp',
+    
+    'gtk/table-data-view.blp',
+    
+    'gtk/table-cols.blp',
+    'gtk/table-fk.blp',
+    'gtk/table-index.blp',
+    'gtk/table-structure-view.blp',
+    
+    'gtk/window.blp',
   ),
   build_by_default: true,
 #   This does not run if you use an dot (.)

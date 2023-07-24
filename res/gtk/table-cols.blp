@@ -1,0 +1,19 @@
+using Gtk 4.0;
+
+
+template $PsequelColumnView : Gtk.Box {
+    Label {
+        styles ["title-3"]
+        label: "Columns";
+        halign: start;
+    }
+    ScrolledWindow {
+        ColumnView columns {
+
+            styles ["data-table"]
+            show-column-separators: true;
+            show-row-separators: true;
+            vexpand: true;
+        }
+    }
+}
