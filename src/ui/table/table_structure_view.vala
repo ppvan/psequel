@@ -4,8 +4,6 @@ namespace Psequel {
     public class TableStructure : Gtk.Box {
 
         private AppSignals signals;
-        private QueryService query_service;
-        private SchemaService schema_service;
 
         private Schema _cur_schema;
 
