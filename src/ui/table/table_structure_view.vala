@@ -22,6 +22,7 @@ namespace Psequel {
             set {
                 _cur_schema = value;
                 columns.model = _cur_schema.columns;
+                indexes.model = _cur_schema.indexes;
             }
         }
 
@@ -41,6 +42,7 @@ namespace Psequel {
             signals.table_selected_changed.connect ((tbname) => {
                 debug ("Handle table_selected_changed: %s", tbname);
                 columns.table = tbname;
+                indexes.table = tbname;
             });
         }
 
