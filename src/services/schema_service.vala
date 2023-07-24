@@ -74,7 +74,7 @@ namespace Psequel {
 
         private async void load_columns (Schema schema) throws PsequelError {
 
-            var relation = yield query_service.exec_query_params_v2 (COLUMN_SQL, { new Variant.string (schema.name) });
+            var relation = yield query_service.exec_query_params (COLUMN_SQL, { new Variant.string (schema.name) });
 
             foreach (var row in relation) {
                 var col = new Column ();
@@ -90,7 +90,7 @@ namespace Psequel {
 
         private async void load_indexes (Schema schema) throws PsequelError {
 
-            var relation = yield query_service.exec_query_params_v2 (INDEX_SQL, { new Variant.string (schema.name) });
+            var relation = yield query_service.exec_query_params (INDEX_SQL, { new Variant.string (schema.name) });
 
             foreach (var row in relation) {
                 var index = new Index ();
@@ -105,7 +105,7 @@ namespace Psequel {
         }
 
         private async void load_fks (Schema schema) throws PsequelError {
-            var relation = yield query_service.exec_query_params_v2 (FK_SQL, { new Variant.string (schema.name) });
+            var relation = yield query_service.exec_query_params (FK_SQL, { new Variant.string (schema.name) });
 
             foreach (var row in relation) {
                 var fk = new ForeignKey ();
@@ -119,7 +119,7 @@ namespace Psequel {
         }
 
         private async void load_tbname (Schema schema) throws PsequelError {
-            var relation = yield query_service.exec_query_params_v2 (TB_SQL, { new Variant.string (schema.name)});
+            var relation = yield query_service.exec_query_params (TB_SQL, { new Variant.string (schema.name)});
 
             foreach (var row in relation) {
                 schema.tablenames.add (new Gtk.StringObject (row[0]));
@@ -127,7 +127,7 @@ namespace Psequel {
         }
 
         private async void load_vname (Schema schema) throws PsequelError {
-            var relation = yield query_service.exec_query_params_v2 (VIEW_SQL, { new Variant.string (schema.name)});
+            var relation = yield query_service.exec_query_params (VIEW_SQL, { new Variant.string (schema.name)});
 
             foreach (var row in relation) {
                 schema.viewnames.add (new Gtk.StringObject (row[0]));

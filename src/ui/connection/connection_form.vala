@@ -68,10 +68,10 @@ namespace Psequel {
         private void on_connect_clicked (Gtk.Button btn) {
 
             btn.sensitive = false;
-            query_service.connect_db_async.begin (mapped_conn, (obj, res) => {
+            query_service.connect_db.begin (mapped_conn, (obj, res) => {
                 try {
                     btn.sensitive = true;
-                    query_service.connect_db_async.end (res);
+                    query_service.connect_db.end (res);
 
                     debug ("Emit database_connected");
                     signals.database_connected ();
