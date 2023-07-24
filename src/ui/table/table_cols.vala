@@ -69,7 +69,7 @@ namespace Psequel {
                 label.label = item.name;
             });
             var col = new Gtk.ColumnViewColumn ("Column Name", factory);
-            col.fixed_width = 200;
+            col.fixed_width = 250;
             view.append_column (col);
         }
 

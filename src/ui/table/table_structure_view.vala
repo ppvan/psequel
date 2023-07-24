@@ -23,6 +23,7 @@ namespace Psequel {
                 _cur_schema = value;
                 columns.model = _cur_schema.columns;
                 indexes.model = _cur_schema.indexes;
+                foreign_keys.model = _cur_schema.fks;
             }
         }
 
@@ -37,12 +38,17 @@ namespace Psequel {
             signals.schema_changed.connect ((schema) => {
                 debug ("%s", schema.name);
                 cur_schema = schema;
+
+                columns.table = " ";
+                indexes.table = " ";
+                foreign_keys.table = " ";
             });
 
             signals.table_selected_changed.connect ((tbname) => {
                 debug ("Handle table_selected_changed: %s", tbname);
                 columns.table = tbname;
                 indexes.table = tbname;
+                foreign_keys.table = tbname;
             });
         }
 
