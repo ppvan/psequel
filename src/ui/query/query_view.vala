@@ -252,9 +252,8 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_logout_clicked () {
-
             var window = (Window) ResourceManager.instance ().app.get_active_window ();
-            window.navigate_to ("connection-view");
+            window.navigate_to (Views.CONNECTION);
         }
 
         [GtkCallback]
@@ -303,7 +302,7 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.DropDown schema_dropdown;
 
-        [GtkChild]
-        private unowned Adw.ViewStack stack;
+        //  [GtkChild]
+        //  private unowned Adw.ViewStack stack;
     }
 }

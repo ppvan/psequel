@@ -47,7 +47,8 @@ namespace Psequel {
          */
         public void navigate_to (string view_name) {
             var child = stack.get_child_by_name (view_name);
-            assert_nonnull (child);
+
+            warning ("No such view: %s", view_name);
 
             debug ("navigate_to %s", view_name);
             stack.visible_child = child;

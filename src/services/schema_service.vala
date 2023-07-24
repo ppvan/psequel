@@ -48,7 +48,7 @@ namespace Psequel {
             this.query_service = service;
         }
 
-        public async string[] schema_list () {
+        public async string[] schema_list () throws PsequelError {
             var relation = yield query_service.exec_query_params_v2 (SCHEMA_LIST_SQL, {});
 
             var _schema_list = new string[relation.rows];
@@ -60,7 +60,7 @@ namespace Psequel {
             return _schema_list;
         }
 
-        public async Schema load_schema (string name) {
+        public async Schema load_schema (string name) throws PsequelError {
             var schema = new Schema (name);
 
             yield load_tbname (schema);
@@ -88,7 +88,7 @@ namespace Psequel {
             }
         }
 
-        private async void load_indexes (Schema schema) {
+        private async void load_indexes (Schema schema) throws PsequelError {
 
             var relation = yield query_service.exec_query_params_v2 (INDEX_SQL, { new Variant.string (schema.name) });
 
@@ -104,7 +104,7 @@ namespace Psequel {
             }
         }
 
-        private async void load_fks (Schema schema) {
+        private async void load_fks (Schema schema) throws PsequelError {
             var relation = yield query_service.exec_query_params_v2 (FK_SQL, { new Variant.string (schema.name) });
 
             foreach (var row in relation) {
@@ -118,7 +118,7 @@ namespace Psequel {
             }
         }
 
-        private async void load_tbname (Schema schema) {
+        private async void load_tbname (Schema schema) throws PsequelError {
             var relation = yield query_service.exec_query_params_v2 (TB_SQL, { new Variant.string (schema.name)});
 
             foreach (var row in relation) {
@@ -126,7 +126,7 @@ namespace Psequel {
             }
         }
 
-        private async void load_vname (Schema schema) {
+        private async void load_vname (Schema schema) throws PsequelError {
             var relation = yield query_service.exec_query_params_v2 (VIEW_SQL, { new Variant.string (schema.name)});
 
             foreach (var row in relation) {

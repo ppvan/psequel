@@ -79,20 +79,10 @@ namespace Psequel {
                     var window = (Window) ResourceManager.instance ().app.get_active_window ();
                     window.navigate_to (Views.QUERY);
                 } catch (PsequelError err) {
-                    var dialog = create_err_dialog ("Connection error", err.message);
+                    var dialog = create_dialog ("Connection error", err.message);
                     dialog.present ();
                 }
             });
-        }
-
-        private Adw.MessageDialog create_err_dialog (string heading, string body) {
-            var window = ResourceManager.instance ().app.active_window;
-            var dialog = new Adw.MessageDialog (window, heading, body);
-
-            dialog.close_response = "okay";
-            dialog.add_response ("okay", "OK");
-
-            return dialog;
         }
 
         [GtkCallback]

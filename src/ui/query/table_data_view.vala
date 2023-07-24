@@ -1,7 +1,7 @@
 using Gee;
 namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-data.ui")]
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-data-view.ui")]
     public class TableData : Gtk.Box {
 
         private AppSignals signals;

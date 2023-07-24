@@ -13,8 +13,14 @@ template $PsequelTableStructure : Gtk.Box {
     // width-request: 960;
     // height-request: 800;
 
-    $PsequelColumnView {
-        label: "Column";
+    Label {
+        styles ["title-3"]
+        label: "Column Info";
+        halign: start;
+    }
+
+    $PsequelTableColInfo columns {
+
     }
 
 
@@ -23,30 +29,18 @@ template $PsequelTableStructure : Gtk.Box {
         label: "Indexes";
         halign: start;
     }
-    
-    ScrolledWindow {
-        ColumnView indexes {
 
-            styles ["data-table"]
-            show-column-separators: true;
-            show-row-separators: true;
-            vexpand: true;
-        }
+    $PsequelTableIndexInfo indexes {
+
     }
-    
+
     Label {
         styles ["title-3"]
         label: "Foreign Keys";
         halign: start;
     }
 
-    ScrolledWindow {
-        ColumnView foreign_key {
+    $PsequelTableFKInfo foreign_keys {
 
-            styles ["data-table"]
-            show-column-separators: true;
-            show-row-separators: true;
-            vexpand: true;
-        }
     }
 }

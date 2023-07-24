@@ -3,7 +3,7 @@ using Gee;
 
 namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/welcome.ui")]
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-view.ui")]
     public class ConnectionView : Adw.Bin {
 
         public ConnectionView (Application app) {
