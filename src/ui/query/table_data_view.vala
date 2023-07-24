@@ -49,17 +49,17 @@ namespace Psequel {
             backup = new ArrayList<Gtk.ColumnViewColumn> ();
 
             signals.table_activated.connect_after ((schema, tbname) => {
-                this.schema = schema;
+                this.schema = schema.name;
                 this.tbname = tbname;
                 this.filter_entry.set_text ("");
-                load_data.begin (schema, tbname);
+                load_data.begin (schema.name, tbname);
             });
 
             signals.view_activated.connect_after ((schema, vname) => {
-                this.schema = schema;
+                this.schema = schema.name;
                 this.tbname = tbname;
                 this.filter_entry.set_text ("");
-                load_data.begin (schema, vname);
+                load_data.begin (schema.name, vname);
             });
 
 

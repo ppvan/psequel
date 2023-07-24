@@ -26,13 +26,9 @@ namespace Psequel {
             }
         }
 
+        private Gtk.StringFilter tbname_filter;
+        private Gtk.StringFilter vname_filter;
 
-        private ObservableArrayList<Relation.Row> table_names;
-        private ObservableArrayList<Relation.Row> views_names;
-
-
-        private Gtk.FilterListModel tablelist_model;
-        private Gtk.FilterListModel viewslist_model;
 
         public QueryView () {
             Object ();
@@ -44,6 +40,10 @@ namespace Psequel {
 
             schema_service = new SchemaService (query_service);
             schemas = new ObservableArrayList<Schema> ();
+
+            var exp = new Gtk.PropertyExpression (typeof (Gtk.StringObject), null, "string");
+            tbname_filter = new Gtk.StringFilter (exp);
+            vname_filter = new Gtk.StringFilter (exp);
 
             set_up_schema ();
             connect_signals ();
@@ -59,32 +59,6 @@ namespace Psequel {
         }
 
         /**
-         * Filter table name base on seach entry.
-         */
-        private bool search_filter_func (Object item) {
-            assert (item is Gtk.StringObject);
-
-            var row = item as Gtk.StringObject;
-            var table_name = row.string;
-            var search_text = search_table_entry.text;
-
-            return table_name.contains (search_text);
-        }
-
-        /**
-         * Filter table name base on seach entry.
-         */
-        private bool view_filter_func (Object item) {
-            assert (item is Gtk.StringObject);
-
-            var row = item as Gtk.StringObject;
-            var view_name = row.string;
-            var search_text = search_views_entry.text;
-
-            return view_name.contains (search_text);
-        }
-
-        /**
          * Reload schema list to the drop down by fetching database.
          */
         private async void reload_schema () throws PsequelError {
@@ -92,13 +66,16 @@ namespace Psequel {
             var schema_list = yield schema_service.schema_list ();
 
             // Clear last item.
-            schemas.clear ();
+
+            schema_dropdown.model = null;
 
             for (int i = 0; i < schema_list.length; i++) {
                 var cur_schema = yield schema_service.load_schema (schema_list[i]);
 
                 schemas.add (cur_schema);
             }
+
+            schema_dropdown.model = schemas;
             debug ("Schema reloaded.");
 
             uint index = schema_dropdown.get_selected ();
@@ -145,14 +122,12 @@ namespace Psequel {
         }
 
         private void bind_table_list () {
-            var filter = new Gtk.CustomFilter (search_filter_func);
-            this.tablelist_model = new Gtk.FilterListModel (current_schema.tablenames, filter);
+            var tablelist_model = new Gtk.FilterListModel (current_schema.tablenames, this.tbname_filter);
             this.table_list.bind_model (tablelist_model, table_row_factory);
         }
 
         private void bind_views_list () {
-            var filter = new Gtk.CustomFilter (view_filter_func);
-            this.viewslist_model = new Gtk.FilterListModel (current_schema.viewnames, filter);
+            var viewslist_model = new Gtk.FilterListModel (current_schema.viewnames, this.vname_filter);
             this.views_list.bind_model (viewslist_model, view_row_factory);
         }
 
@@ -224,25 +199,17 @@ namespace Psequel {
         [GtkCallback]
         private void table_activated (Gtk.ListBoxRow row) {
 
-            var cur_schema = schema_dropdown.get_selected_item () as Gtk.StringObject;
-            assert_nonnull (cur_schema);
-
-
-            var tbname = table_names.get_item (row.get_index ()) as Relation.Row;
+            var tbname = current_schema.tablenames[row.get_index ()];
             debug ("Emit table_activated");
-            signals.table_activated (cur_schema.string, tbname[0]);
+            signals.table_activated (current_schema, tbname.string);
         }
 
         [GtkCallback]
         private void view_activated (Gtk.ListBoxRow row) {
 
-            var cur_schema = schema_dropdown.get_selected_item () as Gtk.StringObject;
-            assert_nonnull (cur_schema);
-
-
-            var vname = views_names.get_item (row.get_index ()) as Relation.Row;
+            var vname = current_schema.viewnames[row.get_index ()];
             debug ("Emit view_activated");
-            signals.view_activated (cur_schema.string, vname[0]);
+            signals.view_activated (current_schema, vname.string);
         }
 
         [GtkCallback]
@@ -259,13 +226,15 @@ namespace Psequel {
         [GtkCallback]
         private void on_search (Gtk.SearchEntry entry) {
             debug ("Search tables: %s", entry.text);
-            tablelist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
+            this.tbname_filter.search = entry.text;
+            //  tablelist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
         }
 
         [GtkCallback]
         private void on_view_search (Gtk.SearchEntry entry) {
             debug ("Search views: %s", entry.text);
-            viewslist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
+            this.vname_filter.search = entry.text;
+            //  viewslist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
         }
 
         [GtkCallback]

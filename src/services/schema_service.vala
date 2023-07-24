@@ -49,7 +49,7 @@ namespace Psequel {
         }
 
         public async string[] schema_list () throws PsequelError {
-            var relation = yield query_service.exec_query_params_v2 (SCHEMA_LIST_SQL, {});
+            var relation = yield query_service.exec_query (SCHEMA_LIST_SQL);
 
             var _schema_list = new string[relation.rows];
 

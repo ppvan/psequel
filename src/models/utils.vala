@@ -102,7 +102,7 @@ namespace Psequel {
 
         public void run () {
 
-            //  Thread.usleep ((ulong)1e6);
+            Thread.usleep ((ulong)1e5);
             this.task ();
         }
     }
