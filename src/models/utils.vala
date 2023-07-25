@@ -75,6 +75,13 @@ namespace Psequel {
             items_changed (size - 1, 0, 1);
         }
 
+        public void batch_add (Iterator<T> items) {
+            var last = _data.size;
+            _data.add_all_iterator (items);
+            // model.batch_add (relation.iterator ());
+            items_changed (last, 0, size - last);
+        }
+
         public void remove_at (int index) {
             _data.remove_at (index);
             items_changed (index, 1, 0);
@@ -134,6 +141,14 @@ namespace Psequel {
             _end = GLib.get_real_time ();
 
             debug (@"Elapsed: %$(int64.FORMAT) ms", (_end - _start) / 1000);
+        }
+
+        public static int64 uend () {
+            _end = GLib.get_real_time ();
+
+            debug (@"Elapsed: %$(int64.FORMAT) μs", (_end - _start));
+
+            return _end - _start;
         }
     }
 

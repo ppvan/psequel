@@ -12,6 +12,7 @@ namespace Psequel {
         private Gtk.SortListModel sort_model;
         private Gtk.SelectionModel selection_model;
 
+        public int64 acc = 0;
 
         public int query_limit { get; set; }
 
@@ -37,6 +38,9 @@ namespace Psequel {
 
         public async void load_data (string schema, string table_name, int page = 0, string where = "") {
 
+            Idle.add (load_data.callback, Priority.DEFAULT_IDLE);
+            yield;
+
             var columns = data_view.columns;
             uint n = columns.get_n_items ();
             int offset = page * query_limit;
@@ -44,6 +48,7 @@ namespace Psequel {
             try {
                 var relation = yield query_service.select (schema, table_name, offset, query_limit, where);
 
+                debug ("Begin add rows to views");
                 for (int i = 0; i < n; i++) {
                     var col = columns.get_item (i) as Gtk.ColumnViewColumn;
                     if (i >= relation.cols) {
@@ -53,13 +58,14 @@ namespace Psequel {
                     auto_set_sorter (col, relation.get_column_type (i), i);
                     col.set_title (relation.get_header (i));
                     col.set_visible (true);
-
                     this.selection_model.unselect_all ();
-                    model.clear ();
-                    foreach (var item in relation) {
-                        model.add (item);
-                    }
                 }
+
+                model.clear ();
+                TimePerf.begin ();
+                model.batch_add (relation.iterator ());
+                TimePerf.end ();
+
             } catch (PsequelError err) {
                 create_dialog ("Query Fail", err.message).present ();
             }
