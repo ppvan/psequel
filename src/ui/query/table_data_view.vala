@@ -10,6 +10,7 @@ namespace Psequel {
         private ObservableArrayList<Relation.Row> model;
 
         private Gtk.SortListModel sort_model;
+        private Gtk.SelectionModel selection_model;
 
 
         public int query_limit { get; set; }
@@ -29,8 +30,6 @@ namespace Psequel {
 
             var setting = ResourceManager.instance ().settings;
             setting.bind ("query-limit", this, "query-limit", SettingsBindFlags.DEFAULT);
-
-            setup_binding ();
             connect_signal ();
             alloc_columns ();
         }
@@ -38,13 +37,12 @@ namespace Psequel {
 
         public async void load_data (string schema, string table_name, int page = 0, string where = "") {
 
+            var columns = data_view.columns;
+            uint n = columns.get_n_items ();
+            int offset = page * query_limit;
+
             try {
-
-                int offset = page * query_limit;
                 var relation = yield query_service.select (schema, table_name, offset, query_limit, where);
-
-                var columns = data_view.columns;
-                uint n = columns.get_n_items ();
 
                 for (int i = 0; i < n; i++) {
                     var col = columns.get_item (i) as Gtk.ColumnViewColumn;
@@ -56,32 +54,42 @@ namespace Psequel {
                     col.set_title (relation.get_header (i));
                     col.set_visible (true);
 
-                    // Sort by first column by default (likely be id columns)
-                    if (i == 0) {
-                        this.data_view.sort_by_column (col, Gtk.SortType.ASCENDING);
+                    this.selection_model.unselect_all ();
+                    model.clear ();
+                    foreach (var item in relation) {
+                        model.add (item);
                     }
                 }
-
-                this.sort_model.set_sorter (data_view.get_sorter ());
-
-                model.clear ();
-                foreach (var item in relation) {
-                    model.add (item);
-                }
-                debug ("Load %u records from %s", model.get_n_items (), table_name);
-
-                // No next page if records < query limit.
-                if (model.get_n_items () < (uint)query_limit) {
-                    right_page.sensitive = false;
-                } else {
-                    right_page.sensitive = true;
-                }
-
-            } catch (PsequelError.QUERY_FAIL err) {
+            } catch (PsequelError err) {
                 create_dialog ("Query Fail", err.message).present ();
+            }
+
+            this.sort_model.set_sorter (data_view.get_sorter ());
+            debug ("Load %u records from %s", model.get_n_items (), table_name);
+            update_status_label ();
+            update_pagination_btn ();
+        }
+
+        private void update_pagination_btn () {
+            if (model.get_n_items () < (uint) query_limit) {
+                right_page.sensitive = false;
+            } else {
+                right_page.sensitive = true;
+            }
+
+            if (current_page > 0) {
+                left_page.sensitive = true;
+            } else {
+                left_page.sensitive = false;
             }
         }
 
+        private void update_status_label () {
+            uint begin = query_limit * current_page + 1;
+            uint end = begin + model.get_n_items () - 1;
+
+            status_label.label = @"Rows $begin - $end";
+        }
 
         private void connect_signal () {
             this.signals.table_selected_changed.connect ((tbname) => {
@@ -98,25 +106,6 @@ namespace Psequel {
 
             this.signals.schema_changed.connect ((schema) => {
                 this.schema = schema;
-            });
-        }
-
-        private void setup_binding () {
-
-            this.bind_property ("current_page", status_label, "label", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
-                int curr_page = from.get_int ();
-                int begin = curr_page * query_limit + 1;
-                int end = begin + query_limit;
-                to.set_string (@"Rows $(begin) - $(end)");
-
-                return true;
-            });
-
-            this.bind_property ("current_page", left_page, "sensitive", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
-                int curr_page = from.get_int ();
-                to.set_boolean (curr_page > 0);
-
-                return true;
             });
         }
 
@@ -148,8 +137,10 @@ namespace Psequel {
 
             this.sort_model = new Gtk.SortListModel (model, null);
             this.sort_model.incremental = true;
-            var selection_model = new Gtk.SingleSelection (sort_model);
-            data_view.set_model (selection_model);
+
+            this.selection_model = new Gtk.SingleSelection (sort_model);
+
+            data_view.set_model (this.selection_model);
         }
 
         private void auto_set_sorter (Gtk.ColumnViewColumn col, Type type, int col_index) {

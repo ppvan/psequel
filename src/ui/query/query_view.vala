@@ -5,6 +5,11 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-view.ui")]
     public class QueryView : Adw.Bin {
 
+
+        public const string TABLE_DATA = "data-view";
+        public const string TABLE_STRUCTURE = "structure-view";
+        public const string QUERY_EDITOR = "query-editor";
+
         private unowned QueryService query_service;
         private unowned AppSignals signals;
         private SchemaService schema_service;
@@ -98,7 +103,6 @@ namespace Psequel {
             box.append (label);
 
             row.child = box;
-            row.tooltip_text = "Double click to load data";
 
             return row;
         }
@@ -132,7 +136,7 @@ namespace Psequel {
         }
 
         private void set_up_schema () {
-            //  this.schema_model = new Gtk.StringList (null);
+            // this.schema_model = new Gtk.StringList (null);
             var factory = new Gtk.SignalListItemFactory ();
             factory.setup.connect ((_fact, listitem) => {
                 var label = new Gtk.Label (null);
@@ -150,15 +154,15 @@ namespace Psequel {
         }
 
         private void connect_signals () {
-            //  signals.table_list_changed.connect (() => {
-            //      debug ("Handle table_list_changed.");
-            //      reload_tables.begin ();
-            //  });
+            // signals.table_list_changed.connect (() => {
+            // debug ("Handle table_list_changed.");
+            // reload_tables.begin ();
+            // });
 
-            //  signals.views_list_changed.connect (() => {
-            //      debug ("Handle views_list_changed.");
-            //      reload_views.begin ();
-            //  });
+            // signals.views_list_changed.connect (() => {
+            // debug ("Handle views_list_changed.");
+            // reload_views.begin ();
+            // });
 
             signals.database_connected.connect (() => {
                 debug ("Handle database_connected.");
@@ -166,34 +170,21 @@ namespace Psequel {
             });
 
             schema_dropdown.notify["selected"].connect (schema_changed);
-
-            //  signals.table_activated.connect (() => {
-            //      debug ("handle table_activated");
-
-            //      stack.set_visible_child_name (Views.TABLE_DATA);
-            //  });
-
-            //  signals.view_activated.connect (() => {
-            //      debug ("handle table_activated");
-
-            //      stack.set_visible_child_name (Views.TABLE_DATA);
-            //  });
         }
 
         [GtkCallback]
         private void table_selected () {
             var row = table_list.get_selected_row ();
-            
-            if (row == null) {
-                debug ("Emit table_selected_changed");
-                signals.table_selected_changed ("");
-            } else {
-                var tbname = current_schema.tablenames[row.get_index ()];
-    
-                debug ("Emit table_selected_changed");
-                signals.table_selected_changed (tbname.string);
-            }
+            return_if_fail (row != null);
+            var tbname = current_schema.tablenames[row.get_index ()];
 
+            debug ("Emit table_selected_changed");
+
+            Idle.add_once (() => {
+                stack.visible_child_name = TABLE_DATA;
+            });
+
+            signals.table_selected_changed (tbname.string);
         }
 
         [GtkCallback]
@@ -227,22 +218,25 @@ namespace Psequel {
         private void on_search (Gtk.SearchEntry entry) {
             debug ("Search tables: %s", entry.text);
             this.tbname_filter.search = entry.text;
-            //  tablelist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
+            // tablelist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
         }
 
         [GtkCallback]
         private void on_view_search (Gtk.SearchEntry entry) {
             debug ("Search views: %s", entry.text);
             this.vname_filter.search = entry.text;
-            //  viewslist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
+            // viewslist_model.get_filter ().changed (Gtk.FilterChange.DIFFERENT);
         }
 
         [GtkCallback]
         private void view_selected () {
-            var row = table_list.get_selected_row ();
+            var row = views_list.get_selected_row ();
 
             var vname = current_schema.viewnames[row.get_index ()];
             debug ("Emit view_selected");
+            Idle.add_once (() => {
+                stack.visible_child_name = TABLE_DATA;
+            });
             signals.view_selected_changed (vname.string);
         }
 
@@ -275,7 +269,7 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.DropDown schema_dropdown;
 
-        //  [GtkChild]
-        //  private unowned Adw.ViewStack stack;
+        [GtkChild]
+        private unowned Adw.ViewStack stack;
     }
 }
