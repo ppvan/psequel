@@ -14,7 +14,7 @@ namespace Psequel {
 
         public int query_limit { get; set; }
 
-        public string schema { get; private set; default = "public"; }
+        public Schema schema { get; set; }
         public string tbname { get; private set; }
         public int current_page { get; private set; default = 0; }
 
@@ -84,18 +84,20 @@ namespace Psequel {
 
 
         private void connect_signal () {
-            this.signals.table_activated.connect_after ((schema, tbname) => {
-                this.schema = schema.name;
+            this.signals.table_selected_changed.connect ((tbname) => {
                 this.tbname = tbname;
                 this.filter_entry.set_text ("");
                 load_data.begin (schema.name, tbname);
             });
 
-            this.signals.view_activated.connect_after ((schema, vname) => {
-                this.schema = schema.name;
+            this.signals.view_selected_changed.connect ((vname) => {
                 this.tbname = vname;
                 this.filter_entry.set_text ("");
                 load_data.begin (schema.name, vname);
+            });
+
+            this.signals.schema_changed.connect ((schema) => {
+                this.schema = schema;
             });
         }
 
@@ -142,14 +144,12 @@ namespace Psequel {
                 column.set_visible (false);
 
                 data_view.append_column (column);
-
-                this.sort_model = new Gtk.SortListModel (model, null);
-
-                // assert_nonnull (model);
-
-                var selection_model = new Gtk.SingleSelection (sort_model);
-                data_view.set_model (selection_model);
             }
+
+            this.sort_model = new Gtk.SortListModel (model, null);
+            this.sort_model.incremental = true;
+            var selection_model = new Gtk.SingleSelection (sort_model);
+            data_view.set_model (selection_model);
         }
 
         private void auto_set_sorter (Gtk.ColumnViewColumn col, Type type, int col_index) {
@@ -177,7 +177,7 @@ namespace Psequel {
         [GtkCallback]
         private void filter_query (Gtk.Button btn) {
             var where_clause = filter_entry.get_text ();
-            load_data.begin (schema, tbname, current_page, where_clause);
+            load_data.begin (schema.name, tbname, current_page, where_clause);
         }
 
         [GtkCallback]
@@ -187,17 +187,17 @@ namespace Psequel {
 
         [GtkCallback]
         private void load_next_page (Gtk.Button btn) {
-            load_data.begin (schema, tbname, ++current_page);
+            load_data.begin (schema.name, tbname, ++current_page);
         }
 
         [GtkCallback]
         private void load_previous_page (Gtk.Button btn) {
-            load_data.begin (schema, tbname, --current_page);
+            load_data.begin (schema.name, tbname, --current_page);
         }
 
         [GtkCallback]
         private void reload_data (Gtk.Button btn) {
-            load_data.begin (schema, tbname, current_page);
+            load_data.begin (schema.name, tbname, current_page);
         }
 
         public void table_double_clicked () {

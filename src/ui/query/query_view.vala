@@ -239,7 +239,11 @@ namespace Psequel {
 
         [GtkCallback]
         private void view_selected () {
-            debug ("view selected.");
+            var row = table_list.get_selected_row ();
+
+            var vname = current_schema.viewnames[row.get_index ()];
+            debug ("Emit view_selected");
+            signals.view_selected_changed (vname.string);
         }
 
         [GtkCallback]

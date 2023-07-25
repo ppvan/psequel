@@ -14,6 +14,7 @@ namespace Psequel {
         public signal void schema_changed (Schema schema);
 
         public signal void table_selected_changed (string table);
+        public signal void view_selected_changed (string vname);
 
         public signal void table_activated (Schema schema, string table);
         public signal void view_activated (Schema schema, string view);
