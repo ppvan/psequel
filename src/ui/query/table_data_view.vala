@@ -93,7 +93,7 @@ namespace Psequel {
 
             this.signals.view_activated.connect_after ((schema, vname) => {
                 this.schema = schema.name;
-                this.tbname = tbname;
+                this.tbname = vname;
                 this.filter_entry.set_text ("");
                 load_data.begin (schema.name, vname);
             });

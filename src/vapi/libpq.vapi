@@ -209,6 +209,13 @@ namespace Postgres {
         [CCode (cname = "PQdb")]
         public unowned string get_db ();
 
+        public string escape_identifier (string identifier) {
+            return escape_identifier_internal (identifier, identifier.length);
+        }
+
+        [CCode (cname = "PQescapeIdentifier")]
+        private string escape_identifier_internal (string identifier, size_t len);
+
         [CCode (cname = "PQuser")]
         public unowned string get_user ();
 

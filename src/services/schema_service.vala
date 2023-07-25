@@ -39,6 +39,7 @@ namespace Psequel {
         public const string SCHEMA_LIST_SQL = """
         SELECT schema_name 
         FROM information_schema.schemata
+        WHERE schema_name NOT IN ('information_schema', 'pg_catalog')
         ;
         """;
 

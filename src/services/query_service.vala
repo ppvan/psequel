@@ -11,12 +11,14 @@ namespace Psequel {
         }
 
         public async Relation select (string schema, string table_name, int offset = 0, int limit = 500, string where_clause = "") throws PsequelError {
-            
+
+            string escape_tbname = active_db.escape_identifier (table_name);
             if (where_clause == "") {
-                string stmt = @"SELECT * FROM $schema.$table_name LIMIT $limit OFFSET $offset";
+                string stmt = @"SELECT * FROM $escape_tbname LIMIT $limit OFFSET $offset";
+
                 return yield exec_query (stmt);
             } else {
-                string stmt = @"SELECT * FROM $schema.$table_name WHERE $where_clause LIMIT $limit OFFSET $offset";
+                string stmt = @"SELECT * FROM $escape_tbname WHERE $where_clause LIMIT $limit OFFSET $offset";
                 return yield exec_query (stmt);
             }
         }
@@ -25,6 +27,7 @@ namespace Psequel {
 
             string stmt = "SELECT version ();";
             var table = yield exec_query (stmt);
+
             string version = table[0][0];
 
             return version;
@@ -65,9 +68,9 @@ namespace Psequel {
         }
 
         public async Relation exec_query_params (string query, Variant[] params) throws PsequelError {
-            
+
             debug (params[0].get_string ());
-            
+
             var result = yield exec_query_params_internal (query, params);
 
             // check query status
@@ -171,7 +174,7 @@ namespace Psequel {
 
                 yield;
 
-                //  worker.get_result ();
+                // worker.get_result ();
 
                 TimePerf.end ();
 
@@ -180,7 +183,6 @@ namespace Psequel {
                 warning (err.message);
                 assert_not_reached ();
             }
-
         }
 
         private Database active_db;
