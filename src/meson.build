@@ -5,6 +5,7 @@ psequel_sources = [
     'ui/connection/connection_recent.vala',
     'ui/connection/connection_view.vala',
     'ui/query/query_view.vala',
+    'ui/query/query_editor.vala',
     'ui/query/table_data_view.vala',
     'ui/table/table_cols.vala',
     'ui/table/table_fk.vala',
@@ -43,6 +44,7 @@ psequel_deps = [
   dependency('libadwaita-1', version: '>= 1.2'),
   dependency('gee-0.8'),
   dependency('json-glib-1.0'),
+  dependency('gtksourceview-5'),
   dependency('libpq'),
 
   valac.find_library('config', dirs: vapi_dir),

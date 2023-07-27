@@ -82,6 +82,7 @@ namespace Psequel {
 
         public static int main (string[] args) {
             ensure_types ();
+            GtkSource.init ();
             var app = new Psequel.Application ();
 
             return app.run (args);
@@ -93,6 +94,7 @@ namespace Psequel {
             typeof (Psequel.ConnectionSidebar).ensure ();
             typeof (Psequel.ConnectionForm).ensure ();
             typeof (Psequel.QueryView).ensure ();
+            typeof (Psequel.QueryEditor).ensure ();
             typeof (Psequel.TableStructure).ensure ();
             typeof (Psequel.TableData).ensure ();
             typeof (Psequel.TableColInfo).ensure ();

@@ -58,13 +58,12 @@ namespace Psequel {
                     auto_set_sorter (col, relation.get_column_type (i), i);
                     col.set_title (relation.get_header (i));
                     col.set_visible (true);
-                    this.selection_model.unselect_all ();
                 }
 
+                this.selection_model.unselect_all ();
                 model.clear ();
-                TimePerf.begin ();
+
                 model.batch_add (relation.iterator ());
-                TimePerf.end ();
 
             } catch (PsequelError err) {
                 create_dialog ("Query Fail", err.message).present ();
@@ -136,6 +135,7 @@ namespace Psequel {
 
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);
                 column.set_expand (true);
+                //  column.fixed_width = 200;
                 column.set_visible (false);
 
                 data_view.append_column (column);
