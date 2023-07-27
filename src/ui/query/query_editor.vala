@@ -61,16 +61,11 @@ namespace Psequel {
             buffer.get_end_iter (out end);
 
             var text = buffer.get_text (start, end, true).strip ();
-
-            revealer.reveal_child = true;
             debug ("Exec query: %s", text);
 
             run_query.begin (text);
 
         }
-
-        [GtkChild]
-        private unowned Gtk.Revealer revealer;
 
         [GtkChild]
         private unowned QueryResults query_results;

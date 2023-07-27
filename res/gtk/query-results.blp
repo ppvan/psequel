@@ -18,8 +18,10 @@ template $PsequelQueryResults : Adw.Bin {
 
         StackPage {
             name: "loading";
-            child: Spinner spinner {
-                
+            child: Adw.Clamp {
+                maximum-size: 32;
+
+                Spinner spinner {}
             };
         }
     }

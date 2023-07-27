@@ -28,6 +28,13 @@ namespace Psequel {
             var columns = data_view.columns;
             uint n = columns.get_n_items ();
 
+            Timeout.add_seconds (1, () => {
+                load_data_to_view.callback ();
+                return false;
+            }, Priority.DEFAULT);
+            yield;
+
+
             debug ("Begin add rows to views");
             for (int i = 0; i < n; i++) {
                 var col = columns.get_item (i) as Gtk.ColumnViewColumn;

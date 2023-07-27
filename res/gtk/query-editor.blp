@@ -5,9 +5,14 @@ using GtkSource 5;
 template $PsequelQueryEditor : Adw.Bin {
     Paned {
         orientation: vertical;
+        shrink-start-child: false;
+        resize-start-child: true;
+    
+        shrink-end-child: false;
+        resize-end-child: false;
 
         Adw.Bin {
-            hexpand: true;
+            height-request: 300;
             ScrolledWindow {
                 GtkSource.View editor {
                     buffer: GtkSource.Buffer buffer {
@@ -44,13 +49,8 @@ template $PsequelQueryEditor : Adw.Bin {
                 }
             }
 
-            Revealer revealer {
-                transition-duration: 300;
-                transition-type: slide_up;
-                
-                $PsequelQueryResults query_results {
+            $PsequelQueryResults query_results {
 
-                }
             }
 
             Box {
