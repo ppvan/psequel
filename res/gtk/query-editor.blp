@@ -3,20 +3,62 @@ using Adw 1;
 using GtkSource 5;
 
 template $PsequelQueryEditor : Adw.Bin {
-    ScrolledWindow {
-        GtkSource.View editor {
-            buffer: GtkSource.Buffer buffer {
+    Paned {
+        orientation: vertical;
 
-            };
-            monospace: true;
-            auto-indent: true;
-            show-line-numbers: true;
-            smart-backspace: true;
-            smart-home-end: before;
-            top-margin: 6;
+        Adw.Bin {
+            hexpand: true;
+            ScrolledWindow {
+                GtkSource.View editor {
+                    buffer: GtkSource.Buffer buffer {
 
-            highlight-current-line: true;
-            insert-spaces-instead-of-tabs: true;
+                    };
+                    monospace: true;
+                    auto-indent: true;
+                    show-line-numbers: true;
+                    smart-backspace: true;
+                    smart-home-end: before;
+                    top-margin: 6;
+
+                    highlight-current-line: true;
+                    insert-spaces-instead-of-tabs: true;
+                }
+            }
+        }
+
+        Box {
+            orientation: vertical;
+            height-request: 400;
+            Box {
+                margin-top: 8;
+                margin-bottom: 8;
+                margin-start: 8;
+                margin-end: 8;
+                Label {
+                    hexpand: true;
+                }
+                Button run_query_btn {
+                    styles ["suggested-action"]
+                    label: "Run Query";
+                    clicked => $run_query_cb();
+                }
+            }
+
+            Revealer revealer {
+                transition-duration: 300;
+                transition-type: slide_up;
+                
+                $PsequelQueryResults query_results {
+
+                }
+            }
+
+            Box {
+                styles ["frame"]
+                Label status_label {
+                    label: "Status Bar";
+                }
+            }
         }
     }
 }

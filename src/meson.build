@@ -6,6 +6,7 @@ psequel_sources = [
     'ui/connection/connection_view.vala',
     'ui/query/query_view.vala',
     'ui/query/query_editor.vala',
+    'ui/query/query_results.vala',
     'ui/query/table_data_view.vala',
     'ui/table/table_cols.vala',
     'ui/table/table_fk.vala',

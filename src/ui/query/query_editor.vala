@@ -5,6 +5,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-editor.ui")]
     public class QueryEditor : Adw.Bin {
 
+        private QueryService query_service;
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
 
@@ -16,6 +17,7 @@ namespace Psequel {
         construct {
             debug ("Contruct view");
 
+            query_service = ResourceManager.instance ().query_service;
             lang_manager = LanguageManager.get_default ();
             style_manager = StyleSchemeManager.get_default ();
 
@@ -43,6 +45,35 @@ namespace Psequel {
                 return true;
             });
         }
+
+        private async void run_query (string query) {
+            var relation = yield query_service.exec_query (query);
+            query_results.load_result (relation);
+        }
+
+
+        [GtkCallback]
+        private void run_query_cb (Gtk.Button btn) {
+
+            Gtk.TextIter start;
+            Gtk.TextIter end;
+            buffer.get_start_iter (out start);
+            buffer.get_end_iter (out end);
+
+            var text = buffer.get_text (start, end, true).strip ();
+
+            revealer.reveal_child = true;
+            debug ("Exec query: %s", text);
+
+            run_query.begin (text);
+
+        }
+
+        [GtkChild]
+        private unowned Gtk.Revealer revealer;
+
+        [GtkChild]
+        private unowned QueryResults query_results;
 
         [GtkChild]
         private unowned GtkSource.View editor;

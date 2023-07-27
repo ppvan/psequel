@@ -13,6 +13,7 @@ blueprints = custom_target('blueprints',
     'gtk/main.blp',
     'gtk/query-view.blp',
     'gtk/query-editor.blp',
+    'gtk/query-results.blp',
     
     'gtk/table-data-view.blp',
     

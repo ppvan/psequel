@@ -1,0 +1,26 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PsequelQueryResults : Adw.Bin {
+
+    Stack stack {
+        StackPage {
+            name: "main";
+            child: ScrolledWindow {
+                ColumnView data_view {
+                    show-row-separators: true;
+                    show-column-separators: true;
+                    styles ["data-table"]
+                    vexpand: true;
+                }
+            };
+        }
+
+        StackPage {
+            name: "loading";
+            child: Spinner spinner {
+                
+            };
+        }
+    }
+}
