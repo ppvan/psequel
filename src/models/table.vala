@@ -10,6 +10,8 @@ namespace Psequel {
         public int rows { get; private set; }
         public int cols { get; private set; }
 
+        public string row_affected {get; private set; default = "";}
+
         private ArrayList<Row> data;
         private ArrayList<string> headers;
         private ArrayList<Type> cols_type;
@@ -41,6 +43,7 @@ namespace Psequel {
 
             rows = result.get_n_tuples ();
             cols = result.get_n_fields ();
+            row_affected = result.get_cmd_tuples ();
 
             this.headers = new ArrayList<string> ();
             this.cols_type = new ArrayList<Type> ();

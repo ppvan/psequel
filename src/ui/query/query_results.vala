@@ -29,11 +29,11 @@ namespace Psequel {
             var columns = data_view.columns;
             uint n = columns.get_n_items ();
 
-            Timeout.add_seconds (1, () => {
-                load_data_to_view.callback ();
-                return false;
-            }, Priority.DEFAULT);
-            yield;
+            //  Timeout.add_seconds (1, () => {
+            //      load_data_to_view.callback ();
+            //      return false;
+            //  }, Priority.DEFAULT);
+            //  yield;
 
 
             debug ("Begin add rows to views");
@@ -54,10 +54,12 @@ namespace Psequel {
             model.batch_add (relation.iterator ());
         }
 
-        public void show_result (Relation relation) {
+        public void show_loading () {
             stack.visible_child_name = LOADING;
             spinner.spinning = true;
+        }
 
+        public void show_result (Relation relation) {
             load_data_to_view.begin (relation, (obj, res) => {
                 spinner.spinning = false;
                 stack.visible_child_name = MAIN;

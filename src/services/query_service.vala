@@ -56,11 +56,16 @@ namespace Psequel {
             }
         }
 
-        public async Relation exec_query (string query) throws PsequelError {
+        public async Relation exec_query (string query, out int64 exec_ms = null) throws PsequelError {
+            
+            int64 begin = GLib.get_real_time ();
             var result = yield exec_query_internal (query);
 
             // check query status
             check_query_status (result);
+
+            int64 end = GLib.get_real_time ();
+            exec_ms = end - begin;
 
             var table = new Relation ((owned) result);
 

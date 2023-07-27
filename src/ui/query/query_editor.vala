@@ -48,8 +48,12 @@ namespace Psequel {
 
         private async void run_query (string query) {
             try {
-                var relation = yield query_service.exec_query (query);
+                query_results.show_loading ();
+                int64 exec_time = 0;
+                var relation = yield query_service.exec_query (query, out exec_time);
                 query_results.show_result (relation);
+
+                update_status (relation, exec_time);
             } catch (PsequelError err) {
                 query_results.show_error (err);
             }
@@ -71,6 +75,16 @@ namespace Psequel {
 
         }
 
+        private void update_status (Relation relation, int64 exec_time) {
+            if (relation.row_affected == "") {
+                row_affect.label = @"$(relation.rows) rows x $(relation.cols) cols";
+            } else {
+                row_affect.label = @"$(relation.row_affected) rows affected.";
+            }
+
+            query_time.label = @"$(exec_time / 1000) ms";
+        }
+
         [GtkChild]
         private unowned QueryResults query_results;
 
@@ -79,5 +93,12 @@ namespace Psequel {
 
         [GtkChild]
         private unowned GtkSource.Buffer buffer;
+
+        [GtkChild]
+        private unowned Gtk.Label row_affect;
+
+
+        [GtkChild]
+        private unowned Gtk.Label query_time;
     }
 }
