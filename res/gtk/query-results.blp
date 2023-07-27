@@ -24,5 +24,23 @@ template $PsequelQueryResults : Adw.Bin {
                 Spinner spinner {}
             };
         }
+
+        StackPage {
+            name: "error";
+
+            child: ScrolledWindow {
+                Label status_label {
+                    halign: start;
+                    valign: start;
+                    margin-start: 24;
+                    margin-top: 24;
+                    margin-bottom: 24;
+                    margin-end: 24;
+
+                    styles ["error"]
+                    label: "No error";
+                }
+            };
+        }
     }
 }

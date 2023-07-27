@@ -47,8 +47,12 @@ namespace Psequel {
         }
 
         private async void run_query (string query) {
-            var relation = yield query_service.exec_query (query);
-            query_results.load_result (relation);
+            try {
+                var relation = yield query_service.exec_query (query);
+                query_results.show_result (relation);
+            } catch (PsequelError err) {
+                query_results.show_error (err);
+            }
         }
 
 

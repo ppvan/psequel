@@ -5,6 +5,7 @@ namespace Psequel {
 
         const string MAIN = "main";
         const string LOADING = "loading";
+        const string ERROR = "error";
 
         private ObservableArrayList<Relation.Row> model;
 
@@ -53,18 +54,24 @@ namespace Psequel {
             model.batch_add (relation.iterator ());
         }
 
-        public void load_result (Relation relation) {
+        public void show_result (Relation relation) {
             stack.visible_child_name = LOADING;
             spinner.spinning = true;
 
             load_data_to_view.begin (relation, (obj, res) => {
-                stack.visible_child_name = MAIN;
                 spinner.spinning = false;
+                stack.visible_child_name = MAIN;
             });
 
             // Show loadding state
             // load data in background
             // show data
+        }
+
+        public void show_error (PsequelError err) {
+            status_label.label = err.message;
+
+            stack.visible_child_name = ERROR;
         }
 
         private void alloc_columns () {
@@ -132,5 +139,8 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.Spinner spinner;
+
+        [GtkChild]
+        private unowned Gtk.Label status_label;
     }
 }
