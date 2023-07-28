@@ -1,3 +1,12 @@
+<!--
+SPDX-FileCopyrightText: 2021 Gleb Smirnov <glebsmirnov0708@gmail.com>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
+<!--
+    2023 ppvan phuclaplace@gmail.com
+-->
 <h1 align="center">
 <img
     src="data/icons/hicolor/scalable/apps/me.ppvan.psequel.svg" alt="PSequel"
@@ -23,7 +32,7 @@
 </p>
 
 
-Small tool for quick text transformations such as checksums, encoding, decoding and so on. Written in Vala for GNOME desktop in the hope to be useful.
+Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for GNOME desktop in the hope to be useful.
 
 # Features
 - Load and save connections.
