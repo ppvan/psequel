@@ -30,6 +30,16 @@ namespace Psequel {
             Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
+        construct {
+            ActionEntry[] action_entries = {
+                { "about", this.on_about_action },
+                { "preferences", this.on_preferences_action },
+                { "quit", this.quit }
+            };
+            this.add_action_entries (action_entries, this);
+            this.set_accels_for_action ("app.quit", {"<primary>q"});
+        }
+
         public override void activate () {
             base.activate ();
             var win = this.active_window;
@@ -101,6 +111,32 @@ namespace Psequel {
             typeof (Psequel.TableColInfo).ensure ();
             typeof (Psequel.TableIndexInfo).ensure ();
             typeof (Psequel.TableFKInfo).ensure ();
+        }
+
+        private void on_about_action () {
+            string[] developers = { "ppvan" };
+
+            var about = new Adw.AboutWindow () {
+                transient_for = this.get_active_window (),
+                application_name = Config.APP_NAME,
+                application_icon = Config.APP_ID,
+                developer_name = "Phạm Văn Phúc",
+                version = Config.VERSION,
+                developers = developers,
+                copyright = "© 2023 ppvan",
+                license_type = Gtk.License.GPL_3_0_ONLY,
+                issue_url = "https://github.com/ppvan/psequel/issues",
+
+                developers = {
+                    "ppvan https://ppvan.me",
+                },
+            };
+
+            about.present ();
+        }
+
+        private void on_preferences_action () {
+            debug ("Setting");
         }
     }
 }

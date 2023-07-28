@@ -65,14 +65,9 @@ namespace Psequel {
         public async Relation select (string schema, string table_name, int offset = 0, int limit = 500, string where_clause = "") throws PsequelError {
 
             string escape_tbname = active_db.escape_identifier (table_name);
-            if (where_clause == "") {
-                string stmt = @"SELECT * FROM $escape_tbname LIMIT $limit OFFSET $offset";
 
-                return yield exec_query (stmt);
-            } else {
-                string stmt = @"SELECT * FROM $escape_tbname WHERE $where_clause LIMIT $limit OFFSET $offset";
-                return yield exec_query (stmt);
-            }
+            string stmt = @"SELECT * FROM $escape_tbname $where_clause LIMIT $limit OFFSET $offset";
+            return yield exec_query (stmt);
         }
 
         public async string db_version () throws PsequelError {

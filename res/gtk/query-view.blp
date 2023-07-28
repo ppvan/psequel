@@ -223,6 +223,12 @@ template $PsequelQueryView : Adw.Bin {
                         policy: wide;
                         stack: stack;
                     }
+
+                    [end]
+                    MenuButton {
+                        icon-name: "open-menu-symbolic";
+                        menu-model: primary_menu;
+                    }
                 }
                 
                 Adw.ViewStack stack {
@@ -259,4 +265,24 @@ template $PsequelQueryView : Adw.Bin {
             }
         }
     }
-} 
+}
+
+
+menu primary_menu {
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Keyboard Shortcuts");
+    //   action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("_About");
+      action: "app.about";
+    }
+  }
+}
