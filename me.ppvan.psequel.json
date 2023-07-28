@@ -40,6 +40,36 @@
                     "type": "git",
                     "url": "file:///home/ppvan/Documents/code/pet-projects/psequel"
                 }
+            ],
+            "modules": [
+                {
+                    "name": "blueprint-compiler",
+                    "buildsystem": "meson",
+                    "sources": [
+                        {
+                            "type": "git",
+                            "url": "https://gitlab.gnome.org/jwestman/blueprint-compiler",
+                            "tag": "v0.10.0"
+                        }
+                    ]
+                },
+                {
+                    "name": "postgresql-libs",
+                    "build-options": {
+                        "config-opts": [
+                            "--with-python=no",
+                            "--with-perl=no",
+                            "--with-ssl=openssl"
+                        ]
+                    },
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://ftp.postgresql.org/pub/latest/postgresql-15.3.tar.bz2",
+                            "sha256": "ffc7d4891f00ffbf5c3f4eab7fbbced8460b8c0ee63c5a5167133b9e6599d932"
+                        }
+                    ]
+                }
             ]
         }
     ]
