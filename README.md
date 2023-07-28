@@ -1,21 +1,71 @@
-# Psequel
+<h1 align="center">
+<img
+    src="data/icons/hicolor/scalable/apps/me.ppvan.psequel.svg" alt="PSequel"
+    width="128"
+    height="128"/><br/>
+    PSequel
+</h1>
 
-Remind future me:
+<p align="center">
+<a href="https://stopthemingmy.app">
+    <img width="200" src="https://stopthemingmy.app/badge.svg"/>
+</a>
+</p>
+
+<p align="center">
+<a href="https://flathub.org/apps/details/com.github.liferooter.textpieces">
+    <img width="200" src="https://flathub.org/assets/badges/flathub-badge-en.png" alt="Download on Flathub">
+</a>
+</p>
+
+<p align="center">
+    <img alt="Screenshot" src="screenshots/screenshot.png"/>
+</p>
+
+
+Small tool for quick text transformations such as checksums, encoding, decoding and so on. Written in Vala for GNOME desktop in the hope to be useful.
+
+# Features
+- Load and save connections.
+- List schema info, tables, views.
+- View table columns info, indexes, foreign keys
+- View table data, filter, sort by column
+- Write query
+
+# Installation
+
+## From Flathub
+> **Recommended**
+
+<a href="#">Click here</a> to install app from Flathub.
+
+## Build from source
+### Via GNOME Builder
+PSequel can be built with GNOME Builder >= 3.38. Clone this repo and click run button.
+
+> (Warning: required to rebuild postgres, will take a little bit of time)
+
+### Via Meson
+Text Pieces can be built directly via Meson:
+```bash
+git clone https://github.com/ppvan/psequel
+cd psequel
+meson build
+cd build
+meson compile
 ```
- .
-├──  application.vala
-├──  gtk -> blue print, will compile to .ui files (2)
-│  ├──  box.blp
-│  ├──  help-overlay.ui
-│  └──  window.blp
-├── 謹 psequel.gresource.xml <- List the ui files in this file (3)
-├──  main.vala
-├──  meson.build <- List the blue prints in this files to make the compiler running. (1)
-├──  ui <- Create a class (.vala file) to load template in this file (4) 
-└──  window.vala
+Next, it can be installed by `meson install`.
 
-```
+# Dependencies
+If you use GNOME Builder or Flatpak, dependencies will be installed automatically. If you use pure Meson, dependencies will be:
+- vala >= 0.52
+- gtk >= 4.2
+- gtksourceview >= 5.2
+- gio >= 2.50
+- gee >= 0.8
+- json-glib >= 1.6
+- libadwaita >= 1.0
+- postgres-libs >= 15.3
 
-Remind me 2:
- Please install the schema for each change.
- `ninja install`
+# Contributions
+Contributions are welcome.
