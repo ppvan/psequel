@@ -123,7 +123,8 @@ namespace Psequel {
 
     public errordomain PsequelError {
         CONNECTION_ERROR,
-        QUERY_FAIL
+        QUERY_FAIL,
+        PARSE_ERROR
     }
 
     /**

@@ -2,9 +2,11 @@ using Gtk 4.0;
 using Adw 1;
 
 template $PsequelConnectionForm : Gtk.Box {
+
     orientation: vertical;
     hexpand: true;
     vexpand: true;
+
 
     Adw.HeaderBar header {
         styles ["flat"]
@@ -13,14 +15,87 @@ template $PsequelConnectionForm : Gtk.Box {
         Label {
           label: "";
         }
+
+        // Dupplicate primary_menu in query-view.blp.
+        // Update both if you change something
+        [end]
+        MenuButton {
+            icon-name: "open-menu-symbolic";
+            menu-model: primary_menu;
+        }
     }
 
     Adw.Clamp {
         valign: center;
+        maximum-size: 800;
             Box {
                 orientation: vertical;
+                styles ["connection-form", "frame"]
                 // vexpand: true;
-                spacing: 36;
+                spacing: 4;
+                
+                Label {
+                    margin-top: 20;
+                    margin-bottom: 40;
+                    styles ["title-0"]
+
+                    label: "Connect with Psequel";
+                }
+                
+                Box {
+                    spacing: 8;
+                
+                    Label {
+                        label: "URL:";
+                    }
+                    
+                    Entry url_entry {
+                        placeholder-text: "postgres://...";
+                        hexpand: true;
+                        activate => $on_entry_activated();
+                        changed => $on_url_entry_changed();
+                    }
+                }
+
+                Label err_label {
+                    styles ["secondary"]
+                    height-request: 48;
+                    valign: start;
+                    label: " ";
+                }
+                
+                CenterBox {
+                    margin-top: 0;
+                    margin-bottom: 24;
+                    [start]
+                    Box {
+                        orientation: vertical;
+                        hexpand: true;
+                        valign: center;
+                        margin-start: 8;
+                        margin-end: 8;
+                        Separator {
+                        
+                        }
+                    }
+                    [center]
+                    Label {
+                        styles ["title-3"]
+                        label: "OR";
+                    }
+                    [end]
+                    Box {
+                        orientation: vertical;
+                        hexpand: true;
+                        valign: center;
+                        margin-start: 8;
+                        margin-end: 8;
+                        Separator {
+                        
+                        }
+                    }
+                }
+                
                 Grid {
             
                     hexpand: true;
@@ -190,6 +265,9 @@ template $PsequelConnectionForm : Gtk.Box {
             
             Box {
 
+                margin-top: 20;
+                margin-bottom: 10;
+                
                 Label status_label {
                     label: "";
                     halign: start;
@@ -214,4 +292,23 @@ template $PsequelConnectionForm : Gtk.Box {
 
         }
     }
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Keyboard Shortcuts");
+    //   action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("_About");
+      action: "app.about";
+    }
+  }
 }

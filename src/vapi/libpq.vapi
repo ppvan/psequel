@@ -168,6 +168,9 @@ namespace Postgres {
     [CCode (cname = "PQconndefaults")]
     public ConnectionOptions get_default_options ();
 
+    [CCode (cname = "PQconninfoParse")]
+    public ConnectionOptions* parse_conninfo (string conn_info, out string err_msg);
+
     [CCode (cname = "PQinitSSL")]
     public void init_ssl (int do_init);
 
