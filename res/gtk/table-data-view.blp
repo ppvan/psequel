@@ -32,13 +32,8 @@ template $PsequelTableData : Gtk.Box {
         }
     }
 
-    ScrolledWindow {
-        ColumnView data_view {
-            show-row-separators: true;
-            show-column-separators: true;
-            styles ["data-table"]
-            vexpand: true;
-        }
+    $PsequelQueryResults query_results {
+
     }
 
 
