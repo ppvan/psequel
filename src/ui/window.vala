@@ -48,10 +48,13 @@ namespace Psequel {
         public void navigate_to (string view_name) {
             var child = stack.get_child_by_name (view_name);
 
-            warning ("No such view: %s", view_name);
+            if (child == null) {
+                warning ("No such view: %s", view_name);
+            } else {
+                debug ("navigate_to %s", view_name);
+                stack.visible_child = child;
+            }
 
-            debug ("navigate_to %s", view_name);
-            stack.visible_child = child;
         }
 
         [GtkChild]

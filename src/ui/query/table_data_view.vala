@@ -10,11 +10,13 @@ namespace Psequel {
         private ObservableArrayList<Relation.Row> model;
 
         private Gtk.SortListModel sort_model;
+        private Gtk.SelectionModel selection_model;
 
+        public int64 acc = 0;
 
         public int query_limit { get; set; }
 
-        public string schema { get; private set; default = "public"; }
+        public Schema schema { get; set; }
         public string tbname { get; private set; }
         public int current_page { get; private set; default = 0; }
 
@@ -29,8 +31,6 @@ namespace Psequel {
 
             var setting = ResourceManager.instance ().settings;
             setting.bind ("query-limit", this, "query-limit", SettingsBindFlags.DEFAULT);
-
-            setup_binding ();
             connect_signal ();
             alloc_columns ();
         }
@@ -38,14 +38,17 @@ namespace Psequel {
 
         public async void load_data (string schema, string table_name, int page = 0, string where = "") {
 
-            try {
+            Idle.add (load_data.callback, Priority.DEFAULT_IDLE);
+            yield;
 
-                int offset = page * query_limit;
+            var columns = data_view.columns;
+            uint n = columns.get_n_items ();
+            int offset = page * query_limit;
+
+            try {
                 var relation = yield query_service.select (schema, table_name, offset, query_limit, where);
 
-                var columns = data_view.columns;
-                uint n = columns.get_n_items ();
-
+                debug ("Begin add rows to views");
                 for (int i = 0; i < n; i++) {
                     var col = columns.get_item (i) as Gtk.ColumnViewColumn;
                     if (i >= relation.cols) {
@@ -55,66 +58,59 @@ namespace Psequel {
                     auto_set_sorter (col, relation.get_column_type (i), i);
                     col.set_title (relation.get_header (i));
                     col.set_visible (true);
-
-                    // Sort by first column by default (likely be id columns)
-                    if (i == 0) {
-                        this.data_view.sort_by_column (col, Gtk.SortType.ASCENDING);
-                    }
                 }
 
-                this.sort_model.set_sorter (data_view.get_sorter ());
-
+                this.selection_model.unselect_all ();
                 model.clear ();
-                foreach (var item in relation) {
-                    model.add (item);
-                }
-                debug ("Load %u records from %s", model.get_n_items (), table_name);
 
-                // No next page if records < query limit.
-                if (model.get_n_items () < (uint)query_limit) {
-                    right_page.sensitive = false;
-                } else {
-                    right_page.sensitive = true;
-                }
+                model.batch_add (relation.iterator ());
 
-            } catch (PsequelError.QUERY_FAIL err) {
+            } catch (PsequelError err) {
                 create_dialog ("Query Fail", err.message).present ();
+            }
+
+            this.sort_model.set_sorter (data_view.get_sorter ());
+            debug ("Load %u records from %s", model.get_n_items (), table_name);
+            update_status_label ();
+            update_pagination_btn ();
+        }
+
+        private void update_pagination_btn () {
+            if (model.get_n_items () < (uint) query_limit) {
+                right_page.sensitive = false;
+            } else {
+                right_page.sensitive = true;
+            }
+
+            if (current_page > 0) {
+                left_page.sensitive = true;
+            } else {
+                left_page.sensitive = false;
             }
         }
 
+        private void update_status_label () {
+            uint begin = query_limit * current_page + 1;
+            uint end = begin + model.get_n_items () - 1;
+
+            status_label.label = @"Rows $begin - $end";
+        }
 
         private void connect_signal () {
-            this.signals.table_activated.connect_after ((schema, tbname) => {
-                this.schema = schema.name;
+            this.signals.table_selected_changed.connect ((tbname) => {
                 this.tbname = tbname;
                 this.filter_entry.set_text ("");
                 load_data.begin (schema.name, tbname);
             });
 
-            this.signals.view_activated.connect_after ((schema, vname) => {
-                this.schema = schema.name;
-                this.tbname = tbname;
+            this.signals.view_selected_changed.connect ((vname) => {
+                this.tbname = vname;
                 this.filter_entry.set_text ("");
                 load_data.begin (schema.name, vname);
             });
-        }
 
-        private void setup_binding () {
-
-            this.bind_property ("current_page", status_label, "label", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
-                int curr_page = from.get_int ();
-                int begin = curr_page * query_limit + 1;
-                int end = begin + query_limit;
-                to.set_string (@"Rows $(begin) - $(end)");
-
-                return true;
-            });
-
-            this.bind_property ("current_page", left_page, "sensitive", BindingFlags.SYNC_CREATE, (bindding, from, ref to) => {
-                int curr_page = from.get_int ();
-                to.set_boolean (curr_page > 0);
-
-                return true;
+            this.signals.schema_changed.connect ((schema) => {
+                this.schema = schema;
             });
         }
 
@@ -139,17 +135,18 @@ namespace Psequel {
 
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);
                 column.set_expand (true);
+                //  column.fixed_width = 200;
                 column.set_visible (false);
 
                 data_view.append_column (column);
-
-                this.sort_model = new Gtk.SortListModel (model, null);
-
-                // assert_nonnull (model);
-
-                var selection_model = new Gtk.SingleSelection (sort_model);
-                data_view.set_model (selection_model);
             }
+
+            this.sort_model = new Gtk.SortListModel (model, null);
+            this.sort_model.incremental = true;
+
+            this.selection_model = new Gtk.SingleSelection (sort_model);
+
+            data_view.set_model (this.selection_model);
         }
 
         private void auto_set_sorter (Gtk.ColumnViewColumn col, Type type, int col_index) {
@@ -177,7 +174,7 @@ namespace Psequel {
         [GtkCallback]
         private void filter_query (Gtk.Button btn) {
             var where_clause = filter_entry.get_text ();
-            load_data.begin (schema, tbname, current_page, where_clause);
+            load_data.begin (schema.name, tbname, current_page, where_clause);
         }
 
         [GtkCallback]
@@ -187,17 +184,17 @@ namespace Psequel {
 
         [GtkCallback]
         private void load_next_page (Gtk.Button btn) {
-            load_data.begin (schema, tbname, ++current_page);
+            load_data.begin (schema.name, tbname, ++current_page);
         }
 
         [GtkCallback]
         private void load_previous_page (Gtk.Button btn) {
-            load_data.begin (schema, tbname, --current_page);
+            load_data.begin (schema.name, tbname, --current_page);
         }
 
         [GtkCallback]
         private void reload_data (Gtk.Button btn) {
-            load_data.begin (schema, tbname, current_page);
+            load_data.begin (schema.name, tbname, current_page);
         }
 
         public void table_double_clicked () {

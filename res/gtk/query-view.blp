@@ -111,6 +111,7 @@ template $PsequelQueryView : Adw.Bin {
                                     selected-rows-changed => $table_selected();
                                     row-activated => $table_activated();
                                     activate-on-single-click: false;
+                                    selection-mode: browse;
                                 }
                             
                             }
@@ -246,11 +247,11 @@ template $PsequelQueryView : Adw.Bin {
                     }
 
                     Adw.ViewStackPage {
-                        name: "Query";
+                        name: "query-editor";
                         icon-name: "terminal-symbolic";
                         title: "Query";
-                        child: Label {
-                            label: "Query";
+                        child: $PsequelQueryEditor {
+                                
                         };
                     }
                 }

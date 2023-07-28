@@ -38,6 +38,7 @@ namespace Psequel {
 
         private void bind_model (ListModel model) {
             var filter_model = new Gtk.FilterListModel (model, filter);
+            filter_model.incremental = true;
             selection_model = new Gtk.NoSelection (filter_model);
             view.set_model (selection_model);
         }
