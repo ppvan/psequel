@@ -90,7 +90,13 @@ namespace Psequel {
         [GtkCallback]
         private void filter_query (Gtk.Button btn) {
             var where_clause = filter_entry.get_text ();
-            load_data.begin (schema.name, tbname, current_page, where_clause);
+
+            if (!where_clause.up ().has_prefix ("WHERE")) {
+                var dialog = create_dialog ("Filter Failed", "WHERE clause should starts with 'WHERE'");
+                dialog.present ();
+            } else {
+                load_data.begin (schema.name, tbname, current_page, where_clause);
+            }
         }
 
         [GtkCallback]
