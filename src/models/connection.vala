@@ -39,8 +39,6 @@ namespace Psequel {
         public bool use_ssl { get; set; default = false; }
 
 
-        public Postgres.Database db;
-
         public Connection (string name = "New Connection") {
             this._name = name;
         }
@@ -62,7 +60,7 @@ namespace Psequel {
                 }
             }
 
-            builder.append (host != DEFAULT ? host : "localhost");
+            builder.append (host != DEFAULT ? host : "127.0.0.1");
             builder.append (port != DEFAULT ? @":$port" : ":5432");
             builder.append (database != DEFAULT ? @"/$database" : "/postgres");
             builder.append (use_ssl ? "?sslmode=require" : "?sslmode=disable");

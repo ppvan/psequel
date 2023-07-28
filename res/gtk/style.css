@@ -2,6 +2,24 @@
     font-size: 105%;
 }
 
+.title-0 {
+    font-size: 26px;
+    margin-top: 12px;
+    margin-bottom: 32px;
+}
+
+
 .big-icon image {
     -gtk-icon-size: 20px;
+}
+
+
+.secondary {
+    opacity: 0.55;
+    font-size: small;
+}
+
+.connection-form {
+    border-radius: 8px;
+    padding: 1rem;
 }

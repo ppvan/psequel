@@ -10,6 +10,58 @@ namespace Psequel {
             this.background = background;
         }
 
+        public Connection parse_conninfo (string conn_info) throws PsequelError.PARSE_ERROR {
+
+            var conn = new Connection ();
+
+            string err_msg;
+            var options = Postgres.parse_conninfo (conn_info, out err_msg);
+            if (options == null) {
+                throw new PsequelError.PARSE_ERROR (err_msg);
+            }
+
+            var cur = options;
+
+            while (cur->keyword != null) {
+
+                if (cur->val == null) {
+                    cur++;
+                    continue;
+                }
+
+                switch (cur->keyword) {
+                case "user":
+                    conn.user = cur->val;
+                    break;
+                case "host":
+                    conn.host = cur->val;
+                    break;
+
+                case "port":
+                    conn.port = cur->val;
+                    break;
+
+                case "password":
+                    conn.password = cur->val;
+                    break;
+
+                case "dbname":
+                    conn.database = cur->val;
+                    break;
+
+                case "sslmode":
+                    conn.use_ssl = cur->val == "require" ? true : false;
+                    break;
+                }
+
+                cur++;
+            }
+
+            delete options;
+
+            return conn;
+        }
+
         public async Relation select (string schema, string table_name, int offset = 0, int limit = 500, string where_clause = "") throws PsequelError {
 
             string escape_tbname = active_db.escape_identifier (table_name);
@@ -57,7 +109,7 @@ namespace Psequel {
         }
 
         public async Relation exec_query (string query, out int64 exec_ms = null) throws PsequelError {
-            
+
             int64 begin = GLib.get_real_time ();
             var result = yield exec_query_internal (query);
 

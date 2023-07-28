@@ -33,6 +33,7 @@ namespace Psequel {
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
             set_up_bindings (binddings);
+
         }
 
         private void set_up_bindings (BindingGroup group) {
@@ -62,6 +63,39 @@ namespace Psequel {
             });
 
             debug ("set_up binddings done");
+        }
+
+
+        [GtkCallback]
+        private void on_url_entry_changed (Gtk.Editable editable) {
+
+            if (editable.text == "") {
+                url_entry.remove_css_class ("error");
+                return;
+            }
+
+            if (!editable.text.has_prefix ("postgres://")) {
+                err_label.label = "Invalid url, should start with postgres://";
+                url_entry.add_css_class ("error");
+                return;
+            }
+
+
+            url_entry.remove_css_class ("error");
+            err_label.label = " ";
+            try {
+                var conn = query_service.parse_conninfo (editable.text);
+                host_entry.text = conn.host;
+                user_entry.text = conn.user;
+                database_entry.text = conn.database;
+                port_entry.text = conn.port;
+                password_entry.text = conn.password;
+                ssl_switch.active = conn.use_ssl;
+
+            } catch (PsequelError err) {
+                url_entry.add_css_class ("error");
+                err_label.label = err.message;
+            }
         }
 
         [GtkCallback]
@@ -97,6 +131,9 @@ namespace Psequel {
         unowned Gtk.Spinner spinner;
 
         [GtkChild]
+        private unowned Gtk.Entry url_entry;
+
+        [GtkChild]
         private unowned Gtk.Entry name_entry;
 
         [GtkChild]
@@ -113,5 +150,8 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.Switch ssl_switch;
+
+        [GtkChild]
+        private unowned Gtk.Label err_label;
     }
 }
