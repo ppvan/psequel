@@ -34,5 +34,13 @@
             </description>
         </key>
 
+        <key name="ui-font" type="s">
+            <default>Roboto 13</default>
+            <summary>UI font</summary>
+            <description>
+                Application UI font.
+            </description>
+        </key>
+
 	</schema>
 </schemalist>

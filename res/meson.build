@@ -23,6 +23,7 @@ blueprints = custom_target('blueprints',
     'gtk/table-structure-view.blp',
     
     'gtk/window.blp',
+    'gtk/preferences.blp',
   ),
   build_by_default: true,
 #   This does not run if you use an dot (.)
