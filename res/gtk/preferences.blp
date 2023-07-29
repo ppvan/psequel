@@ -12,22 +12,6 @@ template $PsequelPreferencesWindow : Adw.PreferencesWindow {
         icon-name: "settings-symbolic";
 
         Adw.PreferencesGroup {
-            name: "general";
-            title: "General";
-
-            Adw.ActionRow {
-                title: "UI Font";
-                activatable: true;
-
-                Label font_label {
-                    
-                }
-
-                activated => $on_font_chooser();
-            }
-        }
-
-        Adw.PreferencesGroup {
             name: "database";
             title: "Database";
 
@@ -35,7 +19,7 @@ template $PsequelPreferencesWindow : Adw.PreferencesWindow {
                 title: "Connection timeout";
                 subtitle: "in seconds";
 
-                SpinButton {
+                SpinButton conn_timeout {
                     valign: center;
                     numeric: true;
                     value: 5;
@@ -54,7 +38,7 @@ template $PsequelPreferencesWindow : Adw.PreferencesWindow {
                 title: "Query timeout";
                 subtitle: "in seconds";
 
-                SpinButton {
+                SpinButton query_timeout {
                     valign: center;
                     numeric: true;
                     value: 5;
@@ -73,16 +57,16 @@ template $PsequelPreferencesWindow : Adw.PreferencesWindow {
                 title: "Query limit";
                 subtitle: "Max rows return in SELECT";
 
-                SpinButton {
+                SpinButton query_limit {
                     valign: center;
                     numeric: true;
-                    climb-rate: 1;
+                    value: 200;
                     adjustment:
                     Adjustment {
+                        lower: 100;
+                        upper: 900;
+                        step-increment: 100;
                         value: 200;
-                        lower: 50;
-                        upper: 1000;
-                        step-increment: 50;
                     }
                     ;
                 }
@@ -94,18 +78,17 @@ template $PsequelPreferencesWindow : Adw.PreferencesWindow {
             title: "Editor";
             Adw.ActionRow {
                 title: "Editor Font";
+                activatable: true;
 
-                Label {
-                    label: "Roboto 10";
+                Label font_label {
+                    label: "Source Code Pro 12";
                 }
+
+                activated => $on_font_chooser();
             }
 
-            Adw.ComboRow {
+            Adw.ComboRow color_scheme {
                 title: "Color scheme";
-
-                model: StringList list {
-                    strings ["this", "is", "a", "string", "list"]
-                };
             }
         }
     }

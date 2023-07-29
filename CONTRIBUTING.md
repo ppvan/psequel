@@ -21,7 +21,6 @@ Remind me 2:
  `ninja install`
 
 Prefer setting:
-- UI Font
 - Editor font
 - Color scheme
 
