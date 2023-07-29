@@ -26,6 +26,9 @@ namespace Psequel {
 
     public class Application : Adw.Application {
 
+
+        private PreferencesWindow preference;
+
         public Application () {
             Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
@@ -136,7 +139,15 @@ namespace Psequel {
         }
 
         private void on_preferences_action () {
-            debug ("Setting");
+
+            if (this.preference == null) {
+                this.preference = new PreferencesWindow () {
+                    transient_for = this.active_window,
+                    modal = true,
+                    application = this,
+                };
+            }
+            this.preference.present ();
         }
     }
 }

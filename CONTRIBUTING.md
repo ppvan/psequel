@@ -19,3 +19,11 @@ Remind future me:
 Remind me 2:
  Please install the schema for each change.
  `ninja install`
+
+Prefer setting:
+- Editor font
+- Color scheme
+
+- Connection timeout
+- Query timeout
+- Query limit.

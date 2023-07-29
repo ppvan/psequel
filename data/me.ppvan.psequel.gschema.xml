@@ -34,5 +34,37 @@
             </description>
         </key>
 
+        <key name="query-timeout" type="i">
+            <default>5</default>
+            <summary>Time out before cancel a statement</summary>
+            <description>
+                If query's time is larger than this value (in seconds), application will cancel it.
+            </description>
+        </key>
+
+        <key name="connection-timeout" type="i">
+            <default>5</default>
+            <summary>Timeout for connect to database</summary>
+            <description>
+                If time to connect to database is larger than this value (in seconds), application will cancel it.
+            </description>
+        </key>
+
+        <key name="editor-font" type="s">
+            <default>"Source Code Pro 12"</default>
+            <summary>UI font</summary>
+            <description>
+                Application UI font.
+            </description>
+        </key>
+
+        <key name="color-scheme" type="s">
+            <default>"Adwaita"</default>
+            <summary>Editor color scheme</summary>
+            <description>
+                Editor color scheme supported by Gtk Source View 5
+            </description>
+        </key>
+
 	</schema>
 </schemalist>
