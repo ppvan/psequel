@@ -141,7 +141,11 @@ namespace Psequel {
         private void on_preferences_action () {
 
             if (this.preference == null) {
-                this.preference = new PreferencesWindow ();
+                this.preference = new PreferencesWindow () {
+                    transient_for = this.active_window,
+                    modal = true,
+                    application = this,
+                };
             }
             this.preference.present ();
         }
