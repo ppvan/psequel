@@ -140,13 +140,13 @@ namespace Psequel {
 
             try {
                 var file = yield file_dialog.save (window, null);
+
                 yield file.replace_contents_bytes_async (bytes, null, false, FileCreateFlags.NONE, null, null);
 
                 var toast = new Adw.Toast ("Data saved successfully.") {
                     timeout = 2,
                 };
                 window.add_toast (toast);
-
             } catch (Error err) {
                 debug ("can't save file");
 
@@ -155,7 +155,6 @@ namespace Psequel {
                 };
                 window.add_toast (toast);
             }
-
         }
 
         private async void open_file_dialog (string title = "Open File") {
@@ -174,6 +173,7 @@ namespace Psequel {
 
             try {
                 var file = yield file_dialog.open (window, null);
+
                 yield file.load_contents_async (null, out contents, null);
 
                 var json_str = (string) contents;
@@ -184,8 +184,6 @@ namespace Psequel {
                     timeout = 3,
                 };
                 window.add_toast (toast);
-
-
             } catch (Error err) {
                 debug ("Can't load data from file.");
 
@@ -237,6 +235,7 @@ namespace Psequel {
         }
     }
 
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-row.ui")]
     public class ConnectionRow : Gtk.ListBoxRow {
 
         private Connection _conn_data;
@@ -250,24 +249,38 @@ namespace Psequel {
         public ConnectionRow (Connection conn) {
             Object ();
             this._conn_data = conn;
-
-            build_ui ();
-        }
-
-        private void build_ui () {
-            var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
-            box.set_margin_start (16);
-            box.set_size_request (-1, 30);
-
-            var icon = new Gtk.Image.from_icon_name ("text-sql-symbolic");
-            var label = new Gtk.Label (conn_data.name);
-
             conn_data.bind_property ("name", label, "label", BindingFlags.SYNC_CREATE);
 
-            box.append (icon);
-            box.append (label);
+            var gesture = new Gtk.GestureClick ();
+            gesture.set_button (Gdk.BUTTON_SECONDARY);
+            gesture.released.connect (on_right_click);
 
-            child = box;
+            this.add_controller (gesture);
+            // build_ui ();
         }
+
+        private async void on_right_click () {
+            Idle.add (on_right_click.callback);
+            yield;
+
+            select_me ();
+            pop_up_menu ();
+        }
+
+        private void select_me () {
+            var listbox = this.parent as Gtk.ListBox;
+
+            listbox.select_row (this);
+        }
+
+        private void pop_up_menu () {
+            pop_over.popup ();
+        }
+
+        [GtkChild]
+        private unowned Gtk.Label label;
+
+        [GtkChild]
+        private unowned Gtk.PopoverMenu pop_over;
     }
 }
