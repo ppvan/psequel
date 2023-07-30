@@ -57,7 +57,14 @@ namespace Psequel {
 
         }
 
+        public void add_toast (Adw.Toast toast) {
+            overlay.add_toast (toast);
+        }
+
         [GtkChild]
         private unowned Gtk.Stack stack;
+
+        [GtkChild]
+        private unowned Adw.ToastOverlay overlay;
     }
 }
