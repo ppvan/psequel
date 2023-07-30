@@ -7,22 +7,23 @@ template $PsequelWindow : Adw.ApplicationWindow {
     title: "Psequel";
 
 
+    Adw.ToastOverlay overlay {
+        Stack stack {
+            transition-type: slide_up_down;
 
-    Stack stack {
-        transition-type: slide_up_down;
+            StackPage {
+                name: "connection-view";
+                child: $PsequelConnectionView {
+                
+                };
+            }
 
-        StackPage {
-            name: "connection-view";
-            child: $PsequelConnectionView {
-            
-            };
-        }
+            StackPage {
+                name: "query-view";
+                child: $PsequelQueryView {
 
-        StackPage {
-            name: "query-view";
-            child: $PsequelQueryView {
-
-            };
+                };
+            }
         }
     }
 }

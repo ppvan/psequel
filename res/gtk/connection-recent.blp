@@ -22,6 +22,21 @@ template $PsequelConnectionSidebar : Gtk.Box {
             halign: end;
             
             Button {
+                styles ["flat", "big-icon", "linked"]
+                icon-name: "document-export-symbolic";
+                tooltip-text: "Import Connection";
+                clicked => $on_import_connection();
+            }
+
+            Button {
+                styles ["flat", "big-icon", "linked"]
+                icon-name: "document-import-symbolic";
+                tooltip-text: "Export Connection";
+                clicked => $on_export_connection();
+            }
+            
+
+            Button {
                 tooltip-text: "Add new connection";
                 styles ["flat"]
                 icon-name: "plus-large-symbolic";
@@ -43,6 +58,7 @@ template $PsequelConnectionSidebar : Gtk.Box {
 
 
     ScrolledWindow {
+        vexpand: true;
         ListBox conn_list {
             styles ["navigation-sidebar"]
             vexpand: true;
