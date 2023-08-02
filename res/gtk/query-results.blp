@@ -3,9 +3,40 @@ using Adw 1;
 
 template $PsequelQueryResults : Adw.Bin {
 
+    wellcome_message: "Select a table";
     Stack stack {
         StackPage {
-            name: "main";
+            name: "empty";
+
+            child: Adw.Clamp {
+                maximum-size: 32;
+
+                Box {
+                    styles ["icon-xl"]
+                    orientation: vertical;
+                    valign: center;
+                    Image {
+                        icon-name: "webview-filler-symbolic";
+                    }
+
+                    Label label {
+                        styles ["title-2"]
+                        halign: center;
+                        valign: center;
+                        margin-start: 24;
+                        margin-top: 24;
+                        margin-bottom: 24;
+                        margin-end: 24;
+
+                        label: bind template.wellcome_message as <string>;
+                    }
+                }
+            };
+        }
+
+
+        StackPage {
+            name: "data";
             child: ScrolledWindow {
                 ColumnView data_view {
                     show-row-separators: true;

@@ -234,9 +234,9 @@ namespace Psequel {
 
             var vname = current_schema.viewnames[row.get_index ()];
             debug ("Emit view_selected");
-            Idle.add_once (() => {
-                stack.visible_child_name = TABLE_DATA;
-            });
+            //  Idle.add_once (() => {
+            //      stack.visible_child_name = TABLE_DATA;
+            //  });
             signals.view_selected_changed (vname.string);
         }
 
