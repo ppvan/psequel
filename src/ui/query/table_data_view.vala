@@ -21,7 +21,6 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            query_service = ResourceManager.instance ().query_service;
             model = new ObservableArrayList<Relation.Row> ();
 
             var setting = ResourceManager.instance ().settings;
@@ -92,6 +91,8 @@ namespace Psequel {
                 signals.schema_changed.connect ((schema) => {
                     this.schema = schema;
                 });
+
+                query_service = get_parrent_window (this).query_service;
             });
         }
 

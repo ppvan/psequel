@@ -40,10 +40,6 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            query_service = ResourceManager.instance ().query_service;
-
-            schema_service = new SchemaService (query_service);
-            schemas = new ObservableArrayList<Schema> ();
 
             var exp = new Gtk.PropertyExpression (typeof (Gtk.StringObject), null, "string");
             tbname_filter = new Gtk.StringFilter (exp);
@@ -70,8 +66,8 @@ namespace Psequel {
             var schema_list = yield schema_service.schema_list ();
 
             // Clear last item.
-
             schema_dropdown.model = null;
+            schemas.clear ();
 
             for (int i = 0; i < schema_list.length; i++) {
                 var cur_schema = yield schema_service.load_schema (schema_list[i]);
@@ -156,7 +152,9 @@ namespace Psequel {
             // signals can only be connected after the window is ready.
             // because widget access window to get signals.
             ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                signals = get_parrent_window (this).signals;
+                var window = get_parrent_window (this);
+
+                signals = window.signals;
 
                 signals.database_connected.connect (() => {
                     debug ("Handle database_connected.");
@@ -164,6 +162,12 @@ namespace Psequel {
                 });
 
                 schema_dropdown.notify["selected"].connect (schema_changed);
+
+                query_service = window.query_service;
+                debug ("Query: %p", query_service);
+
+                schema_service = new SchemaService (query_service);
+                schemas = new ObservableArrayList<Schema> ();
             });
         }
 

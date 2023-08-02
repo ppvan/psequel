@@ -72,7 +72,7 @@ namespace Psequel {
 
                 app_signals = new AppSignals ();
                 app.app_signals = app_signals;
-                query_service = new QueryService (background);
+                //  query_service = new QueryService (background);
                 table_list = new ObservableArrayList<Relation.Row> ();
 
                 load_user_data ();
@@ -154,7 +154,9 @@ namespace Psequel {
         private Window new_window () {
             var signals = new WindowSignals ();
             var window = new Window (this);
+            var query_service = new QueryService (ResourceManager.instance ().background);
             window.signals = (owned)signals;
+            window.query_service = (owned)query_service;
             app_signals.window_ready ();
 
             return window;

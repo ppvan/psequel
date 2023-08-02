@@ -17,7 +17,6 @@ namespace Psequel {
         }
 
         construct {
-            debug ("[CONTRUCT] %s", this.name);
             tablenames = new ObservableArrayList<Gtk.StringObject> ();
             viewnames = new ObservableArrayList<Gtk.StringObject> ();
             indexes = new ObservableArrayList<Index> ();

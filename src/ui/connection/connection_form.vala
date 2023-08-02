@@ -27,8 +27,6 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            // init service
-            query_service = ResourceManager.instance ().query_service;
 
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
@@ -41,7 +39,8 @@ namespace Psequel {
             // signals can only be connected after the window is ready.
             // because widget access window to get signals.
             ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                signals = get_parrent_window (this).signals;
+                var window = get_parrent_window (this);
+                signals = window.signals;
 
                 signals.selection_changed.connect ((conn) => {
                     mapped_conn = conn;
@@ -51,6 +50,8 @@ namespace Psequel {
                     mapped_conn = conn;
                     connect_btn.clicked ();
                 });
+
+                query_service = window.query_service;
             });
 
         }

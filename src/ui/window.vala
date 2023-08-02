@@ -26,6 +26,7 @@ namespace Psequel {
     public class Window : Adw.ApplicationWindow {
 
         public WindowSignals signals {get; set; default = null;}
+        public QueryService query_service {get; set; default = null;}
 
         public Window (Application app) {
             Object (application: app);
