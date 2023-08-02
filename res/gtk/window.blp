@@ -14,14 +14,14 @@ template $PsequelWindow : Adw.ApplicationWindow {
             StackPage {
                 name: "connection-view";
                 child: $PsequelConnectionView {
-                
+                    window: bind template;
                 };
             }
 
             StackPage {
                 name: "query-view";
                 child: $PsequelQueryView {
-
+                    window: bind template;
                 };
             }
         }

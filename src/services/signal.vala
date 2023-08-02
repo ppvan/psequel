@@ -41,6 +41,7 @@ namespace Psequel {
      */
     public class AppSignals : Object {
 
+        /** Signal emit when window is created and {@link WindowSignals} can be used. */
         public signal void window_ready ();
 
         public AppSignals () {

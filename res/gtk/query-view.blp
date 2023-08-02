@@ -239,7 +239,7 @@ template $PsequelQueryView : Adw.Bin {
                         icon-name: "library-symbolic";
                         title: "Structure";
                         child: $PsequelTableStructure {
-
+                            window: bind template.window;
                         };
                     }
 
@@ -248,7 +248,7 @@ template $PsequelQueryView : Adw.Bin {
                         title: "Data";
                         icon-name: "object-rows-symbolic";
                         child: $PsequelTableData {
-                                
+                            window: bind template.window;
                         };
                     }
 
@@ -257,7 +257,7 @@ template $PsequelQueryView : Adw.Bin {
                         icon-name: "terminal-symbolic";
                         title: "Query";
                         child: $PsequelQueryEditor {
-                                
+                            window: bind template.window;
                         };
                     }
                 }
