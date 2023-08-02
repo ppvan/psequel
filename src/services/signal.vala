@@ -19,6 +19,7 @@ namespace Psequel {
         public signal void table_activated (Schema schema, string table);
         public signal void view_activated (Schema schema, string view);
 
+        public signal void request_database (Connection conn);
         public signal void database_connected ();
         /**
          * Should only init onces by the resource manager. Should be single on but i'm lazy

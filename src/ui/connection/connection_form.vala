@@ -21,7 +21,7 @@ namespace Psequel {
 
         public ConnectionSidebar sidebar { get; set; }
 
-        public ConnectionForm () {
+        public ConnectionForm (ConnectionView parent) {
             Object ();
         }
 
@@ -33,7 +33,17 @@ namespace Psequel {
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
             set_up_bindings (binddings);
+            setup_signals ();
+        }
 
+        private void setup_signals () {
+            ConnectionSidebar.signals.selection_changed.connect ((conn) => {
+                mapped_conn = conn;
+            });
+            ConnectionSidebar.signals.request_database_conn.connect ((conn) => {
+                mapped_conn = conn;
+                connect_btn.clicked ();
+            });
         }
 
         private void set_up_bindings (BindingGroup group) {
@@ -65,6 +75,19 @@ namespace Psequel {
             debug ("set_up binddings done");
         }
 
+        private async void connect_database (QueryService service, Connection conn) {
+
+            try {
+                yield service.connect_db (conn);
+
+                debug ("Emit database_connected");
+                signals.database_connected ();
+
+            } catch (PsequelError err) {
+                var dialog = create_dialog ("Connection error", err.message);
+                dialog.present ();
+            }
+        }
 
         [GtkCallback]
         private void on_url_entry_changed (Gtk.Editable editable) {
@@ -91,7 +114,6 @@ namespace Psequel {
                 port_entry.text = conn.port;
                 password_entry.text = conn.password;
                 ssl_switch.active = conn.use_ssl;
-
             } catch (PsequelError err) {
                 url_entry.add_css_class ("error");
                 err_label.label = err.message;
@@ -100,22 +122,9 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-
             btn.sensitive = false;
-            query_service.connect_db.begin (mapped_conn, (obj, res) => {
-                try {
-                    btn.sensitive = true;
-                    query_service.connect_db.end (res);
-
-                    debug ("Emit database_connected");
-                    signals.database_connected ();
-
-                    var window = (Window) ResourceManager.instance ().app.get_active_window ();
-                    window.navigate_to (Views.QUERY);
-                } catch (PsequelError err) {
-                    var dialog = create_dialog ("Connection error", err.message);
-                    dialog.present ();
-                }
+            connect_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
+                btn.sensitive = true;
             });
         }
 

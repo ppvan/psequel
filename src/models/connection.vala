@@ -72,9 +72,9 @@ namespace Psequel {
         /**
          * Convert connection to JSON string.
          */
-        // public string stringify () {
-        //// var Json.Bui
-        // }
+        public Connection clone () {
+            return (Connection)Json.gobject_deserialize (typeof (Connection), Json.gobject_serialize (this));
+        }
     }
 
 }

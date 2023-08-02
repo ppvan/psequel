@@ -25,6 +25,8 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
+        private AppSignals signals;
+
         public Window (Application app) {
             Object (application: app);
         }
@@ -37,9 +39,11 @@ namespace Psequel {
                                "default-height", SettingsBindFlags.DEFAULT);
             }
 
-            // Timeout.add_once (2000, () => {
-            // stack.set_visible_child_name ("label-view");
-            // });
+            this.signals = ResourceManager.instance ().signals;
+
+            signals.database_connected.connect (() => {
+                navigate_to (Views.QUERY);
+            });
         }
 
         /**
