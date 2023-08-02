@@ -10,10 +10,13 @@ namespace Psequel {
             { "connect", on_connect_connection },
             { "dupplicate", on_dupplicate_connection },
             { "delete", on_remove_connection },
+        };
 
+        // Import and export require access to this.model but also have to visible in app menu.
+        // So, it's on application action maps
+        const ActionEntry[] APP_ACTIONS = {
             { "import", on_import_connection },
             { "export", on_export_connection },
-
         };
 
         private Application app;
@@ -44,7 +47,6 @@ namespace Psequel {
                 this.setup_bindings ();
                 this.setup_action ();
             });
-
         }
 
         private void setup_action () {
@@ -52,7 +54,9 @@ namespace Psequel {
 
             var action_group = new SimpleActionGroup ();
             action_group.add_action_entries (ACTION_ENTRIES, this);
-            insert_action_group ("conn", action_group);
+            this.insert_action_group ("conn", action_group);
+
+            app.add_action_entries (APP_ACTIONS, this);
         }
 
         public void setup_bindings () {
@@ -84,7 +88,7 @@ namespace Psequel {
                 return;
             }
 
-            //  Emit connection changed for any one subcribe to it.
+            // Emit connection changed for any one subcribe to it.
             signals.selection_changed (conn_row.conn_data);
 
             debug ("mapped widget binding to another row");
@@ -114,12 +118,10 @@ namespace Psequel {
             }
         }
 
-
         private void on_import_connection () {
             debug ("Importting connections");
             open_file_dialog.begin ("Import Connections");
         }
-
 
         private void on_export_connection () {
             debug ("Exporting connections");
@@ -184,6 +186,12 @@ namespace Psequel {
         private async void open_file_dialog (string title = "Open File") {
             var filter = new Gtk.FileFilter ();
             filter.add_mime_type ("application/json");
+
+            var window = (Window) app.active_window;
+
+            debug (this.name);
+
+
             var file_dialog = new Gtk.FileDialog () {
                 modal = true,
                 initial_folder = File.new_for_path (Environment.get_home_dir ()),
@@ -193,7 +201,6 @@ namespace Psequel {
             };
 
             uint8[] contents;
-            var window = (Window) app.active_window;
 
             try {
                 var file = yield file_dialog.open (window, null);
@@ -288,7 +295,6 @@ namespace Psequel {
             var dupp = model[pos].clone ();
             model.insert (dupp, pos + 1);
         }
-
 
         private void request_connect_database () {
             var selected = conn_list.get_selected_row ();
