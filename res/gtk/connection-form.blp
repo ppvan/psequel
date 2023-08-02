@@ -300,12 +300,24 @@ template $PsequelConnectionForm : Adw.Bin {
 
 menu primary_menu {
   section {
-
     item {
       label: _("_New Window");
       action: "app.new-window";
     }
+  }
+  section {
+    item {
+      label: _("_Import Connections");
+      action: "app.new-window";
+    }
 
+    item {
+      label: _("_Export Connections");
+      action: "app.new-window";
+    }
+  }
+
+  section {
     item {
       label: _("_Preferences");
       action: "app.preferences";

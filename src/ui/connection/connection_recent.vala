@@ -10,6 +10,10 @@ namespace Psequel {
             { "connect", on_connect_connection },
             { "dupplicate", on_dupplicate_connection },
             { "delete", on_remove_connection },
+
+            { "import", on_import_connection },
+            { "export", on_export_connection },
+
         };
 
         private Application app;
@@ -98,12 +102,6 @@ namespace Psequel {
             conn_list.select_row (last_row);
         }
 
-        // On remove, remove selected connection and select pos - 1.
-        [GtkCallback]
-        public void on_remove_btn_clicked (Gtk.Button btn) {
-            remove_connection ();
-        }
-
         private Gtk.ListBoxRow row_factory (Object item) {
 
             if (item is Connection) {
@@ -116,14 +114,14 @@ namespace Psequel {
             }
         }
 
-        [GtkCallback]
-        private void on_import_connection (Gtk.Button btn) {
+
+        private void on_import_connection () {
             debug ("Importting connections");
             open_file_dialog.begin ("Import Connections");
         }
 
-        [GtkCallback]
-        private void on_export_connection (Gtk.Button btn) {
+
+        private void on_export_connection () {
             debug ("Exporting connections");
             save_file_dialog.begin ("Export Connections");
         }

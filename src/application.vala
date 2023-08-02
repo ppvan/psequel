@@ -145,6 +145,7 @@ namespace Psequel {
             window.present ();
         }
 
+
         private void on_preferences_action () {
 
             if (this.preference == null) {

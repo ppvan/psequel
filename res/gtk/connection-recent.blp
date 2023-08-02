@@ -20,34 +20,13 @@ template $PsequelConnectionSidebar : Gtk.Box {
             spacing: 4;
             hexpand: true;
             halign: end;
-            
-            Button {
-                styles ["flat", "big-icon", "linked"]
-                icon-name: "document-export-symbolic";
-                tooltip-text: "Import Connection";
-                clicked => $on_import_connection();
-            }
 
-            Button {
-                styles ["flat", "big-icon", "linked"]
-                icon-name: "document-import-symbolic";
-                tooltip-text: "Export Connection";
-                clicked => $on_export_connection();
-            }
-            
 
             Button {
                 tooltip-text: "Add new connection";
                 styles ["flat"]
                 icon-name: "plus-large-symbolic";
                 clicked => $on_add_connection();
-            }
-
-            Button {
-                tooltip-text: "Remove selected connection";
-                styles ["flat"]
-                icon-name: "minus-large-symbolic";
-                clicked => $on_remove_btn_clicked();
             }
         }
     }
