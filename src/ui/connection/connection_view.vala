@@ -19,6 +19,7 @@ namespace Psequel {
 
         // Connect event.
         construct {
+            debug ("[CONTRUCT] %s", this.name);
         }
 
 

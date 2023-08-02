@@ -19,7 +19,7 @@ namespace Psequel {
         }
 
         construct {
-
+            debug ("[CONTRUCT] %s", this.name);
             stack.visible_child_name = EMPTY;
             spinner.spinning = false;
             model = new ObservableArrayList<Relation.Row> ();

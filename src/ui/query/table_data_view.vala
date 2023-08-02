@@ -4,7 +4,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-data-view.ui")]
     public class TableData : Gtk.Box {
 
-        private AppSignals signals;
+        private unowned WindowSignals signals;
         private QueryService query_service;
 
         private ObservableArrayList<Relation.Row> model;
@@ -20,13 +20,14 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
             query_service = ResourceManager.instance ().query_service;
-            signals = ResourceManager.instance ().signals;
             model = new ObservableArrayList<Relation.Row> ();
 
             var setting = ResourceManager.instance ().settings;
             setting.bind ("query-limit", this, "query-limit", SettingsBindFlags.DEFAULT);
-            connect_signal ();
+
+            setup_signals ();
         }
 
 
@@ -69,23 +70,31 @@ namespace Psequel {
             status_label.label = @"Rows $begin - $end";
         }
 
-        private void connect_signal () {
-            this.signals.table_selected_changed.connect ((tbname) => {
-                this.tbname = tbname;
-                this.filter_entry.set_text ("");
-                load_data.begin (schema.name, tbname);
-            });
+        private void setup_signals () {
 
-            this.signals.view_selected_changed.connect ((vname) => {
-                this.tbname = vname;
-                this.filter_entry.set_text ("");
-                load_data.begin (schema.name, vname);
-            });
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                signals = get_parrent_window (this).signals;
 
-            this.signals.schema_changed.connect ((schema) => {
-                this.schema = schema;
+                signals.table_selected_changed.connect ((tbname) => {
+                    this.tbname = tbname;
+                    this.filter_entry.set_text ("");
+                    load_data.begin (schema.name, tbname);
+                });
+
+                signals.view_selected_changed.connect ((vname) => {
+                    this.tbname = vname;
+                    this.filter_entry.set_text ("");
+                    load_data.begin (schema.name, vname);
+                });
+
+                signals.schema_changed.connect ((schema) => {
+                    this.schema = schema;
+                });
             });
         }
+
 
         [GtkCallback]
         private void filter_query (Gtk.Button btn) {

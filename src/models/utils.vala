@@ -183,4 +183,16 @@ namespace Psequel {
             assert_not_reached ();
         }
     }
+
+    public Window get_parrent_window (Gtk.Widget widget) {
+        var window = widget.get_root ();
+
+        if (window is Gtk.Window) {
+            return (Window) window;
+        } else {
+            warning ("Widget %s root is not a window", widget.name);
+
+            assert_not_reached ();
+        }
+    }
 }

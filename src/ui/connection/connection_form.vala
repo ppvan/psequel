@@ -6,7 +6,7 @@ namespace Psequel {
         BindingGroup binddings;
 
         private unowned QueryService query_service;
-        private unowned AppSignals signals;
+        private unowned WindowSignals signals;
 
         private Connection _conn;
         public Connection mapped_conn {
@@ -26,9 +26,9 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
             // init service
             query_service = ResourceManager.instance ().query_service;
-            signals = ResourceManager.instance ().signals;
 
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
@@ -37,13 +37,22 @@ namespace Psequel {
         }
 
         private void setup_signals () {
-            ConnectionSidebar.signals.selection_changed.connect ((conn) => {
-                mapped_conn = conn;
+
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                signals = get_parrent_window (this).signals;
+
+                signals.selection_changed.connect ((conn) => {
+                    mapped_conn = conn;
+                });
+
+                signals.request_database_conn.connect ((conn) => {
+                    mapped_conn = conn;
+                    connect_btn.clicked ();
+                });
             });
-            ConnectionSidebar.signals.request_database_conn.connect ((conn) => {
-                mapped_conn = conn;
-                connect_btn.clicked ();
-            });
+
         }
 
         private void set_up_bindings (BindingGroup group) {

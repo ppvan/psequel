@@ -11,6 +11,7 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
             settings = ResourceManager.instance ().settings;
             setup_binding ();
             defaults ();

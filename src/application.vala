@@ -28,6 +28,7 @@ namespace Psequel {
 
 
         private PreferencesWindow preference;
+        private AppSignals app_signals;
 
         public Application () {
             Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
@@ -40,16 +41,14 @@ namespace Psequel {
                 { "quit", this.quit }
             };
             this.add_action_entries (action_entries, this);
-            this.set_accels_for_action ("app.quit", {"<primary>q"});
+            this.set_accels_for_action ("app.quit", { "<primary>q" });
         }
 
         public override void activate () {
             base.activate ();
-            var win = this.active_window;
-            if (win == null) {
-                win = new Psequel.Window (this);
-            }
-            win.present ();
+
+            var window = new_window ();
+            window.present ();
         }
 
         public override void startup () {
@@ -71,9 +70,10 @@ namespace Psequel {
                     return_if_reached ();
                 }
 
+                app_signals = new AppSignals ();
+                app.app_signals = app_signals;
                 query_service = new QueryService (background);
                 table_list = new ObservableArrayList<Relation.Row> ();
-                signals = new AppSignals ();
 
                 load_user_data ();
             };
@@ -103,6 +103,7 @@ namespace Psequel {
 
         /* register needed types, allow me to ref a template inside a template */
         private static void ensure_types () {
+            typeof (WindowSignals).ensure ();
             typeof (Psequel.ConnectionView).ensure ();
             typeof (Psequel.ConnectionSidebar).ensure ();
             typeof (Psequel.ConnectionForm).ensure ();
@@ -148,6 +149,15 @@ namespace Psequel {
                 };
             }
             this.preference.present ();
+        }
+
+        private Window new_window () {
+            var signals = new WindowSignals ();
+            var window = new Window (this);
+            window.signals = (owned)signals;
+            app_signals.window_ready ();
+
+            return window;
         }
     }
 }

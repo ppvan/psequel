@@ -5,21 +5,6 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-recent.ui")]
     public class ConnectionSidebar : Gtk.Box {
 
-        /* Learn from Svelte ~ write store */
-        public class InnerSignal {
-            /* Target connection in connection list changed */
-            public signal void selection_changed (Connection conn);
-
-            /* Request a db connection by click connect context menu */
-            public signal void request_database_conn (Connection conn);
-        }
-
-        public static InnerSignal signals;
-
-        static construct {
-            signals = new InnerSignal ();
-        }
-
 
         const ActionEntry[] ACTION_ENTRIES = {
             { "connect", on_connect_connection },
@@ -28,7 +13,10 @@ namespace Psequel {
         };
 
         private Application app;
-        private ObservableArrayList<Connection> model;
+
+        /* This is null ultil window ready event, which after contruct block */
+        private unowned WindowSignals signals;
+        private unowned ObservableArrayList<Connection> model;
 
 
         public ConnectionSidebar (ConnectionView parent) {
@@ -36,13 +24,28 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
 
             this.app = ResourceManager.instance ().app;
-            setup_bindings ();
-            setup_action ();
+            this.model = ResourceManager.instance ().recent_connections;
+
+            setup_signals ();
+        }
+
+        private void setup_signals () {
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                signals = get_parrent_window (this).signals;
+                this.setup_bindings ();
+                this.setup_action ();
+            });
+
         }
 
         private void setup_action () {
+            debug ("setup_action");
+
             var action_group = new SimpleActionGroup ();
             action_group.add_action_entries (ACTION_ENTRIES, this);
             insert_action_group ("conn", action_group);
@@ -50,8 +53,6 @@ namespace Psequel {
 
         public void setup_bindings () {
             debug ("setup bindings");
-
-            this.model = ResourceManager.instance ().recent_connections;
 
             // Auto create a conn and focus it on first install.
             if (model.size == 0) {
