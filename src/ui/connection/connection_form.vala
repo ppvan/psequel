@@ -8,6 +8,9 @@ namespace Psequel {
         private unowned QueryService query_service;
         private unowned WindowSignals signals;
 
+        /** Binded in blueprints file */
+        public Window window { get; set; }
+
         private Connection _conn;
         public Connection mapped_conn {
             get {
@@ -21,39 +24,33 @@ namespace Psequel {
 
         public ConnectionSidebar sidebar { get; set; }
 
-        public ConnectionForm (ConnectionView parent) {
-            Object ();
+        public ConnectionForm (Window window) {
+            Object (window: window);
         }
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
             set_up_bindings (binddings);
-            setup_signals ();
+
+            ResourceManager.instance ().app_signals.window_ready.connect (setup_signals);
         }
 
         private void setup_signals () {
 
-            // signals can only be connected after the window is ready.
-            // because widget access window to get signals.
-            ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                var window = get_parrent_window (this);
-                signals = window.signals;
+            signals = window.signals;
 
-                signals.selection_changed.connect ((conn) => {
-                    mapped_conn = conn;
-                });
-
-                signals.request_database_conn.connect ((conn) => {
-                    mapped_conn = conn;
-                    connect_btn.clicked ();
-                });
-
-                query_service = window.query_service;
+            signals.selection_changed.connect ((conn) => {
+                mapped_conn = conn;
             });
 
+            signals.request_database_conn.connect ((conn) => {
+                mapped_conn = conn;
+                connect_btn.clicked ();
+            });
+
+            query_service = window.query_service;
         }
 
         private void set_up_bindings (BindingGroup group) {
@@ -92,7 +89,6 @@ namespace Psequel {
 
                 debug ("Emit database_connected");
                 signals.database_connected ();
-
             } catch (PsequelError err) {
                 var dialog = create_dialog ("Connection error", err.message);
                 dialog.present ();

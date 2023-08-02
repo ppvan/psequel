@@ -73,7 +73,7 @@ namespace Psequel {
 
                 app_signals = new AppSignals ();
                 app.app_signals = app_signals;
-                //  query_service = new QueryService (background);
+                // query_service = new QueryService (background);
                 table_list = new ObservableArrayList<Relation.Row> ();
 
                 load_user_data ();
@@ -145,7 +145,6 @@ namespace Psequel {
             window.present ();
         }
 
-
         private void on_preferences_action () {
 
             if (this.preference == null) {
@@ -158,12 +157,18 @@ namespace Psequel {
             this.preference.present ();
         }
 
+        /**
+         * Create a window and inject resources.
+         * 
+         * Because child widget is created before window, signals can only be connect when window is init.
+         * This result to another event to notify window is ready and widget should setup signals
+         */
         private Window new_window () {
             var signals = new WindowSignals ();
             var window = new Window (this);
             var query_service = new QueryService (ResourceManager.instance ().background);
-            window.signals = (owned)signals;
-            window.query_service = (owned)query_service;
+            window.signals = (owned) signals;
+            window.query_service = (owned) query_service;
             app_signals.window_ready ();
 
             return window;

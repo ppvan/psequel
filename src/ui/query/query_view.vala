@@ -10,8 +10,10 @@ namespace Psequel {
         public const string TABLE_STRUCTURE = "structure-view";
         public const string QUERY_EDITOR = "query-editor";
 
+        public Window window {get; set;}
         private unowned QueryService query_service;
         private unowned WindowSignals signals;
+
         private SchemaService schema_service;
 
         private ObservableArrayList<Schema> schemas;
@@ -45,8 +47,8 @@ namespace Psequel {
             tbname_filter = new Gtk.StringFilter (exp);
             vname_filter = new Gtk.StringFilter (exp);
 
-            setup_signals ();
             set_up_schema ();
+            ResourceManager.instance ().app_signals.window_ready.connect (setup_signals);
         }
 
 
@@ -149,12 +151,8 @@ namespace Psequel {
         }
 
         private void setup_signals () {
-            // signals can only be connected after the window is ready.
-            // because widget access window to get signals.
-            ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                var window = get_parrent_window (this);
 
-                signals = window.signals;
+            signals = window.signals;
 
                 signals.database_connected.connect (() => {
                     debug ("Handle database_connected.");
@@ -168,7 +166,6 @@ namespace Psequel {
 
                 schema_service = new SchemaService (query_service);
                 schemas = new ObservableArrayList<Schema> ();
-            });
         }
 
         [GtkCallback]

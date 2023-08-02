@@ -19,6 +19,8 @@ namespace Psequel {
             { "export", on_export_connection },
         };
 
+        /** Binded in blueprints file */
+        public Window window { get; set; }
         private Application app;
 
         /* This is null ultil window ready event, which after contruct block */
@@ -26,27 +28,24 @@ namespace Psequel {
         private unowned ObservableArrayList<Connection> model;
 
 
-        public ConnectionSidebar (ConnectionView parent) {
-            Object ();
+        public ConnectionSidebar (Window window) {
+            Object (window: window);
         }
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
 
-            this.app = ResourceManager.instance ().app;
-            this.model = ResourceManager.instance ().recent_connections;
-
-            setup_signals ();
+            with (ResourceManager.instance ()) {
+                this.app = app;
+                this.model = recent_connections;
+                app_signals.window_ready.connect (setup_signals);
+            }
         }
 
         private void setup_signals () {
-            // signals can only be connected after the window is ready.
-            // because widget access window to get signals.
-            ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                signals = get_parrent_window (this).signals;
-                this.setup_bindings ();
-                this.setup_action ();
-            });
+            signals = window.signals;
+            this.setup_bindings ();
+            this.setup_action ();
         }
 
         private void setup_action () {

@@ -4,6 +4,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-data-view.ui")]
     public class TableData : Gtk.Box {
 
+        public Window window {get; set;}
         private unowned WindowSignals signals;
         private QueryService query_service;
 
@@ -26,7 +27,7 @@ namespace Psequel {
             var setting = ResourceManager.instance ().settings;
             setting.bind ("query-limit", this, "query-limit", SettingsBindFlags.DEFAULT);
 
-            setup_signals ();
+            ResourceManager.instance ().app_signals.window_ready.connect (setup_signals);
         }
 
 
@@ -74,7 +75,7 @@ namespace Psequel {
             // signals can only be connected after the window is ready.
             // because widget access window to get signals.
             ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                signals = get_parrent_window (this).signals;
+                signals = window.signals;
 
                 signals.table_selected_changed.connect ((tbname) => {
                     this.tbname = tbname;
@@ -92,7 +93,7 @@ namespace Psequel {
                     this.schema = schema;
                 });
 
-                query_service = get_parrent_window (this).query_service;
+                query_service = window.query_service;
             });
         }
 

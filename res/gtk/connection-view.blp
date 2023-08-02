@@ -14,11 +14,13 @@ template $PsequelConnectionView : Adw.Bin {
 
         [start]
         $PsequelConnectionSidebar sidebar {
+            window: bind template.window;
             width-request: 300;
         }
 
         [end]
         $PsequelConnectionForm form {
+            window: bind template.window;
         }
     }
 

@@ -36,22 +36,16 @@ namespace Psequel {
             debug ("[CONTRUCT] %s", this.name);
 
             with (ResourceManager.instance ()) {
-                settings.bind ("window-width", this,
-                               "default-width", SettingsBindFlags.DEFAULT);
-                settings.bind ("window-height", this,
-                               "default-height", SettingsBindFlags.DEFAULT);
-            }
+                settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
+                settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
 
-            setup_signals ();
+                app_signals.window_ready.connect (setup_signals);
+            }
         }
 
         private void setup_signals () {
-            // signals can only be connected after the window is ready.
-            // because widget access window to get signals.
-            ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                signals.database_connected.connect (() => {
-                    navigate_to (Views.QUERY);
-                });
+            signals.database_connected.connect (() => {
+                navigate_to (Views.QUERY);
             });
         }
 

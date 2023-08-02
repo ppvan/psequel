@@ -9,6 +9,8 @@ namespace Psequel {
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
 
+        /** Binded in blueprints file */
+        public Window window { get; set; }
 
         public class QueryEditor () {
             Object ();
@@ -16,21 +18,17 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            debug ("Contruct view");
 
             lang_manager = LanguageManager.get_default ();
             style_manager = StyleSchemeManager.get_default ();
 
             default_setttings ();
-            setup_signals ();
+            ResourceManager.instance ().app_signals.window_ready.connect (setup_signals);
         }
 
         private void setup_signals () {
-            ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                query_service = get_parrent_window (this).query_service;
-            });
+            query_service = window.query_service;
         }
-
 
         void default_setttings () {
 
@@ -58,6 +56,7 @@ namespace Psequel {
                 query_results.show_loading ();
                 int64 exec_time = 0;
                 var relation = yield query_service.exec_query (query, out exec_time);
+
                 query_results.show_result (relation);
 
                 update_status (relation, exec_time);
@@ -65,7 +64,6 @@ namespace Psequel {
                 query_results.show_error (err);
             }
         }
-
 
         [GtkCallback]
         private void run_query_cb (Gtk.Button btn) {
@@ -79,7 +77,6 @@ namespace Psequel {
             debug ("Exec query: %s", text);
 
             run_query.begin (text);
-
         }
 
         private void update_status (Relation relation, int64 exec_time) {

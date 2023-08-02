@@ -6,15 +6,13 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-view.ui")]
     public class ConnectionView : Adw.Bin {
 
-        public void hello () {
-            debug ("Hello");
-        }
+        public Window window {get; set;}
 
         public ConnectionView (Application app) {
             Object ();
 
-            sidebar = new ConnectionSidebar (this);
-            form = new ConnectionForm (this);
+            sidebar = new ConnectionSidebar (window);
+            form = new ConnectionForm (window);
         }
 
         // Connect event.
