@@ -3,10 +3,12 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-results.ui")]
     public class QueryResults : Adw.Bin {
 
-        const string MAIN = "main";
+        const string EMPTY = "empty";
+        const string MAIN = "data";
         const string LOADING = "loading";
         const string ERROR = "error";
 
+        public string wellcome_message {get; set;}
         private ObservableArrayList<Relation.Row> model;
 
         private Gtk.SortListModel sort_model;
@@ -18,7 +20,7 @@ namespace Psequel {
 
         construct {
 
-            stack.visible_child_name = LOADING;
+            stack.visible_child_name = EMPTY;
             spinner.spinning = false;
             model = new ObservableArrayList<Relation.Row> ();
             // construct columns

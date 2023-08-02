@@ -13,6 +13,9 @@
     -gtk-icon-size: 20px;
 }
 
+.icon-xl image {
+    -gtk-icon-size: 50%;
+}
 
 .secondary {
     opacity: 0.55;

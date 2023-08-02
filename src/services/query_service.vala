@@ -160,6 +160,9 @@ namespace Psequel {
                 var err_msg = result.get_error_message ();
                 debug ("Fatal error: %s", err_msg);
                 throw new PsequelError.QUERY_FAIL (err_msg.dup ());
+            case ExecStatus.EMPTY_QUERY:
+                debug ("Empty query");
+                throw new PsequelError.QUERY_FAIL ("Empty query");
             default:
                 warning ("Programming error: %s not handled", status.to_string ());
                 assert_not_reached ();
