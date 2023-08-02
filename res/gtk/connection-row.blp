@@ -1,0 +1,44 @@
+using Gtk 4.0;
+
+template $PsequelConnectionRow : Gtk.ListBoxRow {
+    child: Box {
+        margin-start: 16;
+        height-request: 30;
+        spacing: 16;
+
+
+        Image {
+            icon-name: "text-sql-symbolic";
+        }
+
+        Label label {
+            label: "New Connection";
+        }
+
+        PopoverMenu pop_over {
+            menu-model: menu;
+        }
+    };
+}
+
+
+menu menu {
+  section {
+    item {
+      label: _("_Connect");
+      action: "conn.connect";
+    }
+
+    item {
+      label: _("_Dupplicate");
+      action: "conn.dupplicate";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Delete");
+      action: "conn.delete";
+    }
+  }
+}

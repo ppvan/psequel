@@ -9,6 +9,7 @@ blueprints = custom_target('blueprints',
     'gtk/connection-form.blp',
     'gtk/connection-recent.blp',
     'gtk/connection-view.blp',
+    'gtk/connection-row.blp',
 
     'gtk/main.blp',
     'gtk/query-view.blp',

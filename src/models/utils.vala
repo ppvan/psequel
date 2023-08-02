@@ -96,6 +96,11 @@ namespace Psequel {
         public Iterator<T> iterator () {
             return _data.iterator ();
         }
+
+        public void insert (T item, int pos) {
+            _data.insert (pos, item);
+            items_changed (pos, 0, 1);
+        }
     }
 
     public class Worker {
