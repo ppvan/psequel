@@ -1,7 +1,7 @@
 namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-form.ui")]
-    public class ConnectionForm : Gtk.Box {
+    public class ConnectionForm : Adw.Bin {
 
         BindingGroup binddings;
 

@@ -38,6 +38,7 @@ namespace Psequel {
             ActionEntry[] action_entries = {
                 { "about", this.on_about_action },
                 { "preferences", this.on_preferences_action },
+                { "new-window", this.on_new_window },
                 { "quit", this.quit }
             };
             this.add_action_entries (action_entries, this);
@@ -137,6 +138,11 @@ namespace Psequel {
             };
 
             about.present ();
+        }
+
+        private void on_new_window () {
+            var window = new_window ();
+            window.present ();
         }
 
         private void on_preferences_action () {
