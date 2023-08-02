@@ -6,10 +6,7 @@ namespace Psequel {
     public class ResourceManager : Object {
 
 
-        /**
-         * Application specific signals.
-         */
-        public AppSignals signals;
+        public AppSignals app_signals;
 
         /**
          * Recent connections info in last sessions.

@@ -15,13 +15,20 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
             debug ("Contruct view");
 
-            query_service = ResourceManager.instance ().query_service;
             lang_manager = LanguageManager.get_default ();
             style_manager = StyleSchemeManager.get_default ();
 
             default_setttings ();
+            setup_signals ();
+        }
+
+        private void setup_signals () {
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                query_service = get_parrent_window (this).query_service;
+            });
         }
 
 

@@ -1,300 +1,322 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PsequelConnectionForm : Gtk.Box {
+template $PsequelConnectionForm : Adw.Bin {
 
-    orientation: vertical;
-    hexpand: true;
-    vexpand: true;
+    child: WindowHandle {
+        Box {
+            orientation: vertical;
+            hexpand: true;
+            vexpand: true;
+            Adw.HeaderBar header {
+                styles ["flat"]
 
-
-    Adw.HeaderBar header {
-        styles ["flat"]
-
-        [title]
-        Label {
-          label: "";
-        }
-
-        // Dupplicate primary_menu in query-view.blp.
-        // Update both if you change something
-        [end]
-        MenuButton {
-            icon-name: "open-menu-symbolic";
-            menu-model: primary_menu;
-        }
-    }
-
-    Adw.Clamp {
-        valign: center;
-        maximum-size: 800;
-            Box {
-                orientation: vertical;
-                styles ["connection-form", "frame"]
-                // vexpand: true;
-                spacing: 4;
-                
-                Label {
-                    margin-top: 20;
-                    margin-bottom: 40;
-                    styles ["title-0"]
-
-                    label: "Connect with Psequel";
-                }
-                
-                Box {
-                    spacing: 8;
-                
+                [title]
                     Label {
-                        label: "URL:";
-                    }
-                    
-                    Entry url_entry {
-                        placeholder-text: "postgres://...";
-                        hexpand: true;
-                        activate => $on_entry_activated();
-                        changed => $on_url_entry_changed();
-                    }
-                }
-
-                Label err_label {
-                    styles ["secondary"]
-                    height-request: 48;
-                    valign: start;
-                    label: " ";
-                }
-                
-                CenterBox {
-                    margin-top: 0;
-                    margin-bottom: 24;
-                    [start]
-                    Box {
-                        orientation: vertical;
-                        hexpand: true;
-                        valign: center;
-                        margin-start: 8;
-                        margin-end: 8;
-                        Separator {
-                        
-                        }
-                    }
-                    [center]
-                    Label {
-                        styles ["title-3"]
-                        label: "OR";
-                    }
-                    [end]
-                    Box {
-                        orientation: vertical;
-                        hexpand: true;
-                        valign: center;
-                        margin-start: 8;
-                        margin-end: 8;
-                        Separator {
-                        
-                        }
-                    }
-                }
-                
-                Grid {
-            
-                    hexpand: true;
-                    vexpand: true;
-                    row-homogeneous: true;
-                    row-spacing: 8;
-                    column-spacing: 8;
-                    margin-start: 4;
-                    margin-end: 4;
-                
-                    Label {
-                        halign: end;
-                        label: "Name:";
-                        
-                        layout {
-                            row: 0;
-                            column: 0;
-                            column-span: 3;
-                        }
-                    }
-                    
-                    Label {
-                        halign: end;
-                        label: "Host:";
-                        
-                        layout {
-                            row: 1;
-                            column: 0;
-                            column-span: 3;
-                        }
-                    }
-                    
-                    Label {
-                        halign: end;
-                        label: "User:";
-                        
-                        layout {
-                            row: 2;
-                            column: 0;
-                            column-span: 3;
-                        }
-                    }
-                    
-                    Label {
-                        halign: end;
-                        label: "Password:";
-                        
-                        layout {
-                            row: 3;
-                            column: 0;
-                            column-span: 3;
-                        }
-                    }
-                    
-                    Label {
-                        halign: end;
-                        label: "Database:";
-                        
-                        layout {
-                            row: 4;
-                            column: 0;
-                            column-span: 3;
-                        }
-                    }
-                    
-                    Entry name_entry {
-                        placeholder-text: "Connection name";
-                        hexpand: true;
-                        activate => $on_entry_activated();
-                        
-                        layout {
-                            row: 0;
-                            column: 3;
-                            column-span: 7;
-                        }
-                    }
-                    
-                    Entry host_entry {
-                        placeholder-text: "localhost";
-                        activate => $on_entry_activated();
-                        
-                        layout {
-                            row: 1;
-                            column: 3;
-                            column-span: 5;
-                        }
-                    }
-                    
-                    Label {
-                        label: "Port";
-                        halign: end;
-                        layout {
-                            row: 1;
-                            column: 8;
-                        }
-                    }
-                    
-                    Entry port_entry {
-                        placeholder-text: "5432";
-                        activate => $on_entry_activated();
-                        
-                        layout {
-                            row: 1;
-                            column: 9;
-                            column-span: 1;
-                        }
-                    }
-                    
-                    Entry user_entry {
-                        placeholder-text: "postgres";
-                        activate => $on_entry_activated();
-                        
-                        layout {
-                            row: 2;
-                            column: 3;
-                            column-span: 7;
-                        }
-                    }
-                    
-                    PasswordEntry password_entry {
-                        placeholder-text: "";
-                        show-peek-icon: true;
-                        activate => $on_entry_activated();
-                        
-                        layout {
-                            row: 3;
-                            column: 3;
-                            column-span: 7;
-                        }
-                    }
-                    
-                    
-                    Entry database_entry {
-                        placeholder-text: "postgres";
-                        activate => $on_entry_activated();
-                        
-                        layout {
-                            row: 4;
-                            column: 3;
-                            column-span: 7;
-                        }
-                    }
-                    
-                    Label {
-                        label: "SSL:";
-                        halign: end;
-                        layout {
-                            row: 5;
-                            column: 0;
-                            column-span: 3;
-                        }
-                    }
-                    
-                    Box {
-                        orientation: horizontal;
-                        Box {
-                            valign: center;
-                            orientation: vertical;
-                            Switch ssl_switch {}
-                        }
-                        layout {
-                            row: 5;
-                            column: 3;
-                        }
-                    }
-            }
-            
-            Box {
-
-                margin-top: 20;
-                margin-bottom: 10;
-                
-                Label status_label {
                     label: "";
-                    halign: start;
-                    hexpand: true;
                 }
 
-                Box {
-
-                    spacing: 8;
-
-                    Spinner spinner {
-                        
-                    }
-
-                    Button connect_btn {
-                        styles ["suggested-action"]
-                        label: "Connect";
-                        clicked => $on_connect_clicked();
-                    }
+                // Dupplicate primary_menu in query-view.blp.
+                // Update both if you change something
+                [end]
+                MenuButton {
+                    icon-name: "open-menu-symbolic";
+                    menu-model: primary_menu;
                 }
             }
 
+            Adw.Clamp {
+                valign: start;
+                hexpand: true;
+                vexpand: true;
+                maximum-size: 800;
+                    Box {
+                        orientation: vertical;
+                        styles ["connection-form"]
+                        // vexpand: true;
+                        spacing: 4;
+                        
+                        Label {
+                            margin-top: 20;
+                            margin-bottom: 40;
+                            styles ["title-0"]
+
+                            label: "Connect with Psequel";
+                        }
+                        
+                        Box {
+                            spacing: 8;
+                        
+                            Label {
+                                label: "URL:";
+                            }
+                            
+                            Entry url_entry {
+                                placeholder-text: "postgres://...";
+                                hexpand: true;
+                                activate => $on_entry_activated();
+                                changed => $on_url_entry_changed();
+                            }
+                        }
+
+                        Label err_label {
+                            styles ["secondary"]
+                            height-request: 48;
+                            valign: start;
+                            label: " ";
+                        }
+                        
+                        CenterBox {
+                            margin-top: 0;
+                            margin-bottom: 24;
+                            [start]
+                            Box {
+                                orientation: vertical;
+                                hexpand: true;
+                                valign: center;
+                                margin-start: 8;
+                                margin-end: 8;
+                                Separator {
+                                
+                                }
+                            }
+                            [center]
+                            Label {
+                                styles ["title-3"]
+                                label: "OR";
+                            }
+                            [end]
+                            Box {
+                                orientation: vertical;
+                                hexpand: true;
+                                valign: center;
+                                margin-start: 8;
+                                margin-end: 8;
+                                Separator {
+                                
+                                }
+                            }
+                        }
+                        
+                        Grid {
+                    
+                            hexpand: true;
+                            vexpand: true;
+                            row-homogeneous: true;
+                            row-spacing: 8;
+                            column-spacing: 8;
+                            margin-start: 4;
+                            margin-end: 4;
+                        
+                            Label {
+                                halign: end;
+                                label: "Name:";
+                                
+                                layout {
+                                    row: 0;
+                                    column: 0;
+                                    column-span: 3;
+                                }
+                            }
+                            
+                            Label {
+                                halign: end;
+                                label: "Host:";
+                                
+                                layout {
+                                    row: 1;
+                                    column: 0;
+                                    column-span: 3;
+                                }
+                            }
+                            
+                            Label {
+                                halign: end;
+                                label: "User:";
+                                
+                                layout {
+                                    row: 2;
+                                    column: 0;
+                                    column-span: 3;
+                                }
+                            }
+                            
+                            Label {
+                                halign: end;
+                                label: "Password:";
+                                
+                                layout {
+                                    row: 3;
+                                    column: 0;
+                                    column-span: 3;
+                                }
+                            }
+                            
+                            Label {
+                                halign: end;
+                                label: "Database:";
+                                
+                                layout {
+                                    row: 4;
+                                    column: 0;
+                                    column-span: 3;
+                                }
+                            }
+                            
+                            Entry name_entry {
+                                placeholder-text: "Connection name";
+                                hexpand: true;
+                                activate => $on_entry_activated();
+                                
+                                layout {
+                                    row: 0;
+                                    column: 3;
+                                    column-span: 7;
+                                }
+                            }
+                            
+                            Entry host_entry {
+                                placeholder-text: "localhost";
+                                activate => $on_entry_activated();
+                                
+                                layout {
+                                    row: 1;
+                                    column: 3;
+                                    column-span: 5;
+                                }
+                            }
+                            
+                            Label {
+                                label: "Port";
+                                halign: end;
+                                layout {
+                                    row: 1;
+                                    column: 8;
+                                }
+                            }
+                            
+                            Entry port_entry {
+                                placeholder-text: "5432";
+                                activate => $on_entry_activated();
+                                
+                                layout {
+                                    row: 1;
+                                    column: 9;
+                                    column-span: 1;
+                                }
+                            }
+                            
+                            Entry user_entry {
+                                placeholder-text: "postgres";
+                                activate => $on_entry_activated();
+                                
+                                layout {
+                                    row: 2;
+                                    column: 3;
+                                    column-span: 7;
+                                }
+                            }
+                            
+                            PasswordEntry password_entry {
+                                placeholder-text: "";
+                                show-peek-icon: true;
+                                activate => $on_entry_activated();
+                                
+                                layout {
+                                    row: 3;
+                                    column: 3;
+                                    column-span: 7;
+                                }
+                            }
+                            
+                            
+                            Entry database_entry {
+                                placeholder-text: "postgres";
+                                activate => $on_entry_activated();
+                                
+                                layout {
+                                    row: 4;
+                                    column: 3;
+                                    column-span: 7;
+                                }
+                            }
+                            
+                            Label {
+                                label: "SSL:";
+                                halign: end;
+                                layout {
+                                    row: 5;
+                                    column: 0;
+                                    column-span: 3;
+                                }
+                            }
+                            
+                            Box {
+                                orientation: horizontal;
+                                Box {
+                                    valign: center;
+                                    orientation: vertical;
+                                    Switch ssl_switch {}
+                                }
+                                layout {
+                                    row: 5;
+                                    column: 3;
+                                }
+                            }
+                    }
+                    
+                    Box {
+
+                        margin-top: 20;
+                        margin-bottom: 10;
+                        
+                        Label status_label {
+                            label: "";
+                            halign: start;
+                            hexpand: true;
+                        }
+
+                        Box {
+
+                            spacing: 8;
+
+                            Spinner spinner {
+                                
+                            }
+
+                            Button connect_btn {
+                                styles ["suggested-action"]
+                                label: "Connect";
+                                clicked => $on_connect_clicked();
+                            }
+                        }
+                    }
+
+                }
+            }
         }
-    }
+    };
 }
 
 menu primary_menu {
+  section {
+    item {
+      label: _("_New Window");
+      action: "app.new-window";
+    }
+  }
+  section {
+    item {
+      label: _("_Import Connections");
+      action: "app.import";
+    }
+
+    item {
+      label: _("_Export Connections");
+      action: "app.export";
+    }
+  }
+
   section {
     item {
       label: _("_Preferences");

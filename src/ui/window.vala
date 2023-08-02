@@ -25,13 +25,16 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
-        private AppSignals signals;
+        public WindowSignals signals {get; set; default = null;}
+        public QueryService query_service {get; set; default = null;}
 
         public Window (Application app) {
             Object (application: app);
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
+
             with (ResourceManager.instance ()) {
                 settings.bind ("window-width", this,
                                "default-width", SettingsBindFlags.DEFAULT);
@@ -39,10 +42,16 @@ namespace Psequel {
                                "default-height", SettingsBindFlags.DEFAULT);
             }
 
-            this.signals = ResourceManager.instance ().signals;
+            setup_signals ();
+        }
 
-            signals.database_connected.connect (() => {
-                navigate_to (Views.QUERY);
+        private void setup_signals () {
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                signals.database_connected.connect (() => {
+                    navigate_to (Views.QUERY);
+                });
             });
         }
 
@@ -50,6 +59,9 @@ namespace Psequel {
          * Navigate to the stack view.
          */
         public void navigate_to (string view_name) {
+
+            debug ("OK");
+
             var child = stack.get_child_by_name (view_name);
 
             if (child == null) {
@@ -58,7 +70,6 @@ namespace Psequel {
                 debug ("navigate_to %s", view_name);
                 stack.visible_child = child;
             }
-
         }
 
         public void add_toast (Adw.Toast toast) {

@@ -1,12 +1,12 @@
 namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-form.ui")]
-    public class ConnectionForm : Gtk.Box {
+    public class ConnectionForm : Adw.Bin {
 
         BindingGroup binddings;
 
         private unowned QueryService query_service;
-        private unowned AppSignals signals;
+        private unowned WindowSignals signals;
 
         private Connection _conn;
         public Connection mapped_conn {
@@ -26,9 +26,7 @@ namespace Psequel {
         }
 
         construct {
-            // init service
-            query_service = ResourceManager.instance ().query_service;
-            signals = ResourceManager.instance ().signals;
+            debug ("[CONTRUCT] %s", this.name);
 
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
@@ -37,13 +35,25 @@ namespace Psequel {
         }
 
         private void setup_signals () {
-            ConnectionSidebar.signals.selection_changed.connect ((conn) => {
-                mapped_conn = conn;
+
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                var window = get_parrent_window (this);
+                signals = window.signals;
+
+                signals.selection_changed.connect ((conn) => {
+                    mapped_conn = conn;
+                });
+
+                signals.request_database_conn.connect ((conn) => {
+                    mapped_conn = conn;
+                    connect_btn.clicked ();
+                });
+
+                query_service = window.query_service;
             });
-            ConnectionSidebar.signals.request_database_conn.connect ((conn) => {
-                mapped_conn = conn;
-                connect_btn.clicked ();
-            });
+
         }
 
         private void set_up_bindings (BindingGroup group) {

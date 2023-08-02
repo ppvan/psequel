@@ -11,14 +11,13 @@ namespace Psequel {
         public const string QUERY_EDITOR = "query-editor";
 
         private unowned QueryService query_service;
-        private unowned AppSignals signals;
+        private unowned WindowSignals signals;
         private SchemaService schema_service;
 
         private ObservableArrayList<Schema> schemas;
 
         private Schema _current_schema;
-
-        private Schema current_schema {
+        public Schema current_schema {
             get {
                 return _current_schema;
             }
@@ -40,18 +39,14 @@ namespace Psequel {
         }
 
         construct {
-            query_service = ResourceManager.instance ().query_service;
-            signals = ResourceManager.instance ().signals;
-
-            schema_service = new SchemaService (query_service);
-            schemas = new ObservableArrayList<Schema> ();
+            debug ("[CONTRUCT] %s", this.name);
 
             var exp = new Gtk.PropertyExpression (typeof (Gtk.StringObject), null, "string");
             tbname_filter = new Gtk.StringFilter (exp);
             vname_filter = new Gtk.StringFilter (exp);
 
+            setup_signals ();
             set_up_schema ();
-            connect_signals ();
         }
 
 
@@ -71,8 +66,8 @@ namespace Psequel {
             var schema_list = yield schema_service.schema_list ();
 
             // Clear last item.
-
             schema_dropdown.model = null;
+            schemas.clear ();
 
             for (int i = 0; i < schema_list.length; i++) {
                 var cur_schema = yield schema_service.load_schema (schema_list[i]);
@@ -153,23 +148,27 @@ namespace Psequel {
             this.schema_dropdown.set_model (schemas);
         }
 
-        private void connect_signals () {
-            // signals.table_list_changed.connect (() => {
-            // debug ("Handle table_list_changed.");
-            // reload_tables.begin ();
-            // });
+        private void setup_signals () {
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                var window = get_parrent_window (this);
 
-            // signals.views_list_changed.connect (() => {
-            // debug ("Handle views_list_changed.");
-            // reload_views.begin ();
-            // });
+                signals = window.signals;
 
-            signals.database_connected.connect (() => {
-                debug ("Handle database_connected.");
-                reload_schema.begin ();
+                signals.database_connected.connect (() => {
+                    debug ("Handle database_connected.");
+                    reload_schema.begin ();
+                });
+
+                schema_dropdown.notify["selected"].connect (schema_changed);
+
+                query_service = window.query_service;
+                debug ("Query: %p", query_service);
+
+                schema_service = new SchemaService (query_service);
+                schemas = new ObservableArrayList<Schema> ();
             });
-
-            schema_dropdown.notify["selected"].connect (schema_changed);
         }
 
         [GtkCallback]
@@ -234,9 +233,9 @@ namespace Psequel {
 
             var vname = current_schema.viewnames[row.get_index ()];
             debug ("Emit view_selected");
-            //  Idle.add_once (() => {
-            //      stack.visible_child_name = TABLE_DATA;
-            //  });
+            // Idle.add_once (() => {
+            // stack.visible_child_name = TABLE_DATA;
+            // });
             signals.view_selected_changed (vname.string);
         }
 

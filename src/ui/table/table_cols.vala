@@ -45,6 +45,7 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
             setup_name_col ();
             setup_datatype_col ();
             setup_nullable_col ();

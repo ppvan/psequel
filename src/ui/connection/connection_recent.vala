@@ -5,21 +5,6 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-recent.ui")]
     public class ConnectionSidebar : Gtk.Box {
 
-        /* Learn from Svelte ~ write store */
-        public class InnerSignal {
-            /* Target connection in connection list changed */
-            public signal void selection_changed (Connection conn);
-
-            /* Request a db connection by click connect context menu */
-            public signal void request_database_conn (Connection conn);
-        }
-
-        public static InnerSignal signals;
-
-        static construct {
-            signals = new InnerSignal ();
-        }
-
 
         const ActionEntry[] ACTION_ENTRIES = {
             { "connect", on_connect_connection },
@@ -27,8 +12,18 @@ namespace Psequel {
             { "delete", on_remove_connection },
         };
 
+        // Import and export require access to this.model but also have to visible in app menu.
+        // So, it's on application action maps
+        const ActionEntry[] APP_ACTIONS = {
+            { "import", on_import_connection },
+            { "export", on_export_connection },
+        };
+
         private Application app;
-        private ObservableArrayList<Connection> model;
+
+        /* This is null ultil window ready event, which after contruct block */
+        private unowned WindowSignals signals;
+        private unowned ObservableArrayList<Connection> model;
 
 
         public ConnectionSidebar (ConnectionView parent) {
@@ -36,22 +31,36 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
 
             this.app = ResourceManager.instance ().app;
-            setup_bindings ();
-            setup_action ();
+            this.model = ResourceManager.instance ().recent_connections;
+
+            setup_signals ();
+        }
+
+        private void setup_signals () {
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                signals = get_parrent_window (this).signals;
+                this.setup_bindings ();
+                this.setup_action ();
+            });
         }
 
         private void setup_action () {
+            debug ("setup_action");
+
             var action_group = new SimpleActionGroup ();
             action_group.add_action_entries (ACTION_ENTRIES, this);
-            insert_action_group ("conn", action_group);
+            this.insert_action_group ("conn", action_group);
+
+            app.add_action_entries (APP_ACTIONS, this);
         }
 
         public void setup_bindings () {
             debug ("setup bindings");
-
-            this.model = ResourceManager.instance ().recent_connections;
 
             // Auto create a conn and focus it on first install.
             if (model.size == 0) {
@@ -79,7 +88,7 @@ namespace Psequel {
                 return;
             }
 
-            //  Emit connection changed for any one subcribe to it.
+            // Emit connection changed for any one subcribe to it.
             signals.selection_changed (conn_row.conn_data);
 
             debug ("mapped widget binding to another row");
@@ -97,12 +106,6 @@ namespace Psequel {
             conn_list.select_row (last_row);
         }
 
-        // On remove, remove selected connection and select pos - 1.
-        [GtkCallback]
-        public void on_remove_btn_clicked (Gtk.Button btn) {
-            remove_connection ();
-        }
-
         private Gtk.ListBoxRow row_factory (Object item) {
 
             if (item is Connection) {
@@ -115,14 +118,12 @@ namespace Psequel {
             }
         }
 
-        [GtkCallback]
-        private void on_import_connection (Gtk.Button btn) {
+        private void on_import_connection () {
             debug ("Importting connections");
             open_file_dialog.begin ("Import Connections");
         }
 
-        [GtkCallback]
-        private void on_export_connection (Gtk.Button btn) {
+        private void on_export_connection () {
             debug ("Exporting connections");
             save_file_dialog.begin ("Export Connections");
         }
@@ -185,6 +186,12 @@ namespace Psequel {
         private async void open_file_dialog (string title = "Open File") {
             var filter = new Gtk.FileFilter ();
             filter.add_mime_type ("application/json");
+
+            var window = (Window) app.active_window;
+
+            debug (this.name);
+
+
             var file_dialog = new Gtk.FileDialog () {
                 modal = true,
                 initial_folder = File.new_for_path (Environment.get_home_dir ()),
@@ -194,7 +201,6 @@ namespace Psequel {
             };
 
             uint8[] contents;
-            var window = (Window) app.active_window;
 
             try {
                 var file = yield file_dialog.open (window, null);
@@ -289,7 +295,6 @@ namespace Psequel {
             var dupp = model[pos].clone ();
             model.insert (dupp, pos + 1);
         }
-
 
         private void request_connect_database () {
             var selected = conn_list.get_selected_row ();

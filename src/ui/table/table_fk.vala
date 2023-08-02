@@ -44,6 +44,7 @@ namespace Psequel {
         }
 
         construct {
+            debug ("[CONTRUCT] %s", this.name);
             setup_name_col ();
             setup_table_columns_col ();
             setup_fk_tbname_col ();

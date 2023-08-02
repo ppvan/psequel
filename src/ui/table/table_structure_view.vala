@@ -3,7 +3,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-structure-view.ui")]
     public class TableStructure : Gtk.Box {
 
-        private AppSignals signals;
+        private unowned WindowSignals signals;
 
         private Schema _cur_schema;
 
@@ -30,24 +30,34 @@ namespace Psequel {
         }
 
         construct {
-            signals = ResourceManager.instance ().signals;
+            debug ("[CONTRUCT] %s", this.name);
+            setup_signals ();
+        }
 
+        private void setup_signals () {
 
-            signals.schema_changed.connect ((schema) => {
-                debug ("%s", schema.name);
-                cur_schema = schema;
+            // signals can only be connected after the window is ready.
+            // because widget access window to get signals.
+            ResourceManager.instance ().app_signals.window_ready.connect (() => {
+                signals = get_parrent_window (this).signals;
 
-                columns.table = " ";
-                indexes.table = " ";
-                foreign_keys.table = " ";
+                signals.schema_changed.connect ((schema) => {
+                    debug ("%s", schema.name);
+                    cur_schema = schema;
+    
+                    columns.table = " ";
+                    indexes.table = " ";
+                    foreign_keys.table = " ";
+                });
+    
+                signals.table_selected_changed.connect ((tbname) => {
+                    debug ("Handle table_selected_changed: %s", tbname);
+                    columns.table = tbname;
+                    indexes.table = tbname;
+                    foreign_keys.table = tbname;
+                });
             });
 
-            signals.table_selected_changed.connect ((tbname) => {
-                debug ("Handle table_selected_changed: %s", tbname);
-                columns.table = tbname;
-                indexes.table = tbname;
-                foreign_keys.table = tbname;
-            });
         }
 
 

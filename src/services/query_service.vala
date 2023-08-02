@@ -121,7 +121,6 @@ namespace Psequel {
 
         public async Relation exec_query_params (string query, Variant[] params) throws PsequelError {
 
-            debug (params[0].get_string ());
 
             var result = yield exec_query_params_internal (query, params);
 

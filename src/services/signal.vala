@@ -1,10 +1,15 @@
 namespace Psequel {
 
     /**
-     * Application signals to comnicate between components.
+     * Window signals to comnicate between components.
      */
-    public class AppSignals {
+    public class WindowSignals : Object {
 
+        /* Target connection in connection list changed */
+        public signal void selection_changed (Connection conn);
+
+        /* Request a db connection by click connect context menu */
+        public signal void request_database_conn (Connection conn);
         /**
          * Emit when the table list changed.
          */
@@ -22,9 +27,24 @@ namespace Psequel {
         public signal void request_database (Connection conn);
         public signal void database_connected ();
         /**
-         * Should only init onces by the resource manager. Should be single on but i'm lazy
+         * Tied to one window and created by window.
          */
+        public WindowSignals () {
+            Object ();
+        }
+
+        public int number {get; set;}
+    }
+
+    /**
+     * Application signals.
+     */
+    public class AppSignals : Object {
+
+        public signal void window_ready ();
+
         public AppSignals () {
+            Object ();
         }
     }
 }
