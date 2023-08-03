@@ -95,6 +95,20 @@ namespace Psequel {
             }
         }
 
+        private async void test_database (QueryService service, Connection conn) {
+
+            try {
+                yield service.connect_db (conn);
+
+                var dialog = create_dialog ("", "Connection OK");
+                dialog.present ();
+
+            } catch (PsequelError err) {
+                var dialog = create_dialog ("Connection error", err.message);
+                dialog.present ();
+            }
+        }
+
         [GtkCallback]
         private void on_url_entry_changed (Gtk.Editable editable) {
 
@@ -130,6 +144,18 @@ namespace Psequel {
         private void on_connect_clicked (Gtk.Button btn) {
             btn.sensitive = false;
             connect_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
+                btn.sensitive = true;
+            });
+        }
+
+        [GtkCallback]
+        private void on_test_clicked (Gtk.Button btn) {
+            if (this.mapped_conn == null) {
+                return;
+            }
+
+            btn.sensitive = false;
+            test_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
                 btn.sensitive = true;
             });
         }

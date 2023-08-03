@@ -69,9 +69,15 @@ namespace Psequel {
             // Bind the conns model to the list view.
             conn_list.bind_model (model, row_factory);
 
-            // Auto select created row.
-            var first_row = conn_list.get_row_at_index (0);
-            conn_list.select_row (first_row);
+            debug ("Select first row");
+
+            Idle.add_once (() => {
+                // Auto select created row.
+                conn_list.unselect_all ();
+                var first_row = conn_list.get_row_at_index (0);
+                conn_list.select_row (first_row);
+                signals.selection_changed (model[0]);
+            });
 
             debug ("setup bindings done");
         }
@@ -81,9 +87,11 @@ namespace Psequel {
          */
         [GtkCallback]
         public void on_row_selected (Gtk.ListBoxRow? row) {
+            debug ("Row selection changed");
 
             var conn_row = row as ConnectionRow;
             if (conn_row == null) {
+                debug ("Null row?");
                 return;
             }
 

@@ -270,6 +270,11 @@ template $PsequelConnectionForm : Adw.Bin {
                         margin-top: 20;
                         margin-bottom: 10;
                         
+                        Button {
+                            label: "Test";
+                            clicked => $on_test_clicked();
+                        }
+
                         Label status_label {
                             label: "";
                             halign: start;
