@@ -21,7 +21,7 @@ template $PsequelConnectionForm : Adw.Bin {
                 [end]
                 MenuButton {
                     icon-name: "open-menu-symbolic";
-                    menu-model: primary_menu;
+                    menu-model: bind template.menu-model;
                 }
             }
 
@@ -304,41 +304,4 @@ template $PsequelConnectionForm : Adw.Bin {
             }
         }
     };
-}
-
-menu primary_menu {
-  section {
-    item {
-      label: _("_New Window");
-      action: "app.new-window";
-    }
-  }
-  section {
-    item {
-      label: _("_Import Connections");
-      action: "app.import";
-    }
-
-    item {
-      label: _("_Export Connections");
-      action: "app.export";
-    }
-  }
-
-  section {
-    item {
-      label: _("_Preferences");
-      action: "app.preferences";
-    }
-
-    item {
-      label: _("_Keyboard Shortcuts");
-    //   action: "win.show-help-overlay";
-    }
-
-    item {
-      label: _("_About");
-      action: "app.about";
-    }
-  }
 }

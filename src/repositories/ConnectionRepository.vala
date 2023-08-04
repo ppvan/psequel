@@ -38,6 +38,10 @@ namespace Psequel {
             _data.remove (connection);
         }
 
+        public void append_all (List<Connection> items) {
+            items.foreach ((item) => append_connection (item));
+        }
+
         public async void save () {
             string json_data = serialize_connection (this._data);
             //  _data.foreach ((item) => debug ("%s", item.name));

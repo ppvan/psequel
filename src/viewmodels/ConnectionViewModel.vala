@@ -38,6 +38,16 @@ namespace Psequel {
             connections.remove (conn);
         }
 
+        public void import_connections (List<Connection> connections) {
+            repository.append_all (connections);
+
+            this.connections.append_all (connections);
+        }
+
+        public unowned List<Connection> export_connections () {
+            return repository.get_connections ();
+        }
+
         public void save_connection (Connection conn) {
             if (timeout_id != 0) {
                 Source.remove (timeout_id);

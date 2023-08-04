@@ -3,9 +3,12 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-form.ui")]
     public class ConnectionForm : Adw.Bin {
 
+
+        public MenuModel menu_model { get; set; }
+
         BindingGroup binddings;
 
-        public Connection selected {get; set;}
+        public Connection selected { get; set; }
         public signal void connection_changed (Connection conn);
 
         public ConnectionForm () {
@@ -57,54 +60,54 @@ namespace Psequel {
 
         private async void connect_database (QueryService service, Connection conn) {
 
-            //  try {
-            //      yield service.connect_db (conn);
+            // try {
+            // yield service.connect_db (conn);
 
-            //      debug ("Emit database_connected");
-            //      //  signals.database_connected ();
-            //  } catch (PsequelError err) {
-            //      var dialog = create_dialog ("Connection error", err.message);
-            //      dialog.present ();
-            //  }
+            // debug ("Emit database_connected");
+            ////  signals.database_connected ();
+            // } catch (PsequelError err) {
+            // var dialog = create_dialog ("Connection error", err.message);
+            // dialog.present ();
+            // }
         }
 
-        //  [GtkCallback]
+        // [GtkCallback]
         private void on_url_entry_changed (Gtk.Editable editable) {
 
-            //  if (editable.text == "") {
-            //      url_entry.remove_css_class ("error");
-            //      return;
-            //  }
+            // if (editable.text == "") {
+            // url_entry.remove_css_class ("error");
+            // return;
+            // }
 
-            //  if (!editable.text.has_prefix ("postgres://")) {
-            //      err_label.label = "Invalid url, should start with postgres://";
-            //      url_entry.add_css_class ("error");
-            //      return;
-            //  }
+            // if (!editable.text.has_prefix ("postgres://")) {
+            // err_label.label = "Invalid url, should start with postgres://";
+            // url_entry.add_css_class ("error");
+            // return;
+            // }
 
 
-            //  url_entry.remove_css_class ("error");
-            //  err_label.label = " ";
-            //  try {
-            //      var conn = query_service.parse_conninfo (editable.text);
-            //      host_entry.text = conn.host;
-            //      user_entry.text = conn.user;
-            //      database_entry.text = conn.database;
-            //      port_entry.text = conn.port;
-            //      password_entry.text = conn.password;
-            //      ssl_switch.active = conn.use_ssl;
-            //  } catch (PsequelError err) {
-            //      url_entry.add_css_class ("error");
-            //      err_label.label = err.message;
-            //  }
+            // url_entry.remove_css_class ("error");
+            // err_label.label = " ";
+            // try {
+            // var conn = query_service.parse_conninfo (editable.text);
+            // host_entry.text = conn.host;
+            // user_entry.text = conn.user;
+            // database_entry.text = conn.database;
+            // port_entry.text = conn.port;
+            // password_entry.text = conn.password;
+            // ssl_switch.active = conn.use_ssl;
+            // } catch (PsequelError err) {
+            // url_entry.add_css_class ("error");
+            // err_label.label = err.message;
+            // }
         }
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-            //  btn.sensitive = false;
-            //  connect_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
-            //      btn.sensitive = true;
-            //  });
+            // btn.sensitive = false;
+            // connect_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
+            // btn.sensitive = true;
+            // });
         }
 
         [GtkCallback]

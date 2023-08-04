@@ -30,6 +30,7 @@ psequel_sources = [
     'viewmodels/ConnectionViewModel.vala',
 
     'utils/ObservableList.vala',
+    'utils/ValueConverter.vala',
 ]
 
 

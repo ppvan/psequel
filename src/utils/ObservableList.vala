@@ -12,6 +12,10 @@ namespace Psequel {
             this._data.items_changed.connect (this.items_changed);
         }
 
+        public void append_all (List<T> items) {
+            items.foreach ((item) => _data.append ((Object)item));
+        }
+
         public void append (T item) {
             _data.append ((Object)item);
         }
