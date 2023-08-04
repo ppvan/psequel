@@ -25,11 +25,14 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
+
+        public ConnectionViewModel connection_viewmodel {get; construct;}
+
         public WindowSignals signals {get; set; default = null;}
         public QueryService query_service {get; set; default = null;}
 
-        public Window (Application app) {
-            Object (application: app);
+        public Window (Application app, ConnectionViewModel conn_vm) {
+            Object (application: app, connection_viewmodel: conn_vm);
         }
 
         construct {

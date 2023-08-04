@@ -55,7 +55,7 @@ template $PsequelConnectionForm : Adw.Bin {
                                 placeholder-text: "postgres://...";
                                 hexpand: true;
                                 activate => $on_entry_activated();
-                                changed => $on_url_entry_changed();
+                                changed => $text_changed_cb();
                             }
                         }
 
@@ -167,6 +167,7 @@ template $PsequelConnectionForm : Adw.Bin {
                                 placeholder-text: "Connection name";
                                 hexpand: true;
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 0;
@@ -178,6 +179,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry host_entry {
                                 placeholder-text: "localhost";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 1;
@@ -198,6 +200,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry port_entry {
                                 placeholder-text: "5432";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 1;
@@ -209,6 +212,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry user_entry {
                                 placeholder-text: "postgres";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 2;
@@ -221,6 +225,7 @@ template $PsequelConnectionForm : Adw.Bin {
                                 placeholder-text: "";
                                 show-peek-icon: true;
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 3;
@@ -233,6 +238,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry database_entry {
                                 placeholder-text: "postgres";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 4;
@@ -256,7 +262,9 @@ template $PsequelConnectionForm : Adw.Bin {
                                 Box {
                                     valign: center;
                                     orientation: vertical;
-                                    Switch ssl_switch {}
+                                    Switch ssl_switch {
+                                        activate => $text_changed_cb();
+                                    }
                                 }
                                 layout {
                                     row: 5;

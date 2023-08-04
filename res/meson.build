@@ -7,9 +7,10 @@ output_dir = meson.current_build_dir()
 blueprints = custom_target('blueprints',
   input: files(
     'gtk/connection-form.blp',
-    'gtk/connection-recent.blp',
+    'gtk/connection-sidebar.blp',
     'gtk/connection-view.blp',
     'gtk/connection-row.blp',
+    'gtk/connection-listitem.blp',
 
     'gtk/main.blp',
     'gtk/query-view.blp',

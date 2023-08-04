@@ -6,13 +6,12 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-view.ui")]
     public class ConnectionView : Adw.Bin {
 
-        public Window window {get; set;}
+        public ConnectionViewModel viewmodel {get; set;}
+        public ObservableList<Connection> connections {get; set;}
+        public Connection? selected_connection {get; set;}
 
         public ConnectionView (Application app) {
             Object ();
-
-            sidebar = new ConnectionSidebar (window);
-            form = new ConnectionForm (window);
         }
 
         // Connect event.
@@ -20,9 +19,24 @@ namespace Psequel {
             debug ("[CONTRUCT] %s", this.name);
         }
 
+        [GtkCallback]
+        public void add_new_connection () {
+            viewmodel.new_connection ();
+        }
 
-        // [GtkChild]
-        private Psequel.ConnectionSidebar sidebar;
-        private Psequel.ConnectionForm form;
+        [GtkCallback]
+        public void dup_connection (Connection conn) {
+            viewmodel.dupplicate_connection (conn);
+        }
+
+        [GtkCallback]
+        public void remove_connection (Connection conn) {
+            viewmodel.remove_connection (conn);
+        }
+
+        [GtkCallback]
+        public void save_connection (Connection conn) {
+            viewmodel.save_connection (conn);
+        }
     }
 }

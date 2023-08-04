@@ -5,27 +5,11 @@ namespace Psequel {
 
         BindingGroup binddings;
 
-        private unowned QueryService query_service;
-        private unowned WindowSignals signals;
+        public Connection selected {get; set;}
+        public signal void connection_changed (Connection conn);
 
-        /** Binded in blueprints file */
-        public Window window { get; set; }
-
-        private Connection _conn;
-        public Connection mapped_conn {
-            get {
-                return _conn;
-            }
-            set {
-                _conn = value;
-                binddings.source = _conn;
-            }
-        }
-
-        public ConnectionSidebar sidebar { get; set; }
-
-        public ConnectionForm (Window window) {
-            Object (window: window);
+        public ConnectionForm () {
+            Object ();
         }
 
         construct {
@@ -33,25 +17,9 @@ namespace Psequel {
             // Create group to maped the entry widget to connection data.
             this.binddings = new BindingGroup ();
             set_up_bindings (binddings);
-
-            ResourceManager.instance ().app_signals.window_ready.connect (setup_signals);
+            this.bind_property ("selected", binddings, "source", BindingFlags.SYNC_CREATE);
         }
 
-        private void setup_signals () {
-
-            signals = window.signals;
-
-            signals.selection_changed.connect ((conn) => {
-                mapped_conn = conn;
-            });
-
-            signals.request_database_conn.connect ((conn) => {
-                mapped_conn = conn;
-                connect_btn.clicked ();
-            });
-
-            query_service = window.query_service;
-        }
 
         private void set_up_bindings (BindingGroup group) {
             debug ("set_up connection form bindings group");
@@ -82,56 +50,61 @@ namespace Psequel {
             debug ("set_up binddings done");
         }
 
-        private async void connect_database (QueryService service, Connection conn) {
-
-            try {
-                yield service.connect_db (conn);
-
-                debug ("Emit database_connected");
-                signals.database_connected ();
-            } catch (PsequelError err) {
-                var dialog = create_dialog ("Connection error", err.message);
-                dialog.present ();
-            }
+        [GtkCallback]
+        private void text_changed_cb () {
+            connection_changed (selected);
         }
 
-        [GtkCallback]
+        private async void connect_database (QueryService service, Connection conn) {
+
+            //  try {
+            //      yield service.connect_db (conn);
+
+            //      debug ("Emit database_connected");
+            //      //  signals.database_connected ();
+            //  } catch (PsequelError err) {
+            //      var dialog = create_dialog ("Connection error", err.message);
+            //      dialog.present ();
+            //  }
+        }
+
+        //  [GtkCallback]
         private void on_url_entry_changed (Gtk.Editable editable) {
 
-            if (editable.text == "") {
-                url_entry.remove_css_class ("error");
-                return;
-            }
+            //  if (editable.text == "") {
+            //      url_entry.remove_css_class ("error");
+            //      return;
+            //  }
 
-            if (!editable.text.has_prefix ("postgres://")) {
-                err_label.label = "Invalid url, should start with postgres://";
-                url_entry.add_css_class ("error");
-                return;
-            }
+            //  if (!editable.text.has_prefix ("postgres://")) {
+            //      err_label.label = "Invalid url, should start with postgres://";
+            //      url_entry.add_css_class ("error");
+            //      return;
+            //  }
 
 
-            url_entry.remove_css_class ("error");
-            err_label.label = " ";
-            try {
-                var conn = query_service.parse_conninfo (editable.text);
-                host_entry.text = conn.host;
-                user_entry.text = conn.user;
-                database_entry.text = conn.database;
-                port_entry.text = conn.port;
-                password_entry.text = conn.password;
-                ssl_switch.active = conn.use_ssl;
-            } catch (PsequelError err) {
-                url_entry.add_css_class ("error");
-                err_label.label = err.message;
-            }
+            //  url_entry.remove_css_class ("error");
+            //  err_label.label = " ";
+            //  try {
+            //      var conn = query_service.parse_conninfo (editable.text);
+            //      host_entry.text = conn.host;
+            //      user_entry.text = conn.user;
+            //      database_entry.text = conn.database;
+            //      port_entry.text = conn.port;
+            //      password_entry.text = conn.password;
+            //      ssl_switch.active = conn.use_ssl;
+            //  } catch (PsequelError err) {
+            //      url_entry.add_css_class ("error");
+            //      err_label.label = err.message;
+            //  }
         }
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-            btn.sensitive = false;
-            connect_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
-                btn.sensitive = true;
-            });
+            //  btn.sensitive = false;
+            //  connect_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
+            //      btn.sensitive = true;
+            //  });
         }
 
         [GtkCallback]

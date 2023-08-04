@@ -29,6 +29,7 @@ namespace Psequel {
 
         private PreferencesWindow preference;
         private AppSignals app_signals;
+        private Settings settings;
 
         public Application () {
             Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
@@ -61,6 +62,7 @@ namespace Psequel {
             with (ResourceManager.instance ()) {
                 app = this;
                 settings = new Settings (this.application_id);
+                app.settings = settings;
 
                 try {
                     background = new ThreadPool<Worker>.with_owned_data ((worker) => {
@@ -83,14 +85,6 @@ namespace Psequel {
         }
 
         public override void shutdown () {
-            debug ("Saving resources");
-
-            with (ResourceManager.instance ()) {
-                save_user_data ();
-            };
-
-            debug ("Resources saved");
-
             base.shutdown ();
         }
 
@@ -104,7 +98,8 @@ namespace Psequel {
 
         /* register needed types, allow me to ref a template inside a template */
         private static void ensure_types () {
-            typeof (WindowSignals).ensure ();
+            typeof (ConnectionViewModel).ensure ();
+            typeof (Psequel.ConnectionRow).ensure ();
             typeof (Psequel.ConnectionView).ensure ();
             typeof (Psequel.ConnectionSidebar).ensure ();
             typeof (Psequel.ConnectionForm).ensure ();
@@ -164,8 +159,14 @@ namespace Psequel {
          * This result to another event to notify window is ready and widget should setup signals
          */
         private Window new_window () {
+
+            var repository = new ConnectionRepository (this.settings);
+            var conn_vm = new ConnectionViewModel (repository);
+
+
+
             var signals = new WindowSignals ();
-            var window = new Window (this);
+            var window = new Window (this, conn_vm);
             var query_service = new QueryService (ResourceManager.instance ().background);
             window.signals = (owned) signals;
             window.query_service = (owned) query_service;

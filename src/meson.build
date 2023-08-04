@@ -2,7 +2,7 @@
 psequel_sources = [
     'application.vala',
     'ui/connection/connection_form.vala',
-    'ui/connection/connection_recent.vala',
+    'ui/connection/connection_sidebar.vala',
     'ui/connection/connection_view.vala',
     'ui/query/query_view.vala',
     'ui/query/query_editor.vala',
@@ -24,6 +24,12 @@ psequel_sources = [
     'services/resource_manager.vala',
     'services/schema_service.vala',
     'services/signal.vala',
+
+    'repositories/ConnectionRepository.vala',
+
+    'viewmodels/ConnectionViewModel.vala',
+
+    'utils/ObservableList.vala',
 ]
 
 

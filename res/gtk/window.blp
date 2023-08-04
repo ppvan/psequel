@@ -14,7 +14,7 @@ template $PsequelWindow : Adw.ApplicationWindow {
             StackPage {
                 name: "connection-view";
                 child: $PsequelConnectionView {
-                    window: bind template;
+                    viewmodel: bind template.connection-viewmodel;
                 };
             }
 
