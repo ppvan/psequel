@@ -21,7 +21,6 @@ template $PsequelSchemaSidebar : Gtk.Box {
         DropDown dropdown {
             hexpand: true;
             model: bind template.schemas;
-            // expression: bind template.expression;
         }
     }
 
@@ -73,7 +72,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                         tooltip-text: "Search tables";
                         icon-name: "loupe-large-symbolic";
 
-                        // toggled => $on_show_search();
+                        toggled => $table_search_reveal();
                     }
                 }
 
@@ -86,7 +85,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                         margin-start: 4;
                         margin-bottom: 4;
 
-                        // search-changed => $on_search();
+                        search-changed => $on_table_search();
                     }
                 
                 }
@@ -96,7 +95,13 @@ template $PsequelSchemaSidebar : Gtk.Box {
                     ListView table_list {
                         styles ["navigation-sidebar"]
                         model: SingleSelection selection_model {
-                            model: bind template.tables;
+                            model: FilterListModel {
+                                incremental: true;
+                                model: bind template.tables;
+                                filter: StringFilter table_filter {
+
+                                };
+                            };
                             autoselect: true;
                         };
 
@@ -139,7 +144,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                         tooltip-text: "Search views";
                         icon-name: "loupe-large-symbolic";
 
-                        // toggled => $on_show_view_search();
+                        toggled => $view_search_reveal();
                     }
                 }
 
@@ -152,7 +157,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                         margin-start: 4;
                         margin-bottom: 4;
 
-                        // search-changed => $on_view_search();
+                        search-changed => $on_view_search();
                     }
                 
                 }
@@ -162,7 +167,13 @@ template $PsequelSchemaSidebar : Gtk.Box {
                     ListView views_list {
                         styles ["navigation-sidebar"]
                         model: SingleSelection selection {
-                            model: bind template.views;
+                            model: FilterListModel {
+                                incremental: true;
+                                model: bind template.views;
+                                filter: StringFilter view_filter {
+
+                                };
+                            };
                             autoselect: true;
                         };
 
