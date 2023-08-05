@@ -15,13 +15,15 @@ template $PsequelWindow : Adw.ApplicationWindow {
                 name: "connection-view";
                 child: $PsequelConnectionView {
                     viewmodel: bind template.connection-viewmodel;
+
+                    request-database => $on_connect_db ();
                 };
             }
 
-            StackPage {
+            StackPage query-view {
                 name: "query-view";
-                child: $PsequelQueryView {
-                    window: bind template;
+                child: $PsequelSchemaView {
+                    viewmodel: bind template.schema-viewmodel;
                 };
             }
         }

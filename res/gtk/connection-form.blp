@@ -295,6 +295,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Button connect_btn {
                                 styles ["suggested-action"]
                                 label: "Connect";
+                                // sensitive: bind template.is_connectting;
                                 clicked => $on_connect_clicked();
                             }
                         }

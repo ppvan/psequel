@@ -9,9 +9,6 @@ namespace Psequel {
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
 
-        /** Binded in blueprints file */
-        public Window window { get; set; }
-
         public class QueryEditor () {
             Object ();
         }
@@ -27,7 +24,7 @@ namespace Psequel {
         }
 
         private void setup_signals () {
-            query_service = window.query_service;
+            //  query_service = window.query_service;
         }
 
         void default_setttings () {

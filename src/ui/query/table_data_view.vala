@@ -75,7 +75,7 @@ namespace Psequel {
             // signals can only be connected after the window is ready.
             // because widget access window to get signals.
             ResourceManager.instance ().app_signals.window_ready.connect (() => {
-                signals = window.signals;
+                //  signals = window.signals;
 
                 signals.table_selected_changed.connect ((tbname) => {
                     this.tbname = tbname;
@@ -93,7 +93,7 @@ namespace Psequel {
                     this.schema = schema;
                 });
 
-                query_service = window.query_service;
+                //  query_service = window.query_service;
             });
         }
 

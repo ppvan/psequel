@@ -5,11 +5,9 @@ namespace Psequel {
      */
     public class Schema : Object {
         public string name { get; private set; }
-        public ObservableArrayList<Gtk.StringObject> tablenames { get; private set; }
-        public ObservableArrayList<Gtk.StringObject> viewnames { get; private set; }
-        public ObservableArrayList<Index> indexes { get; private set; }
-        public ObservableArrayList<Column> columns { get; private set; }
-        public ObservableArrayList<ForeignKey> fks { get; private set; }
+
+        public ObservableList<Table> tables { get; private set; }
+        public ObservableList<View> views {get; private set;}
 
         public Schema (string name) {
             Object ();
@@ -17,11 +15,9 @@ namespace Psequel {
         }
 
         construct {
-            tablenames = new ObservableArrayList<Gtk.StringObject> ();
-            viewnames = new ObservableArrayList<Gtk.StringObject> ();
-            indexes = new ObservableArrayList<Index> ();
-            columns = new ObservableArrayList<Column> ();
-            fks = new ObservableArrayList<ForeignKey> ();
+
+            tables = new ObservableList<Table> ();
+            views = new ObservableList<View> ();
         }
     }
 

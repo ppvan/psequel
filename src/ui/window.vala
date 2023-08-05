@@ -27,12 +27,11 @@ namespace Psequel {
 
 
         public ConnectionViewModel connection_viewmodel {get; construct;}
+        public QueryViewModel query_viewmodel {get; construct;}
+        public SchemaViewModel schema_viewmodel {get; construct;}
 
-        public WindowSignals signals {get; set; default = null;}
-        public QueryService query_service {get; set; default = null;}
-
-        public Window (Application app, ConnectionViewModel conn_vm) {
-            Object (application: app, connection_viewmodel: conn_vm);
+        public Window (Application app, ConnectionViewModel conn_vm, SchemaViewModel schema_vm) {
+            Object (application: app, connection_viewmodel: conn_vm, schema_viewmodel: schema_vm);
         }
 
         construct {
@@ -41,23 +40,17 @@ namespace Psequel {
             with (ResourceManager.instance ()) {
                 settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
                 settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
-
-                app_signals.window_ready.connect (setup_signals);
             }
-        }
 
-        private void setup_signals () {
-            signals.database_connected.connect (() => {
-                navigate_to (Views.QUERY);
-            });
+            navigate_to (BaseViewModel.CONNECTION_VIEW);
+
+            connection_viewmodel.navigate_to.connect (navigate_to);
         }
 
         /**
          * Navigate to the stack view.
          */
         public void navigate_to (string view_name) {
-
-            debug ("OK");
 
             var child = stack.get_child_by_name (view_name);
 
@@ -71,6 +64,15 @@ namespace Psequel {
 
         public void add_toast (Adw.Toast toast) {
             overlay.add_toast (toast);
+        }
+
+        [GtkCallback]
+        public void on_connect_db (Connection conn) {
+            debug ("Window connect");
+            connection_viewmodel.is_connectting = true;
+
+            schema_viewmodel.connect_db (conn);
+            navigate_to (BaseViewModel.QUERY_VIEW);
         }
 
         [GtkChild]

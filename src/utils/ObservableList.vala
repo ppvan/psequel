@@ -4,12 +4,23 @@ namespace Psequel {
 
         private ListStore _data;
 
+        public int size {get; private set;}
+
+        public delegate void ForeachFunc<T> (T item);
+
         public ObservableList () {
             base ();
             this._data = new ListStore (typeof (T));
 
             // Forward item changed event.
             this._data.items_changed.connect (this.items_changed);
+            this._data.items_changed.connect (() => {
+                this.size = (int)this._data.get_n_items ();
+            });
+        }
+
+        public void clear () {
+            _data.remove_all ();
         }
 
         public void append_all (List<T> items) {
@@ -44,6 +55,12 @@ namespace Psequel {
             _data.find (conn, out pos);
 
             return pos;
+        }
+
+        public void @foreach (ForeachFunc<T> func) {
+            for (uint i = 0; i < this.size; i++) {
+                func (_data.get_item (i));
+            }
         }
 
         public GLib.Object? get_item (uint position) {

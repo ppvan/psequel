@@ -6,8 +6,6 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-view.ui")]
     public class ConnectionView : Adw.Bin {
 
-        // Import and export require access to this.model but also have to visible in app menu.
-        // So, it's on application action maps
         const ActionEntry[] ACTIONS = {
             { "import", import_connection },
             { "export", export_connection },
@@ -17,9 +15,13 @@ namespace Psequel {
         public ObservableList<Connection> connections {get; set;}
         public Connection? selected_connection {get; set;}
 
+        public signal void request_database (Connection conn);
+
         public ConnectionView (Application app) {
             Object ();
         }
+
+
 
         // Connect event.
         construct {
@@ -33,6 +35,12 @@ namespace Psequel {
         [GtkCallback]
         public void add_new_connection () {
             viewmodel.new_connection ();
+        }
+
+        [GtkCallback]
+        public void active_connection (Connection conn) {
+            viewmodel.is_connectting = true;
+            request_database (conn);
         }
 
         [GtkCallback]

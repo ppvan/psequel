@@ -17,9 +17,6 @@ namespace Psequel {
             }
             set {
                 _cur_schema = value;
-                columns.model = _cur_schema.columns;
-                indexes.model = _cur_schema.indexes;
-                foreign_keys.model = _cur_schema.fks;
             }
         }
 
@@ -33,7 +30,7 @@ namespace Psequel {
         }
 
         private void setup_signals () {
-            signals = window.signals;
+            //  signals = window.signals;
 
             signals.schema_changed.connect ((schema) => {
                 debug ("%s", schema.name);

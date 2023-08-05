@@ -1,0 +1,52 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $PsequelSchemaView : Adw.Bin {
+    hexpand: true;
+    vexpand: true;
+    width-request: 800;
+    height-request: 600;
+
+    Box {
+        orientation: vertical;
+
+        Gtk.Paned {
+            $PsequelSchemaSidebar {
+                schemas: bind template.viewmodel as <$PsequelSchemaViewModel>.schemas;
+                tables: bind template.viewmodel as <$PsequelSchemaViewModel>.tables;
+                views: bind template.viewmodel as <$PsequelSchemaViewModel>.views;
+                request-load-schema => $request_load_schema ();
+            }
+
+            $PsequelQueryView {
+                menu: primary_menu;
+            }
+        }
+    }
+}
+
+
+menu primary_menu {
+  section {
+
+    item {
+      label: _("_New Window");
+      action: "app.new-window";
+    }
+
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Keyboard Shortcuts");
+    //   action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("_About");
+      action: "app.about";
+    }
+  }
+}

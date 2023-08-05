@@ -4,9 +4,13 @@ psequel_sources = [
     'ui/connection/connection_form.vala',
     'ui/connection/connection_sidebar.vala',
     'ui/connection/connection_view.vala',
-    'ui/query/query_view.vala',
-    'ui/query/query_editor.vala',
-    'ui/query/query_results.vala',
+
+    'ui/query/SchemaSidebar.vala',
+    'ui/query/QueryEditor.vala',
+    'ui/query/QueryView.vala',
+    'ui/query/SchemaView.vala',
+    'ui/query/QueryResult.vala',
+    
     'ui/query/table_data_view.vala',
     'ui/table/table_cols.vala',
     'ui/table/table_fk.vala',
@@ -18,6 +22,7 @@ psequel_sources = [
     'models/connection.vala',
     'models/schema.vala',
     'models/table.vala',
+    'models/Table.vala',
     'models/utils.vala',
 
     'services/query_service.vala',
@@ -26,8 +31,14 @@ psequel_sources = [
     'services/signal.vala',
 
     'repositories/ConnectionRepository.vala',
+    'repositories/SchemaRepository.vala',
 
     'viewmodels/ConnectionViewModel.vala',
+    'viewmodels/QueryViewModel.vala',
+    'viewmodels/BaseViewModel.vala',
+    'viewmodels/SchemaViewModel.vala',
+    'viewmodels/TableViewModel.vala',
+    'viewmodels/ViewViewModel.vala',
 
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',

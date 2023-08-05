@@ -99,6 +99,8 @@ namespace Psequel {
         /* register needed types, allow me to ref a template inside a template */
         private static void ensure_types () {
             typeof (ConnectionViewModel).ensure ();
+            typeof (Psequel.SchemaView).ensure ();
+            typeof (Psequel.SchemaSidebar).ensure ();
             typeof (Psequel.ConnectionRow).ensure ();
             typeof (Psequel.ConnectionView).ensure ();
             typeof (Psequel.ConnectionSidebar).ensure ();
@@ -160,16 +162,16 @@ namespace Psequel {
          */
         private Window new_window () {
 
+            var query_service = new QueryService (ResourceManager.instance ().background);
             var repository = new ConnectionRepository (this.settings);
             var conn_vm = new ConnectionViewModel (repository);
+            var sche_vm = new SchemaViewModel (query_service);
 
 
 
             var signals = new WindowSignals ();
-            var window = new Window (this, conn_vm);
-            var query_service = new QueryService (ResourceManager.instance ().background);
-            window.signals = (owned) signals;
-            window.query_service = (owned) query_service;
+            var window = new Window (this, conn_vm, sche_vm);
+
             app_signals.window_ready ();
 
             return window;

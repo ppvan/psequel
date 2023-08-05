@@ -5,11 +5,13 @@ namespace Psequel {
 
 
         public MenuModel menu_model { get; set; }
+        public bool is_connectting {get; set;}
 
         BindingGroup binddings;
 
         public Connection selected { get; set; }
         public signal void connection_changed (Connection conn);
+        public signal void request_database (Connection conn);
 
         public ConnectionForm () {
             Object ();
@@ -21,6 +23,7 @@ namespace Psequel {
             this.binddings = new BindingGroup ();
             set_up_bindings (binddings);
             this.bind_property ("selected", binddings, "source", BindingFlags.SYNC_CREATE);
+            this.bind_property ("is-connectting", connect_btn, "sensitive", INVERT_BOOLEAN | SYNC_CREATE);
         }
 
 
@@ -104,10 +107,7 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-            // btn.sensitive = false;
-            // connect_database.begin (this.query_service, this.mapped_conn, (obj, res) => {
-            // btn.sensitive = true;
-            // });
+            request_database (selected);
         }
 
         [GtkCallback]
