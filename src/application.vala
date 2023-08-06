@@ -18,18 +18,24 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-using Gee;
-
 namespace Psequel {
 
     // public string APP_ID = "me.ppvan.Psequel";
 
     public class Application : Adw.Application {
 
+        /*
+         * Static field for easy access in other places.
+         * If need to create many application instance (rarely happens) reconsider this approach.
+         */
+        public static Application app;
+        public static Settings settings;
+        public static ThreadPool<Worker> background;
+
+        public const int MAX_COLUMNS = 100;
 
         private PreferencesWindow preference;
-        private AppSignals app_signals;
-        private Settings settings;
+
 
         public Application () {
             Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
@@ -58,29 +64,17 @@ namespace Psequel {
             set_up_logging ();
             debug ("Begin to load resources");
 
-            // Load recent connections
-            with (ResourceManager.instance ()) {
-                app = this;
-                settings = new Settings (this.application_id);
-                app.settings = settings;
+            Application.app = this;
+            Application.settings = new Settings (this.application_id);
+            try {
+                background = new ThreadPool<Worker>.with_owned_data ((worker) => {
+                    worker.run ();
+                }, 1, false);
 
-                try {
-                    background = new ThreadPool<Worker>.with_owned_data ((worker) => {
-                        worker.run ();
-                    }, ResourceManager.POOL_SIZE, false);
-                } catch (ThreadError err) {
-                    debug (err.message);
-                    return_if_reached ();
-                }
-
-                app_signals = new AppSignals ();
-                app.app_signals = app_signals;
-                // query_service = new QueryService (background);
-                table_list = new ObservableArrayList<Relation.Row> ();
-
-                load_user_data ();
-            };
-
+            } catch (ThreadError err) {
+                debug (err.message);
+                return_if_reached ();
+            }
             debug ("Resources loaded");
         }
 
@@ -111,7 +105,7 @@ namespace Psequel {
             typeof (Psequel.QueryEditor).ensure ();
             typeof (Psequel.TableStructureView).ensure ();
             typeof (Psequel.ViewStructureView).ensure ();
-            typeof (Psequel.TableData).ensure ();
+            typeof (Psequel.TableDataView).ensure ();
             typeof (Psequel.TableColInfo).ensure ();
             typeof (Psequel.TableIndexInfo).ensure ();
             typeof (Psequel.TableFKInfo).ensure ();
@@ -158,14 +152,14 @@ namespace Psequel {
 
         /**
          * Create a window and inject resources.
-         * 
+         *
          * Because child widget is created before window, signals can only be connect when window is init.
          * This result to another event to notify window is ready and widget should setup signals
          */
         private Window new_window () {
 
-            var query_service = new QueryService (ResourceManager.instance ().background);
-            var repository = new ConnectionRepository (this.settings);
+            var query_service = new QueryService (Application.background);
+            var repository = new ConnectionRepository (Application.settings);
             var conn_vm = new ConnectionViewModel (repository);
             var sche_vm = new SchemaViewModel (query_service);
             var query_vm = new QueryViewModel (query_service);
@@ -173,8 +167,6 @@ namespace Psequel {
 
 
             var window = new Window (this, conn_vm, sche_vm, query_vm);
-
-            app_signals.window_ready ();
 
             return window;
         }

@@ -52,7 +52,9 @@ template $PsequelQueryResults : Adw.Bin {
             child: Adw.Clamp {
                 maximum-size: 32;
 
-                Spinner spinner {}
+                Spinner spinner {
+                    spinning: bind template.is-loading;
+                }
             };
         }
 

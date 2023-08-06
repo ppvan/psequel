@@ -1,6 +1,4 @@
 
-using Gee;
-
 namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-view.ui")]

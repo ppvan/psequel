@@ -1,9 +1,9 @@
 # Source code
 psequel_sources = [
     'application.vala',
-    'ui/connection/connection_form.vala',
-    'ui/connection/connection_sidebar.vala',
-    'ui/connection/connection_view.vala',
+    'ui/connection/ConnectionForm.vala',
+    'ui/connection/ConnectionSidebar.vala',
+    'ui/connection/ConnectionView.vala',
 
 
     'ui/schema/SchemaView.vala',
@@ -12,28 +12,29 @@ psequel_sources = [
     
     'ui/schema/QueryEditor.vala',
     'ui/schema/QueryResult.vala',
-    
-    'ui/schema/table_data_view.vala',
 
+
+    'ui/schema/TableStructureView.vala',
+    'ui/schema/ViewStructureView.vala',
     'ui/schema/TableColumnInfo.vala',
     'ui/schema/TableForeignKeyInfo.vala',
     'ui/schema/TableIndexInfo.vala',
-    'ui/schema/TableStructureView.vala',
-    'ui/schema/ViewStructureView.vala',
+
+    'ui/schema/TableDataView.vala',
 
     'ui/Window.vala',
     'ui/PreferencesWindow.vala',
 
-    'models/connection.vala',
-    'models/schema.vala',
+    'models/Connection.vala',
+    'models/Schema.vala',
+    'models/Relation.vala',
     'models/table.vala',
     'models/Table.vala',
     'models/utils.vala',
 
     'services/QueryService.vala',
-    'services/resource_manager.vala',
+    'services/ResourceManager.vala',
     'services/SchemaService.vala',
-    'services/signal.vala',
 
     'repositories/ConnectionRepository.vala',
     'repositories/SchemaRepository.vala',
@@ -43,10 +44,14 @@ psequel_sources = [
     'viewmodels/BaseViewModel.vala',
     'viewmodels/SchemaViewModel.vala',
     'viewmodels/TableViewModel.vala',
+    'viewmodels/TableDataViewModel.vala',
     'viewmodels/ViewViewModel.vala',
 
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',
+    'utils/helpers.vala',
+    'utils/logging.vala',
+    'utils/errors.vala',
 ]
 
 
@@ -67,7 +72,6 @@ psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
   dependency('gtk4'),
   dependency('libadwaita-1', version: '>= 1.2'),
-  dependency('gee-0.8'),
   dependency('json-glib-1.0'),
   dependency('gtksourceview-5'),
   dependency('libpq'),

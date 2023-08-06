@@ -18,9 +18,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-using GLib;
-using Gee;
-
 namespace Psequel {
 
     /**

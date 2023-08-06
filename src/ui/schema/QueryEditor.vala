@@ -20,11 +20,6 @@ namespace Psequel {
             style_manager = StyleSchemeManager.get_default ();
 
             default_setttings ();
-            ResourceManager.instance ().app_signals.window_ready.connect (setup_signals);
-        }
-
-        private void setup_signals () {
-            //  query_service = window.query_service;
         }
 
         void default_setttings () {
@@ -89,8 +84,8 @@ namespace Psequel {
         [GtkChild]
         private unowned QueryResults query_results;
 
-        [GtkChild]
-        private unowned GtkSource.View editor;
+        //  [GtkChild]
+        //  private unowned GtkSource.View editor;
 
         [GtkChild]
         private unowned GtkSource.Buffer buffer;
