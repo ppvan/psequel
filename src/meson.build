@@ -5,20 +5,24 @@ psequel_sources = [
     'ui/connection/connection_sidebar.vala',
     'ui/connection/connection_view.vala',
 
-    'ui/query/SchemaSidebar.vala',
-    'ui/query/QueryEditor.vala',
-    'ui/query/QueryView.vala',
-    'ui/query/SchemaView.vala',
-    'ui/query/QueryResult.vala',
+
+    'ui/schema/SchemaView.vala',
+    'ui/schema/SchemaSidebar.vala',
+    'ui/schema/SchemaMain.vala',
     
-    'ui/query/table_data_view.vala',
-    'ui/table/table_cols.vala',
-    'ui/table/table_fk.vala',
-    'ui/table/table_index.vala',
-    'ui/table/TableStructureView.vala',
-    'ui/table/ViewStructureView.vala',
-    'ui/window.vala',
-    'ui/preferences_window.vala',
+    'ui/schema/QueryEditor.vala',
+    'ui/schema/QueryResult.vala',
+    
+    'ui/schema/table_data_view.vala',
+
+    'ui/schema/TableColumnInfo.vala',
+    'ui/schema/TableForeignKeyInfo.vala',
+    'ui/schema/TableIndexInfo.vala',
+    'ui/schema/TableStructureView.vala',
+    'ui/schema/ViewStructureView.vala',
+
+    'ui/Window.vala',
+    'ui/PreferencesWindow.vala',
 
     'models/connection.vala',
     'models/schema.vala',
@@ -26,9 +30,9 @@ psequel_sources = [
     'models/Table.vala',
     'models/utils.vala',
 
-    'services/query_service.vala',
+    'services/QueryService.vala',
     'services/resource_manager.vala',
-    'services/schema_service.vala',
+    'services/SchemaService.vala',
     'services/signal.vala',
 
     'repositories/ConnectionRepository.vala',

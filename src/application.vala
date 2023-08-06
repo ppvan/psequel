@@ -101,11 +101,12 @@ namespace Psequel {
             typeof (ConnectionViewModel).ensure ();
             typeof (Psequel.SchemaView).ensure ();
             typeof (Psequel.SchemaSidebar).ensure ();
+            typeof (Psequel.SchemaMain).ensure ();
+
             typeof (Psequel.ConnectionRow).ensure ();
             typeof (Psequel.ConnectionView).ensure ();
             typeof (Psequel.ConnectionSidebar).ensure ();
             typeof (Psequel.ConnectionForm).ensure ();
-            typeof (Psequel.QueryView).ensure ();
             typeof (Psequel.QueryResults).ensure ();
             typeof (Psequel.QueryEditor).ensure ();
             typeof (Psequel.TableStructureView).ensure ();

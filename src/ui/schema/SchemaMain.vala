@@ -2,8 +2,8 @@
 
 namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-view.ui")]
-    public class QueryView : Gtk.Box {
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/schema-main.ui")]
+    public class SchemaMain : Gtk.Box {
         public MenuModel menu {get; set;}
         public Table selected_table {get; set;}
         public View selected_view {get; set;}

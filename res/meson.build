@@ -12,12 +12,12 @@ blueprints = custom_target('blueprints',
     'gtk/connection-row.blp',
     'gtk/connection-listitem.blp',
 
-    'gtk/main.blp',
-    'gtk/query-view.blp',
     'gtk/query-editor.blp',
     'gtk/query-results.blp',
+
     'gtk/schema-view.blp',
     'gtk/schema-sidebar.blp',
+    'gtk/schema-main.blp',
     
     'gtk/table-data-view.blp',
     
