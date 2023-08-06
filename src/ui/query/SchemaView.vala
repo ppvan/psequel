@@ -4,9 +4,13 @@ namespace Psequel {
     public class SchemaView : Adw.Bin {
         public SchemaViewModel viewmodel { get; set; }
 
+        public QueryViewModel query_viewmodel {get; set;}
+
 
         public ObservableList<Schema> schemas {get; set;}
         public Schema? current_schema {get; set;}
+
+        public signal void request_logout ();
 
         public SchemaView () {
             Object ();
@@ -20,6 +24,11 @@ namespace Psequel {
             }
 
             viewmodel.load_schema.begin (schema);
+        }
+
+        [GtkCallback]
+        public void request_logout_cb () {
+            request_logout ();
         }
 
         [GtkCallback]

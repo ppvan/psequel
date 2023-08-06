@@ -5,7 +5,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-editor.ui")]
     public class QueryEditor : Adw.Bin {
 
-        private QueryService query_service;
+        public QueryService query_service {get; set;}
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
 

@@ -14,6 +14,7 @@ namespace Psequel {
         public string view_mode {get; set;}
 
         public signal void request_load_schema (Schema current_schema);
+        public signal void request_logout ();
         public signal void table_selected_changed (Table table);
         public signal void view_selected_changed (View view);
 
@@ -81,6 +82,18 @@ namespace Psequel {
         [GtkCallback]
         private void view_search_reveal () {
             search_views_entry.grab_focus ();
+        }
+
+        [GtkCallback]
+        private void reload_btn_clicked (Gtk.Button btn) {
+            debug ("clicked");
+            request_load_schema (current_schema);
+        }
+
+        [GtkCallback]
+        private void logout_btn_clicked (Gtk.Button btn) {
+            debug ("clicked");
+            request_logout ();
         }
 
         [GtkChild]

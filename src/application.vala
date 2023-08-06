@@ -167,11 +167,11 @@ namespace Psequel {
             var repository = new ConnectionRepository (this.settings);
             var conn_vm = new ConnectionViewModel (repository);
             var sche_vm = new SchemaViewModel (query_service);
+            var query_vm = new QueryViewModel (query_service);
 
 
 
-            var signals = new WindowSignals ();
-            var window = new Window (this, conn_vm, sche_vm);
+            var window = new Window (this, conn_vm, sche_vm, query_vm);
 
             app_signals.window_ready ();
 

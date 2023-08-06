@@ -30,8 +30,14 @@ namespace Psequel {
         public QueryViewModel query_viewmodel {get; construct;}
         public SchemaViewModel schema_viewmodel {get; construct;}
 
-        public Window (Application app, ConnectionViewModel conn_vm, SchemaViewModel schema_vm) {
-            Object (application: app, connection_viewmodel: conn_vm, schema_viewmodel: schema_vm);
+
+        public Window (Application app, ConnectionViewModel conn_vm, SchemaViewModel schema_vm, QueryViewModel query_viewmodel) {
+            Object (
+                application: app,
+                connection_viewmodel: conn_vm,
+                schema_viewmodel: schema_vm,
+                query_viewmodel: query_viewmodel
+            );
         }
 
         construct {
@@ -67,12 +73,22 @@ namespace Psequel {
         }
 
         [GtkCallback]
-        public void on_connect_db (Connection conn) {
+        public async void on_connect_db (Connection conn) {
             debug ("Window connect");
             connection_viewmodel.is_connectting = true;
+            try {
+                yield schema_viewmodel.connect_db (conn);
+                navigate_to (BaseViewModel.QUERY_VIEW);
+            } catch (PsequelError err) {
+                create_dialog ("Connection Error", err.message).present ();
+            }
 
-            schema_viewmodel.connect_db (conn);
-            navigate_to (BaseViewModel.QUERY_VIEW);
+            connection_viewmodel.is_connectting = false;
+        }
+
+        [GtkCallback]
+        public void on_request_logout () {
+            navigate_to (BaseViewModel.CONNECTION_VIEW);
         }
 
         [GtkChild]

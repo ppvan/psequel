@@ -75,7 +75,7 @@ namespace Psequel {
             return list;
         }
 
-        public async void load_schema (Schema schema) throws PsequelError {
+        public async void load_schema (Schema schema) throws PsequelError.QUERY_FAIL {
             yield load_tables_and_views (schema);
         }
 
@@ -93,14 +93,10 @@ namespace Psequel {
 
         private async void load_tables_and_views (Schema schema) {
 
-            // clear old tables.
-            schema.tables.foreach ((item) => {
-                schema.tables.remove (item);
-            });
+            // old table auto clean by GC
+            schema.tables = new List<Table> ();
+            schema.views = new List<View> ();
 
-            schema.views.foreach ((item) => {
-                schema.views.remove (item);
-            });
 
             var table_groups = new HashTable<string, Table> (GLib.str_hash, GLib.str_equal);
             var view_groups = new HashTable<string, View> (GLib.str_hash, GLib.str_equal);

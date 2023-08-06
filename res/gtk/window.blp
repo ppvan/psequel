@@ -24,6 +24,8 @@ template $PsequelWindow : Adw.ApplicationWindow {
                 name: "query-view";
                 child: $PsequelSchemaView {
                     viewmodel: bind template.schema-viewmodel;
+                    query-viewmodel: bind template.query-viewmodel;
+                    request_logout => $on_request_logout ();
                 };
             }
         }

@@ -6,9 +6,9 @@ namespace Psequel {
         public ObservableList<Schema> schemas { get; set; default = new ObservableList<Schema> (); }
         public Schema? current_schema { get; set; }
 
-        //  Child viewmodel
-        public TableViewModel table_viewmodel {get; set;}
-        public ViewViewModel view_viewmodel {get; set;}
+        // Child viewmodel
+        public TableViewModel table_viewmodel { get; set; }
+        public ViewViewModel view_viewmodel { get; set; }
 
         public SchemaRepository repository;
 
@@ -23,22 +23,25 @@ namespace Psequel {
                 table_viewmodel = new TableViewModel (current_schema);
                 view_viewmodel = new ViewViewModel (current_schema);
 
-                table_viewmodel.current_table = (Table)table_viewmodel.tables.get_item (0);
+                table_viewmodel.current_table = (Table) table_viewmodel.tables.get_item (0);
                 view_viewmodel.current_view = view_viewmodel.views[0];
             });
         }
 
-        public void connect_db (Connection conn) {
-            list_schemas.begin (conn);
+        public async void connect_db (Connection conn) throws PsequelError {
+            yield query_service.connect_db (conn);
+
+            // auto load schema
+            yield list_schemas ();
         }
 
-        public async void load_schema (Schema schema) {
+        public async void load_schema (Schema schema) throws PsequelError {
             yield schema_service.load_schema (schema);
+
             current_schema = schema;
         }
 
-        public async void list_schemas (Connection conn) {
-            yield query_service.connect_db (conn);
+        public async void list_schemas () throws PsequelError {
 
             schema_service = new SchemaService (query_service);
 
@@ -46,7 +49,5 @@ namespace Psequel {
 
             schemas.append_all (unload_schemas);
         }
-
-
     }
 }

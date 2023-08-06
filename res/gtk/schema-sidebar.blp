@@ -205,7 +205,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
             icon-name: "refresh-large-symbolic";
             tooltip-text: "Reload tables";
 
-            // clicked => $on_reload_clicked();
+            clicked => $reload_btn_clicked();
         }
         
         Label {
@@ -216,7 +216,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
             styles ["flat"]
             icon-name: "step-out-symbolic";
             tooltip-text: "Logout";
-            // clicked => $on_logout_clicked();
+            clicked => $logout_btn_clicked();
         }
 
     }
