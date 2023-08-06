@@ -11,15 +11,17 @@ template $PsequelSchemaView : Adw.Bin {
         orientation: vertical;
 
         Gtk.Paned {
-            $PsequelSchemaSidebar {
+            $PsequelSchemaSidebar sidebar {
                 schemas: bind template.viewmodel as <$PsequelSchemaViewModel>.schemas;
-                tables: bind template.viewmodel as <$PsequelSchemaViewModel>.tables;
-                views: bind template.viewmodel as <$PsequelSchemaViewModel>.views;
+                // template->viewmodel->table-viewmodel
+                tables: bind template.viewmodel as <$PsequelSchemaViewModel>.table-viewmodel as <$PsequelTableViewModel>.tables;
+                views: bind template.viewmodel as <$PsequelSchemaViewModel>.view-viewmodel as <$PsequelViewViewModel>.views;
                 request-load-schema => $request_load_schema ();
             }
 
             $PsequelQueryView {
                 menu: primary_menu;
+                selected-table: bind sidebar.selected-table;
             }
         }
     }

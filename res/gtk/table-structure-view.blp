@@ -2,14 +2,13 @@ using Gtk 4.0;
 using Gio 2.0;
 using Adw 1;
 
-template $PsequelTableStructure : Gtk.Box {
+template $PsequelTableStructureView : Gtk.Box {
     orientation: vertical;
     spacing: 4;
     margin-start: 8;
     margin-top: 12;
     margin-bottom: 12;
-    
-    
+
     // width-request: 960;
     // height-request: 800;
 
@@ -20,7 +19,7 @@ template $PsequelTableStructure : Gtk.Box {
     }
 
     $PsequelTableColInfo columns {
-
+        columns: bind template.columns;
     }
 
 
@@ -31,7 +30,7 @@ template $PsequelTableStructure : Gtk.Box {
     }
 
     $PsequelTableIndexInfo indexes {
-
+        indexes: bind template.indexes;
     }
 
     Label {
@@ -41,6 +40,6 @@ template $PsequelTableStructure : Gtk.Box {
     }
 
     $PsequelTableFKInfo foreign_keys {
-
+        fks: bind template.fks;
     }
 }

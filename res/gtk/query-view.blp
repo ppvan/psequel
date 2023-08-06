@@ -26,8 +26,8 @@ template $PsequelQueryView : Gtk.Box {
             name: "structure-view";
             icon-name: "library-symbolic";
             title: "Structure";
-            child: Label {
-                label: "struture";
+            child: $PsequelTableStructureView {
+                selected-table: bind template.selected-table;
             };
         }
 

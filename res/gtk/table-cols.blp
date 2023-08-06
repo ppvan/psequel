@@ -5,6 +5,10 @@ template $PsequelTableColInfo : Adw.Bin {
     ScrolledWindow {
         ColumnView view {
 
+            model: NoSelection {
+                model: bind template.columns;
+            };
+
             styles ["data-table"]
             show-column-separators: true;
             show-row-separators: true;

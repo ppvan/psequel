@@ -15,7 +15,7 @@ psequel_sources = [
     'ui/table/table_cols.vala',
     'ui/table/table_fk.vala',
     'ui/table/table_index.vala',
-    'ui/table/table_structure_view.vala',
+    'ui/table/TableStructureView.vala',
     'ui/window.vala',
     'ui/preferences_window.vala',
 

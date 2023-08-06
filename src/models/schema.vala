@@ -6,8 +6,8 @@ namespace Psequel {
     public class Schema : Object {
         public string name { get; private set; }
 
-        public ObservableList<Table> tables { get; private set; }
-        public ObservableList<View> views {get; private set;}
+        public List<Table> tables { get; owned set; }
+        public List<View> views {get; owned set;}
 
         public Schema (string name) {
             Object ();
@@ -15,9 +15,8 @@ namespace Psequel {
         }
 
         construct {
-
-            tables = new ObservableList<Table> ();
-            views = new ObservableList<View> ();
+            tables = new List<Table> ();
+            views = new List<View> ();
         }
     }
 

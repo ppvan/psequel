@@ -1,11 +1,11 @@
 namespace Psequel {
 
-    public class Table : Object {
+    /** Table can be seen as view */
+    public class Table : View {
 
-        public Schema schema { get; construct; }
-        public string name { get; set; }
-
-        public List<Column> columns { get; owned set; default = new List<Column> ();}
+        //  public Schema schema { get; construct; }
+        //  public string name { get; set; }
+        //  public List<Column> columns { get; owned set; default = new List<Column> ();}
         public List<Index> indexes { get; owned set; default = new List<Index> (); }
         public List<ForeignKey> foreign_keys { get; owned set; default = new List<ForeignKey> ();}
 
@@ -17,6 +17,7 @@ namespace Psequel {
     public class View : Object {
         public Schema schema { get; construct; }
         public string name { get; set; }
+        public List<Column> columns { get; owned set; default = new List<Column> ();}
 
         public View (Schema schema) {
             Object (schema: schema);

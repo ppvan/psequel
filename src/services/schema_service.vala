@@ -81,16 +81,23 @@ namespace Psequel {
         }
 
         private async void load_views (Schema schema) {
-            schema.views.clear ();
+            schema.views.foreach ((item) => {
+                schema.views.remove (item);
+            });
+
             var views = yield get_views (schema);
 
-            schema.views.append_all (views);
+            views.foreach ((item) => {
+                schema.views.append (item);
+            });
         }
 
         private async void load_tables (Schema schema) {
 
             // clear old tables.
-            schema.tables.clear ();
+            schema.tables.foreach ((item) => {
+                schema.tables.remove (item);
+            });
 
             var groups = new HashTable<string, Table> (GLib.str_hash, GLib.str_equal);
 
