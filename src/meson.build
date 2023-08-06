@@ -1,9 +1,9 @@
 # Source code
 psequel_sources = [
     'application.vala',
-    'ui/connection/connection_form.vala',
-    'ui/connection/connection_sidebar.vala',
-    'ui/connection/connection_view.vala',
+    'ui/connection/ConnectionForm.vala',
+    'ui/connection/ConnectionSidebar.vala',
+    'ui/connection/ConnectionView.vala',
 
 
     'ui/schema/SchemaView.vala',
@@ -32,7 +32,7 @@ psequel_sources = [
     'models/utils.vala',
 
     'services/QueryService.vala',
-    'services/resource_manager.vala',
+    'services/ResourceManager.vala',
     'services/SchemaService.vala',
     'services/Settings.vala',
     'services/signal.vala',
