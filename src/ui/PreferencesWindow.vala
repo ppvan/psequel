@@ -3,7 +3,6 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/preferences.ui")]
     public class PreferencesWindow : Adw.PreferencesWindow {
 
-        private Settings settings;
         private Gtk.StringList model;
 
         public PreferencesWindow () {
@@ -12,14 +11,13 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            settings = ResourceManager.instance ().settings;
             setup_binding ();
             defaults ();
         }
 
 
         private void defaults () {
-            var desc = Pango.FontDescription.from_string (settings.get_string ("editor-font"));
+            var desc = Pango.FontDescription.from_string (Application.settings.get_string ("editor-font"));
 
             font_label.get_pango_context ().set_font_description (desc);
             font_label.label = desc.to_string ();
@@ -32,19 +30,19 @@ namespace Psequel {
         }
 
         private void setup_binding () {
-            // settings.bind_with_mapping (string key, GLib.Object object, string property, GLib.SettingsBindFlags flags, GLib.SettingsBindGetMappingShared get_mapping, GLib.SettingsBindSetMappingShared set_mapping, void* user_data, GLib.DestroyNotify? notify)
-            settings.bind ("query-limit", query_limit, "value", SettingsBindFlags.DEFAULT);
-            settings.bind ("query-timeout", query_timeout, "value", SettingsBindFlags.DEFAULT);
-            settings.bind ("connection-timeout", conn_timeout, "value", SettingsBindFlags.DEFAULT);
+            // Application.settings.bind_with_mapping (string key, GLib.Object object, string property, GLib.SettingsBindFlags flags, GLib.SettingsBindGetMappingShared get_mapping, GLib.SettingsBindSetMappingShared set_mapping, void* user_data, GLib.DestroyNotify? notify)
+            Application.settings.bind ("query-limit", query_limit, "value", SettingsBindFlags.DEFAULT);
+            Application.settings.bind ("query-timeout", query_timeout, "value", SettingsBindFlags.DEFAULT);
+            Application.settings.bind ("connection-timeout", conn_timeout, "value", SettingsBindFlags.DEFAULT);
 
-            settings.changed["editor-font"].connect ((_setting, key) => {
+            Application.settings.changed["editor-font"].connect ((_setting, key) => {
 
                 var desc = Pango.FontDescription.from_string (_setting.get_string (key));
 
                 font_label.get_pango_context ().set_font_description (desc);
             });
 
-            settings.changed["color-scheme"].connect ((_setting, key) => {
+            Application.settings.changed["color-scheme"].connect ((_setting, key) => {
 
                 var cur_color_scheme = _setting.get_string (key);
 
@@ -59,7 +57,7 @@ namespace Psequel {
 
             color_scheme.notify["selected"].connect (() => {
                 var item = color_scheme.get_selected_item () as Gtk.StringObject;
-                settings.set_string ("color-scheme", item.string);
+                Application.settings.set_string ("color-scheme", item.string);
             });
         }
 
@@ -88,7 +86,7 @@ namespace Psequel {
         // font_label.get_pango_context ().set_font_description (dialog.font_desc);
         // font_label.label = dialog.font_desc.to_string ();
 
-        // settings.set_string ("editor-font", dialog.font_desc.to_string ());
+        // Application.settings.set_string ("editor-font", dialog.font_desc.to_string ());
         // }
 
         // dialog.close ();

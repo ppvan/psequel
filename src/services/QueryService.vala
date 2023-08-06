@@ -10,7 +10,7 @@ namespace Psequel {
             Object ();
             this.background = background;
 
-            ResourceManager.instance ().settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
+            Application.settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
         }
 
         public Connection parse_conninfo (string conn_info) throws PsequelError.PARSE_ERROR {

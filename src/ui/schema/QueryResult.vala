@@ -91,7 +91,7 @@ namespace Psequel {
         }
 
         private void alloc_columns () {
-            for (int i = 0; i < ResourceManager.MAX_COLUMNS; i++) {
+            for (int i = 0; i < Application.MAX_COLUMNS; i++) {
                 var factory = new Gtk.SignalListItemFactory ();
                 factory.set_data<int> ("index", i);
 

@@ -25,8 +25,8 @@ psequel_sources = [
     'ui/Window.vala',
     'ui/PreferencesWindow.vala',
 
-    'models/connection.vala',
-    'models/schema.vala',
+    'models/Connection.vala',
+    'models/Schema.vala',
     'models/table.vala',
     'models/Table.vala',
     'models/utils.vala',
@@ -34,8 +34,6 @@ psequel_sources = [
     'services/QueryService.vala',
     'services/ResourceManager.vala',
     'services/SchemaService.vala',
-    'services/Settings.vala',
-    'services/signal.vala',
 
     'repositories/ConnectionRepository.vala',
     'repositories/SchemaRepository.vala',
@@ -49,7 +47,11 @@ psequel_sources = [
     'viewmodels/ViewViewModel.vala',
 
     'utils/ObservableList.vala',
+    'utils/ObservableArrayList.vala',
     'utils/ValueConverter.vala',
+    'utils/helpers.vala',
+    'utils/logging.vala',
+    'utils/errors.vala',
 ]
 
 
