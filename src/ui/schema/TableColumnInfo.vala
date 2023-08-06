@@ -5,43 +5,10 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-cols.ui")]
     public class TableColInfo : Adw.Bin {
 
-        private Gtk.SelectionModel selection_model;
-
-        private Gtk.StringFilter filter;
-
-        private ObservableArrayList<Column> _model;
-        public ObservableArrayList<Column> model {
-            get {
-                return _model;
-            }
-            set {
-                _model = value;
-                bind_model (_model);
-            }
-        }
-
-        private string _selected_table;
-        public string table {
-            get {
-                return _selected_table;
-            }
-            set {
-                _selected_table = value;
-                filter.search = value;
-            }
-        }
-
-
+        public ObservableList<Column> columns {get; set;}
 
         public TableColInfo () {
             Object ();
-        }
-
-        private void bind_model (ListModel model) {
-            var filter_model = new Gtk.FilterListModel (model, filter);
-            filter_model.incremental = true;
-            selection_model = new Gtk.NoSelection (filter_model);
-            view.set_model (selection_model);
         }
 
         construct {
@@ -50,11 +17,6 @@ namespace Psequel {
             setup_datatype_col ();
             setup_nullable_col ();
             setup_default_col ();
-
-            var expression = new Gtk.PropertyExpression (typeof (Column), null, "table");
-            this.filter = new Gtk.StringFilter (expression);
-            this.filter.match_mode = Gtk.StringFilterMatchMode.EXACT;
-            this.filter.search = " "; // trick to filter all if no table selected.
         }
 
 

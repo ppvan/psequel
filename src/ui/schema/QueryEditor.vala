@@ -5,12 +5,9 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-editor.ui")]
     public class QueryEditor : Adw.Bin {
 
-        private QueryService query_service;
+        public QueryService query_service {get; set;}
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
-
-        /** Binded in blueprints file */
-        public Window window { get; set; }
 
         public class QueryEditor () {
             Object ();
@@ -27,7 +24,7 @@ namespace Psequel {
         }
 
         private void setup_signals () {
-            query_service = window.query_service;
+            //  query_service = window.query_service;
         }
 
         void default_setttings () {

@@ -14,14 +14,18 @@ template $PsequelWindow : Adw.ApplicationWindow {
             StackPage {
                 name: "connection-view";
                 child: $PsequelConnectionView {
-                    window: bind template;
+                    viewmodel: bind template.connection-viewmodel;
+
+                    request-database => $on_connect_db ();
                 };
             }
 
-            StackPage {
+            StackPage query-view {
                 name: "query-view";
-                child: $PsequelQueryView {
-                    window: bind template;
+                child: $PsequelSchemaView {
+                    viewmodel: bind template.schema-viewmodel;
+                    query-viewmodel: bind template.query-viewmodel;
+                    request_logout => $on_request_logout ();
                 };
             }
         }

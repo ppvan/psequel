@@ -30,22 +30,19 @@ template $PsequelConnectionSidebar : Gtk.Box {
             }
         }
     }
-
-    // Separator {
-
-    // }
-
-
     ScrolledWindow {
         vexpand: true;
-        ListBox conn_list {
+        ListView {
             styles ["navigation-sidebar"]
-            vexpand: true;
-            selection-mode: browse;
-            activate-on-single-click: true;
-            width-request: 250; 
-            
-            row-selected => $on_row_selected();
+
+            model: SingleSelection selection_model {
+                model: bind template.connections;
+                autoselect: true;
+            };
+
+            factory: BuilderListItemFactory {
+                resource: "/me/ppvan/psequel/gtk/connection-listitem.ui";
+            };
         }
     }
 }

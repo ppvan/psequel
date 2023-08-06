@@ -4,43 +4,12 @@ namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-index.ui")]
     public class TableIndexInfo : Adw.Bin {
-        private Gtk.SelectionModel selection_model;
 
-        private Gtk.StringFilter filter;
-
-        private ObservableArrayList<Index> _model;
-        public ObservableArrayList<Index> model {
-            get {
-                return _model;
-            }
-            set {
-                _model = value;
-                bind_model (_model);
-            }
-        }
-
-        private string _selected_table;
-        public string table {
-            get {
-                return _selected_table;
-            }
-            set {
-                _selected_table = value;
-                filter.search = value;
-            }
-        }
-
+        public ObservableList<Index> indexes {get; set;}
 
 
         public TableIndexInfo () {
             Object ();
-        }
-
-        private void bind_model (ListModel model) {
-            var filter_model = new Gtk.FilterListModel (model, filter);
-            filter_model.incremental = true;
-            selection_model = new Gtk.NoSelection (filter_model);
-            view.set_model (selection_model);
         }
 
         construct {
@@ -50,11 +19,6 @@ namespace Psequel {
             setup_indextype_col ();
             setup_unique_col ();
             setup_indexsize_col ();
-
-            var expression = new Gtk.PropertyExpression (typeof (Index), null, "table");
-            this.filter = new Gtk.StringFilter (expression);
-            this.filter.match_mode = Gtk.StringFilterMatchMode.EXACT;
-            this.filter.search = " "; // trick to filter all if no table selected.
         }
 
 

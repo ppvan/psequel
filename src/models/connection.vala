@@ -75,6 +75,24 @@ namespace Psequel {
         public Connection clone () {
             return (Connection)Json.gobject_deserialize (typeof (Connection), Json.gobject_serialize (this));
         }
+
+        public static Connection? deserialize (string json) {
+
+            try {
+                var conn = (Connection)Json.gobject_from_data (typeof (Connection), json);
+
+                return conn;
+            } catch (Error err) {
+                debug (err.message);
+
+                return null;
+            }
+        }
+
+        public static string serialize (Connection conn) {
+            return Json.gobject_to_data (conn, null);
+        }
+
     }
 
 }
