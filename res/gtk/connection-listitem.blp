@@ -1,0 +1,8 @@
+using Gtk 4.0;
+
+template ListItem {
+    child: $PsequelConnectionRow {
+        item: bind template.item;
+        pos: bind template.position;
+    };
+}

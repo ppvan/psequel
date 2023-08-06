@@ -1,0 +1,19 @@
+using Gtk 4.0;
+
+template ListItem {
+    child: Box {
+        orientation: horizontal;
+        spacing: 12;
+
+        Image {
+            icon-name: "table-symbolic";
+        }
+
+        Label {
+            label: bind template.item as <$PsequelTable>.name;
+            halign: start;
+            ellipsize: end;
+            single-line-mode: true;
+        }
+    };
+}

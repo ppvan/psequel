@@ -21,7 +21,7 @@ template $PsequelConnectionForm : Adw.Bin {
                 [end]
                 MenuButton {
                     icon-name: "open-menu-symbolic";
-                    menu-model: primary_menu;
+                    menu-model: bind template.menu-model;
                 }
             }
 
@@ -55,7 +55,7 @@ template $PsequelConnectionForm : Adw.Bin {
                                 placeholder-text: "postgres://...";
                                 hexpand: true;
                                 activate => $on_entry_activated();
-                                changed => $on_url_entry_changed();
+                                changed => $text_changed_cb();
                             }
                         }
 
@@ -167,6 +167,7 @@ template $PsequelConnectionForm : Adw.Bin {
                                 placeholder-text: "Connection name";
                                 hexpand: true;
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 0;
@@ -178,6 +179,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry host_entry {
                                 placeholder-text: "localhost";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 1;
@@ -198,6 +200,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry port_entry {
                                 placeholder-text: "5432";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 1;
@@ -209,6 +212,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry user_entry {
                                 placeholder-text: "postgres";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 2;
@@ -221,6 +225,7 @@ template $PsequelConnectionForm : Adw.Bin {
                                 placeholder-text: "";
                                 show-peek-icon: true;
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 3;
@@ -233,6 +238,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Entry database_entry {
                                 placeholder-text: "postgres";
                                 activate => $on_entry_activated();
+                                changed => $text_changed_cb();
                                 
                                 layout {
                                     row: 4;
@@ -256,7 +262,9 @@ template $PsequelConnectionForm : Adw.Bin {
                                 Box {
                                     valign: center;
                                     orientation: vertical;
-                                    Switch ssl_switch {}
+                                    Switch ssl_switch {
+                                        activate => $text_changed_cb();
+                                    }
                                 }
                                 layout {
                                     row: 5;
@@ -292,6 +300,7 @@ template $PsequelConnectionForm : Adw.Bin {
                             Button connect_btn {
                                 styles ["suggested-action"]
                                 label: "Connect";
+                                // sensitive: bind template.is_connectting;
                                 clicked => $on_connect_clicked();
                             }
                         }
@@ -301,41 +310,4 @@ template $PsequelConnectionForm : Adw.Bin {
             }
         }
     };
-}
-
-menu primary_menu {
-  section {
-    item {
-      label: _("_New Window");
-      action: "app.new-window";
-    }
-  }
-  section {
-    item {
-      label: _("_Import Connections");
-      action: "app.import";
-    }
-
-    item {
-      label: _("_Export Connections");
-      action: "app.export";
-    }
-  }
-
-  section {
-    item {
-      label: _("_Preferences");
-      action: "app.preferences";
-    }
-
-    item {
-      label: _("_Keyboard Shortcuts");
-    //   action: "win.show-help-overlay";
-    }
-
-    item {
-      label: _("_About");
-      action: "app.about";
-    }
-  }
 }

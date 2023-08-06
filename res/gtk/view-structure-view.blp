@@ -1,8 +1,7 @@
 using Gtk 4.0;
-using Gio 2.0;
-using Adw 1;
 
-template $PsequelTableStructureView : Gtk.Box {
+
+template $PsequelViewStructureView : Box {
     orientation: vertical;
     spacing: 4;
     margin-start: 8;
@@ -31,15 +30,5 @@ template $PsequelTableStructureView : Gtk.Box {
 
     $PsequelTableIndexInfo indexes {
         indexes: bind template.indexes;
-    }
-
-    Label {
-        styles ["title-3"]
-        label: "Foreign Keys";
-        halign: start;
-    }
-
-    $PsequelTableFKInfo foreign_keys {
-        fks: bind template.fks;
     }
 }
