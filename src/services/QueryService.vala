@@ -1,6 +1,5 @@
 using Postgres;
 
-using Gee;
 namespace Psequel {
     public class QueryService : Object {
 

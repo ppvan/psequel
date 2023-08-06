@@ -27,6 +27,7 @@ psequel_sources = [
 
     'models/Connection.vala',
     'models/Schema.vala',
+    'models/Relation.vala',
     'models/table.vala',
     'models/Table.vala',
     'models/utils.vala',
@@ -47,7 +48,6 @@ psequel_sources = [
     'viewmodels/ViewViewModel.vala',
 
     'utils/ObservableList.vala',
-    'utils/ObservableArrayList.vala',
     'utils/ValueConverter.vala',
     'utils/helpers.vala',
     'utils/logging.vala',
@@ -72,7 +72,6 @@ psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
   dependency('gtk4'),
   dependency('libadwaita-1', version: '>= 1.2'),
-  dependency('gee-0.8'),
   dependency('json-glib-1.0'),
   dependency('gtksourceview-5'),
   dependency('libpq'),

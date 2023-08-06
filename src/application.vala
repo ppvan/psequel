@@ -18,8 +18,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-using Gee;
-
 namespace Psequel {
 
     // public string APP_ID = "me.ppvan.Psequel";
