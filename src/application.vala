@@ -109,6 +109,7 @@ namespace Psequel {
             typeof (Psequel.QueryResults).ensure ();
             typeof (Psequel.QueryEditor).ensure ();
             typeof (Psequel.TableStructureView).ensure ();
+            typeof (Psequel.ViewStructureView).ensure ();
             typeof (Psequel.TableData).ensure ();
             typeof (Psequel.TableColInfo).ensure ();
             typeof (Psequel.TableIndexInfo).ensure ();

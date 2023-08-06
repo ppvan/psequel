@@ -21,5 +21,15 @@ namespace Psequel {
 
             viewmodel.load_schema.begin (schema);
         }
+
+        [GtkCallback]
+        public void table_selected_changed (Table table) {
+            viewmodel?.table_viewmodel.current_table = table;
+        }
+
+        [GtkCallback]
+        public void view_selected_changed (View view) {
+            viewmodel?.view_viewmodel.current_view = view;
+        }
     }
 }

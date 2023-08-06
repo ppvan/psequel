@@ -12,16 +12,24 @@ template $PsequelSchemaView : Adw.Bin {
 
         Gtk.Paned {
             $PsequelSchemaSidebar sidebar {
+
                 schemas: bind template.viewmodel as <$PsequelSchemaViewModel>.schemas;
-                // template->viewmodel->table-viewmodel
+                // template->viewmodel->table-viewmodel->tables
                 tables: bind template.viewmodel as <$PsequelSchemaViewModel>.table-viewmodel as <$PsequelTableViewModel>.tables;
+                // template->viewmodel->view-viewmodel->views
                 views: bind template.viewmodel as <$PsequelSchemaViewModel>.view-viewmodel as <$PsequelViewViewModel>.views;
                 request-load-schema => $request_load_schema ();
+                table-selected-changed => $table_selected_changed ();
+                view-selected-changed => $view_selected_changed ();
             }
 
             $PsequelQueryView {
                 menu: primary_menu;
+                view-mode: bind sidebar.view-mode;
                 selected-table: bind sidebar.selected-table;
+                selected-view: bind sidebar.selected-view;
+                table-viewmodel: bind template.viewmodel as <$PsequelSchemaViewModel>.table-viewmodel;
+                view-viewmodel: bind template.viewmodel as <$PsequelSchemaViewModel>.view-viewmodel;
             }
         }
     }

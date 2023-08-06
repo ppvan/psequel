@@ -76,8 +76,7 @@ namespace Psequel {
         }
 
         public async void load_schema (Schema schema) throws PsequelError {
-            yield load_tables (schema);
-            yield load_views (schema);
+            yield load_tables_and_views (schema);
         }
 
         private async void load_views (Schema schema) {
@@ -92,16 +91,23 @@ namespace Psequel {
             });
         }
 
-        private async void load_tables (Schema schema) {
+        private async void load_tables_and_views (Schema schema) {
 
             // clear old tables.
             schema.tables.foreach ((item) => {
                 schema.tables.remove (item);
             });
 
-            var groups = new HashTable<string, Table> (GLib.str_hash, GLib.str_equal);
+            schema.views.foreach ((item) => {
+                schema.views.remove (item);
+            });
+
+            var table_groups = new HashTable<string, Table> (GLib.str_hash, GLib.str_equal);
+            var view_groups = new HashTable<string, View> (GLib.str_hash, GLib.str_equal);
 
             var table_names = yield get_tbnames (schema);
+            var view_names = yield get_viewnames (schema);
+
             var columns = yield get_columns (schema);
             var indexes = yield get_indexes (schema);
             var fks = yield get_fks (schema);
@@ -112,34 +118,57 @@ namespace Psequel {
                 var table = new Table (schema) {
                     name = tbname,
                 };
-                groups.insert (tbname, table);
+                table_groups.insert (tbname, table);
+            });
+
+            view_names.foreach ((tbname) => {
+                var view = new View (schema) {
+                    name = tbname,
+                };
+                view_groups.insert (tbname, view);
             });
 
             columns.foreach ((col) => {
-                if (groups.contains (col.table)) {
-                    var table = groups.get (col.table);
+                if (table_groups.contains (col.table)) {
+                    var table = table_groups.get (col.table);
                     table.columns.append (col);
+                }
+
+                if (view_groups.contains (col.table)) {
+                    var view = view_groups.get (col.table);
+                    view.columns.append (col);
                 }
             });
 
             indexes.foreach ((index) => {
-                if (groups.contains (index.table)) {
-                    var table = groups.get (index.table);
+                if (table_groups.contains (index.table)) {
+                    var table = table_groups.get (index.table);
                     table.indexes.append (index);
+                }
+
+                if (view_groups.contains (index.table)) {
+                    var view = view_groups.get (index.table);
+                    view.indexes.append (index);
                 }
             });
 
             fks.foreach ((fk) => {
-                if (groups.contains (fk.table)) {
-                    var table = groups.get (fk.table);
+                if (table_groups.contains (fk.table)) {
+                    var table = table_groups.get (fk.table);
                     table.foreign_keys.append (fk);
                 }
             });
 
-            var values = groups.steal_all_values ();
+            var tables = table_groups.steal_all_values ();
 
-            for (int i = 0; i < values.length; i++) {
-                schema.tables.append (values[i]);
+            for (int i = 0; i < tables.length; i++) {
+                schema.tables.append (tables[i]);
+            }
+
+            var views = view_groups.steal_all_values ();
+
+            for (int i = 0; i < views.length; i++) {
+                schema.views.append (views[i]);
             }
         }
 
@@ -171,6 +200,22 @@ namespace Psequel {
                     v.name = row[0];
 
                     list.append (v);
+                }
+            } catch (PsequelError err) {
+                debug (err.message);
+            }
+
+            return list;
+        }
+
+        private async List<string> get_viewnames (Schema schema) {
+            var list = new List<string> ();
+
+            try {
+                var relation = yield query_service.exec_query_params (VIEW_SQL, { new Variant.string (schema.name) });
+
+                foreach (var row in relation) {
+                    list.append (row[0]);
                 }
             } catch (PsequelError err) {
                 debug (err.message);

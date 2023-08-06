@@ -44,6 +44,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
         vexpand: true;
         Adw.ViewStackPage {
             icon-name: "table-symbolic";
+            name: "table";
 
             child: Box {
                 orientation: vertical;
@@ -94,7 +95,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                     vexpand: true;
                     ListView table_list {
                         styles ["navigation-sidebar"]
-                        model: SingleSelection selection_model {
+                        model: SingleSelection table_selection {
                             model: FilterListModel {
                                 incremental: true;
                                 model: bind template.tables;
@@ -116,6 +117,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
 
         Adw.ViewStackPage {
             icon-name: "category-search-symbolic";
+            name: "view";
 
             child: Box {
                 orientation: vertical;
@@ -166,7 +168,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                     vexpand: true;
                     ListView views_list {
                         styles ["navigation-sidebar"]
-                        model: SingleSelection selection {
+                        model: SingleSelection view_selection {
                             model: FilterListModel {
                                 incremental: true;
                                 model: bind template.views;

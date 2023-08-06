@@ -11,20 +11,47 @@ namespace Psequel {
         public ObservableList<View> views {get; set;}
         public View? selected_view {get; set;}
 
+        public string view_mode {get; set;}
 
         public signal void request_load_schema (Schema current_schema);
+        public signal void table_selected_changed (Table table);
+        public signal void view_selected_changed (View view);
 
         public SchemaSidebar () {
             Object ();
         }
 
         construct {
+
+            sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
             
             dropdown.bind_property ("selected", this, "current-schema", DEFAULT, (_, from, ref to) => {
                 uint pos = from.get_uint ();
                 if (pos != Gtk.INVALID_LIST_POSITION) {
                     to.set_object (schemas.get_item (pos));
                 }
+            });
+
+            table_selection.bind_property ("selected", this, "selected-table", DEFAULT, (_, from, ref to) => {
+                uint pos = from.get_uint ();
+                if (pos != Gtk.INVALID_LIST_POSITION) {
+                    to.set_object (tables.get_item (pos));
+                }
+            });
+
+            view_selection.bind_property ("selected", this, "selected-view", DEFAULT, (_, from, ref to) => {
+                uint pos = from.get_uint ();
+                if (pos != Gtk.INVALID_LIST_POSITION) {
+                    to.set_object (views.get_item (pos));
+                }
+            });
+
+            this.notify["selected-table"].connect (() => {
+                table_selected_changed (selected_table);
+            });
+
+            this.notify["selected-view"].connect (() => {
+                view_selected_changed (selected_view);
             });
             
             this.notify["current-schema"].connect (() => {
@@ -70,5 +97,14 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.StringFilter view_filter;
+
+        [GtkChild]
+        private unowned Gtk.SingleSelection table_selection;
+
+        [GtkChild]
+        private unowned Gtk.SingleSelection view_selection;
+
+        [GtkChild]
+        private unowned Adw.ViewStack sql_views;
     }
 }

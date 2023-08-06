@@ -27,6 +27,7 @@ blueprints = custom_target('blueprints',
     'gtk/table-fk.blp',
     'gtk/table-index.blp',
     'gtk/table-structure-view.blp',
+    'gtk/view-structure-view.blp',
     
     'gtk/window.blp',
     'gtk/preferences.blp',

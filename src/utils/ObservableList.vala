@@ -19,6 +19,10 @@ namespace Psequel {
             });
         }
 
+        public new T @get (int i) {
+            return (T)_data.get_item ((uint)i);
+        }
+
         public void clear () {
             _data.remove_all ();
         }
