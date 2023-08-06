@@ -7,10 +7,11 @@
     <file preprocess="xml-stripblanks">gtk/connection-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-row.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-listitem.ui</file>
-    <file preprocess="xml-stripblanks">gtk/main.ui</file>
-    <file preprocess="xml-stripblanks">gtk/query-view.ui</file>
+
+    <file preprocess="xml-stripblanks">gtk/schema-main.ui</file>
     <file preprocess="xml-stripblanks">gtk/schema-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/schema-sidebar.ui</file>
+
     <file preprocess="xml-stripblanks">gtk/query-editor.ui</file>
     <file preprocess="xml-stripblanks">gtk/query-results.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-cols.ui</file>
