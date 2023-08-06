@@ -57,8 +57,8 @@ template $PsequelSchemaMain : Gtk.Box {
             name: "data-view";
             title: "Data";
             icon-name: "object-rows-symbolic";
-            child: Label {
-                label: "data";
+            child: $PsequelTableDataView {
+                tabledata-viewmodel: bind template.table-viewmodel as <$PsequelTableViewModel>.tabledata-viewmodel;
             };
         }
 

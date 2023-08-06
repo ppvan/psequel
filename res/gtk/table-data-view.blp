@@ -2,7 +2,7 @@ using Gtk 4.0;
 
 using Adw 1;
 
-template $PsequelTableData : Gtk.Box {
+template $PsequelTableDataView : Gtk.Box {
 
     width-request: 900;
     height-request: 600;
@@ -21,19 +21,21 @@ template $PsequelTableData : Gtk.Box {
         Entry filter_entry {
             hexpand: true;
             placeholder-text: "WHERE clause";
-            activate => $on_entry_activated();
+            // activate => $on_entry_activated();
         }
 
         Button filter_btn {
             styles ["suggested-action"]
             label: "Filter";
             
-            clicked => $filter_query();
+            // clicked => $filter_query();
         }
     }
 
     $PsequelQueryResults query_results {
-
+        current-relation: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.current-relation;
+        is-loading: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.is-loading;
+        err: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.err;
     }
 
 
@@ -67,14 +69,14 @@ template $PsequelTableData : Gtk.Box {
             styles ["flat"]
             icon-name: "left-large-symbolic";
             tooltip-text: "Last Page";
-            clicked => $load_previous_page();
+            clicked => $pre_page();
         }
         
         Button right_page {
             styles ["flat"]
             icon-name: "right-large-symbolic";
             tooltip-text: "Next Page";
-            clicked => $load_next_page();
+            clicked => $next_page();
         }
     }
 }

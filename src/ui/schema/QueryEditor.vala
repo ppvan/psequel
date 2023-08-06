@@ -89,8 +89,8 @@ namespace Psequel {
         [GtkChild]
         private unowned QueryResults query_results;
 
-        [GtkChild]
-        private unowned GtkSource.View editor;
+        //  [GtkChild]
+        //  private unowned GtkSource.View editor;
 
         [GtkChild]
         private unowned GtkSource.Buffer buffer;

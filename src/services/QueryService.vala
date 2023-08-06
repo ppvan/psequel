@@ -4,10 +4,13 @@ using Gee;
 namespace Psequel {
     public class QueryService : Object {
 
+        public int query_limit { get; set; }
+
         public QueryService (ThreadPool<Worker> background) {
             Object ();
-
             this.background = background;
+
+            ResourceManager.instance ().settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
         }
 
         public Connection parse_conninfo (string conn_info) throws PsequelError.PARSE_ERROR {
@@ -60,6 +63,14 @@ namespace Psequel {
             delete options;
 
             return conn;
+        }
+
+        public async Relation select_v2 (Table table, int page) throws PsequelError {
+            string escape_tbname = active_db.escape_identifier (table.name);
+            int offset = page * query_limit;
+
+            string stmt = @"SELECT * FROM $escape_tbname LIMIT $query_limit OFFSET $offset";
+            return yield exec_query (stmt);
         }
 
         public async Relation select (string schema, string table_name, int offset = 0, int limit = 500, string where_clause = "") throws PsequelError {

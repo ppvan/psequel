@@ -45,9 +45,9 @@ namespace Psequel {
             });
 
             settings.changed["color-scheme"].connect ((_setting, key) => {
-                
+
                 var cur_color_scheme = _setting.get_string (key);
-                
+
                 for (uint i = 0; i < this.model.get_n_items (); i++) {
                     var item = this.model.get_item (i) as Gtk.StringObject;
                     if (item.string == cur_color_scheme) {
@@ -65,38 +65,39 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_font_chooser (Adw.ActionRow row) {
-            old_choser ();
+            // old_choser ();
+            new_choser ();
         }
 
-        private void old_choser () {
-            /* Create dialog */
-            var dialog = new Gtk.FontChooserDialog (_("Select font"), this) {
-                modal = true,
-                transient_for = this,
-                level = Gtk.FontChooserLevel.FAMILY | Gtk.FontChooserLevel.SIZE | Gtk.FontChooserLevel.STYLE,
-            };
+        // private void old_choser () {
+        ///* Create dialog */
+        // var dialog = new Gtk.FontChooserDialog (_("Select font"), this) {
+        // modal = true,
+        // transient_for = this,
+        // level = Gtk.FontChooserLevel.FAMILY | Gtk.FontChooserLevel.SIZE | Gtk.FontChooserLevel.STYLE,
+        // };
 
-            dialog.set_filter_func ((desc) => {
-                return desc.is_monospace ();
-            });
-
-
-            /* Set font and close dialog on response */
-            dialog.response.connect ((res) => {
-                if (res == Gtk.ResponseType.OK && dialog.font != null) {
-                    font_label.get_pango_context ().set_font_description (dialog.font_desc);
-                    font_label.label = dialog.font_desc.to_string ();
-
-                    settings.set_string ("editor-font", dialog.font_desc.to_string ());
-                }
-
-                dialog.close ();
-            });
+        // dialog.set_filter_func ((desc) => {
+        // return desc.is_monospace ();
+        // });
 
 
-            /* Show dialog */
-            dialog.present ();
-        }
+        ///* Set font and close dialog on response */
+        // dialog.response.connect ((res) => {
+        // if (res == Gtk.ResponseType.OK && dialog.font != null) {
+        // font_label.get_pango_context ().set_font_description (dialog.font_desc);
+        // font_label.label = dialog.font_desc.to_string ();
+
+        // settings.set_string ("editor-font", dialog.font_desc.to_string ());
+        // }
+
+        // dialog.close ();
+        // });
+
+
+        ///* Show dialog */
+        // dialog.present ();
+        // }
 
         private void new_choser () {
             var dialog = new Gtk.FontDialog () {
@@ -109,10 +110,13 @@ namespace Psequel {
             init.set_size (14);
 
             dialog.choose_font.begin (this, init, null, (obj, res) => {
-                var val = dialog.choose_font.end (res);
-
-                font_label.get_pango_context ().set_font_description (val);
-                font_label.label = val.get_family ();
+                try {
+                    var val = dialog.choose_font.end (res);
+                    font_label.get_pango_context ().set_font_description (val);
+                    font_label.label = val.get_family ();
+                } catch (Error err) {
+                    debug (err.message);
+                }
             });
         }
 

@@ -61,56 +61,10 @@ namespace Psequel {
             connection_changed (selected);
         }
 
-        private async void connect_database (QueryService service, Connection conn) {
-
-            // try {
-            // yield service.connect_db (conn);
-
-            // debug ("Emit database_connected");
-            ////  signals.database_connected ();
-            // } catch (PsequelError err) {
-            // var dialog = create_dialog ("Connection error", err.message);
-            // dialog.present ();
-            // }
-        }
-
-        // [GtkCallback]
-        private void on_url_entry_changed (Gtk.Editable editable) {
-
-            // if (editable.text == "") {
-            // url_entry.remove_css_class ("error");
-            // return;
-            // }
-
-            // if (!editable.text.has_prefix ("postgres://")) {
-            // err_label.label = "Invalid url, should start with postgres://";
-            // url_entry.add_css_class ("error");
-            // return;
-            // }
-
-
-            // url_entry.remove_css_class ("error");
-            // err_label.label = " ";
-            // try {
-            // var conn = query_service.parse_conninfo (editable.text);
-            // host_entry.text = conn.host;
-            // user_entry.text = conn.user;
-            // database_entry.text = conn.database;
-            // port_entry.text = conn.port;
-            // password_entry.text = conn.password;
-            // ssl_switch.active = conn.use_ssl;
-            // } catch (PsequelError err) {
-            // url_entry.add_css_class ("error");
-            // err_label.label = err.message;
-            // }
-        }
-
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
             request_database (selected);
         }
-
-
 
         [GtkCallback]
         private void on_entry_activated (Gtk.Entry entry) {
@@ -122,9 +76,6 @@ namespace Psequel {
 
         [GtkChild]
         unowned Gtk.Spinner spinner;
-
-        [GtkChild]
-        private unowned Gtk.Entry url_entry;
 
         [GtkChild]
         private unowned Gtk.Entry name_entry;
@@ -143,8 +94,5 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.Switch ssl_switch;
-
-        [GtkChild]
-        private unowned Gtk.Label err_label;
     }
 }

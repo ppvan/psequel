@@ -8,9 +8,13 @@ namespace Psequel {
         const string LOADING = "loading";
         const string ERROR = "error";
 
-        public string wellcome_message {get; set;}
-        private ObservableArrayList<Relation.Row> model;
+        public string wellcome_message { get; set; }
+        public Relation? current_relation { get; set; }
+        public PsequelError err { get; set; }
+        public bool is_loading { get; set; }
 
+
+        private ObservableList<Relation.Row> rows;
         private Gtk.SortListModel sort_model;
         private Gtk.SelectionModel selection_model;
 
@@ -21,23 +25,27 @@ namespace Psequel {
         construct {
             debug ("[CONTRUCT] %s", this.name);
             stack.visible_child_name = EMPTY;
-            spinner.spinning = false;
-            model = new ObservableArrayList<Relation.Row> ();
-            // construct columns
+            rows = new ObservableList<Relation.Row> ();
             alloc_columns ();
+
+
+            this.notify["current-relation"].connect (() => {
+                stack.visible_child_name = LOADING;
+                load_data_to_view.begin (current_relation);
+            });
+
+            this.notify["err"].connect (() => {
+                stack.visible_child_name = ERROR;
+            });
         }
 
-        private async void load_data_to_view (Relation relation) {
+        private async void load_data_to_view (Relation? relation) {
+            if (relation == null) {
+                return;
+            }
+
             var columns = data_view.columns;
             uint n = columns.get_n_items ();
-
-            //  Timeout.add_seconds (1, () => {
-            //      load_data_to_view.callback ();
-            //      return false;
-            //  }, Priority.DEFAULT);
-            //  yield;
-
-
             debug ("Begin add rows to views");
             for (int i = 0; i < n; i++) {
                 var col = columns.get_item (i) as Gtk.ColumnViewColumn;
@@ -51,21 +59,25 @@ namespace Psequel {
             }
 
             this.selection_model.unselect_all ();
-            model.clear ();
+            rows.clear ();
 
-            model.batch_add (relation.iterator ());
+            foreach (var row in relation) {
+                rows.append (row);
+            }
+
+            stack.visible_child_name = MAIN;
         }
 
         public void show_loading () {
-            stack.visible_child_name = LOADING;
-            spinner.spinning = true;
+            // stack.visible_child_name = LOADING;
+            // spinner.spinning = true;
         }
 
         public void show_result (Relation relation) {
-            load_data_to_view.begin (relation, (obj, res) => {
-                spinner.spinning = false;
-                stack.visible_child_name = MAIN;
-            });
+            // load_data_to_view.begin (relation, (obj, res) => {
+            // spinner.spinning = false;
+            // stack.visible_child_name = MAIN;
+            // });
 
             // Show loadding state
             // load data in background
@@ -73,9 +85,9 @@ namespace Psequel {
         }
 
         public void show_error (PsequelError err) {
-            status_label.label = err.message;
+            // status_label.label = err.message;
 
-            stack.visible_child_name = ERROR;
+            // stack.visible_child_name = ERROR;
         }
 
         private void alloc_columns () {
@@ -105,7 +117,7 @@ namespace Psequel {
                 data_view.append_column (column);
             }
 
-            this.sort_model = new Gtk.SortListModel (model, null);
+            this.sort_model = new Gtk.SortListModel (rows, null);
             this.sort_model.incremental = true;
 
             this.selection_model = new Gtk.SingleSelection (sort_model);
@@ -141,10 +153,20 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.ColumnView data_view;
 
-        [GtkChild]
-        private unowned Gtk.Spinner spinner;
+        //  [GtkChild]
+        //  private unowned Gtk.Spinner spinner;
 
-        [GtkChild]
-        private unowned Gtk.Label status_label;
+        //  [GtkChild]
+        //  private unowned Gtk.Label status_label;
+    }
+
+    /*
+     */
+    public string get_col_by_index (Relation.Row row, int index) {
+        return row[index];
+    }
+
+    public int64 get_col_by_index_int (Relation.Row row, int index) {
+        return int64.parse (row[index], 10);
     }
 }

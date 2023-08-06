@@ -79,18 +79,6 @@ namespace Psequel {
             yield load_tables_and_views (schema);
         }
 
-        private async void load_views (Schema schema) {
-            schema.views.foreach ((item) => {
-                schema.views.remove (item);
-            });
-
-            var views = yield get_views (schema);
-
-            views.foreach ((item) => {
-                schema.views.append (item);
-            });
-        }
-
         private async void load_tables_and_views (Schema schema) {
 
             // old table auto clean by GC
@@ -177,25 +165,6 @@ namespace Psequel {
 
                 foreach (var row in relation) {
                     list.append (row[0]);
-                }
-            } catch (PsequelError err) {
-                debug (err.message);
-            }
-
-            return list;
-        }
-
-        private async List<View> get_views (Schema schema) {
-            var list = new List<View> ();
-
-            try {
-                var relation = yield query_service.exec_query_params (VIEW_SQL, { new Variant.string (schema.name) });
-
-                foreach (var row in relation) {
-                    var v = new View (schema);
-                    v.name = row[0];
-
-                    list.append (v);
                 }
             } catch (PsequelError err) {
                 debug (err.message);
