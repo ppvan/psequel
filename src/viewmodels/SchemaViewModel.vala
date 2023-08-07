@@ -22,9 +22,6 @@ namespace Psequel {
             this.notify["current-schema"].connect (() => {
                 table_viewmodel = new TableViewModel (current_schema, query_service);
                 view_viewmodel = new ViewViewModel (current_schema);
-
-                table_viewmodel.current_table = (Table) table_viewmodel.tables.get_item (0);
-                view_viewmodel.current_view = view_viewmodel.views[0];
             });
         }
 

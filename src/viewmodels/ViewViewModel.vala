@@ -5,20 +5,15 @@ namespace Psequel {
         public ObservableList<View> views { get; set; default = new ObservableList<View> (); }
         public View? current_view { get; set; }
 
-        public ObservableList<Column> columns {get; set; default = new ObservableList<Column> (); }
-        public ObservableList<Index> indexes {get; set; default = new ObservableList<Index> (); }
+        public ViewStructureViewModel viewstructure_viewmodel {get; set;}
+
 
         public ViewViewModel (Schema schema) {
             Object ();
-
             views.append_all (schema.views);
 
             this.notify["current-view"].connect (() => {
-                columns.clear ();
-                indexes.clear ();
-
-                columns.append_all (current_view.columns);
-                indexes.append_all (current_view.indexes);
+                viewstructure_viewmodel = new ViewStructureViewModel (current_view);
             });
         }
     }

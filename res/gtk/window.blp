@@ -23,8 +23,7 @@ template $PsequelWindow : Adw.ApplicationWindow {
             StackPage query-view {
                 name: "query-view";
                 child: $PsequelSchemaView {
-                    viewmodel: bind template.schema-viewmodel;
-                    query-viewmodel: bind template.query-viewmodel;
+                    schema-viewmodel: bind template.schema-viewmodel;
                     request_logout => $on_request_logout ();
                 };
             }

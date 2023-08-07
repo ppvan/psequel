@@ -43,6 +43,8 @@ psequel_sources = [
     'viewmodels/BaseViewModel.vala',
     'viewmodels/SchemaViewModel.vala',
     'viewmodels/TableViewModel.vala',
+    'viewmodels/TableStructureViewModel.vala',
+    'viewmodels/ViewStructureViewModel.vala',
     'viewmodels/TableDataViewModel.vala',
     'viewmodels/ViewViewModel.vala',
 

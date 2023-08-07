@@ -19,7 +19,7 @@ template $PsequelTableStructureView : Gtk.Box {
     }
 
     $PsequelTableColInfo columns {
-        columns: bind template.columns;
+        columns: bind template.tablestructure-viewmodel as <$PsequelTableStructureViewModel>.columns;
     }
 
 
@@ -30,7 +30,7 @@ template $PsequelTableStructureView : Gtk.Box {
     }
 
     $PsequelTableIndexInfo indexes {
-        indexes: bind template.indexes;
+        indexes: bind template.tablestructure-viewmodel as <$PsequelTableStructureViewModel>.indexes;
     }
 
     Label {
@@ -40,6 +40,6 @@ template $PsequelTableStructureView : Gtk.Box {
     }
 
     $PsequelTableFKInfo foreign_keys {
-        fks: bind template.fks;
+        fks: bind template.tablestructure-viewmodel as <$PsequelTableStructureViewModel>.foreign_keys;
     }
 }
