@@ -1,6 +1,6 @@
 namespace Psequel {
 
-    /** Table can be seen as view */
+    /** Table object in database, hold meta-data about the table */
     public class Table : Object {
 
         public Schema schema { get; construct; }

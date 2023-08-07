@@ -4,6 +4,11 @@ namespace Psequel {
 
     public delegate Relation.Row TransFormsFunc (Relation.Row row);
 
+    /**
+     * Relation class represent database "table".
+     *
+     * Not to confuse with Table class hold table info, this can hold any data return from database.
+     */
     public class Relation : Object {
 
         public int rows { get; private set; }
@@ -125,7 +130,7 @@ namespace Psequel {
         }
 
         /**
-         * Helper class for ease of use with Table. DO NOT use it outside of Table class.
+         * Helper class for ease of use with Relation.
          */
         public class Row : Object {
 
@@ -133,7 +138,7 @@ namespace Psequel {
             private List<string> data;
 
             public int size {
-                get { return (int)data.length (); }
+                get { return (int) data.length (); }
             }
 
             internal Row () {
@@ -159,7 +164,7 @@ namespace Psequel {
                 if (index >= size) {
                     return null;
                 }
-                return data.nth_data ((uint)index);
+                return data.nth_data ((uint) index);
             }
 
             public string to_string () {

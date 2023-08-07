@@ -1,6 +1,10 @@
 using Postgres;
 
 namespace Psequel {
+    /** Main entry poit of application, exec query and return result.
+     * 
+     * Do any thing relate to database, wrapper of libpq
+    */
     public class QueryService : Object {
 
         public int query_limit { get; set; }
@@ -12,6 +16,7 @@ namespace Psequel {
             Application.settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
         }
 
+        /* Parse connection from connection url. */
         public Connection parse_conninfo (string conn_info) throws PsequelError.PARSE_ERROR {
 
             var conn = new Connection ();
@@ -64,6 +69,7 @@ namespace Psequel {
             return conn;
         }
 
+        /** Select info from a table. */
         public async Relation select_v2 (Table table, int page) throws PsequelError {
             string escape_tbname = active_db.escape_identifier (table.name);
             int offset = page * query_limit;
@@ -80,6 +86,7 @@ namespace Psequel {
             return yield exec_query (stmt);
         }
 
+        /** Get database version. */
         public async string db_version () throws PsequelError {
 
             string stmt = "SELECT version ();";
@@ -90,6 +97,7 @@ namespace Psequel {
             return version;
         }
 
+        /** Make a connection to database and active connection. */
         public async void connect_db (Connection conn) throws PsequelError {
             string db_url = conn.url_form ();
             debug ("Connecting to %s", db_url);

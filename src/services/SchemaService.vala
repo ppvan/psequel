@@ -1,8 +1,9 @@
 
 namespace Psequel {
+
+    /** Class process and load {@link Schema} infomation */
     public class SchemaService : Object {
 
-        // Order of column is important, check the load_columns if you want to change query
         public const string COLUMN_SQL = """
         SELECT column_name, table_name,
         case 
@@ -47,6 +48,7 @@ namespace Psequel {
             this.query_service = service;
         }
 
+        /* Get the schema list as string */
         public async string[] schema_list () throws PsequelError {
             var relation = yield query_service.exec_query (SCHEMA_LIST_SQL);
 
@@ -59,6 +61,11 @@ namespace Psequel {
             return _schema_list;
         }
 
+        /** Get the schema list.
+         *
+         * These schemas only contains names.For info about tables, views in schemas, load is with
+         * {@link load_schema}
+         */
         public async List<Schema> get_schemas () {
             var list = new List<Schema> ();
             try {
@@ -75,6 +82,7 @@ namespace Psequel {
             return list;
         }
 
+        /** Load table list, view list into the schema. */
         public async void load_schema (Schema schema) throws PsequelError.QUERY_FAIL {
             yield load_tables_and_views (schema);
         }
@@ -90,10 +98,13 @@ namespace Psequel {
             var view_groups = new HashTable<string, View> (GLib.str_hash, GLib.str_equal);
 
             var table_names = yield get_tbnames (schema);
+
             var view_names = yield get_viewnames (schema);
 
             var columns = yield get_columns (schema);
+
             var indexes = yield get_indexes (schema);
+
             var fks = yield get_fks (schema);
 
             debug ("cols: %u indx: %u fks: %u", columns.length (), indexes.length (), fks.length ());
@@ -155,7 +166,6 @@ namespace Psequel {
                 schema.views.append (views[i]);
             }
         }
-
 
         private async List<string> get_tbnames (Schema schema) {
             var list = new List<string> ();
@@ -260,59 +270,5 @@ namespace Psequel {
 
             return list;
         }
-
-        // private async void load_columns (Schema schema) throws PsequelError {
-
-        // var relation = yield query_service.exec_query_params (COLUMN_SQL, { new Variant.string (schema.name) });
-
-        // foreach (var row in relation) {
-        // var col = new Column ();
-        // col.schemaname = schema.name;
-        // col.name = row[0];
-        // col.table = row[1];
-        // col.column_type = row[2];
-        // col.nullable = row[3] == "YES" ? true : false;
-        // col.default_val = row[4];
-        // schema.columns.add (col);
-        // }
-        // }
-
-        // private async void load_indexes (Schema schema) throws PsequelError {
-
-        // var relation = yield query_service.exec_query_params (INDEX_SQL, { new Variant.string (schema.name) });
-
-        // foreach (var row in relation) {
-        // var index = new Index ();
-        // index.schemaname = schema.name;
-        // index.name = row[0];
-        // index.table = row[1];
-        // index.size = row[2];
-        // index.indexdef = row[3];
-
-        // schema.indexes.add (index);
-        // }
-        // }
-
-        // private async void load_fks (Schema schema) throws PsequelError {
-        // var relation = yield query_service.exec_query_params (FK_SQL, { new Variant.string (schema.name) });
-
-        // foreach (var row in relation) {
-        // var fk = new ForeignKey ();
-        // fk.schemaname = schema.name;
-        // fk.name = row[0];
-        // fk.table = row[1];
-        // fk.fk_def = row[2];
-
-        // schema.fks.add (fk);
-        // }
-        // }
-
-        // private async void load_tbname (Schema schema) throws PsequelError {
-        // var relation = yield query_service.exec_query_params (TB_SQL, { new Variant.string (schema.name)});
-
-        // foreach (var row in relation) {
-        // schema.tablenames.add (new Gtk.StringObject (row[0]));
-        // }
-        // }
     }
 }

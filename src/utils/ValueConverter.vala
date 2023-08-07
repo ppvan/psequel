@@ -1,4 +1,6 @@
 namespace Psequel {
+
+    /** Utils class to convert values. */
     public class ValueConverter {
         public static List<Connection> deserialize_connection (string json_data) {
             var parser = new Json.Parser ();

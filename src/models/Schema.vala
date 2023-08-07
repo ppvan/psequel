@@ -1,7 +1,7 @@
 namespace Psequel {
 
     /**
-     * Carying schema info binded to widgets to update if needed.
+     * Carying schema info like tables and views.
      */
     public class Schema : Object {
         public string name { get; private set; }
@@ -20,7 +20,8 @@ namespace Psequel {
         }
     }
 
-    public class BaseType : Object {
+    /** Base type for hold info about Table */
+    public abstract class BaseType : Object {
         public string name { get; set; default = ""; }
         public string schemaname { get; set; default = ""; }
         public string table {get; set; default = "";}
@@ -30,6 +31,7 @@ namespace Psequel {
         }
     }
 
+    /** Table Index info */
     public class Index : BaseType {
         public bool unique { get; set; default = false; }
         public IndexType index_type { get; set; default = BTREE; }
@@ -118,6 +120,7 @@ namespace Psequel {
         }
     }
 
+    /** Table Column info */
     public class Column : BaseType {
 
         public string column_type { get; set; default = ""; }
@@ -130,6 +133,7 @@ namespace Psequel {
     }
 
 
+    /** Table foreign key info */
     public class ForeignKey : BaseType {
         public string columns { get; set; default = ""; }
         public string fk_table { get; set; default = ""; }
