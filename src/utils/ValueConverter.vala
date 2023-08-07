@@ -1,4 +1,10 @@
 namespace Psequel {
+
+    const int64 SECOND_TO_MS = 1000;
+    const int64 MILISECS_TO_US = 1000;
+
+
+    /** Utils class to convert values. */
     public class ValueConverter {
         public static List<Connection> deserialize_connection (string json_data) {
             var parser = new Json.Parser ();

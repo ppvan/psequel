@@ -4,10 +4,17 @@ namespace Psequel {
 
     public delegate Relation.Row TransFormsFunc (Relation.Row row);
 
+    /**
+     * Relation class represent database "table".
+     *
+     * Not to confuse with Table class hold table info, this can hold any data return from database.
+     */
     public class Relation : Object {
 
         public int rows { get; private set; }
         public int cols { get; private set; }
+        /** Time of query created this relation in us */
+        public int64 fetch_time {get; construct;}
 
         public string row_affected { get; private set; default = ""; }
 
@@ -16,7 +23,12 @@ namespace Psequel {
         private List<Type> cols_type;
 
         public Relation (owned Result res) {
-            Object ();
+            Object (fetch_time: 0);
+            load_data ((owned) res);
+        }
+
+        public Relation.with_fetch_time (owned Result res, int64 fetch_time) {
+            Object (fetch_time: fetch_time);
             load_data ((owned) res);
         }
 
@@ -125,7 +137,7 @@ namespace Psequel {
         }
 
         /**
-         * Helper class for ease of use with Table. DO NOT use it outside of Table class.
+         * Helper class for ease of use with Relation.
          */
         public class Row : Object {
 
@@ -133,7 +145,7 @@ namespace Psequel {
             private List<string> data;
 
             public int size {
-                get { return (int)data.length (); }
+                get { return (int) data.length (); }
             }
 
             internal Row () {
@@ -159,7 +171,7 @@ namespace Psequel {
                 if (index >= size) {
                     return null;
                 }
-                return data.nth_data ((uint)index);
+                return data.nth_data ((uint) index);
             }
 
             public string to_string () {

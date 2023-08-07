@@ -16,6 +16,7 @@
     <file preprocess="xml-stripblanks">gtk/query-results.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-cols.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-data-view.ui</file>
+    <file preprocess="xml-stripblanks">gtk/view-data-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-fk.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-index.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-structure-view.ui</file>

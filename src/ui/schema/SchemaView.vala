@@ -2,13 +2,8 @@ namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/schema-view.ui")]
     public class SchemaView : Adw.Bin {
-        public SchemaViewModel viewmodel { get; set; }
+        public SchemaViewModel schema_viewmodel { get; set; }
 
-        public QueryViewModel query_viewmodel {get; set;}
-
-
-        public ObservableList<Schema> schemas {get; set;}
-        public Schema? current_schema {get; set;}
 
         public signal void request_logout ();
 
@@ -23,7 +18,7 @@ namespace Psequel {
                 return ;
             }
 
-            viewmodel.load_schema.begin (schema);
+            schema_viewmodel.load_schema.begin (schema);
         }
 
         [GtkCallback]
@@ -33,12 +28,12 @@ namespace Psequel {
 
         [GtkCallback]
         public void table_selected_changed (Table table) {
-            viewmodel?.table_viewmodel.current_table = table;
+            schema_viewmodel?.table_viewmodel.current_table = table;
         }
 
         [GtkCallback]
         public void view_selected_changed (View view) {
-            viewmodel?.view_viewmodel.current_view = view;
+            schema_viewmodel?.view_viewmodel.current_view = view;
         }
     }
 }

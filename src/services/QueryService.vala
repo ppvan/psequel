@@ -1,17 +1,22 @@
 using Postgres;
 
 namespace Psequel {
-    public class QueryService : Object {
+    /** Main entry poit of application, exec query and return result.
+     * 
+     * Do any thing relate to database, wrapper of libpq
+    */
+    public class SQLService : Object {
 
         public int query_limit { get; set; }
 
-        public QueryService (ThreadPool<Worker> background) {
+        public SQLService (ThreadPool<Worker> background) {
             Object ();
             this.background = background;
 
             Application.settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
         }
 
+        /* Parse connection from connection url. */
         public Connection parse_conninfo (string conn_info) throws PsequelError.PARSE_ERROR {
 
             var conn = new Connection ();
@@ -64,7 +69,8 @@ namespace Psequel {
             return conn;
         }
 
-        public async Relation select_v2 (Table table, int page) throws PsequelError {
+        /** Select info from a table. */
+        public async Relation select_v2 (BaseTable table, int page) throws PsequelError {
             string escape_tbname = active_db.escape_identifier (table.name);
             int offset = page * query_limit;
 
@@ -80,6 +86,7 @@ namespace Psequel {
             return yield exec_query (stmt);
         }
 
+        /** Get database version. */
         public async string db_version () throws PsequelError {
 
             string stmt = "SELECT version ();";
@@ -90,6 +97,7 @@ namespace Psequel {
             return version;
         }
 
+        /** Make a connection to database and active connection. */
         public async void connect_db (Connection conn) throws PsequelError {
             string db_url = conn.url_form ();
             debug ("Connecting to %s", db_url);
@@ -113,7 +121,7 @@ namespace Psequel {
             }
         }
 
-        public async Relation exec_query (string query, out int64 exec_ms = null) throws PsequelError {
+        public async Relation exec_query (string query, out int64 exec_us = null) throws PsequelError {
 
             int64 begin = GLib.get_real_time ();
             var result = yield exec_query_internal (query);
@@ -122,9 +130,9 @@ namespace Psequel {
             check_query_status (result);
 
             int64 end = GLib.get_real_time ();
-            exec_ms = end - begin;
+            exec_us = (end - begin);
 
-            var table = new Relation ((owned) result);
+            var table = new Relation.with_fetch_time ((owned) result, exec_us);
 
             return table;
         }

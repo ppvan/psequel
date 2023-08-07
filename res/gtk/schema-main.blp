@@ -35,19 +35,15 @@ template $PsequelSchemaMain : Gtk.Box {
                 StackPage {
                     name: "table";
                     child: $PsequelTableStructureView {
-                        selected-table: bind template.selected-table;
-                        columns: bind template.table-viewmodel as <$PsequelTableViewModel>.columns;
-                        indexes: bind template.table-viewmodel as <$PsequelTableViewModel>.indexes;
-                        fks: bind template.table-viewmodel as <$PsequelTableViewModel>.foreign_keys;
+                        // selected-table: bind template.selected-table;
+                        tablestructure-viewmodel: bind template.table-viewmodel as <$PsequelTableViewModel>.tablestructure-viewmodel;
                     };
                 }
 
                 StackPage {
                     name: "view";
                     child: $PsequelViewStructureView {
-                        selected-view: bind template.selected-view;
-                        columns: bind template.view-viewmodel as <$PsequelViewViewModel>.columns;
-                        indexes: bind template.view-viewmodel as <$PsequelViewViewModel>.indexes;
+                        viewstructure-viewmodel: bind template.view-viewmodel as <$PsequelViewViewModel>.viewstructure-viewmodel;
                     };
                 }
             };
@@ -57,8 +53,26 @@ template $PsequelSchemaMain : Gtk.Box {
             name: "data-view";
             title: "Data";
             icon-name: "object-rows-symbolic";
-            child: $PsequelTableDataView {
-                tabledata-viewmodel: bind template.table-viewmodel as <$PsequelTableViewModel>.tabledata-viewmodel;
+            
+            child: Stack {
+
+                visible-child-name: bind template.view-mode;
+                transition-type: slide_left_right;
+
+
+                StackPage {
+                    name: "table";
+                    child: $PsequelTableDataView {
+                        tabledata-viewmodel: bind template.table-viewmodel as <$PsequelTableViewModel>.tabledata-viewmodel;
+                    };
+                }
+
+                StackPage {
+                    name: "view";
+                    child: $PsequelViewDataView {
+                        viewdata-viewmodel: bind template.view-viewmodel as <$PsequelViewViewModel>.viewdata-viewmodel;
+                    };
+                }
             };
         }
 
@@ -67,7 +81,7 @@ template $PsequelSchemaMain : Gtk.Box {
             icon-name: "terminal-symbolic";
             title: "Query";
             child: $PsequelQueryEditor {
-                query-service: bind template.query-viewmodel as <$PsequelQueryViewModel>.query-service;
+                query-viewmodel: bind template.query-viewmodel;
             };
         }
     }

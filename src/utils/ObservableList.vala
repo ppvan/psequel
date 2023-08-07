@@ -1,5 +1,6 @@
 
 namespace Psequel {
+    /** A list that's notify item-changed when there's changes to the list itself. */
     public class ObservableList<T>: Object, ListModel {
 
         private ListStore _data;

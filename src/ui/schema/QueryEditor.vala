@@ -5,7 +5,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-editor.ui")]
     public class QueryEditor : Adw.Bin {
 
-        public QueryService query_service {get; set;}
+        public QueryViewModel query_viewmodel { get; set; }
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
 
@@ -20,6 +20,10 @@ namespace Psequel {
             style_manager = StyleSchemeManager.get_default ();
 
             default_setttings ();
+
+            buffer.notify["text"].connect (() => {
+                query_viewmodel.query_string = buffer.text;
+            });
         }
 
         void default_setttings () {
@@ -43,32 +47,14 @@ namespace Psequel {
             });
         }
 
-        private async void run_query (string query) {
-            try {
-                query_results.show_loading ();
-                int64 exec_time = 0;
-                var relation = yield query_service.exec_query (query, out exec_time);
-
-                query_results.show_result (relation);
-
-                update_status (relation, exec_time);
-            } catch (PsequelError err) {
-                query_results.show_error (err);
-            }
-        }
 
         [GtkCallback]
         private void run_query_cb (Gtk.Button btn) {
 
-            Gtk.TextIter start;
-            Gtk.TextIter end;
-            buffer.get_start_iter (out start);
-            buffer.get_end_iter (out end);
-
-            var text = buffer.get_text (start, end, true).strip ();
+            var text = buffer.text.strip ();
             debug ("Exec query: %s", text);
 
-            run_query.begin (text);
+            query_viewmodel.run_current_query.begin ();
         }
 
         private void update_status (Relation relation, int64 exec_time) {

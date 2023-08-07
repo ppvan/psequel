@@ -41,7 +41,7 @@ namespace Psequel {
         }
 
         /**
-         * build the postgres url form properties.
+         * build the postgres url from properties.
          *
          * Format = postgresql://[user[:password]@][host][:port][/dbname][?param1=value1&...]
          */
@@ -67,16 +67,19 @@ namespace Psequel {
         }
 
         /**
-         * Convert connection to JSON string.
+         * Make a deep copy of Connection
          */
         public Connection clone () {
-            return (Connection)Json.gobject_deserialize (typeof (Connection), Json.gobject_serialize (this));
+            return (Connection) Json.gobject_deserialize (typeof (Connection), Json.gobject_serialize (this));
         }
 
-        public static Connection? deserialize (string json) {
+        /**
+         * Parse Connection from a json string.
+         */
+        public static Connection ? deserialize (string json) {
 
             try {
-                var conn = (Connection)Json.gobject_from_data (typeof (Connection), json);
+                var conn = (Connection) Json.gobject_from_data (typeof (Connection), json);
 
                 return conn;
             } catch (Error err) {
@@ -86,10 +89,11 @@ namespace Psequel {
             }
         }
 
+        /**
+         * Create a json representation of Connection.
+         */
         public static string serialize (Connection conn) {
             return Json.gobject_to_data (conn, null);
         }
-
     }
-
 }

@@ -4,29 +4,18 @@ namespace Psequel {
         public Table? current_table { get; set; }
 
         public TableDataViewModel tabledata_viewmodel { get; set; }
+        public TableStructureViewModel tablestructure_viewmodel {get; set;}
 
-        public ObservableList<Column> columns { get; set; default = new ObservableList<Column> (); }
-        public ObservableList<Index> indexes { get; set; default = new ObservableList<Index> (); }
-        public ObservableList<ForeignKey> foreign_keys { get; set; default = new ObservableList<ForeignKey> (); }
-
-
-        public TableViewModel (Schema schema, QueryService query_service) {
+        public TableViewModel (Schema schema, SQLService sql_service) {
             Object ();
             tables.append_all (schema.tables);
 
             this.notify["current-table"].connect (() => {
-                columns.clear ();
-                indexes.clear ();
-                foreign_keys.clear ();
 
-                columns.append_all (current_table.columns);
-                indexes.append_all (current_table.indexes);
-                foreign_keys.append_all (current_table.foreign_keys);
+                tablestructure_viewmodel = new TableStructureViewModel (current_table);
+                //  tablestructure_viewmodel.selected_table = current_table;
 
-                tabledata_viewmodel = new TableDataViewModel (query_service);
-                tabledata_viewmodel.selected_table = current_table;
-
-                debug ("HIHI");
+                tabledata_viewmodel = new TableDataViewModel (current_table, sql_service);
             });
         }
     }
