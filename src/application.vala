@@ -67,6 +67,8 @@ namespace Psequel {
             Application.app = this;
             Application.settings = new Settings (this.application_id);
             try {
+
+                //  Don't change the max_thread because libpq did not support many query with 1 connection.
                 background = new ThreadPool<Worker>.with_owned_data ((worker) => {
                     worker.run ();
                 }, 1, false);
@@ -159,11 +161,11 @@ namespace Psequel {
          */
         private Window new_window () {
 
-            var query_service = new QueryService (Application.background);
+            var sql_service = new SQLService (Application.background);
             var repository = new ConnectionRepository (Application.settings);
             var conn_vm = new ConnectionViewModel (repository);
-            var sche_vm = new SchemaViewModel (query_service);
-            var query_vm = new QueryViewModel (query_service);
+            var sche_vm = new SchemaViewModel (sql_service);
+            var query_vm = new QueryViewModel (sql_service);
 
 
 

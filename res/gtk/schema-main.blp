@@ -81,7 +81,7 @@ template $PsequelSchemaMain : Gtk.Box {
             icon-name: "terminal-symbolic";
             title: "Query";
             child: $PsequelQueryEditor {
-                // query-service: bind template.query-viewmodel as <$PsequelQueryViewModel>.query-service;
+                query-viewmodel: bind template.query-viewmodel;
             };
         }
     }

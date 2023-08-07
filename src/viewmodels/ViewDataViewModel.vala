@@ -13,12 +13,12 @@ namespace Psequel {
         public Relation current_relation { get; set; }
         public Relation.Row? selected_row { get; set; }
 
-        public QueryService query_service { get; construct; }
+        public SQLService sql_service { get; construct; }
 
 
 
-        public ViewDataViewModel (View view, QueryService service) {
-            Object (query_service: service);
+        public ViewDataViewModel (View view, SQLService service) {
+            Object (sql_service: service);
 
             this.notify["selected-view"].connect (() => {
                 current_page = 0;
@@ -46,7 +46,7 @@ namespace Psequel {
 
             try {
                 is_loading = true;
-                current_relation = yield query_service.select_v2 (view, page);
+                current_relation = yield sql_service.select_v2 (view, page);
 
                 is_loading = false;
                 debug ("Rows: %d", current_relation.rows);

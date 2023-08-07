@@ -10,6 +10,8 @@ namespace Psequel {
 
         public TableViewModel table_viewmodel {get; set;}
         public ViewViewModel view_viewmodel {get; set;}
+        public QueryViewModel query_viewmodel { get; set; }
+
 
         /** Whether should show view or table info */
         public string view_mode {get; set;}

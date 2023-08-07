@@ -9,7 +9,7 @@ namespace Psequel {
         public ViewDataViewModel viewdata_viewmodel {get; set;}
 
 
-        public ViewViewModel (Schema schema, QueryService service) {
+        public ViewViewModel (Schema schema, SQLService service) {
             Object ();
             views.append_all (schema.views);
 

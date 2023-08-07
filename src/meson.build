@@ -30,6 +30,7 @@ psequel_sources = [
     'models/Schema.vala',
     'models/Relation.vala',
     'models/Table.vala',
+    'models/Query.vala',
     # 'models/utils.vala',
 
     'services/QueryService.vala',

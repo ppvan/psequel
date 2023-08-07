@@ -5,11 +5,11 @@ namespace Psequel {
      * 
      * Do any thing relate to database, wrapper of libpq
     */
-    public class QueryService : Object {
+    public class SQLService : Object {
 
         public int query_limit { get; set; }
 
-        public QueryService (ThreadPool<Worker> background) {
+        public SQLService (ThreadPool<Worker> background) {
             Object ();
             this.background = background;
 
@@ -121,7 +121,7 @@ namespace Psequel {
             }
         }
 
-        public async Relation exec_query (string query, out int64 exec_ms = null) throws PsequelError {
+        public async Relation exec_query (string query, out int64 exec_us = null) throws PsequelError {
 
             int64 begin = GLib.get_real_time ();
             var result = yield exec_query_internal (query);
@@ -130,9 +130,9 @@ namespace Psequel {
             check_query_status (result);
 
             int64 end = GLib.get_real_time ();
-            exec_ms = end - begin;
+            exec_us = (end - begin);
 
-            var table = new Relation ((owned) result);
+            var table = new Relation.with_fetch_time ((owned) result, exec_us);
 
             return table;
         }

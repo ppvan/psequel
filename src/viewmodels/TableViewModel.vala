@@ -6,7 +6,7 @@ namespace Psequel {
         public TableDataViewModel tabledata_viewmodel { get; set; }
         public TableStructureViewModel tablestructure_viewmodel {get; set;}
 
-        public TableViewModel (Schema schema, QueryService query_service) {
+        public TableViewModel (Schema schema, SQLService sql_service) {
             Object ();
             tables.append_all (schema.tables);
 
@@ -15,7 +15,7 @@ namespace Psequel {
                 tablestructure_viewmodel = new TableStructureViewModel (current_table);
                 //  tablestructure_viewmodel.selected_table = current_table;
 
-                tabledata_viewmodel = new TableDataViewModel (current_table, query_service);
+                tabledata_viewmodel = new TableDataViewModel (current_table, sql_service);
             });
         }
     }

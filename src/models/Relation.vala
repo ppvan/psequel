@@ -13,6 +13,8 @@ namespace Psequel {
 
         public int rows { get; private set; }
         public int cols { get; private set; }
+        /** Time of query created this relation in us */
+        public int64 fetch_time {get; construct;}
 
         public string row_affected { get; private set; default = ""; }
 
@@ -21,7 +23,12 @@ namespace Psequel {
         private List<Type> cols_type;
 
         public Relation (owned Result res) {
-            Object ();
+            Object (fetch_time: 0);
+            load_data ((owned) res);
+        }
+
+        public Relation.with_fetch_time (owned Result res, int64 fetch_time) {
+            Object (fetch_time: fetch_time);
             load_data ((owned) res);
         }
 
