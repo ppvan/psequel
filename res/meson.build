@@ -20,6 +20,7 @@ blueprints = custom_target('blueprints',
     'gtk/schema-main.blp',
     
     'gtk/table-data-view.blp',
+    'gtk/view-data-view.blp',
     
     'gtk/table-cols.blp',
     'gtk/table-listitem.blp',

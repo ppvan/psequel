@@ -53,8 +53,26 @@ template $PsequelSchemaMain : Gtk.Box {
             name: "data-view";
             title: "Data";
             icon-name: "object-rows-symbolic";
-            child: $PsequelTableDataView {
-                tabledata-viewmodel: bind template.table-viewmodel as <$PsequelTableViewModel>.tabledata-viewmodel;
+            
+            child: Stack {
+
+                visible-child-name: bind template.view-mode;
+                transition-type: slide_left_right;
+
+
+                StackPage {
+                    name: "table";
+                    child: $PsequelTableDataView {
+                        tabledata-viewmodel: bind template.table-viewmodel as <$PsequelTableViewModel>.tabledata-viewmodel;
+                    };
+                }
+
+                StackPage {
+                    name: "view";
+                    child: $PsequelViewDataView {
+                        viewdata-viewmodel: bind template.view-viewmodel as <$PsequelViewViewModel>.viewdata-viewmodel;
+                    };
+                }
             };
         }
 

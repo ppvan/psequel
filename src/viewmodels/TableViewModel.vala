@@ -15,8 +15,7 @@ namespace Psequel {
                 tablestructure_viewmodel = new TableStructureViewModel (current_table);
                 //  tablestructure_viewmodel.selected_table = current_table;
 
-                tabledata_viewmodel = new TableDataViewModel (query_service);
-                tabledata_viewmodel.selected_table = current_table;
+                tabledata_viewmodel = new TableDataViewModel (current_table, query_service);
             });
         }
     }

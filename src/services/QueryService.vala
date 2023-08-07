@@ -70,7 +70,7 @@ namespace Psequel {
         }
 
         /** Select info from a table. */
-        public async Relation select_v2 (Table table, int page) throws PsequelError {
+        public async Relation select_v2 (BaseTable table, int page) throws PsequelError {
             string escape_tbname = active_db.escape_identifier (table.name);
             int offset = page * query_limit;
 

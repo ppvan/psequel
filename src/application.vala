@@ -106,6 +106,7 @@ namespace Psequel {
             typeof (Psequel.TableStructureView).ensure ();
             typeof (Psequel.ViewStructureView).ensure ();
             typeof (Psequel.TableDataView).ensure ();
+            typeof (Psequel.ViewDataView).ensure ();
             typeof (Psequel.TableColInfo).ensure ();
             typeof (Psequel.TableIndexInfo).ensure ();
             typeof (Psequel.TableFKInfo).ensure ();

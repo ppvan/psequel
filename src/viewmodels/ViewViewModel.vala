@@ -6,14 +6,16 @@ namespace Psequel {
         public View? current_view { get; set; }
 
         public ViewStructureViewModel viewstructure_viewmodel {get; set;}
+        public ViewDataViewModel viewdata_viewmodel {get; set;}
 
 
-        public ViewViewModel (Schema schema) {
+        public ViewViewModel (Schema schema, QueryService service) {
             Object ();
             views.append_all (schema.views);
 
             this.notify["current-view"].connect (() => {
                 viewstructure_viewmodel = new ViewStructureViewModel (current_view);
+                viewdata_viewmodel = new ViewDataViewModel (current_view, service);
             });
         }
     }

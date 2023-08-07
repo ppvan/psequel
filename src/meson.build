@@ -21,6 +21,7 @@ psequel_sources = [
     'ui/schema/TableIndexInfo.vala',
 
     'ui/schema/TableDataView.vala',
+    'ui/schema/ViewDataView.vala',
 
     'ui/Window.vala',
     'ui/PreferencesWindow.vala',
@@ -47,6 +48,7 @@ psequel_sources = [
     'viewmodels/ViewStructureViewModel.vala',
     'viewmodels/TableDataViewModel.vala',
     'viewmodels/ViewViewModel.vala',
+    'viewmodels/ViewDataViewModel.vala',
 
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',
