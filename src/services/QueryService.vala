@@ -16,59 +16,6 @@ namespace Psequel {
             Application.settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
         }
 
-        /* Parse connection from connection url. */
-        public Connection parse_conninfo (string conn_info) throws PsequelError.PARSE_ERROR {
-
-            var conn = new Connection ();
-
-            string err_msg;
-            var options = Postgres.parse_conninfo (conn_info, out err_msg);
-            if (options == null) {
-                throw new PsequelError.PARSE_ERROR (err_msg);
-            }
-
-            var cur = options;
-
-            while (cur->keyword != null) {
-
-                if (cur->val == null) {
-                    cur++;
-                    continue;
-                }
-
-                switch (cur->keyword) {
-                case "user":
-                    conn.user = cur->val;
-                    break;
-                case "host":
-                    conn.host = cur->val;
-                    break;
-
-                case "port":
-                    conn.port = cur->val;
-                    break;
-
-                case "password":
-                    conn.password = cur->val;
-                    break;
-
-                case "dbname":
-                    conn.database = cur->val;
-                    break;
-
-                case "sslmode":
-                    conn.use_ssl = cur->val == "require" ? true : false;
-                    break;
-                }
-
-                cur++;
-            }
-
-            delete options;
-
-            return conn;
-        }
-
         /** Select info from a table. */
         public async Relation select_v2 (BaseTable table, int page) throws PsequelError {
             string escape_tbname = active_db.escape_identifier (table.name);

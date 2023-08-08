@@ -9,17 +9,13 @@ namespace Psequel {
             { "export", export_connection },
         };
 
-        public ConnectionViewModel viewmodel {get; set;}
-        public ObservableList<Connection> connections {get; set;}
-        public Connection? selected_connection {get; set;}
+        public ConnectionViewModel viewmodel { get; set; }
 
         public signal void request_database (Connection conn);
 
         public ConnectionView (Application app) {
             Object ();
         }
-
-
 
         // Connect event.
         construct {
@@ -28,6 +24,11 @@ namespace Psequel {
             var group = new SimpleActionGroup ();
             group.add_action_entries (ACTIONS, this);
             insert_action_group ("conn", group);
+        }
+
+        [GtkCallback]
+        public void save_connections () {
+            viewmodel.save_connections ();
         }
 
         [GtkCallback]
@@ -49,11 +50,6 @@ namespace Psequel {
         [GtkCallback]
         public void remove_connection (Connection conn) {
             viewmodel.remove_connection (conn);
-        }
-
-        [GtkCallback]
-        public void save_connection (Connection conn) {
-            viewmodel.save_connection (conn);
         }
 
         public void import_connection () {
@@ -88,6 +84,7 @@ namespace Psequel {
                 var file = yield file_dialog.open (window, null);
 
                 yield file.load_contents_async (null, out contents, null);
+
                 var json_str = (string) contents;
                 var conns = ValueConverter.deserialize_connection (json_str);
                 viewmodel.import_connections (conns);

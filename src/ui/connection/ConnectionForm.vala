@@ -5,13 +5,14 @@ namespace Psequel {
 
 
         public MenuModel menu_model { get; set; }
-        public bool is_connectting {get; set;}
-
         BindingGroup binddings;
 
-        public Connection selected { get; set; }
-        public signal void connection_changed (Connection conn);
+
+        public Connection? selected_connection { get; set; }
+        public bool is_connectting { get; set; }
+
         public signal void request_database (Connection conn);
+        public signal void connections_changed ();
 
         public ConnectionForm () {
             Object ();
@@ -20,26 +21,32 @@ namespace Psequel {
         construct {
             debug ("[CONTRUCT] %s", this.name);
             // Create group to maped the entry widget to connection data.
-            this.binddings = new BindingGroup ();
-            set_up_bindings (binddings);
-            this.bind_property ("selected", binddings, "source", BindingFlags.SYNC_CREATE);
-            this.bind_property ("is-connectting", connect_btn, "sensitive", INVERT_BOOLEAN | SYNC_CREATE);
+            this.binddings = create_form_bind_group ();
+            set_up_bindings ();
         }
 
+        private BindingGroup create_form_bind_group () {
 
-        private void set_up_bindings (BindingGroup group) {
+            var binddings = new BindingGroup ();
             debug ("set_up connection form bindings group");
+            binddings.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("port", port_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("user", user_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
+            binddings.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
+            debug ("set_up binddings done");
 
-            group.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            group.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            group.bind ("port", port_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            group.bind ("user", user_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            group.bind ("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            group.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
-            group.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
 
+            return binddings;
+        }
 
-            connect_btn.bind_property ("sensitive", spinner, "spinning", BindingFlags.INVERT_BOOLEAN);
+        private void set_up_bindings () {
+
+            this.bind_property ("selected-connection", binddings, "source", BindingFlags.SYNC_CREATE);
+
+            this.bind_property ("is-connectting", connect_btn, "sensitive", INVERT_BOOLEAN | SYNC_CREATE);
 
             password_entry.bind_property ("text",
                                           password_entry,
@@ -52,18 +59,11 @@ namespace Psequel {
 
                 return true;
             });
-
-            debug ("set_up binddings done");
-        }
-
-        [GtkCallback]
-        private void text_changed_cb () {
-            connection_changed (selected);
         }
 
         [GtkCallback]
         private void on_connect_clicked (Gtk.Button btn) {
-            request_database (selected);
+            request_database (selected_connection);
         }
 
         [GtkCallback]
@@ -71,11 +71,18 @@ namespace Psequel {
             connect_btn.clicked ();
         }
 
-        [GtkChild]
-        unowned Gtk.Button connect_btn;
+        [GtkCallback]
+        private void on_text_changed (Gtk.Editable editable) {
+            connections_changed ();
+        }
+
+        [GtkCallback]
+        private void on_switch_changed () {
+            connections_changed ();
+        }
 
         [GtkChild]
-        unowned Gtk.Spinner spinner;
+        unowned Gtk.Button connect_btn;
 
         [GtkChild]
         private unowned Gtk.Entry name_entry;
