@@ -1,10 +1,4 @@
 <!--
-SPDX-FileCopyrightText: 2021 Gleb Smirnov <glebsmirnov0708@gmail.com>
-
-SPDX-License-Identifier: CC0-1.0
--->
-
-<!--
     2023 ppvan phuclaplace@gmail.com
 -->
 <h1 align="center">
@@ -67,11 +61,10 @@ Next, it can be installed by `meson install`.
 
 # Dependencies
 If you use GNOME Builder or Flatpak, dependencies will be installed automatically. If you use pure Meson, dependencies will be:
-- vala >= 0.52
-- gtk >= 4.2
-- gtksourceview >= 5.2
-- gio >= 2.50
-- gee >= 0.8
+- vala >= 0.56
+- gtk >= 4.10
+- gtksourceview >= 5.0
+- gio >= 2.74
 - json-glib >= 1.6
 - libadwaita >= 1.0
 - postgres-libs >= 15.3
