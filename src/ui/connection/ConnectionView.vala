@@ -24,6 +24,8 @@ namespace Psequel {
             var group = new SimpleActionGroup ();
             group.add_action_entries (ACTIONS, this);
             insert_action_group ("conn", group);
+
+            setup_paned (paned);
         }
 
         [GtkCallback]
@@ -143,5 +145,8 @@ namespace Psequel {
                 window.add_toast (toast);
             }
         }
+
+        [GtkChild]
+        private unowned Gtk.Paned paned;
     }
 }

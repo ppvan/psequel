@@ -3,7 +3,7 @@ using Adw 1;
 using GtkSource 5;
 
 template $PsequelQueryEditor : Adw.Bin {
-    Paned {
+    Paned paned {
         orientation: vertical;
         shrink-start-child: false;
         resize-start-child: true;
@@ -12,7 +12,7 @@ template $PsequelQueryEditor : Adw.Bin {
         resize-end-child: false;
 
         Adw.Bin {
-            height-request: 300;
+            height-request: 250;
             ScrolledWindow {
                 GtkSource.View editor {
                     buffer: GtkSource.Buffer buffer {

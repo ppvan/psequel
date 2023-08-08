@@ -11,19 +11,22 @@ namespace Psequel {
 
         public class QueryEditor () {
             Object ();
-        }
 
+        }
+        
         construct {
             debug ("[CONTRUCT] %s", this.name);
-
+            
             lang_manager = LanguageManager.get_default ();
             style_manager = StyleSchemeManager.get_default ();
-
+            
             default_setttings ();
-
+            
             buffer.notify["text"].connect (() => {
                 query_viewmodel.query_string = buffer.text;
             });
+
+            setup_paned (paned);
         }
 
         void default_setttings () {
@@ -62,5 +65,8 @@ namespace Psequel {
 
         [GtkChild]
         private unowned GtkSource.Buffer buffer;
+
+        [GtkChild]
+        private unowned Gtk.Paned paned;
     }
 }

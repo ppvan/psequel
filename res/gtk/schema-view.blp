@@ -4,14 +4,14 @@ using Adw 1;
 template $PsequelSchemaView : Adw.Bin {
     hexpand: true;
     vexpand: true;
-    width-request: 800;
-    height-request: 600;
 
     Box {
         orientation: vertical;
 
-        Gtk.Paned {
+        Gtk.Paned paned {
             $PsequelSchemaSidebar sidebar {
+
+                width-request: 320;
 
                 schemas: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.schemas;
                 // template->viewmodel->table-viewmodel->tables
@@ -25,6 +25,9 @@ template $PsequelSchemaView : Adw.Bin {
             }
 
             $PsequelSchemaMain {
+
+                width-request: 300;
+
                 menu: primary_menu;
                 view-mode: bind sidebar.view-mode;
                 // selected-table: bind sidebar.selected-table;
