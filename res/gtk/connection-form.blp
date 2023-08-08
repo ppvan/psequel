@@ -228,13 +228,12 @@ template $PsequelConnectionForm : Adw.Bin {
                             spacing: 8;
 
                             Spinner spinner {
-                                
+                                spinning: bind template.is-connectting;
                             }
 
                             Button connect_btn {
                                 styles ["suggested-action"]
                                 label: "Connect";
-                                // sensitive: bind template.is_connectting;
                                 clicked => $on_connect_clicked();
                             }
                         }

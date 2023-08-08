@@ -62,12 +62,5 @@ namespace Psequel {
 
         [GtkChild]
         private unowned GtkSource.Buffer buffer;
-
-        [GtkChild]
-        private unowned Gtk.Label row_affect;
-
-
-        [GtkChild]
-        private unowned Gtk.Label query_time;
     }
 }

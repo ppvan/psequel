@@ -10,7 +10,6 @@ namespace Psequel {
 
         public Connection? selected_connection { get; set; }
         public bool is_connectting { get; set; }
-        public string connection_url { get; set; default = ""; }
 
         public signal void request_database (Connection conn);
         public signal void connections_changed ();
@@ -46,8 +45,9 @@ namespace Psequel {
         private void set_up_bindings () {
 
             this.bind_property ("selected-connection", binddings, "source", BindingFlags.SYNC_CREATE);
+
             this.bind_property ("is-connectting", connect_btn, "sensitive", INVERT_BOOLEAN | SYNC_CREATE);
-            connect_btn.bind_property ("sensitive", spinner, "spinning", BindingFlags.INVERT_BOOLEAN);
+
             password_entry.bind_property ("text",
                                           password_entry,
                                           "show-peek-icon",
@@ -83,9 +83,6 @@ namespace Psequel {
 
         [GtkChild]
         unowned Gtk.Button connect_btn;
-
-        [GtkChild]
-        unowned Gtk.Spinner spinner;
 
         [GtkChild]
         private unowned Gtk.Entry name_entry;
