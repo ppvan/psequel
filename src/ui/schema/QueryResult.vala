@@ -59,6 +59,7 @@ namespace Psequel {
             }
 
             this.selection_model.unselect_all ();
+            this.sort_model.sorter = data_view.get_sorter ();
             rows.clear ();
 
             foreach (var row in relation) {
