@@ -78,5 +78,9 @@ namespace Psequel {
         public uint get_n_items () {
             return _data.get_n_items ();
         }
+
+        public bool empty () {
+            return size == 0;
+        }
     }
 }

@@ -17,6 +17,10 @@ namespace Psequel {
         construct {
             unowned var loaded_conn = repository.get_connections ();
             connections.extend (loaded_conn);
+
+            if (connections.empty ()) {
+                new_connection ();
+            }
             // selected_connection = (Connection)connections.get_item (2);
 
             //  Auto save data each 10 secs in case app crash.
@@ -29,14 +33,17 @@ namespace Psequel {
             var conn = new Connection ();
             repository.append_connection (conn);
             connections.append (conn);
+            selected_connection = conn;
 
             save_connections ();
         }
 
         public void dupplicate_connection (Connection conn) {
             var clone = conn.clone ();
+            clone.name = clone.name + " (copy)";
             repository.append_connection (clone);
             connections.insert (connections.indexof (conn) + 1, clone);
+            selected_connection = clone;
 
             save_connections ();
         }
