@@ -13,6 +13,7 @@ namespace Psequel {
         public string connection_url { get; set; default = ""; }
 
         public signal void request_database (Connection conn);
+        public signal void connections_changed ();
 
         public ConnectionForm () {
             Object ();
@@ -68,6 +69,16 @@ namespace Psequel {
         [GtkCallback]
         private void on_entry_activated (Gtk.Entry entry) {
             connect_btn.clicked ();
+        }
+
+        [GtkCallback]
+        private void on_text_changed (Gtk.Editable editable) {
+            connections_changed ();
+        }
+
+        [GtkCallback]
+        private void on_switch_changed () {
+            connections_changed ();
         }
 
         [GtkChild]

@@ -30,7 +30,8 @@ namespace Psequel {
             action_group.add_action_entries (ACTION_ENTRIES, this);
             this.insert_action_group ("conn", action_group);
 
-            selection_model.bind_property ("selected", this, "selected-connection", DEFAULT | BIDIRECTIONAL, from_selected, to_selected);
+            selection_model.bind_property ("selected", this, "selected-connection",
+                                           DEFAULT | BIDIRECTIONAL, from_selected, to_selected);
         }
 
         // On add, create new connection and select it.

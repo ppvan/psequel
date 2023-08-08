@@ -27,6 +27,11 @@ namespace Psequel {
         }
 
         [GtkCallback]
+        public void save_connections () {
+            viewmodel.save_connections ();
+        }
+
+        [GtkCallback]
         public void add_new_connection () {
             viewmodel.new_connection ();
         }
