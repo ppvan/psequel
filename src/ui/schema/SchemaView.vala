@@ -11,6 +11,10 @@ namespace Psequel {
             Object ();
         }
 
+        construct {
+            setup_paned (paned);
+        }
+
 
         [GtkCallback]
         public void request_load_schema (Schema? schema) {
@@ -35,5 +39,9 @@ namespace Psequel {
         public void view_selected_changed (View view) {
             schema_viewmodel?.view_viewmodel.current_view = view;
         }
+
+
+        [GtkChild]
+        private unowned Gtk.Paned paned;
     }
 }
