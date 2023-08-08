@@ -9,17 +9,13 @@ namespace Psequel {
             { "export", export_connection },
         };
 
-        public ConnectionViewModel viewmodel {get; set;}
-        public ObservableList<Connection> connections {get; set;}
-        public Connection? selected_connection {get; set;}
+        public ConnectionViewModel viewmodel { get; set; }
 
         public signal void request_database (Connection conn);
 
         public ConnectionView (Application app) {
             Object ();
         }
-
-
 
         // Connect event.
         construct {
@@ -83,6 +79,7 @@ namespace Psequel {
                 var file = yield file_dialog.open (window, null);
 
                 yield file.load_contents_async (null, out contents, null);
+
                 var json_str = (string) contents;
                 var conns = ValueConverter.deserialize_connection (json_str);
                 viewmodel.import_connections (conns);

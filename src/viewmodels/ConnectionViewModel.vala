@@ -1,13 +1,14 @@
 namespace Psequel {
     public class ConnectionViewModel : BaseViewModel {
         uint timeout_id = 0;
-
-        public ObservableList<Connection> connections { get; private set; default = new ObservableList<Connection> (); }
         public ConnectionRepository repository { get; construct; }
 
+        public ObservableList<Connection> connections { get; private set; default = new ObservableList<Connection> (); }
         public Connection? selected_connection { get; set; }
+
         /** True when trying to establish a connection util know results. */
         public bool is_connectting { get; set; default = false; }
+
 
 
         public ConnectionViewModel (ConnectionRepository repository) {
@@ -23,7 +24,7 @@ namespace Psequel {
             }
             // selected_connection = (Connection)connections.get_item (2);
 
-            //  Auto save data each 10 secs in case app crash.
+            // Auto save data each 10 secs in case app crash.
             Timeout.add_seconds (10, () => {
                 repository.save ();
             }, Priority.LOW);
@@ -78,10 +79,6 @@ namespace Psequel {
 
                 return Source.REMOVE;
             });
-        }
-
-        ~ConnectionViewModel () {
-            repository.save ();
         }
     }
 }
