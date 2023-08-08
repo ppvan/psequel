@@ -4,9 +4,11 @@ namespace Psequel {
         public Table? selected_table { get; set; }
         // public View? current_view {get; set;}
 
-        public bool has_pre_page { get; private set; }
-        public bool has_next_page { get; private set; }
+        public bool has_pre_page { get; private set; default = false;}
+        public bool has_next_page { get; private set; default = true; }
         public int current_page { get; set; }
+
+        public string row_ranges {get; private set; default = "";}
 
         public bool is_loading { get; set; }
         public PsequelError err { get; set; }
@@ -21,6 +23,27 @@ namespace Psequel {
         public TableDataViewModel (Table table, SQLService service) {
             Object (sql_service: service);
 
+            this.notify["current-page"].connect (() => {
+                if (current_page > 0) {
+                    has_pre_page = true;
+                } else {
+                    has_pre_page = false;
+                }
+            });
+
+            this.notify["current-relation"].connect (() => {
+
+                int offset = sql_service.query_limit * current_page;
+                row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
+
+
+                if (current_relation.rows < sql_service.query_limit) {
+                    has_next_page = false;
+
+                } else {
+                    has_next_page = true;
+                }
+            });
 
 
             this.notify["selected-table"].connect (() => {

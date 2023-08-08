@@ -58,15 +58,19 @@ template $PsequelTableDataView : Gtk.Box {
         Separator {}
         
         Label status_label {
-            label: "Rows 1 - 500";
-            hexpand: true;
+            label: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.row-ranges;
             halign: start;
         }
         
         Separator {}
+
+        Label {
+            hexpand: true;
+        }
         
         Button left_page {
             styles ["flat"]
+            sensitive: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.has-pre-page;
             icon-name: "left-large-symbolic";
             tooltip-text: "Last Page";
             clicked => $pre_page();
@@ -74,6 +78,7 @@ template $PsequelTableDataView : Gtk.Box {
         
         Button right_page {
             styles ["flat"]
+            sensitive: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.has-next-page;
             icon-name: "right-large-symbolic";
             tooltip-text: "Next Page";
             clicked => $next_page();

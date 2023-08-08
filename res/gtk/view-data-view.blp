@@ -58,7 +58,7 @@ template $PsequelViewDataView : Gtk.Box {
         Separator {}
         
         Label status_label {
-            label: "Rows 1 - 500";
+            label: bind template.viewdata-viewmodel as <$PsequelViewDataViewModel>.row-ranges;
             hexpand: true;
             halign: start;
         }
@@ -69,6 +69,7 @@ template $PsequelViewDataView : Gtk.Box {
             styles ["flat"]
             icon-name: "left-large-symbolic";
             tooltip-text: "Last Page";
+            sensitive: bind template.viewdata-viewmodel as <$PsequelViewDataViewModel>.has-pre-page;
             clicked => $pre_page();
         }
         
@@ -76,6 +77,7 @@ template $PsequelViewDataView : Gtk.Box {
             styles ["flat"]
             icon-name: "right-large-symbolic";
             tooltip-text: "Next Page";
+            sensitive: bind template.viewdata-viewmodel as <$PsequelViewDataViewModel>.has-next-page;
             clicked => $next_page();
         }
     }
