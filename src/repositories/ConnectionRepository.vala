@@ -42,7 +42,7 @@ namespace Psequel {
             items.foreach ((item) => append_connection (item));
         }
 
-        public async void save () {
+        public void save () {
             string json_data = serialize_connection (this._data);
             //  _data.foreach ((item) => debug ("%s", item.name));
             settings.set_string (KEY, json_data);

@@ -10,7 +10,6 @@ namespace Psequel {
         BindingGroup binddings;
 
         public Connection selected { get; set; }
-        public signal void connection_changed (Connection conn);
         public signal void request_database (Connection conn);
 
         public ConnectionForm () {
@@ -54,11 +53,6 @@ namespace Psequel {
             });
 
             debug ("set_up binddings done");
-        }
-
-        [GtkCallback]
-        private void text_changed_cb () {
-            connection_changed (selected);
         }
 
         [GtkCallback]

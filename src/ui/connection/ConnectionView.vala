@@ -51,11 +51,6 @@ namespace Psequel {
             viewmodel.remove_connection (conn);
         }
 
-        [GtkCallback]
-        public void save_connection (Connection conn) {
-            viewmodel.save_connection (conn);
-        }
-
         public void import_connection () {
             open_file_dialog.begin ("Import connections");
         }
