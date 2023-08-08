@@ -74,11 +74,11 @@ configure_file(output: 'config.h', configuration: conf)
 
 psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
-  dependency('gtk4'),
-  dependency('libadwaita-1', version: '>= 1.2'),
-  dependency('json-glib-1.0'),
-  dependency('gtksourceview-5'),
-  dependency('libpq'),
+  dependency('gtk4', version: '>=4.10'),
+  dependency('libadwaita-1', version: '>= 1'),
+  dependency('json-glib-1.0', version: '>= 1.6'),
+  dependency('gtksourceview-5', version: '>= 5.0'),
+  dependency('libpq', version: '>= 15.3'),
 
   valac.find_library('config', dirs: vapi_dir),
 ]
