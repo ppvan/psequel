@@ -11,7 +11,7 @@ namespace Psequel {
         public string row_ranges {get; private set; default = "";}
 
         public bool is_loading { get; set; }
-        public PsequelError err { get; set; }
+        public string err_msg { get; set; }
 
         public Relation current_relation { get; set; }
         public Relation.Row? selected_row { get; set; }
@@ -77,7 +77,7 @@ namespace Psequel {
                 is_loading = false;
                 debug ("Rows: %d", current_relation.rows);
             } catch (PsequelError err) {
-                this.err = err;
+                this.err_msg = err.message;
             }
         }
     }

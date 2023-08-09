@@ -10,9 +10,9 @@ namespace Psequel {
 
         public string wellcome_message { get; set; }
         public Relation? current_relation { get; set; }
-        public PsequelError err { get; set; }
         public bool is_loading { get; set; }
 
+        public string err_msg {get; set; default = "";}
 
         private ObservableList<Relation.Row> rows;
         private Gtk.SortListModel sort_model;
@@ -34,7 +34,7 @@ namespace Psequel {
                 load_data_to_view.begin (current_relation);
             });
 
-            this.notify["err"].connect (() => {
+            this.notify["err-msg"].connect (() => {
                 stack.visible_child_name = ERROR;
             });
         }
@@ -154,11 +154,11 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.ColumnView data_view;
 
-        //  [GtkChild]
-        //  private unowned Gtk.Spinner spinner;
+        // [GtkChild]
+        // private unowned Gtk.Spinner spinner;
 
-        //  [GtkChild]
-        //  private unowned Gtk.Label status_label;
+        // [GtkChild]
+        // private unowned Gtk.Label status_label;
     }
 
     /*

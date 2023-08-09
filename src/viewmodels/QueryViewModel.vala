@@ -1,21 +1,21 @@
 namespace Psequel {
     public class QueryViewModel : BaseViewModel {
 
-        public ObservableList<Query> queries { get; set; default = new ObservableList<Query> ();}
-        public Query? current_query { get; set; }
+        public ObservableList<Query> query_history { get; set; default = new ObservableList<Query> (); }
+        public Query? selected_query { get; set; }
 
-        public string query_string {get; set;}
+        public string query_string { get; set; }
 
         // SQL related result.
         public bool is_loading { get; private set; }
-        public PsequelError err { get; private set; }
+        public string err_msg {get; private set;}
 
         public Relation current_relation { get; private set; }
         public Relation.Row? selected_row { get; set; }
 
-        //  Status properties
-        public string row_affected {get; private set;}
-        public string query_time {get; private set;}
+        // Status properties
+        public string row_affected { get; private set; }
+        public string query_time { get; private set; }
 
         public SQLService sql_service { get; construct; }
 
@@ -40,26 +40,39 @@ namespace Psequel {
         public async void run_current_query () {
             var query = new Query (query_string);
 
-            //  if (query.sql != queries.last ().sql) {
-            //      queries.append (query);
-            //  }
+            // if (query.sql != queries.last ().sql) {
+            // queries.append (query);
+            // }
+
+            query_history.append (query);
 
             yield run_query (query);
         }
 
-        private inline async void run_query (Query query) {
+        public async void exec_history (Query query) {
+            var success = yield run_query (query);
+
+            if (success) {
+                query_history.remove (query);
+                query_history.prepend (query);
+            }
+        }
+
+        private inline async bool run_query (Query query) {
+            is_loading = true;
 
             try {
-                is_loading = true;
-                int64 execute_time;
-
-                current_relation = yield sql_service.exec_query (query.sql, out execute_time);
-
-                is_loading = false;
+                current_relation = yield sql_service.exec_query (query.sql);
                 debug ("Rows: %d", current_relation.rows);
+                is_loading = false;
+
+                return true;
             } catch (PsequelError err) {
-                this.err = err;
+                this.err_msg = err.message;
             }
+
+            is_loading = false;
+            return false;
         }
     }
 }

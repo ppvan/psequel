@@ -7,6 +7,10 @@ namespace Psequel {
 
 
         public QueryViewModel query_viewmodel { get; set; }
+
+        public Query? selected_query { get; set; }
+
+
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
 
@@ -27,8 +31,12 @@ namespace Psequel {
                 query_viewmodel.query_string = buffer.text;
             });
 
-            setup_paned (paned);
+            selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
 
+            spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
+
+
+            setup_paned (paned);
         }
 
         void default_setttings () {
@@ -111,13 +119,59 @@ namespace Psequel {
             query_viewmodel.run_current_query.begin ();
         }
 
+        [GtkCallback]
+        private void on_listview_activate (Gtk.ListView view, uint pos) {
+            query_viewmodel.exec_history.begin (selected_query);
+
+            buffer.text = selected_query?.sql;
+            popover.hide ();
+        }
+
+        private bool from_selected (Binding binding, Value from, ref Value to) {
+            uint pos = from.get_uint ();
+
+            if (pos != Gtk.INVALID_LIST_POSITION) {
+                to.set_object (selection_model.get_item (pos));
+            }
+
+            return true;
+        }
+
+        private bool to_selected (Binding binding, Value from, ref Value to) {
+
+            Connection conn = (Connection) from.get_object ();
+            for (uint i = 0; i < selection_model.get_n_items (); i++) {
+                if (selection_model.get_item (i) == conn) {
+                    to.set_uint (i);
+                    return true;
+                }
+            }
+
+            to.set_uint (Gtk.INVALID_LIST_POSITION);
+
+            return true;
+        }
+
         // [GtkChild]
         // private unowned GtkSource.View editor;
+
+        [GtkChild]
+        private unowned Gtk.Button run_query_btn;
+
+        [GtkChild]
+        private unowned Gtk.Spinner spinner;
+
 
         [GtkChild]
         private unowned GtkSource.Buffer buffer;
 
         [GtkChild]
         private unowned Gtk.Paned paned;
+
+        [GtkChild]
+        private unowned Gtk.SingleSelection selection_model;
+
+        [GtkChild]
+        private unowned Gtk.Popover popover;
     }
 }

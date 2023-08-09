@@ -36,6 +36,10 @@ namespace Psequel {
             _data.append ((Object)item);
         }
 
+        public void prepend (T item) {
+            _data.insert (0, (Object)item);
+        }
+
         public void extend (List<T> items) {
             items.foreach ((item) => _data.append ((Object)item));
         }

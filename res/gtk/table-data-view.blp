@@ -35,7 +35,7 @@ template $PsequelTableDataView : Gtk.Box {
     $PsequelQueryResults query_results {
         current-relation: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.current-relation;
         is-loading: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.is-loading;
-        err: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.err;
+        err-msg: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.err-msg;
     }
 
 

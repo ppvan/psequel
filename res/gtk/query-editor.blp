@@ -1,8 +1,12 @@
 using Gtk 4.0;
 using Adw 1;
+using Gdk 4.0;
 using GtkSource 5;
 
 template $PsequelQueryEditor : Adw.Bin {
+
+    selected-query: bind template.query-viewmodel as <$PsequelQueryViewModel>.selected-query;
+
     Paned paned {
         orientation: vertical;
         shrink-start-child: false;
@@ -16,7 +20,7 @@ template $PsequelQueryEditor : Adw.Bin {
             ScrolledWindow {
                 GtkSource.View editor {
                     buffer: GtkSource.Buffer buffer {
-
+                        // text: bind template.query-viewmodel as <$PsequelQueryViewModel>.queries;
                     };
                     monospace: true;
                     auto-indent: true;
@@ -53,15 +57,15 @@ template $PsequelQueryEditor : Adw.Bin {
                 MenuButton {
                     label: "Query History";
                     
-                    popover: Popover {
+                    popover: Popover popover {
                         height-request: 300;
                         width-request: 600;
                         Box {
                             spacing: 4;
                             orientation: vertical;
-                            SearchEntry {
-                                placeholder-text: "Find Query";
-                            }
+                            // SearchEntry {
+                            //     placeholder-text: "Find Query";
+                            // }
                             
                             ScrolledWindow {
                                 vexpand: true;
@@ -69,15 +73,16 @@ template $PsequelQueryEditor : Adw.Bin {
                                 max-content-width: 600;
 
                                 ListView {
-                                    styles ["rich-list"]
+                                    styles ["navigation-sidebar"]
                                     model: SingleSelection selection_model {
-                                        model:  bind template.query-viewmodel as <$PsequelQueryViewModel>.queries;
+                                        model: bind template.query-viewmodel as <$PsequelQueryViewModel>.query-history;
                                     };
                                     
                                     factory: BuilderListItemFactory {
                                         resource: "/me/ppvan/psequel/gtk/query-listitem.ui";
                                     };
                                     
+                                    activate => $on_listview_activate();
                                 }
                             }
                             
@@ -96,6 +101,11 @@ template $PsequelQueryEditor : Adw.Bin {
                 Label {
                     hexpand: true;
                 }
+
+                Spinner spinner {
+                    spinning: bind template.query-viewmodel as <$PsequelQueryViewModel>.is-loading;
+                }
+
                 Button run_query_btn {
                     styles ["suggested-action"]
                     label: "Run Query";
@@ -109,7 +119,7 @@ template $PsequelQueryEditor : Adw.Bin {
                 wellcome_message: "Run a query";
                 current-relation: bind template.query-viewmodel as <$PsequelQueryViewModel>.current-relation;
                 is-loading: bind template.query-viewmodel as <$PsequelQueryViewModel>.is-loading;
-                err: bind template.query-viewmodel as <$PsequelQueryViewModel>.err;
+                err-msg: bind template.query-viewmodel as <$PsequelQueryViewModel>.err-msg;
             }
 
             Box {
