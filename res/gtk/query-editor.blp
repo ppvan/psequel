@@ -52,7 +52,44 @@ template $PsequelQueryEditor : Adw.Bin {
 
                 MenuButton {
                     label: "Query History";
-                    menu-model: menu;
+                    
+                    popover: Popover {
+                        height-request: 300;
+                        width-request: 600;
+                        Box {
+                            spacing: 4;
+                            orientation: vertical;
+                            SearchEntry {
+                                placeholder-text: "Find Query";
+                            }
+                            
+                            ScrolledWindow {
+                                vexpand: true;
+                                min-content-width: 300;
+                                max-content-width: 600;
+
+                                ListView {
+                                    styles ["rich-list"]
+                                    model: SingleSelection selection_model {
+                                        model:  bind template.query-viewmodel as <$PsequelQueryViewModel>.queries;
+                                    };
+                                    
+                                    factory: BuilderListItemFactory {
+                                        resource: "/me/ppvan/psequel/gtk/query-listitem.ui";
+                                    };
+                                    
+                                }
+                            }
+                            
+                            Separator {}
+
+                            Button {
+                                styles ["destructive-action"]
+                                label: "Clear History";
+                            }
+                        
+                        }
+                    };
                 }
 
 

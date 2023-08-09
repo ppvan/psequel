@@ -23,8 +23,9 @@
     <file preprocess="xml-stripblanks">gtk/view-structure-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-listitem.ui</file>
     <file preprocess="xml-stripblanks">gtk/view-listitem.ui</file>
+    <file preprocess="xml-stripblanks">gtk/query-listitem.ui</file>
+    <file preprocess="xml-stripblanks">gtk/preferences-window.ui</file>
     <file preprocess="xml-stripblanks">gtk/window.ui</file>
-    <file preprocess="xml-stripblanks">gtk/preferences.ui</file>
 
   </gresource>
 

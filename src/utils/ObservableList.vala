@@ -62,6 +62,10 @@ namespace Psequel {
             return pos;
         }
 
+        public T last () {
+            return _data.get_item (size - 1);
+        }
+
         public void @foreach (ForeachFunc<T> func) {
             for (uint i = 0; i < this.size; i++) {
                 func (_data.get_item (i));

@@ -1,7 +1,7 @@
 namespace Psequel {
     public class QueryViewModel : BaseViewModel {
 
-        public ObservableList<Query> queries { get; set; }
+        public ObservableList<Query> queries { get; set; default = new ObservableList<Query> ();}
         public Query? current_query { get; set; }
 
         public string query_string {get; set;}
@@ -39,6 +39,11 @@ namespace Psequel {
 
         public async void run_current_query () {
             var query = new Query (query_string);
+
+            //  if (query.sql != queries.last ().sql) {
+            //      queries.append (query);
+            //  }
+
             yield run_query (query);
         }
 

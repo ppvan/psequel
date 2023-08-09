@@ -1,6 +1,7 @@
 namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/preferences.ui")]
+    // valalint=skip-file
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/preferences-window.ui")]
     public class PreferencesWindow : Adw.PreferencesWindow {
 
         private Gtk.StringList model;
