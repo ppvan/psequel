@@ -52,9 +52,9 @@
 
         <key name="editor-font" type="s">
             <default>"Source Code Pro 12"</default>
-            <summary>UI font</summary>
+            <summary>Editor font</summary>
             <description>
-                Application UI font.
+                Application Editor font.
             </description>
         </key>
 
@@ -63,6 +63,22 @@
             <summary>Editor color scheme</summary>
             <description>
                 Editor color scheme supported by Gtk Source View 5
+            </description>
+        </key>
+
+        <key name="auto-uppercase" type="b">
+            <default>true</default>
+            <summary>Auto UpperCase keywords</summary>
+            <description>
+                Auto UpperCase keywords like SELECT, FROM, WHERE, etc.
+            </description>
+        </key>
+
+         <key name="auto-completion" type="b">
+            <default>false</default>
+            <summary>Auto Completion </summary>
+            <description>
+                Auto Completion for keywords, table names, column names, etc.
             </description>
         </key>
 

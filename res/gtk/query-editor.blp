@@ -39,6 +39,23 @@ template $PsequelQueryEditor : Adw.Bin {
                 margin-bottom: 8;
                 margin-start: 8;
                 margin-end: 8;
+                spacing: 12;
+
+                MenuButton {
+                    styles ["big-icon"]
+                    icon-name: "settings-symbolic";
+                    halign: start;
+                    valign: start;
+                    direction: down;
+                    menu-model: menu;
+                }
+
+                MenuButton {
+                    label: "Query History";
+                    menu-model: menu;
+                }
+
+
                 Label {
                     hexpand: true;
                 }
@@ -78,4 +95,24 @@ template $PsequelQueryEditor : Adw.Bin {
             }
         }
     }
+}
+
+menu menu {
+  section {
+
+    item {
+      label: _("_Editor Font");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Auto Uppercase");
+      action: "editor.auto-uppercase";
+    }
+
+    item {
+      label: _("_Auto Completion");
+      action: "editor.auto-completion";
+    }
+  }
 }

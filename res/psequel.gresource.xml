@@ -45,5 +45,6 @@
     <file preprocess="xml-stripblanks" alias="right-large-symbolic.svg">gtk/icons/right-large-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="text-sql-symbolic.svg">gtk/icons/text-sql-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="webview-filler-symbolic.svg">gtk/icons/webview-filler-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">gtk/icons/settings-symbolic.svg</file>
   </gresource>
 </gresources>

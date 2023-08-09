@@ -5,6 +5,10 @@ namespace Psequel {
 
         private Gtk.StringList model;
 
+        //  const ActionEntry[] ACTION_ENTRIES = {
+        //      { "editor-font", old_choser },
+        //  };
+
         public PreferencesWindow () {
             Object ();
         }
@@ -27,6 +31,8 @@ namespace Psequel {
             this.model = new Gtk.StringList (style_manager.get_scheme_ids ());
 
             color_scheme.set_model (this.model);
+//  
+            //  Application.app.add_action_entries (ACTION_ENTRIES, this);
         }
 
         private void setup_binding () {
@@ -63,39 +69,39 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_font_chooser (Adw.ActionRow row) {
-            // old_choser ();
-            new_choser ();
+            old_choser ();
+            // new_choser ();
         }
 
-        // private void old_choser () {
-        ///* Create dialog */
-        // var dialog = new Gtk.FontChooserDialog (_("Select font"), this) {
-        // modal = true,
-        // transient_for = this,
-        // level = Gtk.FontChooserLevel.FAMILY | Gtk.FontChooserLevel.SIZE | Gtk.FontChooserLevel.STYLE,
-        // };
+        private void old_choser () {
+            // Create dialog
+            var dialog = new Gtk.FontChooserDialog (_("Select font"), this) {
+                modal = true,
+                transient_for = this,
+                level = Gtk.FontChooserLevel.FAMILY | Gtk.FontChooserLevel.SIZE | Gtk.FontChooserLevel.STYLE,
+            };
 
-        // dialog.set_filter_func ((desc) => {
-        // return desc.is_monospace ();
-        // });
-
-
-        ///* Set font and close dialog on response */
-        // dialog.response.connect ((res) => {
-        // if (res == Gtk.ResponseType.OK && dialog.font != null) {
-        // font_label.get_pango_context ().set_font_description (dialog.font_desc);
-        // font_label.label = dialog.font_desc.to_string ();
-
-        // Application.settings.set_string ("editor-font", dialog.font_desc.to_string ());
-        // }
-
-        // dialog.close ();
-        // });
+            dialog.set_filter_func ((desc) => {
+                return desc.is_monospace ();
+            });
 
 
-        ///* Show dialog */
-        // dialog.present ();
-        // }
+            // Set font and close dialog on response
+            dialog.response.connect ((res) => {
+                if (res == Gtk.ResponseType.OK && dialog.font != null) {
+                    font_label.get_pango_context ().set_font_description (dialog.font_desc);
+                    font_label.label = dialog.font_desc.to_string ();
+
+                    Application.settings.set_string ("editor-font", dialog.font_desc.to_string ());
+                }
+
+                dialog.close ();
+            });
+
+
+            /* Show dialog */
+            dialog.present ();
+        }
 
         private void new_choser () {
             var dialog = new Gtk.FontDialog () {
