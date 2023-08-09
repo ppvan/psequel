@@ -5,6 +5,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-editor.ui")]
     public class QueryEditor : Adw.Bin {
 
+        delegate void ChangeStateFunc (SimpleAction action, Variant? new_state);
 
         public QueryViewModel query_viewmodel { get; set; }
 
@@ -64,21 +65,30 @@ namespace Psequel {
 
             var group = new SimpleActionGroup ();
 
-            var auto_uppercase = new SimpleAction.stateful ("auto-uppercase", null, new Variant.boolean (false));
-            auto_uppercase.activate.connect (toggle_autouppercase);
-            auto_uppercase.change_state.connect (change_autouppercase);
+            var auto_uppercase = boolean_state_factory ("auto-uppercase", change_autouppercase);
 
-            var auto_completion = new SimpleAction.stateful ("auto-completion", null, new Variant.boolean (false));
-            auto_completion.activate.connect (toggle_autocompletion);
-            auto_completion.change_state.connect (change_autocompletion);
+            var auto_completion = boolean_state_factory ("auto-completion", change_autocompletion);
+
+            var auto_exec_history = boolean_state_factory ("auto-exec-history", change_auto_exec_history);
 
             group.add_action (auto_uppercase);
             group.add_action (auto_completion);
+            group.add_action (auto_exec_history);
 
             this.insert_action_group ("editor", group);
         }
 
-        private void toggle_autouppercase (Action action, Variant? parameter) {
+        private SimpleAction boolean_state_factory (string name, ChangeStateFunc func) {
+            bool init = Application.settings.get_boolean (name);
+
+            var action = new SimpleAction.stateful (name, null, new Variant.boolean (init));
+            action.activate.connect (toggle_boolean);
+            action.change_state.connect (func);
+
+            return action;
+        }
+
+        private void toggle_boolean (Action action, Variant? parameter) {
             debug ("Activate autouppercase");
             Variant state = action.state;
             bool old_state = state.get_boolean ();
@@ -94,20 +104,20 @@ namespace Psequel {
             Application.settings.set_boolean ("auto-uppercase", autouppercase);
         }
 
-        private void toggle_autocompletion (Action action, Variant? parameter) {
-            debug ("Activate autocompletion");
-            Variant state = action.state;
-            bool old_state = state.get_boolean ();
-            bool new_state = !old_state;
-            action.change_state (new_state);
-        }
-
         private void change_autocompletion (SimpleAction action, Variant? new_state) {
             debug ("Change autocompletion");
             bool autocompletion = new_state.get_boolean ();
 
             action.set_state (new_state);
             Application.settings.set_boolean ("auto-completion", autocompletion);
+        }
+
+        private void change_auto_exec_history (SimpleAction action, Variant? new_state) {
+            debug ("change_auto_exec_history");
+            bool auto_exec = new_state.get_boolean ();
+
+            action.set_state (new_state);
+            Application.settings.set_boolean ("auto-exec-history", auto_exec);
         }
 
         [GtkCallback]
@@ -139,9 +149,9 @@ namespace Psequel {
 
         private bool to_selected (Binding binding, Value from, ref Value to) {
 
-            Connection conn = (Connection) from.get_object ();
+            Query query = (Query) from.get_object ();
             for (uint i = 0; i < selection_model.get_n_items (); i++) {
-                if (selection_model.get_item (i) == conn) {
+                if (selection_model.get_item (i) == query) {
                     to.set_uint (i);
                     return true;
                 }

@@ -74,11 +74,19 @@
             </description>
         </key>
 
-         <key name="auto-completion" type="b">
+        <key name="auto-completion" type="b">
             <default>false</default>
             <summary>Auto Completion </summary>
             <description>
                 Auto Completion for keywords, table names, column names, etc.
+            </description>
+        </key>
+
+        <key name="auto-exec-history" type="b">
+            <default>true</default>
+            <summary>Auto Execute History Query</summary>
+            <description>
+                Auto Execute History Query when activated, instead of showing the query in the editor.
             </description>
         </key>
 

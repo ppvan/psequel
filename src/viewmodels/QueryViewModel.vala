@@ -1,6 +1,8 @@
 namespace Psequel {
     public class QueryViewModel : BaseViewModel {
 
+        const string AUTO_EXEC_HISTORY = "auto-exec-history";
+
         public ObservableList<Query> query_history { get; set; default = new ObservableList<Query> (); }
         public Query? selected_query { get; set; }
 
@@ -8,7 +10,7 @@ namespace Psequel {
 
         // SQL related result.
         public bool is_loading { get; private set; }
-        public string err_msg {get; private set;}
+        public string err_msg { get; private set; }
 
         public Relation current_relation { get; private set; }
         public Relation.Row? selected_row { get; set; }
@@ -44,18 +46,20 @@ namespace Psequel {
             // queries.append (query);
             // }
 
-            query_history.append (query);
+            query_history.prepend (query);
+            selected_query = query;
 
             yield run_query (query);
         }
 
         public async void exec_history (Query query) {
-            var success = yield run_query (query);
-
-            if (success) {
-                query_history.remove (query);
-                query_history.prepend (query);
+            if (Application.settings.get_boolean (AUTO_EXEC_HISTORY)) {
+                yield run_query (query);
             }
+
+            selected_query = query;
+            query_history.remove (query);
+            query_history.prepend (query);
         }
 
         private inline async bool run_query (Query query) {
@@ -63,6 +67,7 @@ namespace Psequel {
 
             try {
                 current_relation = yield sql_service.exec_query (query.sql);
+
                 debug ("Rows: %d", current_relation.rows);
                 is_loading = false;
 
