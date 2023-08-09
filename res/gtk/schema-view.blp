@@ -9,6 +9,9 @@ template $PsequelSchemaView : Adw.Bin {
         orientation: vertical;
 
         Gtk.Paned paned {
+            shrink-end-child: false;
+            shrink-start-child: false;
+
             $PsequelSchemaSidebar sidebar {
 
                 width-request: 320;
