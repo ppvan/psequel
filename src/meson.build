@@ -38,6 +38,7 @@ psequel_sources = [
     'services/SchemaService.vala',
 
     'repositories/ConnectionRepository.vala',
+    'repositories/QueryRepository.vala',
     'repositories/SchemaRepository.vala',
 
     'viewmodels/ConnectionViewModel.vala',

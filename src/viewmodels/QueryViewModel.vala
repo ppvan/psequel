@@ -3,6 +3,7 @@ namespace Psequel {
 
         const string AUTO_EXEC_HISTORY = "auto-exec-history";
 
+        public QueryRepository query_repository {get; private set;}
         public ObservableList<Query> query_history { get; set; default = new ObservableList<Query> (); }
         public Query? selected_query { get; set; }
 
@@ -23,6 +24,7 @@ namespace Psequel {
 
         public QueryViewModel (SQLService sql_service) {
             Object (sql_service: sql_service);
+            query_repository = new QueryRepository (Application.settings);
 
             this.notify["current-relation"].connect (() => {
                 row_affected = @"Row Affected: $(current_relation.row_affected)";
@@ -42,14 +44,13 @@ namespace Psequel {
         public async void run_current_query () {
             var query = new Query (query_string);
 
-            // if (query.sql != queries.last ().sql) {
-            // queries.append (query);
-            // }
+            if (yield run_query (query)) {
+                query_history.prepend (query);
+                query_repository.append_query (query);
+                selected_query = query;
+            }
 
-            query_history.prepend (query);
-            selected_query = query;
 
-            yield run_query (query);
         }
 
         public async void exec_history (Query query) {
@@ -57,16 +58,16 @@ namespace Psequel {
                 yield run_query (query);
             }
 
-            selected_query = query;
             query_history.remove (query);
             query_history.prepend (query);
+            selected_query = query;
         }
 
         private inline async bool run_query (Query query) {
             is_loading = true;
 
             try {
-                current_relation = yield sql_service.exec_query (query.sql);
+                current_relation = yield sql_service.exec_query_v2 (query);
 
                 debug ("Rows: %d", current_relation.rows);
                 is_loading = false;
