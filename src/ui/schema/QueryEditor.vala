@@ -11,6 +11,9 @@ namespace Psequel {
 
         public Query? selected_query { get; set; }
 
+        const ActionEntry[] ACTION_ENTRIES = {
+            { "exec", run_query },
+        };
 
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
@@ -64,6 +67,8 @@ namespace Psequel {
         private void create_action_group () {
 
             var group = new SimpleActionGroup ();
+            group.add_action_entries (ACTION_ENTRIES, this);
+            this.insert_action_group ("editor", group);
 
             var auto_uppercase = boolean_state_factory ("auto-uppercase", change_autouppercase);
 
@@ -78,7 +83,7 @@ namespace Psequel {
             this.insert_action_group ("editor", group);
         }
 
-        private SimpleAction boolean_state_factory (string name, ChangeStateFunc func) {
+        private SimpleAction boolean_state_factory (string name, owned ChangeStateFunc func) {
             bool init = Application.settings.get_boolean (name);
 
             var action = new SimpleAction.stateful (name, null, new Variant.boolean (init));
@@ -122,6 +127,10 @@ namespace Psequel {
 
         [GtkCallback]
         private void run_query_cb (Gtk.Button btn) {
+            run_query ();
+        }
+
+        private void run_query () {
 
             var text = buffer.text.strip ();
             debug ("Exec query: %s", text);

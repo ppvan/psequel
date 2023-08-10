@@ -49,7 +49,13 @@ namespace Psequel {
                 { "quit", this.quit }
             };
             this.add_action_entries (action_entries, this);
+
+            this.set_accels_for_action ("app.new-window", { "<Ctrl><Shift>n" });
             this.set_accels_for_action ("app.quit", { "<primary>q" });
+            this.set_accels_for_action ("app.preferences", { "<primary>comma" });
+
+            this.set_accels_for_action ("win.import", { "<Ctrl>o" });
+            this.set_accels_for_action ("win.export", { "<Ctrl>e" });
         }
 
         public override void activate () {
@@ -83,6 +89,10 @@ namespace Psequel {
 
 
             base.shutdown ();
+        }
+
+        public void on_something () {
+            debug ("DO something");
         }
 
         public static int main (string[] args) {

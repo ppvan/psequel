@@ -18,6 +18,7 @@ namespace Psequel {
         public signal void request_new_connection ();
         public signal void request_dup_connection (Connection conn);
         public signal void request_remove_connection (Connection conn);
+        public signal void request_connect_database (Connection conn);
 
         public ConnectionSidebar () {
             Object ();
@@ -32,12 +33,18 @@ namespace Psequel {
 
             selection_model.bind_property ("selected", this, "selected-connection",
                                            DEFAULT | BIDIRECTIONAL, from_selected, to_selected);
+
         }
 
         // On add, create new connection and select it.
         [GtkCallback]
         public void on_add_connection (Gtk.Button btn) {
             request_new_connection ();
+        }
+
+        [GtkCallback]
+        public void on_connection_active (Gtk.ListView view, uint pos) {
+            request_connect_database (selected_connection);
         }
 
         // [GtkAction]
@@ -47,8 +54,7 @@ namespace Psequel {
 
         // [GtkAction]
         private void on_connect_connection () {
-            // viewmodel
-            debug ("DEBUG");
+            request_connect_database (selected_connection);
         }
 
         // [GtkAction]
@@ -83,6 +89,9 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.SingleSelection selection_model;
+
+        [GtkChild]
+        private unowned Gtk.ListView listview;
     }
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-row.ui")]
