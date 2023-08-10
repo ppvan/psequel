@@ -34,10 +34,15 @@ namespace Psequel {
             items.foreach ((item) => append_query (item));
         }
 
-        public void save () {
+        private void save () {
             string json_data = serialize_queries (this._data);
-            //  _data.foreach ((item) => debug ("%s", item.name));
+            _data.foreach ((item) => debug ("%s", item.sql));
             settings.set_string (KEY, json_data);
+        }
+
+        public void clear () {
+            _data = new List<Query> ();
+            save ();
         }
 
         private List<Query> deserialize_queries (string json_data) {

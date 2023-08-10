@@ -129,6 +129,12 @@ namespace Psequel {
         }
 
         [GtkCallback]
+        private void on_clear_history (Gtk.Button btn) {
+            query_history_viewmodel.clear_history.begin ();
+            popover.hide ();
+        }
+
+        [GtkCallback]
         private void on_listview_activate (Gtk.ListView view, uint pos) {
             query_history_viewmodel.exec_history.begin (selected_query);
 

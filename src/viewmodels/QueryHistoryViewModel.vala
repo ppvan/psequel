@@ -23,6 +23,7 @@ namespace Psequel {
         public QueryHistoryViewModel (SQLService sql_service) {
             Object (sql_service: sql_service);
             query_repository = new QueryRepository (Application.settings);
+            query_history.append_all (query_repository.get_queries ());
 
             this.notify["current-relation"].connect (() => {
                 row_affected = @"Row Affected: $(current_relation.row_affected)";
@@ -43,6 +44,7 @@ namespace Psequel {
             yield run_query_internal (query);
 
             query_history.prepend (query);
+            query_repository.append_query (query);
             selected_query = query;
         }
 
@@ -54,6 +56,11 @@ namespace Psequel {
             query_history.remove (query);
             query_history.prepend (query);
             selected_query = query;
+        }
+
+        public async void clear_history () {
+            query_history.clear ();
+            query_repository.clear ();
         }
 
         private inline async bool run_query_internal (Query query) {

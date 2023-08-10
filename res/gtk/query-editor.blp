@@ -91,6 +91,7 @@ template $PsequelQueryEditor : Adw.Bin {
                             Button {
                                 styles ["destructive-action"]
                                 label: "Clear History";
+                            clicked => $on_clear_history();
                             }
                         
                         }
