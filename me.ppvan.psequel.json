@@ -16,7 +16,8 @@
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/vala/bin",
-        "prepend-ld-library-path": "/usr/lib/sdk/vala/lib"
+        "prepend-ld-library-path": "/usr/lib/sdk/vala/lib",
+        "env": {}
     },
     "cleanup": [
         "/include",
@@ -33,7 +34,6 @@
     "modules": [
         {
             "name": "psequel",
-            "builddir": true,
             "buildsystem": "meson",
             "sources": [
                 {

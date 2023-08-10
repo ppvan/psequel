@@ -68,9 +68,17 @@ namespace Psequel {
             }
         }
 
-        public async Relation exec_query_v2 (Query query)  throws PsequelError {
+        public async Relation exec_query_v2 (Query query) throws PsequelError {
+
+            string add_limit = query.sql;
+            if (add_limit.contains (";")) {
+                add_limit = add_limit.replace (";", @" LIMIT $query_limit;");
+            } else {
+                add_limit += @" LIMIT $query_limit;";
+            }
+
             int64 begin = GLib.get_real_time ();
-            var result = yield exec_query_internal (query.sql);
+            var result = yield exec_query_internal (add_limit);
 
             check_query_status (result);
 
