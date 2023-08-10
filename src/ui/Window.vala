@@ -25,18 +25,27 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
+        const ActionEntry[] ACTIONS = {
+            { "import", import_connection },
+            { "export", export_connection },
 
-        public ConnectionViewModel connection_viewmodel {get; construct;}
-        public QueryViewModel query_viewmodel {get; construct;}
-        public SchemaViewModel schema_viewmodel {get; construct;}
+            { "run-query", run_query },
+        };
 
 
-        public Window (Application app, ConnectionViewModel conn_vm, SchemaViewModel schema_vm, QueryViewModel query_viewmodel) {
+        public ConnectionViewModel connection_viewmodel { get; construct; }
+        public QueryViewModel query_viewmodel { get; construct; }
+        public QueryViewModel query_history_viewmodel { get; construct; }
+        public SchemaViewModel schema_viewmodel { get; construct; }
+
+
+        public Window (Application app,
+            ConnectionViewModel conn_vm,
+            SchemaViewModel schema_vm) {
             Object (
-                application: app,
-                connection_viewmodel: conn_vm,
-                schema_viewmodel: schema_vm,
-                query_viewmodel: query_viewmodel
+                    application: app,
+                    connection_viewmodel: conn_vm,
+                    schema_viewmodel: schema_vm
             );
         }
 
@@ -47,8 +56,9 @@ namespace Psequel {
             Application.settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
 
             navigate_to (BaseViewModel.CONNECTION_VIEW);
-
             connection_viewmodel.navigate_to.connect (navigate_to);
+
+            this.add_action_entries (ACTIONS, this);
         }
 
         /**
@@ -76,6 +86,7 @@ namespace Psequel {
             connection_viewmodel.is_connectting = true;
             try {
                 yield schema_viewmodel.connect_db (conn);
+
                 navigate_to (BaseViewModel.QUERY_VIEW);
             } catch (PsequelError err) {
                 create_dialog ("Connection Error", err.message).present ();
@@ -87,6 +98,107 @@ namespace Psequel {
         [GtkCallback]
         public void on_request_logout () {
             navigate_to (BaseViewModel.CONNECTION_VIEW);
+        }
+
+        // Actions:
+        public void run_query () {
+            if (schema_viewmodel.query_viewmodel == null) {
+                return;
+            }
+
+            schema_viewmodel.query_viewmodel.run_selected_query.begin ();
+        }
+
+        public void import_connection () {
+            open_file_dialog.begin ("Import connections");
+        }
+
+        public void export_connection () {
+            save_file_dialog.begin ("Export connections");
+        }
+
+        private async void open_file_dialog (string title = "Open File") {
+            var filter = new Gtk.FileFilter ();
+            filter.add_pattern ("*.json");
+
+            var filters = new ListStore (typeof (Gtk.FileFilter));
+            filters.append (filter);
+
+            var window = (Window) get_parrent_window (this);
+
+            var file_dialog = new Gtk.FileDialog () {
+                modal = true,
+                initial_folder = File.new_for_path (Environment.get_home_dir ()),
+                title = title,
+                initial_name = "connections",
+                default_filter = filter,
+                filters = filters
+            };
+
+            uint8[] contents;
+
+            try {
+                var file = yield file_dialog.open (window, null);
+
+                yield file.load_contents_async (null, out contents, null);
+
+                var json_str = (string) contents;
+                var conns = ValueConverter.deserialize_connection (json_str);
+                connection_viewmodel.import_connections (conns);
+
+                var toast = new Adw.Toast (@"Loaded $(conns.length ()) connections") {
+                    timeout = 3,
+                };
+                window.add_toast (toast);
+            } catch (Error err) {
+                debug (err.message);
+
+                var toast = new Adw.Toast (err.message) {
+                    timeout = 3,
+                };
+                window.add_toast (toast);
+            }
+        }
+
+        private async void save_file_dialog (string title = "Save to file") {
+
+            var filter = new Gtk.FileFilter ();
+            filter.add_suffix ("json");
+
+            var filters = new ListStore (typeof (Gtk.FileFilter));
+            filters.append (filter);
+
+            var file_dialog = new Gtk.FileDialog () {
+                modal = true,
+                initial_folder = File.new_for_path (Environment.get_home_dir ()),
+                title = title,
+                initial_name = "connections",
+                default_filter = filter,
+                filters = filters,
+            };
+
+            unowned var conns = connection_viewmodel.export_connections ();
+            var content = ValueConverter.serialize_connection (conns);
+            var bytes = new Bytes.take (content.data); // Move data to byte so it live when out scope
+            var window = (Window) get_parrent_window (this);
+
+            try {
+                var file = yield file_dialog.save (window, null);
+
+                yield file.replace_contents_bytes_async (bytes, null, false, FileCreateFlags.NONE, null, null);
+
+                var toast = new Adw.Toast ("Data saved successfully.") {
+                    timeout = 2,
+                };
+                window.add_toast (toast);
+            } catch (Error err) {
+                debug (err.message);
+
+                var toast = new Adw.Toast (err.message) {
+                    timeout = 3,
+                };
+                window.add_toast (toast);
+            }
         }
 
         [GtkChild]

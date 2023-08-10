@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="psequel">
 	<schema id="me.ppvan.psequel" path="/me/ppvan/psequel/">
-        <key name="data" type="s">
-            <default>""</default>
-            <summary>Application data</summary>
-            <description>
-                Application additional data. Should not be changed by user.
-                Format: JSON.
-            </description>
-        </key>
-
         <key name="window-width" type="i">
             <default>1200</default>
             <summary>Window width</summary>
@@ -52,9 +43,9 @@
 
         <key name="editor-font" type="s">
             <default>"Source Code Pro 12"</default>
-            <summary>UI font</summary>
+            <summary>Editor font</summary>
             <description>
-                Application UI font.
+                Application Editor font.
             </description>
         </key>
 
@@ -66,5 +57,46 @@
             </description>
         </key>
 
+        <key name="auto-uppercase" type="b">
+            <default>true</default>
+            <summary>Auto UpperCase keywords</summary>
+            <description>
+                Auto UpperCase keywords like SELECT, FROM, WHERE, etc.
+            </description>
+        </key>
+
+        <key name="auto-completion" type="b">
+            <default>false</default>
+            <summary>Auto Completion </summary>
+            <description>
+                Auto Completion for keywords, table names, column names, etc.
+            </description>
+        </key>
+
+        <key name="auto-exec-history" type="b">
+            <default>true</default>
+            <summary>Auto Execute History Query</summary>
+            <description>
+                Auto Execute History Query when activated, instead of showing the query in the editor.
+            </description>
+        </key>
+
+
+        <key name="connections" type="s">
+            <default>"[]"</default>
+            <summary>Connection data</summary>
+            <description>
+                Connection additional data (host, username, etc). Should not be changed by user.
+                Format: JSON.
+            </description>
+        </key>
+
+        <key name="queries" type="s">
+            <default>"[]"</default>
+            <summary>Query History</summary>
+            <description>
+                Query History. Should not be changed by user.
+            </description>
+        </key>
 	</schema>
 </schemalist>

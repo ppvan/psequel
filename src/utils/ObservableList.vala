@@ -36,6 +36,10 @@ namespace Psequel {
             _data.append ((Object)item);
         }
 
+        public void prepend (T item) {
+            _data.insert (0, (Object)item);
+        }
+
         public void extend (List<T> items) {
             items.foreach ((item) => _data.append ((Object)item));
         }
@@ -60,6 +64,10 @@ namespace Psequel {
             _data.find (conn, out pos);
 
             return pos;
+        }
+
+        public T last () {
+            return _data.get_item (size - 1);
         }
 
         public void @foreach (ForeachFunc<T> func) {

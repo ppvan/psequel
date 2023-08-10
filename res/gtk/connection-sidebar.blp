@@ -32,13 +32,15 @@ template $PsequelConnectionSidebar : Gtk.Box {
     }
     ScrolledWindow {
         vexpand: true;
-        ListView {
+        ListView listview {
             styles ["navigation-sidebar"]
 
             model: SingleSelection selection_model {
                 model: bind template.connections;
                 autoselect: true;
             };
+
+            activate => $on_connection_active();
 
             factory: BuilderListItemFactory {
                 resource: "/me/ppvan/psequel/gtk/connection-listitem.ui";

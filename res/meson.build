@@ -24,14 +24,15 @@ blueprints = custom_target('blueprints',
     
     'gtk/table-cols.blp',
     'gtk/table-listitem.blp',
+    'gtk/query-listitem.blp',
     'gtk/view-listitem.blp',
     'gtk/table-fk.blp',
     'gtk/table-index.blp',
     'gtk/table-structure-view.blp',
     'gtk/view-structure-view.blp',
     
+    'gtk/preferences-window.blp',
     'gtk/window.blp',
-    'gtk/preferences.blp',
   ),
   build_by_default: true,
 #   This does not run if you use an dot (.)

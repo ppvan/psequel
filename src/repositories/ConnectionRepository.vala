@@ -1,16 +1,7 @@
 namespace Psequel {
     public class ConnectionRepository : Object {
 
-        const string KEY = "data";
-
-        /** settings may have many nodes that's have connections data, schema data, etc...
-         * {
-         * "recent_connections": []
-         * "schema": []
-         * ....
-         *}
-         */
-        const string NODE_NAME = "recent_connections";
+        const string KEY = "connections";
 
 
         private Settings settings;
@@ -55,8 +46,7 @@ namespace Psequel {
             try {
                 parser.load_from_data (json_data);
                 var root = parser.get_root ();
-                var obj = root.get_object ();
-                var conns = obj.get_array_member (NODE_NAME);
+                var conns = root.get_array ();
 
                 conns.foreach_element ((array, index, node) => {
                     var conn = (Connection) Json.gobject_deserialize (typeof (Connection), node);
@@ -72,8 +62,6 @@ namespace Psequel {
         private string serialize_connection (List<Connection> conns) {
 
             var builder = new Json.Builder ();
-            builder.begin_object ();
-            builder.set_member_name (NODE_NAME);
             builder.begin_array ();
 
             foreach (var conn in conns) {
@@ -81,7 +69,6 @@ namespace Psequel {
             }
 
             builder.end_array ();
-            builder.end_object ();
 
             var node = builder.get_root ();
             return Json.to_string (node, true);

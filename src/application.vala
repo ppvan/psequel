@@ -49,7 +49,14 @@ namespace Psequel {
                 { "quit", this.quit }
             };
             this.add_action_entries (action_entries, this);
+
+            this.set_accels_for_action ("app.new-window", { "<Ctrl><Shift>n" });
             this.set_accels_for_action ("app.quit", { "<primary>q" });
+            this.set_accels_for_action ("app.preferences", { "<primary>comma" });
+
+            this.set_accels_for_action ("win.import", { "<Ctrl>o" });
+            this.set_accels_for_action ("win.export", { "<Ctrl>e" });
+            this.set_accels_for_action ("win.run-query", { "<Ctrl>Return" });
         }
 
         public override void activate () {
@@ -83,6 +90,10 @@ namespace Psequel {
 
 
             base.shutdown ();
+        }
+
+        public void on_something () {
+            debug ("DO something");
         }
 
         public static int main (string[] args) {
@@ -166,11 +177,10 @@ namespace Psequel {
             var repository = new ConnectionRepository (Application.settings);
             var conn_vm = new ConnectionViewModel (repository);
             var sche_vm = new SchemaViewModel (sql_service);
-            var query_vm = new QueryViewModel (sql_service);
 
 
 
-            var window = new Window (this, conn_vm, sche_vm, query_vm);
+            var window = new Window (this, conn_vm, sche_vm);
 
             return window;
         }

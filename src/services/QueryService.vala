@@ -2,9 +2,9 @@ using Postgres;
 
 namespace Psequel {
     /** Main entry poit of application, exec query and return result.
-     * 
+     *
      * Do any thing relate to database, wrapper of libpq
-    */
+     */
     public class SQLService : Object {
 
         public int query_limit { get; set; }
@@ -68,6 +68,17 @@ namespace Psequel {
             }
         }
 
+        public async Relation exec_query_v2 (Query query)  throws PsequelError {
+            int64 begin = GLib.get_real_time ();
+            var result = yield exec_query_internal (query.sql);
+
+            check_query_status (result);
+
+            int64 end = GLib.get_real_time ();
+
+            return new Relation.with_fetch_time ((owned) result, end - begin);
+        }
+
         public async Relation exec_query (string query, out int64 exec_us = null) throws PsequelError {
 
             int64 begin = GLib.get_real_time ();
@@ -117,7 +128,7 @@ namespace Psequel {
             var status = result.get_status ();
 
             switch (status) {
-            case ExecStatus.TUPLES_OK:
+            case ExecStatus.TUPLES_OK, ExecStatus.COMMAND_OK:
                 // success
                 break;
             case ExecStatus.FATAL_ERROR:

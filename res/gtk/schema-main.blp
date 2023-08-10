@@ -3,6 +3,7 @@ using Adw 1;
 
 template $PsequelSchemaMain : Gtk.Box {
     orientation: vertical;
+    width-request: 920;
     Adw.HeaderBar {
         styles ["flat"]
         
@@ -82,6 +83,7 @@ template $PsequelSchemaMain : Gtk.Box {
             title: "Query";
             child: $PsequelQueryEditor {
                 query-viewmodel: bind template.query-viewmodel;
+                query-history-viewmodel: bind template.query-viewmodel as <$PsequelQueryViewModel>.query-history-viewmodel;
             };
         }
     }
