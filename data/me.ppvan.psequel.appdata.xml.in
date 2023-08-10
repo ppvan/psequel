@@ -1,9 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
 	<id>me.ppvan.psequel.desktop</id>
+    <name>PSequel</name>
+    <summary>Run your SQL query</summary>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
 	<description>
-	  <p>No description</p>
+	    <p>Basic features of a SQL client</p>
+        <ul>
+            <li>Create connection, import, export connection to database</li>
+            <li>View tables, scshema, views, columns, indexes, foreign key</li>
+            <li>Execute query, query history</li>
+        </ul>
 	</description>
+    <provides>
+        <binary>psequel</binary>
+    </provides>
+    <developer_name>Gleb Smirnov</developer_name>
+  <url type="homepage">https://github.com/ppvan/psequel</url>
+  <url type="bugtracker">https://github.com/ppvan/psequel/issues</url>
+  <requires>
+    <display_length compare="ge">medium</display_length>
+  </requires>
+   <recommends>
+    <control>keyboard</control>
+  </recommends>
+   <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot1.png</image>
+    </screenshot>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot2.png</image>
+    </screenshot>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot3.png</image>
+    </screenshot>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot4.png</image>
+    </screenshot>
+  </screenshots>
 </component>

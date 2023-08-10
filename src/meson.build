@@ -61,7 +61,7 @@ psequel_sources = [
 ]
 
 
-add_project_arguments(['--gresourcesdir', 'res/' ], language: 'vala')
+# add_project_arguments(['--gresourcesdir', 'res/' ], language: 'vala')
 add_project_arguments(['--enable-experimental' ], language: 'vala')
 
 conf = configuration_data()
@@ -93,7 +93,10 @@ add_project_arguments(
 )
 
 
-executable('psequel', [psequel_resources, psequel_sources],
+executable('psequel', [blueprint_hack, psequel_resources, psequel_sources],
   dependencies: psequel_deps,
+  vala_args: [
+    '--gresourcesdir=' + blueprints_output_dir,
+  ],
   install: true,
 )
