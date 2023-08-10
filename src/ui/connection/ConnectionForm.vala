@@ -23,6 +23,8 @@ namespace Psequel {
             // Create group to maped the entry widget to connection data.
             this.binddings = create_form_bind_group ();
             set_up_bindings ();
+
+            connect_btn.grab_focus ();
         }
 
         private BindingGroup create_form_bind_group () {
@@ -82,7 +84,7 @@ namespace Psequel {
         }
 
         [GtkChild]
-        unowned Gtk.Button connect_btn;
+        private unowned Gtk.Button connect_btn;
 
         [GtkChild]
         private unowned Gtk.Entry name_entry;

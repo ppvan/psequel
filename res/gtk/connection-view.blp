@@ -22,6 +22,7 @@ template $PsequelConnectionView : Adw.Bin {
             request-new-connection => $add_new_connection();
             request_dup_connection => $dup_connection ();
             request_remove_connection => $remove_connection ();
+            request_connect_database => $active_connection ();
         }
 
         [end]
