@@ -75,7 +75,7 @@ template $PsequelQueryEditor : Adw.Bin {
                                 ListView {
                                     styles ["navigation-sidebar"]
                                     model: SingleSelection selection_model {
-                                        model: bind template.query-viewmodel as <$PsequelQueryViewModel>.query-history;
+                                        model: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-history;
                                     };
                                     
                                     factory: BuilderListItemFactory {
@@ -103,12 +103,13 @@ template $PsequelQueryEditor : Adw.Bin {
                 }
 
                 Spinner spinner {
-                    spinning: bind template.query-viewmodel as <$PsequelQueryViewModel>.is-loading;
+                    spinning: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
                 }
 
                 Button run_query_btn {
                     styles ["suggested-action"]
                     label: "Run Query";
+                    tooltip-text: "Ctrl+Enter";
                     clicked => $run_query_cb();
                 }
             }
@@ -117,9 +118,9 @@ template $PsequelQueryEditor : Adw.Bin {
 
             $PsequelQueryResults query_results {
                 wellcome_message: "Run a query";
-                current-relation: bind template.query-viewmodel as <$PsequelQueryViewModel>.current-relation;
-                is-loading: bind template.query-viewmodel as <$PsequelQueryViewModel>.is-loading;
-                err-msg: bind template.query-viewmodel as <$PsequelQueryViewModel>.err-msg;
+                current-relation: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.current-relation;
+                is-loading: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
+                err-msg: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.err-msg;
             }
 
             Box {
@@ -129,7 +130,7 @@ template $PsequelQueryEditor : Adw.Bin {
                 margin-bottom: 4;
                 margin-end: 12;
                 Label row_affect {
-                    label: bind template.query-viewmodel as <$PsequelQueryViewModel>.row-affected;
+                    label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.row-affected;
                 }
 
                 Label {
@@ -137,7 +138,7 @@ template $PsequelQueryEditor : Adw.Bin {
                 }
 
                 Label query_time {
-                    label: bind template.query-viewmodel as <$PsequelQueryViewModel>.query-time;
+                    label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-time;
                 }
             }
         }
@@ -150,11 +151,6 @@ menu menu {
     item {
       label: _("_Editor Font");
       action: "app.preferences";
-    }
-
-    item {
-      label: _("Exec");
-      action: "editor.exec";
     }
 
     item {

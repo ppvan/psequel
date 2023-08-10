@@ -28,20 +28,24 @@ namespace Psequel {
         const ActionEntry[] ACTIONS = {
             { "import", import_connection },
             { "export", export_connection },
+
+            { "run-query", run_query },
         };
 
 
-        public ConnectionViewModel connection_viewmodel {get; construct;}
-        public QueryViewModel query_viewmodel {get; construct;}
-        public SchemaViewModel schema_viewmodel {get; construct;}
+        public ConnectionViewModel connection_viewmodel { get; construct; }
+        public QueryViewModel query_viewmodel { get; construct; }
+        public QueryViewModel query_history_viewmodel { get; construct; }
+        public SchemaViewModel schema_viewmodel { get; construct; }
 
 
-        public Window (Application app, ConnectionViewModel conn_vm, SchemaViewModel schema_vm, QueryViewModel query_viewmodel) {
+        public Window (Application app,
+            ConnectionViewModel conn_vm,
+            SchemaViewModel schema_vm) {
             Object (
-                application: app,
-                connection_viewmodel: conn_vm,
-                schema_viewmodel: schema_vm,
-                query_viewmodel: query_viewmodel
+                    application: app,
+                    connection_viewmodel: conn_vm,
+                    schema_viewmodel: schema_vm
             );
         }
 
@@ -82,6 +86,7 @@ namespace Psequel {
             connection_viewmodel.is_connectting = true;
             try {
                 yield schema_viewmodel.connect_db (conn);
+
                 navigate_to (BaseViewModel.QUERY_VIEW);
             } catch (PsequelError err) {
                 create_dialog ("Connection Error", err.message).present ();
@@ -90,14 +95,20 @@ namespace Psequel {
             connection_viewmodel.is_connectting = false;
         }
 
-        
-
         [GtkCallback]
         public void on_request_logout () {
             navigate_to (BaseViewModel.CONNECTION_VIEW);
         }
 
-        //  Actions:
+        // Actions:
+        public void run_query () {
+            if (schema_viewmodel.query_viewmodel == null) {
+                return;
+            }
+
+            schema_viewmodel.query_viewmodel.run_selected_query.begin ();
+        }
+
         public void import_connection () {
             open_file_dialog.begin ("Import connections");
         }

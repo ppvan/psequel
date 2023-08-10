@@ -9,11 +9,12 @@ namespace Psequel {
 
         public QueryViewModel query_viewmodel { get; set; }
 
+
+        public QueryHistoryViewModel query_history_viewmodel { get; set; }
         public Query? selected_query { get; set; }
 
-        const ActionEntry[] ACTION_ENTRIES = {
-            { "exec", run_query },
-        };
+
+
 
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
@@ -27,20 +28,18 @@ namespace Psequel {
 
             lang_manager = LanguageManager.get_default ();
             style_manager = StyleSchemeManager.get_default ();
+            selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
+            spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
+            buffer.changed.connect (extract_query);
+            
 
             create_action_group ();
             default_setttings ();
-
-            buffer.notify["text"].connect (() => {
-                query_viewmodel.query_string = buffer.text;
-            });
-
-            selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
-
-            spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
-
-
             setup_paned (paned);
+        }
+
+        private void extract_query (Gtk.TextBuffer buf) {
+            query_viewmodel.buffer_changed (buf.text.strip ());
         }
 
         void default_setttings () {
@@ -67,7 +66,6 @@ namespace Psequel {
         private void create_action_group () {
 
             var group = new SimpleActionGroup ();
-            group.add_action_entries (ACTION_ENTRIES, this);
             this.insert_action_group ("editor", group);
 
             var auto_uppercase = boolean_state_factory ("auto-uppercase", change_autouppercase);
@@ -127,22 +125,14 @@ namespace Psequel {
 
         [GtkCallback]
         private void run_query_cb (Gtk.Button btn) {
-            run_query ();
-        }
-
-        private void run_query () {
-
-            var text = buffer.text.strip ();
-            debug ("Exec query: %s", text);
-
-            query_viewmodel.run_current_query.begin ();
+            query_viewmodel.run_selected_query.begin ();
         }
 
         [GtkCallback]
         private void on_listview_activate (Gtk.ListView view, uint pos) {
-            query_viewmodel.exec_history.begin (selected_query);
+            query_history_viewmodel.exec_history.begin (selected_query);
 
-            buffer.text = selected_query?.sql;
+            buffer.text = selected_query ? .sql;
             popover.hide ();
         }
 

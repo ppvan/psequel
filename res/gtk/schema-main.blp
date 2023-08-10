@@ -83,6 +83,7 @@ template $PsequelSchemaMain : Gtk.Box {
             title: "Query";
             child: $PsequelQueryEditor {
                 query-viewmodel: bind template.query-viewmodel;
+                query-history-viewmodel: bind template.query-viewmodel as <$PsequelQueryViewModel>.query-history-viewmodel;
             };
         }
     }
