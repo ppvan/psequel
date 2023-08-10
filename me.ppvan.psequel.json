@@ -38,7 +38,7 @@
                 {
                     "type": "git",
                     "url": "file:////home/ppvan/Documents/code/pet-projects/psequel",
-                    "branch": "build"
+                    "branch": "dev"
                 }
             ],
             "modules": [
