@@ -37,8 +37,8 @@
             "sources": [
                 {
                     "type": "git",
-                    "url": "file:////home/ppvan/Documents/code/pet-projects/psequel",
-                    "branch": "dev"
+                    "url": "https://github.com/ppvan/psequel",
+                    "branch": "main"
                 }
             ],
             "modules": [
