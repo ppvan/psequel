@@ -40,6 +40,14 @@ blueprints = custom_target('blueprints',
   command: [find_program('blueprint-compiler'), 'batch-compile', output_dir , '@CURRENT_SOURCE_DIR@', '@INPUT@'],
 )
 
+blueprint_vala = 'blueprint.vala'
+
+blueprint_hack = custom_target('blueprint-hack',
+  input: blueprints,
+  output: blueprint_vala,
+  command: [find_program('touch'), '@OUTPUT@']
+)
+
 
 psequel_resources = gnome.compile_resources('psequel_resources',
   'psequel.gresource.xml',

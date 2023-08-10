@@ -15,6 +15,7 @@ template $PsequelViewDataView : Gtk.Box {
     margin-bottom: 8;
     
     Box {
+        visible: false;
         spacing: 12;
         margin-top: 8;
         margin-bottom: 8;
@@ -43,6 +44,7 @@ template $PsequelViewDataView : Gtk.Box {
         spacing: 8;
         // height-request: 40;
         Button {
+            visible: false;
             styles ["flat"]
             icon-name: "plus-large-symbolic";
             tooltip-text: "Insert Row";
