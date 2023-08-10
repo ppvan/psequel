@@ -32,8 +32,9 @@ Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for 
 - Load and save connections.
 - List schema info, tables, views.
 - View table columns info, indexes, foreign keys
-- View table data, filter, sort by column
+- View table data, sort by column
 - Write query
+- Query History
 
 # Installation
 
@@ -49,7 +50,7 @@ PSequel can be built with GNOME Builder >= 3.38. Clone this repo and click run b
 > (Warning: required to rebuild postgres, will take a little bit of time)
 
 ### Via Meson
-Text Pieces can be built directly via Meson:
+Psequel can be built directly via Meson:
 ```bash
 git clone https://github.com/ppvan/psequel
 cd psequel
