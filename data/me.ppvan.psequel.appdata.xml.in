@@ -16,7 +16,7 @@
     <provides>
         <binary>psequel</binary>
     </provides>
-    <developer_name>Gleb Smirnov</developer_name>
+    <developer_name>ppvan</developer_name>
   <url type="homepage">https://github.com/ppvan/psequel</url>
   <url type="bugtracker">https://github.com/ppvan/psequel/issues</url>
   <requires>
