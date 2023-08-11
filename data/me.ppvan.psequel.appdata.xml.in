@@ -16,7 +16,7 @@
     <provides>
         <binary>psequel</binary>
     </provides>
-    <developer_name>Gleb Smirnov</developer_name>
+    <developer_name>ppvan</developer_name>
   <url type="homepage">https://github.com/ppvan/psequel</url>
   <url type="bugtracker">https://github.com/ppvan/psequel/issues</url>
   <requires>
@@ -39,4 +39,12 @@
       <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot4.png</image>
     </screenshot>
   </screenshots>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.1.4" date="2023-08-11">
+      <description>
+        <p>First Release</p>
+      </description>
+    </release>
+  </releases>
 </component>
