@@ -31,7 +31,7 @@ namespace Psequel {
             selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
             spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
             buffer.changed.connect (extract_query);
-            
+
 
             create_action_group ();
             default_setttings ();
