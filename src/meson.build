@@ -53,6 +53,7 @@ psequel_sources = [
     'viewmodels/ViewViewModel.vala',
     'viewmodels/ViewDataViewModel.vala',
 
+    'utils/SQLLexer.vala',
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',
     'utils/helpers.vala',

@@ -5,6 +5,8 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-editor.ui")]
     public class QueryEditor : Adw.Bin {
 
+        const string TAG_NAME = "query-block";
+
         delegate void ChangeStateFunc (SimpleAction action, Variant? new_state);
 
         public QueryViewModel query_viewmodel { get; set; }
@@ -30,7 +32,8 @@ namespace Psequel {
             style_manager = StyleSchemeManager.get_default ();
             selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
             spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
-            buffer.changed.connect (extract_query);
+            //  buffer.changed.connect (extract_query);
+            buffer.cursor_moved.connect (extract_query);
 
 
             create_action_group ();
@@ -38,14 +41,70 @@ namespace Psequel {
             setup_paned (paned);
         }
 
-        private void extract_query (Gtk.TextBuffer buf) {
-            query_viewmodel.buffer_changed (buf.text.strip ());
+        private void extract_query () {
+            query_viewmodel.buffer_changed (buffer.text.strip ());
+
+            var list = SQLLexer.parse (buffer.text);
+            list.foreach ((token) => {
+                Gtk.TextIter iter1;
+                buffer.get_iter_at_offset (out iter1, token.start);
+
+                Gtk.TextIter iter2;
+                buffer.get_iter_at_offset (out iter2, token.end);
+
+                if (token.start <= buffer.cursor_position && buffer.cursor_position <= token.end) {
+                    buffer.apply_tag_by_name (TAG_NAME, iter1, iter2);
+                } else {
+                    buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
+                }
+            });
         }
 
-        void default_setttings () {
+        [GtkCallback]
+        private void run_query_cb (Gtk.Button btn) {
+            query_viewmodel.run_selected_query.begin ();
+        }
+
+        [GtkCallback]
+        private void on_clear_history (Gtk.Button btn) {
+            query_history_viewmodel.clear_history.begin ();
+            popover.hide ();
+        }
+
+        [GtkCallback]
+        private void on_listview_activate (Gtk.ListView view, uint pos) {
+            query_history_viewmodel.exec_history.begin (selected_query);
+
+            var text = selected_query == null ? "" : selected_query.sql;
+            clear_and_insert (buffer, text);
+
+            popover.hide ();
+        }
+
+        /** Clear and insert insteal of manipulate .text to keep undo possible */
+        private void clear_and_insert (Gtk.TextBuffer buf, string text) {
+            Gtk.TextIter iter1;
+            buffer.get_start_iter (out iter1);
+
+            Gtk.TextIter iter2;
+            buffer.get_end_iter (out iter2);
+
+            buffer.delete_range (iter1, iter2);
+
+            //  buffer.insert (ref iter1, );
+            buffer.insert_at_cursor (text, text.length);
+        }
+
+
+        private void default_setttings () {
 
             var lang = lang_manager.get_language ("sql");
             buffer.language = lang;
+
+            var tag = new Gtk.TextTag (TAG_NAME);
+            //  tag.background = "sidebar_backdrop_color";
+            tag.background_rgba = { 0.2156f, 0.2156f, 0.2156f, 0.4f };
+            buffer.tag_table.add (tag);
 
 
             Adw.StyleManager.get_default ()
@@ -62,6 +121,8 @@ namespace Psequel {
                 return true;
             });
         }
+
+        
 
         private void create_action_group () {
 
@@ -121,25 +182,6 @@ namespace Psequel {
 
             action.set_state (new_state);
             Application.settings.set_boolean ("auto-exec-history", auto_exec);
-        }
-
-        [GtkCallback]
-        private void run_query_cb (Gtk.Button btn) {
-            query_viewmodel.run_selected_query.begin ();
-        }
-
-        [GtkCallback]
-        private void on_clear_history (Gtk.Button btn) {
-            query_history_viewmodel.clear_history.begin ();
-            popover.hide ();
-        }
-
-        [GtkCallback]
-        private void on_listview_activate (Gtk.ListView view, uint pos) {
-            query_history_viewmodel.exec_history.begin (selected_query);
-
-            buffer.text = selected_query ? .sql;
-            popover.hide ();
         }
 
         private bool from_selected (Binding binding, Value from, ref Value to) {
