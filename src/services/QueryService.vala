@@ -70,15 +70,10 @@ namespace Psequel {
 
         public async Relation exec_query_v2 (Query query) throws PsequelError {
 
-            string add_limit = query.sql;
-            if (add_limit.contains (";")) {
-                add_limit = add_limit.replace (";", @" LIMIT $query_limit;");
-            } else {
-                add_limit += @" LIMIT $query_limit;";
-            }
+            var limit_query = add_limit (query);
 
             int64 begin = GLib.get_real_time ();
-            var result = yield exec_query_internal (add_limit);
+            var result = yield exec_query_internal (limit_query.sql);
 
             check_query_status (result);
 
@@ -150,6 +145,21 @@ namespace Psequel {
                 warning ("Programming error: %s not handled", status.to_string ());
                 assert_not_reached ();
             }
+        }
+
+        private inline Query add_limit (Query query) {
+            if (!query.sql.has_prefix ("SELECT")) {
+                return query;
+            }
+            
+            string limit_sql = query.sql;
+            if (limit_sql.contains (";")) {
+                limit_sql = limit_sql.replace (";", @" LIMIT $query_limit;");
+            } else {
+                limit_sql += @" LIMIT $query_limit;";
+            }
+
+            return new Query (limit_sql);
         }
 
         private async Result exec_query_internal (string query) throws PsequelError {

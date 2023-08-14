@@ -36,7 +36,7 @@ namespace Psequel {
 
         private void save () {
             string json_data = serialize_queries (this._data);
-            _data.foreach ((item) => debug ("%s", item.sql));
+            //  _data.foreach ((item) => debug ("%s", item.sql));
             settings.set_string (KEY, json_data);
         }
 

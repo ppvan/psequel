@@ -37,8 +37,8 @@
             "sources": [
                 {
                     "type": "git",
-                    "url": "https://github.com/ppvan/psequel",
-                    "branch": "main"
+                    "url": "file:///home/ppvan/Documents/code/pet-projects/psequel",
+                    "branch": "dev"
                 }
             ],
             "modules": [
@@ -63,6 +63,18 @@
                             "type": "archive",
                             "url": "https://ftp.postgresql.org/pub/source/v15.3/postgresql-15.3.tar.bz2",
                             "sha256": "ffc7d4891f00ffbf5c3f4eab7fbbced8460b8c0ee63c5a5167133b9e6599d932"
+                        }
+                    ]
+                },
+                {
+                    "name": "libquery-vala",
+                    "buildsystem": "meson",
+                    "sources": [
+                        {
+                            "type": "git",
+                            "url": "file:///home/ppvan/Documents/code/learning/pg_query_vala",
+                            "commit": "aaf358a2d7500fe24b4f70badf72360342bf0e0d",
+                            "branch": "main"
                         }
                     ]
                 }

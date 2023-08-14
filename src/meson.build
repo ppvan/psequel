@@ -82,6 +82,7 @@ psequel_deps = [
   dependency('json-glib-1.0', version: '>= 1.6'),
   dependency('gtksourceview-5', version: '>= 5.0'),
   dependency('libpq', version: '>= 15.3'),
+  dependency('pgquery-vala'),
 
   valac.find_library('config', dirs: vapi_dir),
 ]

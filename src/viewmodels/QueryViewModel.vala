@@ -26,7 +26,8 @@ namespace Psequel {
             yield query_history_viewmodel.exec_query (query);
         }
 
-        public void buffer_changed (string text) {
+
+        public void selected_query_changed (string text) {
             Query query = new Query (text);
             selected_query = query;
         }
