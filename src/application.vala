@@ -68,6 +68,7 @@ namespace Psequel {
 
         public override void startup () {
             base.startup ();
+            GtkSource.init ();
             set_up_logging ();
             debug ("Begin to load resources");
 
@@ -98,7 +99,6 @@ namespace Psequel {
 
         public static int main (string[] args) {
             ensure_types ();
-            GtkSource.init ();
             var app = new Psequel.Application ();
 
             return app.run (args);

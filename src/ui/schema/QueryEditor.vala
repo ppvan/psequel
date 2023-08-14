@@ -5,6 +5,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/query-editor.ui")]
     public class QueryEditor : Adw.Bin {
 
+
         const string TAG_NAME = "query-block";
 
         delegate void ChangeStateFunc (SimpleAction action, Variant? new_state);
@@ -17,6 +18,8 @@ namespace Psequel {
 
 
 
+        private GtkSource.Completion completion;
+
 
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
@@ -27,14 +30,15 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-
             lang_manager = LanguageManager.get_default ();
             style_manager = StyleSchemeManager.get_default ();
+
+
             selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
             spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
 
-            //  buffer.changed.connect (highlight_current_query);
-            buffer.cursor_moved.connect (highlight_current_query);
+            buffer.changed.connect (highlight_current_query);
+            // buffer.cursor_moved.connect (highlight_current_query);
 
 
             create_action_group ();
@@ -47,7 +51,7 @@ namespace Psequel {
 
             var stmts = PGQuery.split_statement (buffer.text);
 
-            //  return;
+            // return;
 
             this.clear_highlight ();
             stmts.foreach ((token) => {
@@ -55,14 +59,14 @@ namespace Psequel {
                 var start = token.location;
                 var end = token.location + token.statement.length;
 
-                //  debug ("[%d, %d], %s", token.location, token.end, token.value);
+                // debug ("[%d, %d], %s", token.location, token.end, token.value);
 
                 Gtk.TextIter iter1;
                 Gtk.TextIter iter2;
 
-                //  buffer.get_start_iter (out iter1);
-                //  buffer.get_end_iter (out iter2);
-                //  buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
+                // buffer.get_start_iter (out iter1);
+                // buffer.get_end_iter (out iter2);
+                // buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
 
                 buffer.get_iter_at_offset (out iter1, start);
                 buffer.get_iter_at_offset (out iter2, end);
@@ -125,12 +129,18 @@ namespace Psequel {
 
         private void default_setttings () {
 
+            completion = editor.get_completion ();
+            completion.select_on_show = true;
+            completion.page_size = 8;
+            var provider = new SQLCompletionProvider ();
+            completion.add_provider (provider);
+
             var lang = lang_manager.get_language ("sql");
             buffer.language = lang;
 
             var tag = new Gtk.TextTag (TAG_NAME);
             // tag.background = "sidebar_backdrop_color";
-            //  rgba(52, 73, 94,1.0)
+            // rgba(52, 73, 94,1.0)
             tag.background_rgba = { 52 / 255f, 73 / 255f, 94 / 255f, 0.3f };
             buffer.tag_table.add (tag);
 
@@ -235,8 +245,8 @@ namespace Psequel {
             return true;
         }
 
-        // [GtkChild]
-        // private unowned GtkSource.View editor;
+        [GtkChild]
+        private unowned GtkSource.View editor;
 
         [GtkChild]
         private unowned Gtk.Button run_query_btn;
