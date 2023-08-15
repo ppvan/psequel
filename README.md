@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-<a href="https://flathub.org/apps/details/com.github.liferooter.textpieces">
+<a href="https://flathub.org/apps/me.ppvan.psequel">
     <img width="200" src="https://flathub.org/assets/badges/flathub-badge-en.png" alt="Download on Flathub">
 </a>
 </p>
@@ -41,7 +41,7 @@ Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for 
 ## From Flathub
 > **Recommended**
 
-<a href="#">Click here</a> to install app from Flathub.
+<a href="https://flathub.org/apps/me.ppvan.psequel">Click here</a> to install app from Flathub.
 
 ## Build from source
 ### Via GNOME Builder
