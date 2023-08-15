@@ -104,26 +104,26 @@ namespace Psequel {
             dialog.present ();
         }
 
-        private void new_choser () {
-            var dialog = new Gtk.FontDialog () {
-                modal = true,
-                title = _("Select Font"),
-            };
+        //  private void new_choser () {
+        //      var dialog = new Gtk.FontDialog () {
+        //          modal = true,
+        //          title = _("Select Font"),
+        //      };
 
-            var init = new Pango.FontDescription ();
-            init.set_family ("Roboto Regular");
-            init.set_size (14);
+        //      var init = new Pango.FontDescription ();
+        //      init.set_family ("Roboto Regular");
+        //      init.set_size (14);
 
-            dialog.choose_font.begin (this, init, null, (obj, res) => {
-                try {
-                    var val = dialog.choose_font.end (res);
-                    font_label.get_pango_context ().set_font_description (val);
-                    font_label.label = val.get_family ();
-                } catch (Error err) {
-                    debug (err.message);
-                }
-            });
-        }
+        //      dialog.choose_font.begin (this, init, null, (obj, res) => {
+        //          try {
+        //              var val = dialog.choose_font.end (res);
+        //              font_label.get_pango_context ().set_font_description (val);
+        //              font_label.label = val.get_family ();
+        //          } catch (Error err) {
+        //              debug (err.message);
+        //          }
+        //      });
+        //  }
 
         [GtkChild]
         private unowned Gtk.Label font_label;

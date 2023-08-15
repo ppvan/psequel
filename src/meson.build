@@ -36,6 +36,7 @@ psequel_sources = [
     'services/QueryService.vala',
     'services/ResourceManager.vala',
     'services/SchemaService.vala',
+    'services/SQLCompletionProvider.vala',
 
     'repositories/ConnectionRepository.vala',
     'repositories/QueryRepository.vala',
@@ -53,6 +54,7 @@ psequel_sources = [
     'viewmodels/ViewViewModel.vala',
     'viewmodels/ViewDataViewModel.vala',
 
+    'utils/SQLLexer.vala',
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',
     'utils/helpers.vala',
@@ -81,6 +83,7 @@ psequel_deps = [
   dependency('json-glib-1.0', version: '>= 1.6'),
   dependency('gtksourceview-5', version: '>= 5.0'),
   dependency('libpq', version: '>= 15.3'),
+  dependency('pgquery-vala'),
 
   valac.find_library('config', dirs: vapi_dir),
 ]

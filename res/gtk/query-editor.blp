@@ -18,10 +18,13 @@ template $PsequelQueryEditor : Adw.Bin {
         Adw.Bin {
             height-request: 250;
             ScrolledWindow {
+                hscrollbar-policy: never;
                 GtkSource.View editor {
                     buffer: GtkSource.Buffer buffer {
-                        // text: bind template.query-viewmodel as <$PsequelQueryViewModel>.queries;
+                        
                     };
+
+                    wrap-mode: word;
                     monospace: true;
                     auto-indent: true;
                     show-line-numbers: true;
@@ -82,7 +85,7 @@ template $PsequelQueryEditor : Adw.Bin {
                                         resource: "/me/ppvan/psequel/gtk/query-listitem.ui";
                                     };
                                     
-                                    activate => $on_listview_activate();
+                                    activate => $on_query_history_exec();
                                 }
                             }
                             

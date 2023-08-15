@@ -90,8 +90,8 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.SingleSelection selection_model;
 
-        [GtkChild]
-        private unowned Gtk.ListView listview;
+        //  [GtkChild]
+        //  private unowned Gtk.ListView listview;
     }
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-row.ui")]
