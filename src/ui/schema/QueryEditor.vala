@@ -19,6 +19,7 @@ namespace Psequel {
 
 
         private GtkSource.Completion completion;
+        private SQLCompletionProvider provider;
 
 
         private LanguageManager lang_manager;
@@ -30,9 +31,7 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            lang_manager = LanguageManager.get_default ();
-            style_manager = StyleSchemeManager.get_default ();
-
+            default_setttings ();
 
             selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
             spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
@@ -40,9 +39,11 @@ namespace Psequel {
             buffer.changed.connect (highlight_current_query);
             buffer.cursor_moved.connect (highlight_current_query);
 
+            this.notify["query-viewmodel"].connect (() => {
+                this.provider.query_viewmodel = query_viewmodel;
+            });
 
             create_action_group ();
-            default_setttings ();
             setup_paned (paned);
         }
 
@@ -129,10 +130,13 @@ namespace Psequel {
 
         private void default_setttings () {
 
+            lang_manager = LanguageManager.get_default ();
+            style_manager = StyleSchemeManager.get_default ();
+
             completion = editor.get_completion ();
             completion.select_on_show = true;
             completion.page_size = 8;
-            var provider = new SQLCompletionProvider ();
+            provider = new SQLCompletionProvider ();
             completion.add_provider (provider);
 
             var lang = lang_manager.get_language ("sql");

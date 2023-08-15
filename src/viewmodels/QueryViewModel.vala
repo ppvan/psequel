@@ -7,10 +7,11 @@ namespace Psequel {
         public Query? selected_query { get; set; }
 
 
+        public Schema? current_schema { get; construct; }
         public SQLService sql_service { get; construct; }
 
-        public QueryViewModel (SQLService sql_service) {
-            Object (sql_service: sql_service);
+        public QueryViewModel (Schema? current_schema, SQLService sql_service) {
+            Object (current_schema: current_schema,sql_service: sql_service);
             query_history_viewmodel = new QueryHistoryViewModel (sql_service);
         }
 

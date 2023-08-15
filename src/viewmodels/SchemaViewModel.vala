@@ -23,7 +23,7 @@ namespace Psequel {
             this.notify["current-schema"].connect (() => {
                 table_viewmodel = new TableViewModel (current_schema, sql_service);
                 view_viewmodel = new ViewViewModel (current_schema, sql_service);
-                query_viewmodel = new QueryViewModel (sql_service);
+                query_viewmodel = new QueryViewModel (current_schema, sql_service);
             });
         }
 
