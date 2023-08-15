@@ -73,7 +73,7 @@
                         {
                             "type": "git",
                             "url": "https://github.com/ppvan/pg_query_vala",
-                            "commit": "9be62b406e61852ddd8c6b8110da16a14abfee31"
+                            "commit": "2dfdcdf3fdf4e21fd2ae12619520052776cbe817"
                         }
                     ]
                 }
