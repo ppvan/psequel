@@ -37,8 +37,8 @@
             "sources": [
                 {
                     "type": "git",
-                    "url": "file:///home/ppvan/Documents/code/pet-projects/psequel",
-                    "branch": "dev"
+                    "url": "https://github.com/ppvan/psequel",
+                    "tag": "v0.1.5"
                 }
             ],
             "modules": [
@@ -72,9 +72,8 @@
                     "sources": [
                         {
                             "type": "git",
-                            "url": "file:///home/ppvan/Documents/code/learning/pg_query_vala",
-                            "commit": "aaf358a2d7500fe24b4f70badf72360342bf0e0d",
-                            "branch": "main"
+                            "url": "https://github.com/ppvan/pg_query_vala",
+                            "commit": "9be62b406e61852ddd8c6b8110da16a14abfee31"
                         }
                     ]
                 }
