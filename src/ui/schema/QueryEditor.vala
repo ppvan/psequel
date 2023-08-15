@@ -38,7 +38,7 @@ namespace Psequel {
             spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
 
             buffer.changed.connect (highlight_current_query);
-            // buffer.cursor_moved.connect (highlight_current_query);
+            buffer.cursor_moved.connect (highlight_current_query);
 
 
             create_action_group ();
