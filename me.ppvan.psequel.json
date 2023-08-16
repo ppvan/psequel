@@ -38,7 +38,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/ppvan/psequel",
-                    "tag": "v0.1.5"
+                    "commit": "ced642b0bb9340c3c561c5fc93f69b9ed6e69c8a"
                 }
             ],
             "modules": [
@@ -73,7 +73,11 @@
                         {
                             "type": "git",
                             "url": "https://github.com/ppvan/pg_query_vala",
+<<<<<<< HEAD
                             "commit": "2dfdcdf3fdf4e21fd2ae12619520052776cbe817"
+=======
+                            "commit": "807ad2773c43c9415b361e15cf51422f5123406f"
+>>>>>>> 5e568f1 (update build manifes)
                         }
                     ]
                 }
