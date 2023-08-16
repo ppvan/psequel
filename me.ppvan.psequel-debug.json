@@ -36,9 +36,8 @@
             "buildsystem": "meson",
             "sources": [
                 {
-                    "type": "git",
-                    "url": "https://github.com/ppvan/psequel",
-                    "commit": "5042b31520fb1cbcc25ac49b1f2a8fa6044a4352"
+                    "type": "dir",
+                    "path": "."
                 }
             ],
             "modules": [
