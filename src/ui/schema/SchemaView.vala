@@ -19,6 +19,7 @@ namespace Psequel {
         [GtkCallback]
         public void request_load_schema (Schema? schema) {
             if (schema == null) {
+                debug ("schema is null");
                 return ;
             }
 

@@ -8,6 +8,7 @@ namespace Psequel {
         public int size {get; private set;}
 
         public delegate void ForeachFunc<T> (T item);
+        public delegate bool Predicate<T> (T item);
 
         public ObservableList () {
             base ();
@@ -22,6 +23,17 @@ namespace Psequel {
 
         public new T @get (int i) {
             return (T)_data.get_item ((uint)i);
+        }
+
+        public T? find (Predicate<T> pred) {
+            for (uint i = 0; i < this.size; i++) {
+                T item = (T)_data.get_item (i);
+                if (pred (item)) {
+                    return item;
+                }
+            }
+
+            return null;
         }
 
         public void clear () {

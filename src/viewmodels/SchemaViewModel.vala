@@ -21,6 +21,7 @@ namespace Psequel {
             Object (sql_service: service);
 
             this.notify["current-schema"].connect (() => {
+                debug ("Schema changed");
                 table_viewmodel = new TableViewModel (current_schema, sql_service);
                 view_viewmodel = new ViewViewModel (current_schema, sql_service);
                 query_viewmodel = new QueryViewModel (current_schema, sql_service);
@@ -32,9 +33,12 @@ namespace Psequel {
 
             // auto load schema list.
             yield list_schemas ();
+
+            yield load_schema (schemas.find (s => s.name == DEFAULT));
         }
 
         public async void load_schema (Schema schema) throws PsequelError {
+            debug ("Loading schema: %s", schema.name);
             yield schema_service.load_schema (schema);
 
             current_schema = schema;
