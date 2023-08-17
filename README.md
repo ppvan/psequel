@@ -33,12 +33,12 @@ Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for 
 # Installation
 
 ## Flatpak file
+> **Recommended**
+
 Download flatpak file from in Releases tab, then install it by:
 ```bash
 flatpak install me.ppvan.psequel.flatpak
 ```
-
-<a href="https://flathub.org/apps/me.ppvan.psequel">Click here</a> to install app from Flathub.
 
 ## Build from source
 ### Via GNOME Builder
