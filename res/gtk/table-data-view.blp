@@ -57,14 +57,14 @@ template $PsequelTableDataView : Gtk.Box {
             clicked => $reload_data();
         }
         
-        Separator {}
+        // Separator {}
         
         Label status_label {
             label: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.row-ranges;
             halign: start;
         }
         
-        Separator {}
+        // Separator {}
 
         Label {
             hexpand: true;

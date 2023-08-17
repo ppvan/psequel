@@ -8,6 +8,7 @@ namespace Psequel {
 
         // SQL related result.
         public bool is_loading { get; private set; }
+        public bool success {get; private set;}
         public string err_msg { get; private set; }
 
         public Relation current_relation { get; private set; }
@@ -26,7 +27,8 @@ namespace Psequel {
             query_history.append_all (query_repository.get_queries ());
 
             this.notify["current-relation"].connect (() => {
-                row_affected = @"Row Affected: $(current_relation.row_affected)";
+                success = true;
+                row_affected = @"$(current_relation.row_affected) row affected.";
 
                 if (current_relation.fetch_time / SECOND_TO_MS > 0) {
                     if (current_relation.fetch_time / SECOND_TO_MS / MILISECS_TO_US > 0) {

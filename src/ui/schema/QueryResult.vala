@@ -9,10 +9,35 @@ namespace Psequel {
         const string ERROR = "error";
 
         public string wellcome_message { get; set; }
-        public Relation? current_relation { get; set; }
+
+        private Relation _current_relation;
+        public Relation current_relation {
+            get {
+                return _current_relation;
+            }
+            set {
+                if (value == null) {
+                    return;
+                }
+                _current_relation = value;
+                on_current_relation_change ();
+            }
+        }
         public bool is_loading { get; set; }
 
-        public string err_msg {get; set; default = "";}
+        private string _err_msg = "";
+        public string err_msg {
+            get {
+                return _err_msg;
+            }
+            set {
+                if (value == null) {
+                    return;
+                }
+                _err_msg = value;
+                on_err_message_change ();
+            }
+        }
 
         private ObservableList<Relation.Row> rows;
         private Gtk.SortListModel sort_model;
@@ -27,22 +52,24 @@ namespace Psequel {
             stack.visible_child_name = EMPTY;
             rows = new ObservableList<Relation.Row> ();
             alloc_columns ();
+        }
 
-
-            this.notify["current-relation"].connect (() => {
-                stack.visible_child_name = LOADING;
-                load_data_to_view.begin (current_relation);
-            });
-
-            this.notify["err-msg"].connect (() => {
-                stack.visible_child_name = ERROR;
+        private void on_current_relation_change () {
+            debug ("%d ", current_relation.rows);
+            stack.visible_child_name = LOADING;
+            load_data_to_view.begin (current_relation, (obj, res) => {
+                stack.visible_child_name = MAIN;
             });
         }
 
-        private async void load_data_to_view (Relation? relation) {
-            if (relation == null) {
-                return;
-            }
+        private void on_err_message_change () {
+            stack.visible_child_name = ERROR;
+        }
+
+        private async void load_data_to_view (Relation relation) {
+            // if (relation == null) {
+            // return;
+            // }
 
             var columns = data_view.columns;
             uint n = columns.get_n_items ();
@@ -65,30 +92,6 @@ namespace Psequel {
             foreach (var row in relation) {
                 rows.append (row);
             }
-
-            stack.visible_child_name = MAIN;
-        }
-
-        public void show_loading () {
-            // stack.visible_child_name = LOADING;
-            // spinner.spinning = true;
-        }
-
-        public void show_result (Relation relation) {
-            // load_data_to_view.begin (relation, (obj, res) => {
-            // spinner.spinning = false;
-            // stack.visible_child_name = MAIN;
-            // });
-
-            // Show loadding state
-            // load data in background
-            // show data
-        }
-
-        public void show_error (PsequelError err) {
-            // status_label.label = err.message;
-
-            // stack.visible_child_name = ERROR;
         }
 
         private void alloc_columns () {

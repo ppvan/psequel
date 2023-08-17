@@ -82,6 +82,11 @@ namespace Psequel {
             return new Relation.with_fetch_time ((owned) result, end - begin);
         }
 
+        public Relation make_empty_relation () {
+            var res = active_db.make_empty_result (ExecStatus.TUPLES_OK);
+            return new Relation ((owned) res);
+        }
+
         public async Relation exec_query (string query, out int64 exec_us = null) throws PsequelError {
 
             int64 begin = GLib.get_real_time ();

@@ -171,12 +171,9 @@ namespace Psequel {
 
             var auto_uppercase = boolean_state_factory ("auto-uppercase", change_autouppercase);
 
-            var auto_completion = boolean_state_factory ("auto-completion", change_autocompletion);
-
             var auto_exec_history = boolean_state_factory ("auto-exec-history", change_auto_exec_history);
 
             group.add_action (auto_uppercase);
-            group.add_action (auto_completion);
             group.add_action (auto_exec_history);
 
             this.insert_action_group ("editor", group);
@@ -206,14 +203,6 @@ namespace Psequel {
 
             action.set_state (new_state);
             Application.settings.set_boolean ("auto-uppercase", autouppercase);
-        }
-
-        private void change_autocompletion (SimpleAction action, Variant? new_state) {
-            debug ("Change autocompletion");
-            bool autocompletion = new_state.get_boolean ();
-
-            action.set_state (new_state);
-            Application.settings.set_boolean ("auto-completion", autocompletion);
         }
 
         private void change_auto_exec_history (SimpleAction action, Variant? new_state) {

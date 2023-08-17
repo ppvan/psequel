@@ -1,5 +1,7 @@
 
 
+blueprint_compiler = find_program('blueprint-compiler')
+
 # CURRENT_SOURCE_DIR relative to BUILDDIR
 blueprints_output_dir = meson.current_build_dir()
 # This is a hack to make sure below target was run. For some reason you can't use example from blueprint docs.
@@ -31,13 +33,14 @@ blueprints = custom_target('blueprints',
     'gtk/table-structure-view.blp',
     'gtk/view-structure-view.blp',
     
+    'gtk/help-overlay.blp',
     'gtk/preferences-window.blp',
     'gtk/window.blp',
   ),
   build_by_default: true,
 #   This does not run if you use an dot (.)
   output: 'dot',
-  command: [find_program('blueprint-compiler'), 'batch-compile', blueprints_output_dir , '@CURRENT_SOURCE_DIR@', '@INPUT@'],
+  command: [blueprint_compiler, 'batch-compile', blueprints_output_dir , '@CURRENT_SOURCE_DIR@', '@INPUT@'],
 )
 
 blueprint_vala = 'blueprint.vala'
