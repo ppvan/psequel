@@ -2,4 +2,4 @@
 builddir
 build
 *~
-/subprojects/blueprint-compiler/
+/subprojects/blueprint-compiler

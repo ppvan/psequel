@@ -54,8 +54,8 @@ namespace Psequel {
             this.set_accels_for_action ("app.quit", { "<primary>q" });
             this.set_accels_for_action ("app.preferences", { "<primary>comma" });
 
-            this.set_accels_for_action ("win.import", { "<Ctrl>o" });
-            this.set_accels_for_action ("win.export", { "<Ctrl>e" });
+            this.set_accels_for_action ("win.import", { "<Ctrl><Shift>o" });
+            this.set_accels_for_action ("win.export", { "<Ctrl><Shift>e" });
             this.set_accels_for_action ("win.run-query", { "<Ctrl>Return" });
         }
 

@@ -19,6 +19,7 @@ namespace Psequel {
         [GtkCallback]
         public void request_load_schema (Schema? schema) {
             if (schema == null) {
+                debug ("schema is null");
                 return ;
             }
 
@@ -32,12 +33,15 @@ namespace Psequel {
 
         [GtkCallback]
         public void table_selected_changed (Table table) {
-            schema_viewmodel?.table_viewmodel.current_table = table;
+            debug ("table selected changed");
+
+
+            schema_viewmodel.table_viewmodel.current_table = table;
         }
 
         [GtkCallback]
         public void view_selected_changed (View view) {
-            schema_viewmodel?.view_viewmodel.current_view = view;
+            schema_viewmodel.view_viewmodel.current_view = view;
         }
 
 
