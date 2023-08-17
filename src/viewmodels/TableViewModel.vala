@@ -9,6 +9,8 @@ namespace Psequel {
         public TableViewModel (Schema schema, SQLService sql_service) {
             Object ();
             tables.append_all (schema.tables);
+            debug ("table view model created");
+            debug ("tables: %d", tables.size);
 
             this.notify["current-table"].connect (() => {
                 debug ("current table changed to " + current_table?.name);

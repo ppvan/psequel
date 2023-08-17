@@ -9,9 +9,11 @@ namespace Psequel {
 
 
         public TableStructureViewModel (Table table) {
+            debug ("TableStructureViewModel created ");
             Object ();
 
             this.notify["selected-table"].connect (() => {
+                debug ("Selected tabled changed to %s", selected_table?.name);
                 load_data ();
             });
 

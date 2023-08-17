@@ -24,6 +24,21 @@ namespace Psequel {
 
         construct {
 
+            this.notify["selected-table"].connect (() => {
+                debug ("selected table changed");
+                table_selected_changed (selected_table);
+            });
+
+            this.notify["selected-view"].connect (() => {
+                debug ("selected view changed");
+                view_selected_changed (selected_view);
+            });
+            
+            this.notify["current-schema"].connect (() => {
+                debug ("current schema changed");
+                request_load_schema (current_schema);
+            });
+
             sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
             
             dropdown.bind_property ("selected", this, "current-schema", DEFAULT, (_, from, ref to) => {
@@ -33,8 +48,9 @@ namespace Psequel {
                 }
             });
 
-            table_selection.bind_property ("selected", this, "selected-table", DEFAULT, (_, from, ref to) => {
+            table_selection.bind_property ("selected", this, "selected-table", DEFAULT | SYNC_CREATE, (_, from, ref to) => {
                 uint pos = from.get_uint ();
+                debug (@"selected table-  $(pos)");
                 if (pos != Gtk.INVALID_LIST_POSITION) {
                     to.set_object (tables.get_item (pos));
                 }
@@ -45,18 +61,6 @@ namespace Psequel {
                 if (pos != Gtk.INVALID_LIST_POSITION) {
                     to.set_object (views.get_item (pos));
                 }
-            });
-
-            this.notify["selected-table"].connect (() => {
-                table_selected_changed (selected_table);
-            });
-
-            this.notify["selected-view"].connect (() => {
-                view_selected_changed (selected_view);
-            });
-            
-            this.notify["current-schema"].connect (() => {
-                request_load_schema (current_schema);
             });
 
             dropdown.expression = new Gtk.PropertyExpression (typeof (Schema), null, "name");
