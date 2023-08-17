@@ -35,7 +35,7 @@ Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for 
 ## Flatpak file
 > **Recommended**
 
-Download flatpak file from in Releases tab, then install it by:
+Download flatpak file from in [Releases](https://github.com/ppvan/psequel/releases) tab, then install it by:
 ```bash
 flatpak install me.ppvan.psequel.flatpak
 ```
