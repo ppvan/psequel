@@ -40,27 +40,18 @@ namespace Psequel {
             });
 
             sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
-            
-            dropdown.bind_property ("selected", this, "current-schema", DEFAULT, (_, from, ref to) => {
-                uint pos = from.get_uint ();
-                if (pos != Gtk.INVALID_LIST_POSITION) {
-                    to.set_object (schemas.get_item (pos));
-                }
-            });
 
-            table_selection.bind_property ("selected", this, "selected-table", DEFAULT | SYNC_CREATE, (_, from, ref to) => {
-                uint pos = from.get_uint ();
-                debug (@"selected table-  $(pos)");
-                if (pos != Gtk.INVALID_LIST_POSITION) {
-                    to.set_object (tables.get_item (pos));
-                }
+            dropdown.notify["selected"].connect (() => {
+                debug ("selected schema changed");
+                current_schema = (Schema)schemas.get_item (dropdown.selected);
             });
-
-            view_selection.bind_property ("selected", this, "selected-view", DEFAULT, (_, from, ref to) => {
-                uint pos = from.get_uint ();
-                if (pos != Gtk.INVALID_LIST_POSITION) {
-                    to.set_object (views.get_item (pos));
-                }
+            table_selection.notify["selected"].connect (() => {
+                debug ("selected table changed");
+                selected_table = (Table)tables.get_item (table_selection.selected);
+            });
+            view_selection.notify["selected"].connect (() => {
+                debug ("selected view changed");
+                selected_view = (View)views.get_item (view_selection.selected);
             });
 
             dropdown.expression = new Gtk.PropertyExpression (typeof (Schema), null, "name");
