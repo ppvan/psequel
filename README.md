@@ -73,3 +73,9 @@ Contributions are welcome.
 # FAQ
 Why not flathub?
 > There is an bug in flatpak-builder build and i don't know why yet (see [#43](https://github.com/ppvan/psequel/issues/43)). So i have to build it in GNOME Builder and upload flatpak file manually in [Releases](https://github.com/ppvan/psequel/releases) tab.
+
+
+# Credits
+
+- [Psequel](https://psequel.com/) - MacOS postgresql client. This project is inspired by Psequel.
+- [libpg_query](https://github.com/pganalyze/libpg_query) - PostgresSQL parser
