@@ -12,6 +12,8 @@
             <li>View tables, scshema, views, columns, indexes, foreign key</li>
             <li>Execute query, query history</li>
         </ul>
+
+        <p>This project is not a part of or affiliated with PostgreSQL.</p>
 	</description>
     <provides>
         <binary>psequel</binary>

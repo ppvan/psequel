@@ -22,6 +22,8 @@
 
 Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for GNOME desktop in the hope to be useful.
 
+> **This project is not a part of or affiliated with PostgreSQL.**
+
 # Features
 - Load and save connections.
 - List schema info, tables, views.
