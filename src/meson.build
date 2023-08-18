@@ -54,7 +54,6 @@ psequel_sources = [
     'viewmodels/ViewViewModel.vala',
     'viewmodels/ViewDataViewModel.vala',
 
-    'utils/SQLLexer.vala',
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',
     'utils/helpers.vala',
@@ -64,7 +63,7 @@ psequel_sources = [
 
 
 # add_project_arguments(['--gresourcesdir', 'res/' ], language: 'vala')
-add_project_arguments(['--enable-experimental' ], language: 'vala')
+# add_project_arguments(['--enable-experimental' ], language: 'vala')
 
 conf = configuration_data()
 conf.set_quoted('APP_ID', app_id)

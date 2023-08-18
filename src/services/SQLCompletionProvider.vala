@@ -36,6 +36,7 @@ namespace Psequel {
              */
             dynamic_candidates = new List<Model> ();
             this.notify["query-viewmodel"].connect (() => {
+
                 dynamic_candidates = new List<Model> ();
                 query_viewmodel.current_schema.tables.foreach ((table) => {
                     dynamic_candidates.append (new Model (table.name, "TABLE"));
