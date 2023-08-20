@@ -38,7 +38,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/ppvan/psequel",
-                    "commit": "0e221b0ca0c10b367a5f2b256db76bf2c15b0c04"
+                    "commit": "33a0704cbbc7ab7ef8483404a4578319c001b1f9"
                 }
             ],
             "modules": [
@@ -58,6 +58,12 @@
                 },
                 {
                     "name": "postgresql-libs",
+                    "buildsystem": "simple",
+                    "build-commands": [
+                        "./configure --prefix=/app --with-ssl=openssl",
+                        "make -C src/include install",
+                        "make -C src/interfaces/libpq install"
+                    ],
                     "sources": [
                         {
                             "type": "archive",

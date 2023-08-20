@@ -57,6 +57,12 @@
                 },
                 {
                     "name": "postgresql-libs",
+                    "buildsystem": "simple",
+                    "build-commands": [
+                        "./configure --prefix=/app --with-ssl=openssl",
+                        "make -C src/include install",
+                        "make -C src/interfaces/libpq install"
+                    ],
                     "sources": [
                         {
                             "type": "archive",
