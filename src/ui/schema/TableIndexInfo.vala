@@ -24,12 +24,14 @@ namespace Psequel {
 
         private void setup_name_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Index;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.name;
@@ -41,13 +43,15 @@ namespace Psequel {
 
         private void setup_indextype_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.CENTER;
 
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Index;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.index_type.to_string ();
@@ -59,11 +63,13 @@ namespace Psequel {
 
         private void setup_unique_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Index;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.unique ? "YES" : "NO";
@@ -76,14 +82,16 @@ namespace Psequel {
 
         private void setup_indexcolumns_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
                 label.margin_end = 4;
                 label.margin_start = 4;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Index;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.columns;
@@ -95,14 +103,16 @@ namespace Psequel {
 
         private void setup_indexsize_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.END;
                 label.margin_end = 4;
                 label.margin_start = 4;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Index;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.size;

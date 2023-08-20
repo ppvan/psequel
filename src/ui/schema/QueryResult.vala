@@ -99,14 +99,17 @@ namespace Psequel {
                 var factory = new Gtk.SignalListItemFactory ();
                 factory.set_data<int> ("index", i);
 
-                factory.setup.connect ((_fact, _item) => {
+                factory.setup.connect ((_fact, obj) => {
+
+                    var _item = (Gtk.ListItem) obj;
                     var label = new Gtk.Label (null);
                     label.halign = Gtk.Align.START;
                     label.margin_start = 8;
                     _item.child = label;
                 });
 
-                factory.bind.connect ((_fact, _item) => {
+                factory.bind.connect ((_fact, obj) => {
+                    var _item = (Gtk.ListItem) obj;
                     var row = _item.item as Relation.Row;
                     var label = _item.child as Gtk.Label;
                     int index = _fact.get_data<int> ("index");

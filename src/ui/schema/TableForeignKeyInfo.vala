@@ -25,12 +25,14 @@ namespace Psequel {
 
         private void setup_name_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as ForeignKey;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.name;
@@ -42,12 +44,14 @@ namespace Psequel {
 
         private void setup_table_columns_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as ForeignKey;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.columns;
@@ -59,12 +63,14 @@ namespace Psequel {
 
         private void setup_fk_tbname_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as ForeignKey;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.fk_table;
@@ -76,12 +82,14 @@ namespace Psequel {
 
         private void setup_fk_table_columns_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as ForeignKey;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.fk_columns;
@@ -93,12 +101,14 @@ namespace Psequel {
 
         private void setup_on_update_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.CENTER;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as ForeignKey;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.on_update.to_string ();
@@ -110,12 +120,14 @@ namespace Psequel {
 
         private void setup_fk_on_delete_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.CENTER;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as ForeignKey;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.on_delete.to_string ();

@@ -22,12 +22,15 @@ namespace Psequel {
 
         private void setup_name_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
+
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Column;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.name;
@@ -39,13 +42,15 @@ namespace Psequel {
 
         private void setup_datatype_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
 
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Column;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.column_type;
@@ -57,11 +62,13 @@ namespace Psequel {
 
         private void setup_nullable_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Column;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.nullable ? "YES" : "NO";
@@ -74,14 +81,16 @@ namespace Psequel {
 
         private void setup_default_col () {
             var factory = new Gtk.SignalListItemFactory ();
-            factory.setup.connect ((listitem) => {
+            factory.setup.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.END;
                 label.margin_end = 4;
                 label.margin_start = 4;
                 listitem.child = label;
             });
-            factory.bind.connect ((listitem) => {
+            factory.bind.connect ((obj) => {
+                var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Column;
                 var label = listitem.child as Gtk.Label;
                 label.label = item.default_val;
