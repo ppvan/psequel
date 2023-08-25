@@ -72,7 +72,7 @@ namespace Psequel {
 
             try {
                 is_loading = true;
-                current_relation = yield sql_service.select_v2 (table, page);
+                current_relation = yield sql_service.select (table, page);
 
                 is_loading = false;
                 debug ("Rows: %d", current_relation.rows);

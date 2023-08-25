@@ -51,7 +51,9 @@ namespace Psequel {
 
         /* Get the schema list as string */
         public async string[] schema_list () throws PsequelError {
-            var relation = yield sql_service.exec_query (SCHEMA_LIST_SQL);
+
+            var query = new Query (SCHEMA_LIST_SQL);
+            var relation = yield sql_service.exec_query (query);
 
             var _schema_list = new string[relation.rows];
 
@@ -70,7 +72,8 @@ namespace Psequel {
         public async List<Schema> get_schemas () {
             var list = new List<Schema> ();
             try {
-                var relation = yield sql_service.exec_query (SCHEMA_LIST_SQL);
+                var query = new Query (SCHEMA_LIST_SQL);
+                var relation = yield sql_service.exec_query (query);
 
                 for (int i = 0; i < relation.rows; i++) {
                     var s = new Schema (relation[i][0]);
@@ -172,7 +175,8 @@ namespace Psequel {
             var list = new List<string> ();
 
             try {
-                var relation = yield sql_service.exec_query_params (TB_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (TB_SQL, { new Variant.string (schema.name) });
+                var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
                     list.append (row[0]);
@@ -188,7 +192,8 @@ namespace Psequel {
             var list = new List<string> ();
 
             try {
-                var relation = yield sql_service.exec_query_params (VIEW_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (VIEW_SQL, { new Variant.string (schema.name) });
+                var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
                     list.append (row[0]);
@@ -205,7 +210,8 @@ namespace Psequel {
             var list = new List<Column> ();
 
             try {
-                var relation = yield sql_service.exec_query_params (COLUMN_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (COLUMN_SQL, { new Variant.string (schema.name) });
+                var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
                     var col = new Column ();
@@ -230,7 +236,8 @@ namespace Psequel {
             var list = new List<Index> ();
 
             try {
-                var relation = yield sql_service.exec_query_params (INDEX_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (INDEX_SQL, { new Variant.string (schema.name) });
+                var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
                     var index = new Index ();
@@ -254,7 +261,8 @@ namespace Psequel {
             var list = new List<ForeignKey> ();
 
             try {
-                var relation = yield sql_service.exec_query_params (FK_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (FK_SQL, { new Variant.string (schema.name) });
+                var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
                     var fk = new ForeignKey ();
