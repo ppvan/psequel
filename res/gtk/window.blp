@@ -17,8 +17,6 @@ template $PsequelWindow : Adw.ApplicationWindow {
             StackPage {
                 name: "connection-view";
                 child: $PsequelConnectionView {
-                    viewmodel: bind template.connection-viewmodel;
-
                     request-database => $on_connect_db ();
                 };
             }
@@ -26,7 +24,7 @@ template $PsequelWindow : Adw.ApplicationWindow {
             StackPage query-view {
                 name: "query-view";
                 child: $PsequelSchemaView {
-                    schema-viewmodel: bind template.schema-viewmodel;
+                    // schema-viewmodel: bind template.schema-viewmodel;
                     request_logout => $on_request_logout ();
                 };
             }

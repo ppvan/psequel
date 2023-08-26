@@ -14,15 +14,16 @@ namespace Psequel {
         public SchemaRepository repository;
 
         // Services
-        public SQLService sql_service { get; construct; }
+        public SQLService sql_service { get; private set; }
         public SchemaService schema_service { get; private set; }
 
         public SchemaViewModel (SQLService service) {
-            Object (sql_service: service);
-
+            base();
+            this.sql_service = service;
             this.notify["current-schema"].connect (() => {
                 debug ("Schema changed");
-                table_viewmodel = new TableViewModel (current_schema, sql_service);
+                this.emit_event ("schema", current_schema);
+                //  table_viewmodel = new TableViewModel (current_schema, sql_service);
                 view_viewmodel = new ViewViewModel (current_schema, sql_service);
                 query_viewmodel = new QueryViewModel (current_schema, sql_service);
             });

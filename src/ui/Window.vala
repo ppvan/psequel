@@ -25,6 +25,9 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
+        public static Container? temp;
+        public Container containter {get; construct;}
+
         const ActionEntry[] ACTIONS = {
             { "import", import_connection },
             { "export", export_connection },
@@ -41,11 +44,12 @@ namespace Psequel {
 
         public Window (Application app,
             ConnectionViewModel conn_vm,
-            SchemaViewModel schema_vm) {
+            SchemaViewModel schema_vm, Container container) {
             Object (
                     application: app,
                     connection_viewmodel: conn_vm,
-                    schema_viewmodel: schema_vm
+                    schema_viewmodel: schema_vm,
+                    containter: container
             );
         }
 

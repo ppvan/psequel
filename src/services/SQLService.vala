@@ -52,10 +52,9 @@ namespace Psequel {
 
         public async Relation exec_query (Query query) throws PsequelError {
 
-            var limit_query = add_limit (query);
 
             int64 begin = GLib.get_real_time ();
-            var result = yield exec_query_internal (limit_query.sql);
+            var result = yield exec_query_internal (query.sql);
 
             check_query_status (result);
 

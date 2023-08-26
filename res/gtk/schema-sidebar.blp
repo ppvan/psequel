@@ -98,7 +98,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                         model: SingleSelection table_selection {
                             model: FilterListModel {
                                 incremental: true;
-                                model: bind template.tables;
+                                model: bind template.table-viewmodel as <$PsequelTableViewModel>.tables;
                                 filter: StringFilter table_filter {
 
                                 };

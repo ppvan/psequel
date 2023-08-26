@@ -13,6 +13,8 @@ namespace Psequel {
 
         construct {
             setup_paned (paned);
+            var container = Window.temp;
+            schema_viewmodel = container.find_type (typeof (SchemaViewModel)) as SchemaViewModel;
         }
 
 
@@ -36,7 +38,7 @@ namespace Psequel {
             debug ("table selected changed");
 
 
-            schema_viewmodel.table_viewmodel.current_table = table;
+            schema_viewmodel.table_viewmodel.selected_table = table;
         }
 
         [GtkCallback]

@@ -5,6 +5,7 @@ namespace Psequel {
         public ObservableList<Schema> schemas { get; set; }
         public Schema? current_schema { get; set; }
 
+        public TableViewModel table_viewmodel {get; set;}
         public ObservableList<Table> tables {get; set;}
         public Table? selected_table {get; set;}
 
@@ -23,11 +24,7 @@ namespace Psequel {
         }
 
         construct {
-
-            this.notify["selected-table"].connect (() => {
-                debug ("selected table changed");
-                table_selected_changed (selected_table);
-            });
+            this.table_viewmodel = (TableViewModel)Window.temp.find_type (typeof (TableViewModel));
 
             this.notify["selected-view"].connect (() => {
                 debug ("selected view changed");
@@ -46,11 +43,9 @@ namespace Psequel {
                 current_schema = (Schema)schemas.get_item (dropdown.selected);
             });
             table_selection.notify["selected"].connect (() => {
-                debug ("selected table changed");
-                selected_table = (Table)tables.get_item (table_selection.selected);
+                table_viewmodel.select_index ((int)table_selection.selected);
             });
             view_selection.notify["selected"].connect (() => {
-                debug ("selected view changed");
                 selected_view = (View)views.get_item (view_selection.selected);
             });
 
@@ -82,7 +77,10 @@ namespace Psequel {
         [GtkCallback]
         private void reload_btn_clicked (Gtk.Button btn) {
             debug ("clicked");
-            request_load_schema (current_schema);
+
+            debug ("current schema: " + current_schema?.name);
+            debug ("tables: %d", table_viewmodel.tables.size);
+            //  request_load_schema (current_schema);
         }
 
         [GtkCallback]

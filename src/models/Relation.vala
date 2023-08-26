@@ -117,6 +117,7 @@ namespace Psequel {
             return data.nth_data ((uint) index);
         }
 
+
         public class Iterator {
 
             private Relation relation;
@@ -169,6 +170,7 @@ namespace Psequel {
 
             public new string ? @get (int index) {
                 if (index >= size) {
+                    warning ("Not found coulumn at %d, check your query", index);
                     return null;
                 }
                 return data.nth_data ((uint) index);
