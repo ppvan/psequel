@@ -35,7 +35,7 @@ namespace Psequel {
             { "run-query", run_query },
         };
 
-
+        public NavigationService navigation { get; private set; }
         public ConnectionViewModel connection_viewmodel { get; construct; }
         public QueryViewModel query_viewmodel { get; construct; }
         public QueryViewModel query_history_viewmodel { get; construct; }
@@ -54,30 +54,11 @@ namespace Psequel {
         }
 
         construct {
+            this.navigation = containter.find_type (typeof (NavigationService)) as NavigationService;
             debug ("[CONTRUCT] %s", this.name);
-
             Application.settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
             Application.settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
-
-            navigate_to (BaseViewModel.CONNECTION_VIEW);
-            connection_viewmodel.navigate_to.connect (navigate_to);
-
             this.add_action_entries (ACTIONS, this);
-        }
-
-        /**
-         * Navigate to the stack view.
-         */
-        public void navigate_to (string view_name) {
-
-            var child = stack.get_child_by_name (view_name);
-
-            if (child == null) {
-                warning ("No such view: %s", view_name);
-            } else {
-                debug ("navigate_to %s", view_name);
-                stack.visible_child = child;
-            }
         }
 
         public void add_toast (Adw.Toast toast) {
@@ -91,17 +72,12 @@ namespace Psequel {
             try {
                 yield schema_viewmodel.connect_db (conn);
 
-                navigate_to (BaseViewModel.QUERY_VIEW);
+                navigation.navigate (NavigationService.QUERY_VIEW);
             } catch (PsequelError err) {
                 create_dialog ("Connection Error", err.message).present ();
             }
 
             connection_viewmodel.is_connectting = false;
-        }
-
-        [GtkCallback]
-        public void on_request_logout () {
-            navigate_to (BaseViewModel.CONNECTION_VIEW);
         }
 
         // Actions:

@@ -2,22 +2,14 @@ namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/schema-sidebar.ui")]
     public class SchemaSidebar : Gtk.Box {
-        public ObservableList<Schema> schemas { get; set; }
-        public Schema? current_schema { get; set; }
 
+
+        public NavigationService navigation_service { get; set; }
+        public SchemaViewModel schema_viewmodel { get; set; }
         public TableViewModel table_viewmodel {get; set;}
-        public ObservableList<Table> tables {get; set;}
-        public Table? selected_table {get; set;}
-
-        public ObservableList<View> views {get; set;}
-        public View? selected_view {get; set;}
+        public ViewViewModel view_viewmodel {get; set;}
 
         public string view_mode {get; set;}
-
-        public signal void request_load_schema (Schema current_schema);
-        public signal void request_logout ();
-        public signal void table_selected_changed (Table table);
-        public signal void view_selected_changed (View view);
 
         public SchemaSidebar () {
             Object ();
@@ -25,28 +17,20 @@ namespace Psequel {
 
         construct {
             this.table_viewmodel = (TableViewModel)Window.temp.find_type (typeof (TableViewModel));
-
-            this.notify["selected-view"].connect (() => {
-                debug ("selected view changed");
-                view_selected_changed (selected_view);
-            });
-            
-            this.notify["current-schema"].connect (() => {
-                debug ("current schema changed");
-                request_load_schema (current_schema);
-            });
+            this.view_viewmodel = (ViewViewModel)Window.temp.find_type (typeof (ViewViewModel));
+            this.schema_viewmodel = (SchemaViewModel)Window.temp.find_type (typeof (SchemaViewModel));
+            this.navigation_service = (NavigationService)Window.temp.find_type (typeof (NavigationService));
 
             sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
 
             dropdown.notify["selected"].connect (() => {
-                debug ("selected schema changed");
-                current_schema = (Schema)schemas.get_item (dropdown.selected);
+                schema_viewmodel.select_index ((int)dropdown.selected);
             });
             table_selection.notify["selected"].connect (() => {
                 table_viewmodel.select_index ((int)table_selection.selected);
             });
             view_selection.notify["selected"].connect (() => {
-                selected_view = (View)views.get_item (view_selection.selected);
+                view_viewmodel.select_index ((int)view_selection.selected);
             });
 
             dropdown.expression = new Gtk.PropertyExpression (typeof (Schema), null, "name");
@@ -76,17 +60,12 @@ namespace Psequel {
 
         [GtkCallback]
         private void reload_btn_clicked (Gtk.Button btn) {
-            debug ("clicked");
-
-            debug ("current schema: " + current_schema?.name);
-            debug ("tables: %d", table_viewmodel.tables.size);
-            //  request_load_schema (current_schema);
+            schema_viewmodel.reload.begin ();
         }
 
         [GtkCallback]
         private void logout_btn_clicked (Gtk.Button btn) {
-            debug ("clicked");
-            request_logout ();
+            navigation_service.navigate (NavigationService.CONNECTION_VIEW);
         }
 
         [GtkChild]

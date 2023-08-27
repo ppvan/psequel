@@ -13,6 +13,7 @@ template $PsequelWindow : Adw.ApplicationWindow {
     Adw.ToastOverlay overlay {
         Stack stack {
             transition-type: slide_up_down;
+            visible-child-name: bind template.navigation as <$PsequelNavigationService>.current-view;
 
             StackPage {
                 name: "connection-view";
@@ -25,7 +26,7 @@ template $PsequelWindow : Adw.ApplicationWindow {
                 name: "query-view";
                 child: $PsequelSchemaView {
                     // schema-viewmodel: bind template.schema-viewmodel;
-                    request_logout => $on_request_logout ();
+                    // request_logout => $on_request_logout ();
                 };
             }
         }

@@ -24,7 +24,6 @@ namespace Psequel {
             //  });
         }
         public void update (GLib.Object data) {
-            debug ("type: %s", data.get_type ().name ());
             schema = (Schema) data;
             tables.clear ();
             load_tables.begin (schema);

@@ -34,6 +34,7 @@ psequel_sources = [
     # 'models/utils.vala',
 
     'services/SQLService.vala',
+    'services/NavigationService.vala',
     'services/ConnectionService.vala',
     'services/Container.vala',
     'services/ResourceManager.vala',

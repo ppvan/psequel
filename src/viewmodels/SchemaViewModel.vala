@@ -21,10 +21,9 @@ namespace Psequel {
             base();
             this.sql_service = service;
             this.notify["current-schema"].connect (() => {
-                debug ("Schema changed");
                 this.emit_event ("schema", current_schema);
                 //  table_viewmodel = new TableViewModel (current_schema, sql_service);
-                view_viewmodel = new ViewViewModel (current_schema, sql_service);
+                //  view_viewmodel = new ViewViewModel (current_schema, sql_service);
                 query_viewmodel = new QueryViewModel (current_schema, sql_service);
             });
         }
@@ -45,6 +44,13 @@ namespace Psequel {
             current_schema = schema;
         }
 
+        public async void reload () throws PsequelError {
+            if (current_schema == null) {
+                return;
+            }
+            yield load_schema (current_schema);
+        }
+
         public async void list_schemas () throws PsequelError {
 
             schema_service = new SchemaService (sql_service);
@@ -52,6 +58,14 @@ namespace Psequel {
             var unload_schemas = yield schema_service.get_schemas ();
 
             schemas.append_all (unload_schemas);
+        }
+
+        public void select_index (int index) {
+            if (index < 0 || index >= schemas.size) {
+                return;
+            }
+            debug ("Selecting schema: %s", schemas[index].name);
+            current_schema = schemas[index];
         }
     }
 }

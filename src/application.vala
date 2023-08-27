@@ -178,14 +178,18 @@ namespace Psequel {
             var conn_vm = new ConnectionViewModel (repository);
             var sche_vm = new SchemaViewModel (sql_service);
             var table_vm = new TableViewModel (sql_service);
+            var view_vm = new ViewViewModel (sql_service);
+            var navigation = new NavigationService ();
             sche_vm.subcribe ("schema", table_vm);
+            sche_vm.subcribe ("schema", view_vm);
 
             var container = new Container ();
             container.register (conn_vm);
             container.register (sche_vm);
             container.register (table_vm);
+            container.register (view_vm);
             container.register (sql_service);
-
+            container.register (navigation);
 
             Window.temp = container;
             var window = new Window (this, conn_vm, sche_vm, container);

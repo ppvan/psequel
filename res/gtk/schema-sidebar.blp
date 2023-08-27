@@ -20,7 +20,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
         }
         DropDown dropdown {
             hexpand: true;
-            model: bind template.schemas;
+            model: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.schemas;
         }
     }
 
@@ -171,7 +171,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                         model: SingleSelection view_selection {
                             model: FilterListModel {
                                 incremental: true;
-                                model: bind template.views;
+                                model: bind template.view-viewmodel as <$PsequelViewViewModel>.views;
                                 filter: StringFilter view_filter {
 
                                 };
