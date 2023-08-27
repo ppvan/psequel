@@ -182,9 +182,6 @@ namespace Psequel {
         }
 
         [GtkChild]
-        private unowned Gtk.Stack stack;
-
-        [GtkChild]
         private unowned Adw.ToastOverlay overlay;
     }
 }

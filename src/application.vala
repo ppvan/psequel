@@ -179,9 +179,13 @@ namespace Psequel {
             var sche_vm = new SchemaViewModel (sql_service);
             var table_vm = new TableViewModel (sql_service);
             var view_vm = new ViewViewModel (sql_service);
+            var table_structure_vm = new TableStructureViewModel (sql_service);
             var navigation = new NavigationService ();
-            sche_vm.subcribe ("schema", table_vm);
-            sche_vm.subcribe ("schema", view_vm);
+
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, view_vm);
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, table_structure_vm);
+            table_vm.subcribe (Event.SELECTED_TABLE_CHANGED, table_structure_vm);
 
             var container = new Container ();
             container.register (conn_vm);
@@ -189,6 +193,7 @@ namespace Psequel {
             container.register (table_vm);
             container.register (view_vm);
             container.register (sql_service);
+            container.register (table_structure_vm);
             container.register (navigation);
 
             Window.temp = container;

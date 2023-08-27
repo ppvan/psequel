@@ -10,8 +10,10 @@ namespace Psequel {
 
         public new void notify (string event_type, Object data) {
             foreach (EventTarget target in targets) {
-                if (target.event_type == event_type)
-                    target.observer.update (data);
+                if (target.event_type == event_type) {
+                    Event event = new Event (event_type, data);
+                    target.observer.update (event);
+                }
             }
         }
 
@@ -30,7 +32,20 @@ namespace Psequel {
         }
     }
 
+    public class Event : Object {
+        public const string SCHEMA_CHANGED = "schema-changed";
+        public const string SELECTED_TABLE_CHANGED = "selected-table-changed";
+        public string type;
+        public Object data;
+
+        public Event (string type, Object data) {
+            base();
+            this.type = type;
+            this.data = data;
+        }
+    }
+
     public interface Observer : Object {
-        public abstract void update(Object data);
+        public abstract void update(Event event);
     }
 }

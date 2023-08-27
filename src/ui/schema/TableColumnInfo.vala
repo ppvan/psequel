@@ -5,7 +5,8 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-cols.ui")]
     public class TableColInfo : Adw.Bin {
 
-        public ObservableList<Column> columns {get; set;}
+        //  public ObservableList<Column> columns {get; set;}
+        public GLib.ListModel columns {get; set;}
 
         public TableColInfo () {
             Object ();

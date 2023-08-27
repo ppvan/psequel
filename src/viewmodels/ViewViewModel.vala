@@ -22,11 +22,12 @@ namespace Psequel {
             });
         }
 
-        public void update (GLib.Object data) {
-            debug ("type: %s", data.get_type ().name ());
-            schema = (Schema) data;
-            views.clear ();
-            load_views.begin (schema);
+        public void update (Event event) {
+            if (event.type == Event.SCHEMA_CHANGED) {
+                schema = (Schema) event.data;
+                views.clear ();
+                load_views.begin (schema);
+            }
         }
 
         public void select_view (View view) {

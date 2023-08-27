@@ -21,7 +21,7 @@ namespace Psequel {
             base();
             this.sql_service = service;
             this.notify["current-schema"].connect (() => {
-                this.emit_event ("schema", current_schema);
+                this.emit_event (Event.SCHEMA_CHANGED, current_schema);
                 //  table_viewmodel = new TableViewModel (current_schema, sql_service);
                 //  view_viewmodel = new ViewViewModel (current_schema, sql_service);
                 query_viewmodel = new QueryViewModel (current_schema, sql_service);
