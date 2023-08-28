@@ -26,11 +26,11 @@ namespace Psequel {
 
             tablestructure_viewmodel.notify["selected-table"].connect (() => {
                 var table = tablestructure_viewmodel.selected_table;
+                filter.search = table.name;
+
                 debug ("Notify Table: %s", table.name);
                 debug ("Filter: %s", filter.search);
                 debug ("columns: %u", columns.get_n_items ());
-
-                filter.search = table.name;
             });
         }
     }

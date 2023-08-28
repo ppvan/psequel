@@ -26,12 +26,18 @@ namespace Psequel {
             }
         }
 
-        public void select_table (Table table) {
+        public void select_table (Table? table) {
+            if (table == null) {
+                return;
+            }
             debug ("selecting table %s", table.name);
             selected_table = table;
         }
 
         public void select_index (int index) {
+            if (tables[index] == null) {
+                return;
+            }
             debug ("selecting table %s", tables[index].name);
             selected_table = tables[index];
         }

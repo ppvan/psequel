@@ -18,10 +18,11 @@ namespace Psequel {
 
         /** Select info from a table. */
         public async Relation select (BaseTable table, int page) throws PsequelError {
+            string schema_name = active_db.escape_identifier (table.schema.name);
             string escape_tbname = active_db.escape_identifier (table.name);
             int offset = page * query_limit;
 
-            string stmt = @"SELECT * FROM $escape_tbname LIMIT $query_limit OFFSET $offset";
+            string stmt = @"SELECT * FROM $schema_name.$escape_tbname LIMIT $query_limit OFFSET $offset";
             var query = new Query (stmt);
             return yield exec_query (query);
         }

@@ -27,10 +27,12 @@ namespace Psequel {
                 schema_viewmodel.select_index ((int)dropdown.selected);
             });
             table_selection.notify["selected"].connect (() => {
-                table_viewmodel.select_index ((int)table_selection.selected);
+                var table = table_model.get_item ((int)table_selection.selected);
+                table_viewmodel.select_table ((Table)table);
             });
             view_selection.notify["selected"].connect (() => {
-                view_viewmodel.select_index ((int)view_selection.selected);
+                var view = view_model.get_item ((int)view_selection.selected);
+                view_viewmodel.select_view ((View)view);
             });
 
             dropdown.expression = new Gtk.PropertyExpression (typeof (Schema), null, "name");
@@ -79,6 +81,12 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.StringFilter table_filter;
+
+        [GtkChild]
+        private unowned Gtk.FilterListModel table_model;
+
+        [GtkChild]
+        private unowned Gtk.FilterListModel view_model;
 
         [GtkChild]
         private unowned Gtk.StringFilter view_filter;

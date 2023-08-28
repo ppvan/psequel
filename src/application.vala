@@ -172,35 +172,56 @@ namespace Psequel {
          * This result to another event to notify window is ready and widget should setup signals
          */
         private Window new_window () {
+            
+            // give temp access because window is not created yet
+            Window.temp = create_viewmodels ();
+            var window = new Window (this, Window.temp);
+            //  Window.temp = null;
 
+            return window;
+        }
+
+        private Container create_viewmodels () {
             var sql_service = new SQLService (Application.background);
             var repository = new ConnectionRepository (Application.settings);
+
+            // connection and schemas
             var conn_vm = new ConnectionViewModel (repository);
             var sche_vm = new SchemaViewModel (sql_service);
+
             var table_vm = new TableViewModel (sql_service);
             var view_vm = new ViewViewModel (sql_service);
             var table_structure_vm = new TableStructureViewModel (sql_service);
+            var view_structure_vm = new ViewStructureViewModel (sql_service);
+            var table_data_vm = new TableDataViewModel (sql_service);
+            var view_data_vm = new ViewDataViewModel (sql_service);
+
             var navigation = new NavigationService ();
 
-            sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);
-            sche_vm.subcribe (Event.SCHEMA_CHANGED, view_vm);
-            sche_vm.subcribe (Event.SCHEMA_CHANGED, table_structure_vm);
-            table_vm.subcribe (Event.SELECTED_TABLE_CHANGED, table_structure_vm);
-
             var container = new Container ();
+            container.register (sql_service);
             container.register (conn_vm);
             container.register (sche_vm);
             container.register (table_vm);
             container.register (view_vm);
-            container.register (sql_service);
             container.register (table_structure_vm);
+            container.register (view_structure_vm);
+            container.register (table_data_vm);
+            container.register (view_data_vm);
             container.register (navigation);
 
-            Window.temp = container;
-            var window = new Window (this, conn_vm, sche_vm, container);
-            //  Window.temp = null;
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, view_vm);
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, table_structure_vm);
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, view_structure_vm);
 
-            return window;
+            table_vm.subcribe (Event.SELECTED_TABLE_CHANGED, table_structure_vm);
+            table_vm.subcribe (Event.SELECTED_TABLE_CHANGED, table_data_vm);
+            view_vm.subcribe (Event.SELECTED_VIEW_CHANGED, view_structure_vm);
+            view_vm.subcribe (Event.SELECTED_VIEW_CHANGED, view_data_vm);
+
+
+            return container;
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Psequel {
     public class Event : Object {
         public const string SCHEMA_CHANGED = "schema-changed";
         public const string SELECTED_TABLE_CHANGED = "selected-table-changed";
+        public const string SELECTED_VIEW_CHANGED = "selected-view-changed";
         public string type;
         public Object data;
 

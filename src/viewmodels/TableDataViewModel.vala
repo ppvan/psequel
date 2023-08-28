@@ -1,6 +1,6 @@
 namespace Psequel {
 
-    public class TableDataViewModel : BaseViewModel {
+    public class TableDataViewModel : BaseViewModel, Observer {
         public Table? selected_table { get; set; }
         // public View? current_view {get; set;}
 
@@ -20,7 +20,7 @@ namespace Psequel {
 
 
 
-        public TableDataViewModel (Table table, SQLService service) {
+        public TableDataViewModel (SQLService service) {
             Object (sql_service: service);
 
             this.notify["current-page"].connect (() => {
@@ -50,8 +50,14 @@ namespace Psequel {
                 current_page = 0;
                 reload_data.begin ();
             });
+        }
 
-            selected_table = table;
+        public void update (Event event) {
+            switch (event.type) {
+                case Event.SELECTED_TABLE_CHANGED:
+                    selected_table = event.data as Table;
+                    break;
+            }
         }
 
         public async void reload_data () {

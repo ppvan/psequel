@@ -3,7 +3,7 @@ namespace Psequel {
     /* View here is database view (virtual tables), not UI */
     public class ViewViewModel : BaseViewModel, Observer {
         public ObservableList<View> views { get; set; default = new ObservableList<View> (); }
-        public View? current_view { get; set; }
+        public View? selected_view { get; set; }
 
 
         public Schema schema { get; private set; }
@@ -16,9 +16,8 @@ namespace Psequel {
         public ViewViewModel (SQLService service) {
             base();
             this.sql_service = service;
-            this.notify["current-view"].connect (() => {
-                viewstructure_viewmodel = new ViewStructureViewModel (current_view);
-                viewdata_viewmodel = new ViewDataViewModel (current_view, service);
+            this.notify["selected-view"].connect (() => {
+                this.emit_event (Event.SELECTED_VIEW_CHANGED, selected_view);
             });
         }
 
@@ -31,13 +30,22 @@ namespace Psequel {
         }
 
         public void select_view (View view) {
+            if (view == null) {
+                return;
+            }
+
+
             debug ("selecting view %s", view.name);
-            current_view = view;
+            selected_view = view;
         }
 
         public void select_index (int index) {
+            if (index < 0 || index >= views.size) {
+                return;
+            }
+
             debug ("selecting view %s", views[index].name);
-            current_view = views[index];
+            selected_view = views[index];
         }
 
 

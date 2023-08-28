@@ -1,5 +1,5 @@
 namespace Psequel {
-    public class ViewDataViewModel : Object {
+    public class ViewDataViewModel : Object, Observer {
         public View? selected_view { get; set; }
         // public View? current_view {get; set;}
 
@@ -15,12 +15,12 @@ namespace Psequel {
         public Relation current_relation { get; set; }
         public Relation.Row? selected_row { get; set; }
 
-        public SQLService sql_service { get; construct; }
+        public SQLService sql_service { get; private set; }
 
 
-
-        public ViewDataViewModel (View view, SQLService service) {
-            Object (sql_service: service);
+        public ViewDataViewModel (SQLService service) {
+            base ();
+            this.sql_service = service;
 
             this.notify["selected-view"].connect (() => {
                 current_page = 0;
@@ -48,8 +48,14 @@ namespace Psequel {
                     has_next_page = true;
                 }
             });
+        }
 
-            selected_view = view;
+        public void update (Event event) {
+            switch (event.type) {
+                case Event.SELECTED_VIEW_CHANGED:
+                    selected_view = event.data as View;
+                    break;
+            }
         }
 
         public async void reload_data () {

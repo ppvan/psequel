@@ -96,7 +96,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                     ListView table_list {
                         styles ["navigation-sidebar"]
                         model: SingleSelection table_selection {
-                            model: FilterListModel {
+                            model: FilterListModel table_model {
                                 incremental: true;
                                 model: bind template.table-viewmodel as <$PsequelTableViewModel>.tables;
                                 filter: StringFilter table_filter {
@@ -169,7 +169,7 @@ template $PsequelSchemaSidebar : Gtk.Box {
                     ListView views_list {
                         styles ["navigation-sidebar"]
                         model: SingleSelection view_selection {
-                            model: FilterListModel {
+                            model: FilterListModel view_model {
                                 incremental: true;
                                 model: bind template.view-viewmodel as <$PsequelViewViewModel>.views;
                                 filter: StringFilter view_filter {
