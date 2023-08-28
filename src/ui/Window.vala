@@ -25,6 +25,9 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
+        public static Container? temp;
+        public Container containter {get; construct;}
+
         const ActionEntry[] ACTIONS = {
             { "import", import_connection },
             { "export", export_connection },
@@ -32,48 +35,27 @@ namespace Psequel {
             { "run-query", run_query },
         };
 
-
+        public NavigationService navigation { get; private set; }
         public ConnectionViewModel connection_viewmodel { get; construct; }
-        public QueryViewModel query_viewmodel { get; construct; }
-        public QueryViewModel query_history_viewmodel { get; construct; }
         public SchemaViewModel schema_viewmodel { get; construct; }
 
 
-        public Window (Application app,
-            ConnectionViewModel conn_vm,
-            SchemaViewModel schema_vm) {
+        public Window (Application app, Container container) {
             Object (
                     application: app,
-                    connection_viewmodel: conn_vm,
-                    schema_viewmodel: schema_vm
+                    containter: container
             );
         }
 
         construct {
+            this.navigation = containter.find_type (typeof (NavigationService)) as NavigationService;
+            this.connection_viewmodel = containter.find_type (typeof (ConnectionViewModel)) as ConnectionViewModel;
+            this.schema_viewmodel = containter.find_type (typeof (SchemaViewModel)) as SchemaViewModel;
+            
             debug ("[CONTRUCT] %s", this.name);
-
             Application.settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
             Application.settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
-
-            navigate_to (BaseViewModel.CONNECTION_VIEW);
-            connection_viewmodel.navigate_to.connect (navigate_to);
-
             this.add_action_entries (ACTIONS, this);
-        }
-
-        /**
-         * Navigate to the stack view.
-         */
-        public void navigate_to (string view_name) {
-
-            var child = stack.get_child_by_name (view_name);
-
-            if (child == null) {
-                warning ("No such view: %s", view_name);
-            } else {
-                debug ("navigate_to %s", view_name);
-                stack.visible_child = child;
-            }
         }
 
         public void add_toast (Adw.Toast toast) {
@@ -87,17 +69,12 @@ namespace Psequel {
             try {
                 yield schema_viewmodel.connect_db (conn);
 
-                navigate_to (BaseViewModel.QUERY_VIEW);
+                navigation.navigate (NavigationService.QUERY_VIEW);
             } catch (PsequelError err) {
                 create_dialog ("Connection Error", err.message).present ();
             }
 
             connection_viewmodel.is_connectting = false;
-        }
-
-        [GtkCallback]
-        public void on_request_logout () {
-            navigate_to (BaseViewModel.CONNECTION_VIEW);
         }
 
         // Actions:
@@ -200,9 +177,6 @@ namespace Psequel {
                 window.add_toast (toast);
             }
         }
-
-        [GtkChild]
-        private unowned Gtk.Stack stack;
 
         [GtkChild]
         private unowned Adw.ToastOverlay overlay;

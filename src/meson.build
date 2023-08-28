@@ -33,7 +33,10 @@ psequel_sources = [
     'models/Query.vala',
     # 'models/utils.vala',
 
-    'services/QueryService.vala',
+    'services/SQLService.vala',
+    'services/NavigationService.vala',
+    'services/ConnectionService.vala',
+    'services/Container.vala',
     'services/ResourceManager.vala',
     'services/SchemaService.vala',
     'services/SQLCompletionProvider.vala',
@@ -56,6 +59,7 @@ psequel_sources = [
 
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',
+    'utils/Event.vala',
     'utils/helpers.vala',
     'utils/logging.vala',
     'utils/errors.vala',

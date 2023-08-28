@@ -17,31 +17,14 @@ namespace Psequel {
         }
 
         /** Select info from a table. */
-        public async Relation select_v2 (BaseTable table, int page) throws PsequelError {
+        public async Relation select (BaseTable table, int page) throws PsequelError {
+            string schema_name = active_db.escape_identifier (table.schema.name);
             string escape_tbname = active_db.escape_identifier (table.name);
             int offset = page * query_limit;
 
-            string stmt = @"SELECT * FROM $escape_tbname LIMIT $query_limit OFFSET $offset";
-            return yield exec_query (stmt);
-        }
-
-        public async Relation select (string schema, string table_name, int offset = 0, int limit = 500, string where_clause = "") throws PsequelError {
-
-            string escape_tbname = active_db.escape_identifier (table_name);
-
-            string stmt = @"SELECT * FROM $escape_tbname $where_clause LIMIT $limit OFFSET $offset";
-            return yield exec_query (stmt);
-        }
-
-        /** Get database version. */
-        public async string db_version () throws PsequelError {
-
-            string stmt = "SELECT version ();";
-            var table = yield exec_query (stmt);
-
-            string version = table[0][0];
-
-            return version;
+            string stmt = @"SELECT * FROM $schema_name.$escape_tbname LIMIT $query_limit OFFSET $offset";
+            var query = new Query (stmt);
+            return yield exec_query (query);
         }
 
         /** Make a connection to database and active connection. */
@@ -68,12 +51,11 @@ namespace Psequel {
             }
         }
 
-        public async Relation exec_query_v2 (Query query) throws PsequelError {
+        public async Relation exec_query (Query query) throws PsequelError {
 
-            var limit_query = add_limit (query);
 
             int64 begin = GLib.get_real_time ();
-            var result = yield exec_query_internal (limit_query.sql);
+            var result = yield exec_query_internal (query.sql);
 
             check_query_status (result);
 
@@ -87,27 +69,10 @@ namespace Psequel {
             return new Relation ((owned) res);
         }
 
-        public async Relation exec_query (string query, out int64 exec_us = null) throws PsequelError {
+        public async Relation exec_query_params (Query query) throws PsequelError {
+            assert (query.params != null);
 
-            int64 begin = GLib.get_real_time ();
-            var result = yield exec_query_internal (query);
-
-            // check query status
-            check_query_status (result);
-
-            int64 end = GLib.get_real_time ();
-            exec_us = (end - begin);
-
-            var table = new Relation.with_fetch_time ((owned) result, exec_us);
-
-            return table;
-        }
-
-        public async Relation exec_query_params (string query, Variant[] params) throws PsequelError {
-
-
-            var result = yield exec_query_params_internal (query, params);
-
+            var result = yield exec_query_params_internal (query.sql, query.params);
             // check query status
             check_query_status (result);
 

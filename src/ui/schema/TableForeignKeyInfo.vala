@@ -5,7 +5,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-fk.ui")]
     public class TableFKInfo : Adw.Bin {
 
-        public ObservableList<ForeignKey> fks { get; set; }
+        public GLib.ListModel fks { get; set; }
 
 
         public TableFKInfo () {

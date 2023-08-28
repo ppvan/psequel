@@ -9,6 +9,10 @@ namespace Psequel {
             Object ();
         }
 
+        construct {
+            viewdata_viewmodel = Window.temp.find_type (typeof (ViewDataViewModel)) as ViewDataViewModel;
+        }
+
         [GtkCallback]
         private async void reload_data () {
             yield viewdata_viewmodel.reload_data ();

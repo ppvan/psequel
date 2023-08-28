@@ -17,8 +17,11 @@ namespace Psequel {
         // Connect event.
         construct {
             debug ("[CONTRUCT] %s", this.name);
-
             setup_paned (paned);
+
+            debug ("%s", Window.temp.get_type ().name ());
+            var container = Window.temp as Psequel.Container;
+            viewmodel = container.find_type (typeof (ConnectionViewModel)) as ConnectionViewModel;
         }
 
         [GtkCallback]
