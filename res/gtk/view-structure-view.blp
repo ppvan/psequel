@@ -18,7 +18,7 @@ template $PsequelViewStructureView : Box {
     }
 
     $PsequelTableColInfo columns {
-        columns: bind template.viewstructure-viewmodel as <$PsequelViewStructureViewModel>.columns;
+        columns: bind template.columns;
     }
 
 
@@ -29,6 +29,6 @@ template $PsequelViewStructureView : Box {
     }
 
     $PsequelTableIndexInfo indexes {
-        indexes: bind template.viewstructure-viewmodel as <$PsequelViewStructureViewModel>.indexes;
+        indexes: bind template.indexes;
     }
 }

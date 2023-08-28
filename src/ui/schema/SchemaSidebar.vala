@@ -2,56 +2,37 @@ namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/schema-sidebar.ui")]
     public class SchemaSidebar : Gtk.Box {
-        public ObservableList<Schema> schemas { get; set; }
-        public Schema? current_schema { get; set; }
 
-        public ObservableList<Table> tables {get; set;}
-        public Table? selected_table {get; set;}
 
-        public ObservableList<View> views {get; set;}
-        public View? selected_view {get; set;}
+        public NavigationService navigation_service { get; set; }
+        public SchemaViewModel schema_viewmodel { get; set; }
+        public TableViewModel table_viewmodel {get; set;}
+        public ViewViewModel view_viewmodel {get; set;}
 
         public string view_mode {get; set;}
-
-        public signal void request_load_schema (Schema current_schema);
-        public signal void request_logout ();
-        public signal void table_selected_changed (Table table);
-        public signal void view_selected_changed (View view);
 
         public SchemaSidebar () {
             Object ();
         }
 
         construct {
-
-            this.notify["selected-table"].connect (() => {
-                debug ("selected table changed");
-                table_selected_changed (selected_table);
-            });
-
-            this.notify["selected-view"].connect (() => {
-                debug ("selected view changed");
-                view_selected_changed (selected_view);
-            });
-            
-            this.notify["current-schema"].connect (() => {
-                debug ("current schema changed");
-                request_load_schema (current_schema);
-            });
+            this.table_viewmodel = (TableViewModel)Window.temp.find_type (typeof (TableViewModel));
+            this.view_viewmodel = (ViewViewModel)Window.temp.find_type (typeof (ViewViewModel));
+            this.schema_viewmodel = (SchemaViewModel)Window.temp.find_type (typeof (SchemaViewModel));
+            this.navigation_service = (NavigationService)Window.temp.find_type (typeof (NavigationService));
 
             sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
 
             dropdown.notify["selected"].connect (() => {
-                debug ("selected schema changed");
-                current_schema = (Schema)schemas.get_item (dropdown.selected);
+                schema_viewmodel.select_index ((int)dropdown.selected);
             });
             table_selection.notify["selected"].connect (() => {
-                debug ("selected table changed");
-                selected_table = (Table)tables.get_item (table_selection.selected);
+                var table = table_model.get_item ((int)table_selection.selected);
+                table_viewmodel.select_table ((Table)table);
             });
             view_selection.notify["selected"].connect (() => {
-                debug ("selected view changed");
-                selected_view = (View)views.get_item (view_selection.selected);
+                var view = view_model.get_item ((int)view_selection.selected);
+                view_viewmodel.select_view ((View)view);
             });
 
             dropdown.expression = new Gtk.PropertyExpression (typeof (Schema), null, "name");
@@ -81,14 +62,12 @@ namespace Psequel {
 
         [GtkCallback]
         private void reload_btn_clicked (Gtk.Button btn) {
-            debug ("clicked");
-            request_load_schema (current_schema);
+            schema_viewmodel.reload.begin ();
         }
 
         [GtkCallback]
         private void logout_btn_clicked (Gtk.Button btn) {
-            debug ("clicked");
-            request_logout ();
+            navigation_service.navigate (NavigationService.CONNECTION_VIEW);
         }
 
         [GtkChild]
@@ -102,6 +81,12 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.StringFilter table_filter;
+
+        [GtkChild]
+        private unowned Gtk.FilterListModel table_model;
+
+        [GtkChild]
+        private unowned Gtk.FilterListModel view_model;
 
         [GtkChild]
         private unowned Gtk.StringFilter view_filter;

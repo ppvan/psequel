@@ -1,8 +1,26 @@
 namespace Psequel {
     public class Query : Object, Json.Serializable {
-        public string sql { get; construct; }
+        public string sql { get; private set; }
+        public Variant[] params {get; private set;}
         public Query (string sql) {
-            Object (sql: sql);
+            base();
+            this.sql = sql;
+        }
+
+        public Query.with_params (string sql, Variant[] params) {
+            this(sql);
+            this.params = params;
+        }
+
+        public void set_limit (int limit) {
+            if (!is_select ()) {
+                return;
+            }
+            sql += @" LIMIT $limit";
+        }
+
+        private inline bool is_select () {
+            return sql.up (6) == "SELECT";
         }
 
         public Query clone () {

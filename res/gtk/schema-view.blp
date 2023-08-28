@@ -13,18 +13,7 @@ template $PsequelSchemaView : Adw.Bin {
             shrink-start-child: false;
 
             $PsequelSchemaSidebar sidebar {
-
                 width-request: 320;
-
-                schemas: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.schemas;
-                // template->viewmodel->table-viewmodel->tables
-                tables: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.table-viewmodel as <$PsequelTableViewModel>.tables;
-                // template->viewmodel->view-viewmodel->views
-                views: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.view-viewmodel as <$PsequelViewViewModel>.views;
-                request-load-schema => $request_load_schema ();
-                table-selected-changed => $table_selected_changed ();
-                view-selected-changed => $view_selected_changed ();
-                request-logout => $request_logout_cb ();
             }
 
             $PsequelSchemaMain {
@@ -34,7 +23,7 @@ template $PsequelSchemaView : Adw.Bin {
                 menu: primary_menu;
                 view-mode: bind sidebar.view-mode;
                 // selected-table: bind sidebar.selected-table;
-                selected-view: bind sidebar.selected-view;
+                // selected-view: bind sidebar.selected-view;
                 table-viewmodel: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.table-viewmodel;
                 view-viewmodel: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.view-viewmodel;
                 query-viewmodel: bind template.schema-viewmodel as <$PsequelSchemaViewModel>.query-viewmodel;
