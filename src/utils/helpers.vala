@@ -42,7 +42,7 @@ namespace Psequel {
 
     public T autowire<T> () {
         var container = Window.temp;
-        return container.find_type (typeof (T)) as T;
+        return (T)container.find_type (typeof (T));
     }
 
     public Adw.MessageDialog create_dialog (string heading, string body) {
