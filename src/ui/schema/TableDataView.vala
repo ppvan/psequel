@@ -10,7 +10,7 @@ namespace Psequel {
         }
 
         construct {
-            tabledata_viewmodel = Window.temp.find_type (typeof (TableDataViewModel)) as TableDataViewModel;
+            tabledata_viewmodel = autowire<TableDataViewModel> ();
         }
 
         [GtkCallback]

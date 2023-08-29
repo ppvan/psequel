@@ -13,7 +13,7 @@ namespace Psequel {
         public SQLCompletionProvider () {
             base ();
             debug ("SQLCompletionProvider");
-            this.schema_viewmodel = Window.temp.find_type (typeof (SchemaViewModel)) as SchemaViewModel;
+            this.schema_viewmodel = autowire<SchemaViewModel> ();
 
             static_candidates = new List<Model> ();
             for (int i = 0; i < PGListerals.KEYWORDS.length; i++) {

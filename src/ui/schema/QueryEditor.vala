@@ -31,8 +31,8 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            this.query_viewmodel = Window.temp.find_type (typeof (QueryViewModel)) as QueryViewModel;
-            this.query_history_viewmodel = Window.temp.find_type (typeof (QueryHistoryViewModel)) as QueryHistoryViewModel;
+            this.query_viewmodel = autowire<QueryViewModel> ();
+            this.query_history_viewmodel = autowire<QueryHistoryViewModel> ();
 
             default_setttings ();
             selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);

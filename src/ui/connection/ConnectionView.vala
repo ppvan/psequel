@@ -14,8 +14,7 @@ namespace Psequel {
         construct {
             debug ("[CONTRUCT] %s", this.name);
             setup_paned (paned);
-            var container = Window.temp as Psequel.Container;
-            viewmodel = container.find_type (typeof (ConnectionViewModel)) as ConnectionViewModel;
+            viewmodel = autowire<ConnectionViewModel> ();
         }
 
         [GtkCallback]

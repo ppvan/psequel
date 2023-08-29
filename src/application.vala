@@ -183,20 +183,16 @@ namespace Psequel {
 
         private Container create_viewmodels () {
             var container = new Container ();
+
+            // services
             var sql_service = new SQLService (Application.background);
             var schema_service = new SchemaService (sql_service);
             var repository = new ConnectionRepository (Application.settings);
             var navigation = new NavigationService ();
 
-            container.register (sql_service);
-            container.register (schema_service);
-            container.register (repository);
-            container.register (navigation);
-
-            // connection and schemas
+            // viewmodels
             var conn_vm = new ConnectionViewModel (repository, sql_service, navigation);
             var sche_vm = new SchemaViewModel (schema_service);
-
             var table_vm = new TableViewModel (sql_service);
             var view_vm = new ViewViewModel (sql_service);
             var table_structure_vm = new TableStructureViewModel (sql_service);
@@ -206,6 +202,10 @@ namespace Psequel {
             var query_history_vm = new QueryHistoryViewModel (sql_service);
             var query_vm = new QueryViewModel (query_history_vm);
 
+            container.register (sql_service);
+            container.register (schema_service);
+            container.register (repository);
+            container.register (navigation);
             container.register (conn_vm);
             container.register (sche_vm);
             container.register (table_vm);
@@ -217,6 +217,7 @@ namespace Psequel {
             container.register (query_history_vm);
             container.register (query_vm);
 
+            // events 
             conn_vm.subcribe (Event.ACTIVE_CONNECTION, sche_vm);
 
             sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);

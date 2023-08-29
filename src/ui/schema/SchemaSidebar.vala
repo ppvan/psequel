@@ -16,10 +16,10 @@ namespace Psequel {
         }
 
         construct {
-            this.table_viewmodel = (TableViewModel)Window.temp.find_type (typeof (TableViewModel));
-            this.view_viewmodel = (ViewViewModel)Window.temp.find_type (typeof (ViewViewModel));
-            this.schema_viewmodel = (SchemaViewModel)Window.temp.find_type (typeof (SchemaViewModel));
-            this.navigation_service = (NavigationService)Window.temp.find_type (typeof (NavigationService));
+            this.table_viewmodel = autowire<TableViewModel> ();
+            this.view_viewmodel = autowire<ViewViewModel> ();
+            this.schema_viewmodel = autowire<SchemaViewModel> ();
+            this.navigation_service = autowire<NavigationService> ();
 
             sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
 

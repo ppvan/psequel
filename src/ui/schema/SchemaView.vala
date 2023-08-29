@@ -13,8 +13,7 @@ namespace Psequel {
 
         construct {
             setup_paned (paned);
-            var container = Window.temp;
-            schema_viewmodel = container.find_type (typeof (SchemaViewModel)) as SchemaViewModel;
+            schema_viewmodel = autowire<SchemaViewModel> ();
         }
 
 
