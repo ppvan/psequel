@@ -4,11 +4,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-view.ui")]
     public class ConnectionView : Adw.Bin {
 
-
-
-        public ConnectionViewModel viewmodel { get; set; }
-
-        public signal void request_database (Connection conn);
+        public ConnectionViewModel viewmodel { get; private set; }
 
         public ConnectionView (Application app) {
             Object ();
@@ -18,8 +14,6 @@ namespace Psequel {
         construct {
             debug ("[CONTRUCT] %s", this.name);
             setup_paned (paned);
-
-            debug ("%s", Window.temp.get_type ().name ());
             var container = Window.temp as Psequel.Container;
             viewmodel = container.find_type (typeof (ConnectionViewModel)) as ConnectionViewModel;
         }
@@ -36,8 +30,7 @@ namespace Psequel {
 
         [GtkCallback]
         public void active_connection (Connection conn) {
-            viewmodel.is_connectting = true;
-            request_database (conn);
+            viewmodel.active_connection.begin (conn);
         }
 
         [GtkCallback]

@@ -33,7 +33,6 @@ namespace Psequel {
 
             selection_model.bind_property ("selected", this, "selected-connection",
                                            DEFAULT | BIDIRECTIONAL, from_selected, to_selected);
-
         }
 
         // On add, create new connection and select it.
@@ -90,8 +89,8 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.SingleSelection selection_model;
 
-        //  [GtkChild]
-        //  private unowned Gtk.ListView listview;
+        // [GtkChild]
+        // private unowned Gtk.ListView listview;
     }
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/connection-row.ui")]

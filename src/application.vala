@@ -182,12 +182,20 @@ namespace Psequel {
         }
 
         private Container create_viewmodels () {
+            var container = new Container ();
             var sql_service = new SQLService (Application.background);
+            var schema_service = new SchemaService (sql_service);
             var repository = new ConnectionRepository (Application.settings);
+            var navigation = new NavigationService ();
+
+            container.register (sql_service);
+            container.register (schema_service);
+            container.register (repository);
+            container.register (navigation);
 
             // connection and schemas
-            var conn_vm = new ConnectionViewModel (repository);
-            var sche_vm = new SchemaViewModel (sql_service);
+            var conn_vm = new ConnectionViewModel (repository, sql_service, navigation);
+            var sche_vm = new SchemaViewModel (schema_service);
 
             var table_vm = new TableViewModel (sql_service);
             var view_vm = new ViewViewModel (sql_service);
@@ -195,11 +203,9 @@ namespace Psequel {
             var view_structure_vm = new ViewStructureViewModel (sql_service);
             var table_data_vm = new TableDataViewModel (sql_service);
             var view_data_vm = new ViewDataViewModel (sql_service);
+            var query_history_vm = new QueryHistoryViewModel (sql_service);
+            var query_vm = new QueryViewModel (query_history_vm);
 
-            var navigation = new NavigationService ();
-
-            var container = new Container ();
-            container.register (sql_service);
             container.register (conn_vm);
             container.register (sche_vm);
             container.register (table_vm);
@@ -208,7 +214,10 @@ namespace Psequel {
             container.register (view_structure_vm);
             container.register (table_data_vm);
             container.register (view_data_vm);
-            container.register (navigation);
+            container.register (query_history_vm);
+            container.register (query_vm);
+
+            conn_vm.subcribe (Event.ACTIVE_CONNECTION, sche_vm);
 
             sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);
             sche_vm.subcribe (Event.SCHEMA_CHANGED, view_vm);
@@ -217,6 +226,7 @@ namespace Psequel {
 
             table_vm.subcribe (Event.SELECTED_TABLE_CHANGED, table_structure_vm);
             table_vm.subcribe (Event.SELECTED_TABLE_CHANGED, table_data_vm);
+
             view_vm.subcribe (Event.SELECTED_VIEW_CHANGED, view_structure_vm);
             view_vm.subcribe (Event.SELECTED_VIEW_CHANGED, view_data_vm);
 

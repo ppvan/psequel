@@ -37,7 +37,7 @@ namespace Psequel {
 
         public NavigationService navigation { get; private set; }
         public ConnectionViewModel connection_viewmodel { get; construct; }
-        public SchemaViewModel schema_viewmodel { get; construct; }
+        public QueryViewModel query_viewmodel { get; private set; }
 
 
         public Window (Application app, Container container) {
@@ -50,8 +50,8 @@ namespace Psequel {
         construct {
             this.navigation = containter.find_type (typeof (NavigationService)) as NavigationService;
             this.connection_viewmodel = containter.find_type (typeof (ConnectionViewModel)) as ConnectionViewModel;
-            this.schema_viewmodel = containter.find_type (typeof (SchemaViewModel)) as SchemaViewModel;
-            
+            this.query_viewmodel = containter.find_type (typeof (QueryViewModel)) as QueryViewModel;
+
             debug ("[CONTRUCT] %s", this.name);
             Application.settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
             Application.settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
@@ -62,28 +62,13 @@ namespace Psequel {
             overlay.add_toast (toast);
         }
 
-        [GtkCallback]
-        public async void on_connect_db (Connection conn) {
-            debug ("Window connect");
-            connection_viewmodel.is_connectting = true;
-            try {
-                yield schema_viewmodel.connect_db (conn);
-
-                navigation.navigate (NavigationService.QUERY_VIEW);
-            } catch (PsequelError err) {
-                create_dialog ("Connection Error", err.message).present ();
-            }
-
-            connection_viewmodel.is_connectting = false;
-        }
-
         // Actions:
         public void run_query () {
-            if (schema_viewmodel.query_viewmodel == null) {
+            if (query_viewmodel == null) {
                 return;
             }
 
-            schema_viewmodel.query_viewmodel.run_selected_query.begin ();
+            query_viewmodel.run_selected_query.begin ();
         }
 
         public void import_connection () {

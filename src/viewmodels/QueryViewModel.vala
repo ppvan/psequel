@@ -10,9 +10,8 @@ namespace Psequel {
         public Schema? current_schema { get; construct; }
         public SQLService sql_service { get; construct; }
 
-        public QueryViewModel (Schema? current_schema, SQLService sql_service) {
-            Object (current_schema: current_schema,sql_service: sql_service);
-            query_history_viewmodel = new QueryHistoryViewModel (sql_service);
+        public QueryViewModel (QueryHistoryViewModel query_history_viewmodel) {
+            Object (query_history_viewmodel: query_history_viewmodel);
         }
 
         public async void run_selected_query () {
