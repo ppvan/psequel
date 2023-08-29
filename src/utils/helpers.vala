@@ -40,6 +40,11 @@ namespace Psequel {
         });
     }
 
+    public T autowire<T> () {
+        var container = Window.temp;
+        return (T)container.find_type (typeof (T));
+    }
+
     public Adw.MessageDialog create_dialog (string heading, string body) {
         var window = Application.app.active_window;
         var dialog = new Adw.MessageDialog (window, heading, body);

@@ -18,7 +18,6 @@ template $PsequelWindow : Adw.ApplicationWindow {
             StackPage {
                 name: "connection-view";
                 child: $PsequelConnectionView {
-                    request-database => $on_connect_db ();
                 };
             }
 

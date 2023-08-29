@@ -31,17 +31,15 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
-            default_setttings ();
+            this.query_viewmodel = autowire<QueryViewModel> ();
+            this.query_history_viewmodel = autowire<QueryHistoryViewModel> ();
 
+            default_setttings ();
             selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
             spinner.bind_property ("spinning", run_query_btn, "sensitive", BindingFlags.INVERT_BOOLEAN);
 
             buffer.changed.connect (highlight_current_query);
             buffer.cursor_moved.connect (highlight_current_query);
-
-            this.notify["query-viewmodel"].connect (() => {
-                this.provider.query_viewmodel = query_viewmodel;
-            });
 
             create_action_group ();
             setup_paned (paned);

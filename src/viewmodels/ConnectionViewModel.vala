@@ -1,7 +1,9 @@
 namespace Psequel {
     public class ConnectionViewModel : BaseViewModel {
         uint timeout_id = 0;
-        public ConnectionRepository repository { get; construct; }
+        public ConnectionRepository repository { get; private set; }
+        public SQLService sql_service { get; private set; }
+        public NavigationService navigation_service { get; private set; }
 
         public ObservableList<Connection> connections { get; private set; default = new ObservableList<Connection> (); }
         public Connection? selected_connection { get; set; }
@@ -9,24 +11,23 @@ namespace Psequel {
         /** True when trying to establish a connection util know results. */
         public bool is_connectting { get; set; default = false; }
 
+        public ConnectionViewModel (ConnectionRepository repository, SQLService sql_service, NavigationService navigation_service) {
+            base ();
+            this.repository = repository;
+            this.sql_service = sql_service;
+            this.navigation_service = navigation_service;
 
-
-        public ConnectionViewModel (ConnectionRepository repository) {
-            Object (repository: repository);
-        }
-
-        construct {
             unowned var loaded_conn = repository.get_connections ();
             connections.extend (loaded_conn);
 
             if (connections.empty ()) {
                 new_connection ();
             }
-            // selected_connection = (Connection)connections.get_item (2);
 
             // Auto save data each 10 secs in case app crash.
             Timeout.add_seconds (10, () => {
                 repository.save ();
+                return Source.CONTINUE;
             }, Priority.LOW);
         }
 
@@ -60,6 +61,20 @@ namespace Psequel {
             repository.append_all (connections);
 
             this.connections.append_all (connections);
+        }
+
+        public async void active_connection (Connection connection) {
+            this.is_connectting = true;
+            try {
+                yield sql_service.connect_db (connection);
+                this.emit_event (Event.ACTIVE_CONNECTION, connection);
+                this.navigation_service.navigate (NavigationService.QUERY_VIEW);
+
+            } catch (PsequelError err) {
+                debug ("Error: %s", err.message);
+                create_dialog ("Connection Error", err.message.dup ()).present ();
+            }
+            this.is_connectting = false;
         }
 
         public unowned List<Connection> export_connections () {

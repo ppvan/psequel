@@ -8,11 +8,12 @@ namespace Psequel {
         private Gtk.FilterListModel model;
         private Gtk.StringFilter filter;
 
-        public QueryViewModel query_viewmodel { get; set; }
 
+        private SchemaViewModel schema_viewmodel;
         public SQLCompletionProvider () {
             base ();
             debug ("SQLCompletionProvider");
+            this.schema_viewmodel = autowire<SchemaViewModel> ();
 
             static_candidates = new List<Model> ();
             for (int i = 0; i < PGListerals.KEYWORDS.length; i++) {
@@ -31,21 +32,19 @@ namespace Psequel {
                 static_candidates.append (new Model (PGListerals.RESERVED[i], "RESERVED"));
             }
 
-            /*
-                Query viewmodel is not set until the query view is created.
-             */
-            dynamic_candidates = new List<Model> ();
-            this.notify["query-viewmodel"].connect (() => {
 
-                dynamic_candidates = new List<Model> ();
-                query_viewmodel.current_schema.tables.foreach ((table) => {
-                    dynamic_candidates.append (new Model (table.name, "TABLE"));
-                });
 
-                query_viewmodel.current_schema.views.foreach ((view) => {
-                    dynamic_candidates.append (new Model (view.name, "VIEW"));
-                });
-            });
+            // this.notify["query-viewmodel"].connect (() => {
+
+            // dynamic_candidates = new List<Model> ();
+            // query_viewmodel.current_schema.tables.foreach ((table) => {
+            // dynamic_candidates.append (new Model (table.name, "TABLE"));
+            // });
+
+            // query_viewmodel.current_schema.views.foreach ((view) => {
+            // dynamic_candidates.append (new Model (view.name, "VIEW"));
+            // });
+            // });
 
             var expression = new Gtk.PropertyExpression (typeof (Model), null, "value");
             filter = new Gtk.StringFilter (expression);
@@ -101,6 +100,18 @@ namespace Psequel {
         }
 
         public async GLib.ListModel populate_async (GtkSource.CompletionContext context, GLib.Cancellable? cancellable) {
+
+            /*
+                Query viewmodel is not set until the query view is created.
+             */
+             dynamic_candidates = new List<Model> ();
+             schema_viewmodel.current_schema.tables.foreach ((table) => {
+                 dynamic_candidates.append (new Model (table.name, "TABLE"));
+             });
+ 
+             schema_viewmodel.current_schema.views.foreach ((view) => {
+                 dynamic_candidates.append (new Model (view.name, "VIEW"));
+             });
 
             var candidates = new ObservableList<Model> ();
             candidates.append_all (static_candidates);

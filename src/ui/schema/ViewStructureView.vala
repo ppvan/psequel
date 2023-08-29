@@ -13,7 +13,7 @@ namespace Psequel {
         }
 
         construct {
-            this.viewstructure_viewmodel = Window.temp.find_type (typeof (ViewStructureViewModel)) as ViewStructureViewModel;
+            this.viewstructure_viewmodel = autowire<ViewStructureViewModel> ();
             
             var expresion = new Gtk.PropertyExpression (typeof(BaseType), null, "table");
             this.filter = new Gtk.StringFilter (expresion);

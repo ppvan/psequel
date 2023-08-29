@@ -36,6 +36,7 @@ namespace Psequel {
         public const string SCHEMA_CHANGED = "schema-changed";
         public const string SELECTED_TABLE_CHANGED = "selected-table-changed";
         public const string SELECTED_VIEW_CHANGED = "selected-view-changed";
+        public const string ACTIVE_CONNECTION = "active-connection";
         public string type;
         public Object data;
 
