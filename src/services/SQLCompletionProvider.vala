@@ -32,14 +32,12 @@ namespace Psequel {
                 static_candidates.append (new Model (PGListerals.RESERVED[i], "RESERVED"));
             }
 
-
             // this.notify["query-viewmodel"].connect (() => {
 
             // dynamic_candidates = new List<Model> ();
             // query_viewmodel.current_schema.tables.foreach ((table) => {
             // dynamic_candidates.append (new Model (table.name, "TABLE"));
             // });
-
             // query_viewmodel.current_schema.views.foreach ((view) => {
             // dynamic_candidates.append (new Model (view.name, "VIEW"));
             // });
