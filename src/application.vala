@@ -20,6 +20,12 @@
 
 namespace Psequel {
 
+
+    public enum ApplicationStyle {
+        SYSTEM = 0,
+        LIGHT,
+        DARK
+    }
     // public string APP_ID = "me.ppvan.Psequel";
 
     public class Application : Adw.Application {
@@ -32,6 +38,7 @@ namespace Psequel {
         public static Settings settings;
         public static ThreadPool<Worker> background;
 
+        public int color_scheme { get; set; }
         public const int MAX_COLUMNS = 100;
 
         private PreferencesWindow preference;
@@ -74,6 +81,9 @@ namespace Psequel {
 
             Application.app = this;
             Application.settings = new Settings (this.application_id);
+            settings.bind ("color-scheme", this, "color_scheme", SettingsBindFlags.GET);
+            this.notify["color-scheme"].connect (update_color_scheme);
+
             try {
 
                 // Don't change the max_thread because libpq did not support many query with 1 connection.
@@ -93,8 +103,32 @@ namespace Psequel {
             base.shutdown ();
         }
 
+        public void update_color_scheme () {
+            switch (this.color_scheme) {
+            case ApplicationStyle.SYSTEM:
+                style_manager.color_scheme = Adw.ColorScheme.DEFAULT;
+                break;
+            case ApplicationStyle.DARK:
+                style_manager.color_scheme = Adw.ColorScheme.FORCE_DARK;
+                break;
+            case ApplicationStyle.LIGHT:
+                style_manager.color_scheme = Adw.ColorScheme.FORCE_LIGHT;
+                break;
+            default:
+                assert_not_reached ();
+            }
+        }
+
         public void on_something () {
             debug ("DO something");
+            debug ("Dark: %b", style_manager.dark);
+            if (style_manager.dark) {
+                style_manager.color_scheme = Adw.ColorScheme.FORCE_LIGHT;
+            } else {
+                style_manager.color_scheme = Adw.ColorScheme.FORCE_DARK;
+            }
+
+            // style_manager.dark = !style_manager.dark;
         }
 
         public static int main (string[] args) {
@@ -106,7 +140,9 @@ namespace Psequel {
 
         /* register needed types, allow me to ref a template inside a template */
         private static void ensure_types () {
-            typeof (ConnectionViewModel).ensure ();
+
+            typeof (Psequel.StyleSwitcher).ensure ();
+            typeof (Psequel.ConnectionViewModel).ensure ();
             typeof (Psequel.SchemaView).ensure ();
             typeof (Psequel.SchemaSidebar).ensure ();
             typeof (Psequel.SchemaMain).ensure ();
@@ -172,11 +208,11 @@ namespace Psequel {
          * This result to another event to notify window is ready and widget should setup signals
          */
         private Window new_window () {
-            
+
             // give temp access because window is not created yet
             Window.temp = create_viewmodels ();
             var window = new Window (this, Window.temp);
-            //  Window.temp = null;
+            // Window.temp = null;
 
             return window;
         }
@@ -217,7 +253,7 @@ namespace Psequel {
             container.register (query_history_vm);
             container.register (query_vm);
 
-            // events 
+            // events
             conn_vm.subcribe (Event.ACTIVE_CONNECTION, sche_vm);
 
             sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);

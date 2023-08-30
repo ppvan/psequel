@@ -67,8 +67,8 @@ namespace Psequel {
             this.is_connectting = true;
             try {
                 yield sql_service.connect_db (connection);
-                this.emit_event (Event.ACTIVE_CONNECTION, connection);
                 this.navigation_service.navigate (NavigationService.QUERY_VIEW);
+                this.emit_event (Event.ACTIVE_CONNECTION, connection);
 
             } catch (PsequelError err) {
                 debug ("Error: %s", err.message);

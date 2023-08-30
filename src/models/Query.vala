@@ -1,7 +1,7 @@
 namespace Psequel {
     public class Query : Object, Json.Serializable {
         public string sql { get; private set; }
-        public Variant[] params {get; private set;}
+        public Variant[] params;
         public Query (string sql) {
             base();
             this.sql = sql;

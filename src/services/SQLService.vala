@@ -117,21 +117,6 @@ namespace Psequel {
             }
         }
 
-        private inline Query add_limit (Query query) {
-            if (!query.sql.has_prefix ("SELECT")) {
-                return query;
-            }
-            
-            string limit_sql = query.sql;
-            if (limit_sql.contains (";")) {
-                limit_sql = limit_sql.replace (";", @" LIMIT $query_limit;");
-            } else {
-                limit_sql += @" LIMIT $query_limit;";
-            }
-
-            return new Query (limit_sql);
-        }
-
         private async Result exec_query_internal (string query) throws PsequelError {
 
             debug ("Exec: %s", query);

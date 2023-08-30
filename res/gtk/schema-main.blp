@@ -1,6 +1,41 @@
 using Gtk 4.0;
 using Adw 1;
 
+
+menu primary_menu {
+
+  section {
+    item {
+      custom: "style-switcher";
+    }
+  }
+
+  section {
+    item {
+      label: _("_New Window");
+      action: "app.new-window";
+    }
+  }
+
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Keyboard Shortcuts");
+      action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("_About");
+      action: "app.about";
+    }
+  }
+}
+
+
 template $PsequelSchemaMain : Gtk.Box {
     orientation: vertical;
     width-request: 920;
@@ -16,7 +51,16 @@ template $PsequelSchemaMain : Gtk.Box {
         [end]
         MenuButton {
             icon-name: "open-menu-symbolic";
-            menu-model: bind template.menu;
+            menu-model: primary_menu;
+            popover: Gtk.PopoverMenu {
+                menu-model: primary_menu;
+
+                [style-switcher]
+                $PsequelStyleSwitcher {
+
+                }
+            };
+
         }
     }
     

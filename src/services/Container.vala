@@ -11,9 +11,10 @@ namespace Psequel {
         }
 
         public void register (Object obj) {
-            var not_found = dependencies.replace (obj.get_type (), obj);
 
-            if (!not_found) {
+            if (!dependencies.contains (obj.get_type ())) {
+                dependencies.replace (obj.get_type (), obj);
+            } else {
                 warning ("Register type is already in the map");
             }
         }

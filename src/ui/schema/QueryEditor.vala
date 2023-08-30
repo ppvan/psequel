@@ -147,8 +147,9 @@ namespace Psequel {
             buffer.tag_table.add (tag);
 
 
-            Adw.StyleManager.get_default ()
-             .bind_property ("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
+
+
+            Application.app.style_manager.bind_property ("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
                 var is_dark = from.get_boolean ();
                 if (is_dark) {
                     var scheme = style_manager.get_scheme ("Adwaita-dark");
@@ -182,7 +183,7 @@ namespace Psequel {
 
             var action = new SimpleAction.stateful (name, null, new Variant.boolean (init));
             action.activate.connect (toggle_boolean);
-            action.change_state.connect (func);
+            action.change_state.connect ((owned)func);
 
             return action;
         }

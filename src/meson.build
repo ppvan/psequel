@@ -23,6 +23,8 @@ psequel_sources = [
     'ui/schema/TableDataView.vala',
     'ui/schema/ViewDataView.vala',
 
+    'ui/widgets/StyleSwitcher.vala',
+
     'ui/Window.vala',
     'ui/PreferencesWindow.vala',
 

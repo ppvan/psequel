@@ -8,6 +8,9 @@ blueprints_output_dir = meson.current_build_dir()
 
 blueprints = custom_target('blueprints',
   input: files(
+
+    'gtk/style-switcher.blp',
+
     'gtk/connection-form.blp',
     'gtk/connection-sidebar.blp',
     'gtk/connection-view.blp',
