@@ -3,9 +3,6 @@ namespace Psequel {
     // valalint=skip-file
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/preferences-window.ui")]
     public class PreferencesWindow : Adw.PreferencesWindow {
-
-        private Gtk.StringList model;
-
         //  const ActionEntry[] ACTION_ENTRIES = {
         //      { "editor-font", old_choser },
         //  };
@@ -26,12 +23,6 @@ namespace Psequel {
 
             font_label.get_pango_context ().set_font_description (desc);
             font_label.label = desc.to_string ();
-
-            var style_manager = GtkSource.StyleSchemeManager.get_default ();
-
-            this.model = new Gtk.StringList (style_manager.get_scheme_ids ());
-
-            color_scheme.set_model (this.model);
 //  
             //  Application.app.add_action_entries (ACTION_ENTRIES, this);
         }
@@ -47,24 +38,6 @@ namespace Psequel {
                 var desc = Pango.FontDescription.from_string (_setting.get_string (key));
 
                 font_label.get_pango_context ().set_font_description (desc);
-            });
-
-            Application.settings.changed["color-scheme"].connect ((_setting, key) => {
-
-                var cur_color_scheme = _setting.get_string (key);
-
-                for (uint i = 0; i < this.model.get_n_items (); i++) {
-                    var item = this.model.get_item (i) as Gtk.StringObject;
-                    if (item.string == cur_color_scheme) {
-                        color_scheme.selected = i;
-                        break;
-                    }
-                }
-            });
-
-            color_scheme.notify["selected"].connect (() => {
-                var item = color_scheme.get_selected_item () as Gtk.StringObject;
-                Application.settings.set_string ("color-scheme", item.string);
             });
         }
 
@@ -136,8 +109,5 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.SpinButton query_limit;
-
-        [GtkChild]
-        private unowned Adw.ComboRow color_scheme;
     }
 }
