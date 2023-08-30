@@ -33,7 +33,6 @@ namespace Psequel {
             }
 
 
-
             // this.notify["query-viewmodel"].connect (() => {
 
             // dynamic_candidates = new List<Model> ();
@@ -104,6 +103,7 @@ namespace Psequel {
             /*
                 Query viewmodel is not set until the query view is created.
              */
+             yield schema_viewmodel.load_schema (schema_viewmodel.current_schema);
              dynamic_candidates = new List<Model> ();
              schema_viewmodel.current_schema.tables.foreach ((table) => {
                  dynamic_candidates.append (new Model (table.name, "TABLE"));

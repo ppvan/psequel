@@ -15,7 +15,9 @@ namespace Psequel {
         public SchemaViewModel (SchemaService service) {
             base();
             this.schema_service = service;
+
             this.notify["current-schema"].connect (() => {
+                debug ("emit SCHEMA_CHANGED");
                 this.emit_event (Event.SCHEMA_CHANGED, current_schema);
             });
         }
@@ -34,9 +36,10 @@ namespace Psequel {
 
         public async void load_schema (Schema schema) throws PsequelError {
             debug ("Loading schema: %s", schema.name);
-            yield schema_service.load_schema (schema);
-
             current_schema = schema;
+
+            // force reload
+            this.notify_property ("current-schema");
         }
 
         public async void reload () throws PsequelError {

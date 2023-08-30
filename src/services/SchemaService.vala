@@ -97,18 +97,17 @@ namespace Psequel {
             schema.tables = new List<Table> ();
             schema.views = new List<View> ();
 
-
             var table_groups = new HashTable<string, Table> (GLib.str_hash, GLib.str_equal);
             var view_groups = new HashTable<string, View> (GLib.str_hash, GLib.str_equal);
-
+            
             var table_names = yield get_tbnames (schema);
-
+            
             var view_names = yield get_viewnames (schema);
-
+            
             var columns = yield get_columns (schema);
-
+            
             var indexes = yield get_indexes (schema);
-
+            
             var fks = yield get_fks (schema);
 
             debug ("cols: %u indx: %u fks: %u", columns.length (), indexes.length (), fks.length ());
