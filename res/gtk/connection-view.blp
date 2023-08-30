@@ -39,8 +39,14 @@ template $PsequelConnectionView : Adw.Bin {
 }
 
 
-
 menu primary_menu {
+
+  section {
+    item {
+      custom: "style-switcher";
+    }
+  }
+
   section {
     item {
       label: _("_New Window");
@@ -73,6 +79,11 @@ menu primary_menu {
     item {
       label: _("_About");
       action: "app.about";
+    }
+
+    item {
+        label: _("_Dark");
+        action: "app.dark";
     }
   }
 }

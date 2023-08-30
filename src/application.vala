@@ -46,6 +46,7 @@ namespace Psequel {
                 { "about", this.on_about_action },
                 { "preferences", this.on_preferences_action },
                 { "new-window", this.on_new_window },
+                { "dark", this.on_something },
                 { "quit", this.quit }
             };
             this.add_action_entries (action_entries, this);
@@ -95,6 +96,14 @@ namespace Psequel {
 
         public void on_something () {
             debug ("DO something");
+            debug ("Dark: %b", style_manager.dark);
+            if (style_manager.dark) {
+                style_manager.color_scheme = Adw.ColorScheme.FORCE_LIGHT;
+            } else {
+                style_manager.color_scheme = Adw.ColorScheme.FORCE_DARK;
+            }
+
+            // style_manager.dark = !style_manager.dark;
         }
 
         public static int main (string[] args) {
@@ -106,7 +115,9 @@ namespace Psequel {
 
         /* register needed types, allow me to ref a template inside a template */
         private static void ensure_types () {
-            typeof (ConnectionViewModel).ensure ();
+
+            typeof (Psequel.StyleSwitcher).ensure ();
+            typeof (Psequel.ConnectionViewModel).ensure ();
             typeof (Psequel.SchemaView).ensure ();
             typeof (Psequel.SchemaSidebar).ensure ();
             typeof (Psequel.SchemaMain).ensure ();

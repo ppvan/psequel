@@ -49,11 +49,11 @@
             </description>
         </key>
 
-        <key name="color-scheme" type="s">
-            <default>"Adwaita"</default>
-            <summary>Editor color scheme</summary>
+        <key name="color-scheme" type="i">
+            <default>0</default>
+            <summary>System color scheme</summary>
             <description>
-                Editor color scheme supported by Gtk Source View 5
+                Dark/Light theme follow system or not
             </description>
         </key>
 
