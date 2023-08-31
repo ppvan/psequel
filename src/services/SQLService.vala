@@ -101,7 +101,7 @@ namespace Psequel {
             var status = result.get_status ();
 
             switch (status) {
-            case ExecStatus.TUPLES_OK, ExecStatus.COMMAND_OK:
+            case ExecStatus.TUPLES_OK, ExecStatus.COMMAND_OK, ExecStatus.COPY_OUT:
                 // success
                 break;
             case ExecStatus.FATAL_ERROR:

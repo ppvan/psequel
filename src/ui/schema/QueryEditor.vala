@@ -10,6 +10,7 @@ namespace Psequel {
 
         delegate void ChangeStateFunc (SimpleAction action, Variant? new_state);
 
+        public ExportService export_service {get; set;}
         public QueryViewModel query_viewmodel { get; set; }
 
 
@@ -31,6 +32,7 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
+            this.export_service = autowire<ExportService> ();
             this.query_viewmodel = autowire<QueryViewModel> ();
             this.query_history_viewmodel = autowire<QueryHistoryViewModel> ();
 
@@ -237,6 +239,43 @@ namespace Psequel {
             return true;
         }
 
+        [GtkCallback]
+        private void on_export_csv (Gtk.Button btn) {
+            export_to_csv_file.begin ();
+        }
+
+        private async void export_to_csv_file (string title = "Open File") {
+            var filter = new Gtk.FileFilter ();
+            //  filter.add_pattern ("*.csv");
+            filter.add_mime_type ("text/csv");
+            var filters = new ListStore (typeof (Gtk.FileFilter));
+            filters.append (filter);
+
+            var window = (Window) get_parrent_window (this);
+
+            var file_dialog = new Gtk.FileDialog () {
+                modal = true,
+                initial_folder = GLib.File.new_for_path (Environment.get_home_dir ()),
+                title = title,
+                default_filter = filter,
+                filters = filters
+            };
+
+            try {
+                var dest = yield file_dialog.save (window, null);
+                yield export_service.export_csv (dest, query_history_viewmodel.current_relation);
+
+            } catch (GLib.Error err) {
+                debug (err.message);
+
+                var toast = new Adw.Toast (err.message) {
+                    timeout = 3,
+                };
+
+                window.add_toast (toast);
+            }
+        }
+
         [GtkChild]
         private unowned GtkSource.View editor;
 
@@ -258,5 +297,8 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.Popover popover;
+
+        [GtkChild]
+        private unowned Gtk.Button export;
     }
 }

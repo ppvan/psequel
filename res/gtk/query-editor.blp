@@ -112,6 +112,10 @@ template $PsequelQueryEditor : Adw.Bin {
                     spinning: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
                 }
 
+                // Label query_time {
+                //     label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-time;
+                // }
+
                 Button run_query_btn {
                     styles ["suggested-action"]
                     label: "Run Query";
@@ -152,8 +156,9 @@ template $PsequelQueryEditor : Adw.Bin {
                     hexpand: true;
                 }
 
-                Label query_time {
-                    label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-time;
+                Button export {
+                    label: "Export";
+                    clicked => $on_export_csv();
                 }
             }
         }

@@ -19,7 +19,7 @@ namespace Psequel {
             sql += @" LIMIT $limit";
         }
 
-        private inline bool is_select () {
+        public bool is_select () {
             return sql.up (6) == "SELECT";
         }
 

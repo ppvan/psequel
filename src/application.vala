@@ -225,6 +225,7 @@ namespace Psequel {
             var schema_service = new SchemaService (sql_service);
             var repository = new ConnectionRepository (Application.settings);
             var navigation = new NavigationService ();
+            var export = new ExportService ();
 
             // viewmodels
             var conn_vm = new ConnectionViewModel (repository, sql_service, navigation);
@@ -240,6 +241,7 @@ namespace Psequel {
 
             container.register (sql_service);
             container.register (schema_service);
+            container.register (export);
             container.register (repository);
             container.register (navigation);
             container.register (conn_vm);
