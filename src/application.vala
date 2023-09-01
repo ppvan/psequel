@@ -256,6 +256,7 @@ namespace Psequel {
             // events
             conn_vm.subcribe (Event.ACTIVE_CONNECTION, sche_vm);
 
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, completer);
             sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);
             sche_vm.subcribe (Event.SCHEMA_CHANGED, view_vm);
             sche_vm.subcribe (Event.SCHEMA_CHANGED, table_structure_vm);

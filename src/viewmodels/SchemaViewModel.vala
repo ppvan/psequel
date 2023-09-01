@@ -30,7 +30,10 @@ namespace Psequel {
 
         public void update (Event event) {
             if (event.type == Event.ACTIVE_CONNECTION) {
-                database_connected.begin ();
+                // delay for ui to play animation
+                Timeout.add_once (300, ()  => {
+                    database_connected.begin ();
+                });
             }
         }
 
@@ -44,6 +47,7 @@ namespace Psequel {
         private async void database_connected () throws PsequelError {
             // auto load schema list.
             yield list_schemas ();
+            
             yield select_schema (schemas.find (s => s.name == DEFAULT));
         }
 
