@@ -49,27 +49,9 @@ namespace Psequel {
             this.sql_service = service;
         }
 
-        /* Get the schema list as string */
-        public async string[] schema_list () throws PsequelError {
-
-            var query = new Query (SCHEMA_LIST_SQL);
-            var relation = yield sql_service.exec_query (query);
-
-            var _schema_list = new string[relation.rows];
-
-            for (int i = 0; i < _schema_list.length; i++) {
-                _schema_list[i] = relation[i][0];
-            }
-
-            return _schema_list;
-        }
-
         /** Get the schema list.
-         *
-         * These schemas only contains names.For info about tables, views in schemas, load is with
-         * {@link load_schema}
          */
-        public async List<Schema> get_schemas () {
+        public async List<Schema> schema_list () {
             var list = new List<Schema> ();
             try {
                 var query = new Query (SCHEMA_LIST_SQL);
@@ -86,10 +68,7 @@ namespace Psequel {
             return list;
         }
 
-        /** Load table list, view list into the schema. */
-        public async void load_schema (Schema schema) throws PsequelError.QUERY_FAIL {
-            //  yield load_tables_and_views (schema);
-        }
+        
 
         //  private async void load_tables_and_views (Schema schema) {
 

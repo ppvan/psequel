@@ -9,22 +9,19 @@ psequel_sources = [
     'ui/schema/SchemaView.vala',
     'ui/schema/SchemaSidebar.vala',
     'ui/schema/SchemaMain.vala',
-    
-    'ui/schema/QueryEditor.vala',
     'ui/schema/QueryResult.vala',
-
-
     'ui/schema/TableStructureView.vala',
     'ui/schema/ViewStructureView.vala',
     'ui/schema/TableColumnInfo.vala',
     'ui/schema/TableForeignKeyInfo.vala',
     'ui/schema/TableIndexInfo.vala',
-
     'ui/schema/TableDataView.vala',
     'ui/schema/ViewDataView.vala',
+    
+    'ui/editor/QueryEditor.vala',
+    'ui/editor/SQLCompletionProvider.vala',
 
     'ui/widgets/StyleSwitcher.vala',
-
     'ui/Window.vala',
     'ui/PreferencesWindow.vala',
 
@@ -36,13 +33,13 @@ psequel_sources = [
     # 'models/utils.vala',
 
     'services/SQLService.vala',
+    'services/CompleterService.vala',
     'services/ExportService.vala',
     'services/NavigationService.vala',
     'services/ConnectionService.vala',
     'services/Container.vala',
     'services/ResourceManager.vala',
     'services/SchemaService.vala',
-    'services/SQLCompletionProvider.vala',
 
     'repositories/ConnectionRepository.vala',
     'repositories/QueryRepository.vala',

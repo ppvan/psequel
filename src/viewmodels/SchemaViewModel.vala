@@ -57,7 +57,7 @@ namespace Psequel {
 
         /** List schema from database. */
         private async void list_schemas () throws PsequelError {
-            var unload_schemas = yield schema_service.get_schemas ();
+            var unload_schemas = yield schema_service.schema_list ();
 
             schemas.append_all (unload_schemas);
         }
