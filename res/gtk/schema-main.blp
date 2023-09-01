@@ -86,7 +86,6 @@ template $PsequelSchemaMain : Gtk.Box {
                 StackPage {
                     name: "view";
                     child: $PsequelViewStructureView {
-                        viewstructure-viewmodel: bind template.view-viewmodel as <$PsequelViewViewModel>.viewstructure-viewmodel;
                     };
                 }
             };
@@ -106,14 +105,12 @@ template $PsequelSchemaMain : Gtk.Box {
                 StackPage {
                     name: "table";
                     child: $PsequelTableDataView {
-                        tabledata-viewmodel: bind template.table-viewmodel as <$PsequelTableViewModel>.tabledata-viewmodel;
                     };
                 }
 
                 StackPage {
                     name: "view";
                     child: $PsequelViewDataView {
-                        viewdata-viewmodel: bind template.view-viewmodel as <$PsequelViewViewModel>.viewdata-viewmodel;
                     };
                 }
             };

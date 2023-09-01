@@ -6,17 +6,9 @@ namespace Psequel {
     public class Schema : Object {
         public string name { get; private set; }
 
-        public List<Table> tables { get; owned set; }
-        public List<View> views {get; owned set;}
-
         public Schema (string name) {
             Object ();
             this.name = name;
-        }
-
-        construct {
-            tables = new List<Table> ();
-            views = new List<View> ();
         }
     }
 

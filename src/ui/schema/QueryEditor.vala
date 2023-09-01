@@ -6,7 +6,8 @@ namespace Psequel {
     public class QueryEditor : Adw.Bin {
 
 
-        const string TAG_NAME = "query-block";
+        const string LIGHT_TAG = "query-block-light";
+        const string DARK_TAG = "query-block-dark";
 
         delegate void ChangeStateFunc (SimpleAction action, Variant? new_state);
 
@@ -104,14 +105,16 @@ namespace Psequel {
             var lang = lang_manager.get_language ("sql");
             buffer.language = lang;
 
-            var tag = new Gtk.TextTag (TAG_NAME);
+            var light_tag = new Gtk.TextTag (LIGHT_TAG);
+            light_tag.background_rgba = { 237 / 255f, 255 / 255f, 255 / 255f, 0.8f };
+
+            var dark_tag = new Gtk.TextTag (DARK_TAG);
+            dark_tag.background_rgba = { 55 / 255f, 55 / 255f, 55 / 255f, 0.8f };
             // tag.background = "sidebar_backdrop_color";
             // rgba(52, 73, 94,1.0)
-            tag.background_rgba = { 52 / 255f, 73 / 255f, 94 / 255f, 0.3f };
-            buffer.tag_table.add (tag);
-
-
-
+            // rgb(237, 255, 255)
+            buffer.tag_table.add (light_tag);
+            buffer.tag_table.add (dark_tag);
 
             Application.app.style_manager.bind_property ("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
                 var is_dark = from.get_boolean ();
@@ -149,12 +152,18 @@ namespace Psequel {
                 buffer.get_iter_at_offset (out iter2, end);
 
                 if (start < buffer.cursor_position && buffer.cursor_position <= end + 1) {
-                    buffer.apply_tag_by_name (TAG_NAME, iter1, iter2);
+                    
+                    if (Application.app.style_manager.dark) {
+                        buffer.apply_tag_by_name (DARK_TAG, iter1, iter2);
+                    } else {
+                        buffer.apply_tag_by_name (LIGHT_TAG, iter1, iter2);
+                    }
 
                     // Important
                     query_viewmodel.selected_query_changed (token.statement);
                 } else {
-                    buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
+                    buffer.remove_tag_by_name (DARK_TAG, iter1, iter2);
+                    buffer.remove_tag_by_name (LIGHT_TAG, iter1, iter2);
                 }
             });
         }
@@ -165,7 +174,8 @@ namespace Psequel {
 
             buffer.get_start_iter (out start);
             buffer.get_end_iter (out end);
-            buffer.remove_tag_by_name (TAG_NAME, start, end);
+            buffer.remove_tag_by_name (DARK_TAG, start, end);
+            buffer.remove_tag_by_name (LIGHT_TAG, start, end);
         }
 
         private void create_action_group () {
@@ -188,7 +198,7 @@ namespace Psequel {
 
             var action = new SimpleAction.stateful (name, null, new Variant.boolean (init));
             action.activate.connect (toggle_boolean);
-            action.change_state.connect (func);
+            action.change_state.connect ((owned)func);
 
             return action;
         }
@@ -300,8 +310,5 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.Popover popover;
-
-        [GtkChild]
-        private unowned Gtk.Button export;
     }
 }

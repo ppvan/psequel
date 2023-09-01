@@ -18,6 +18,7 @@ namespace Psequel {
         }
 
         protected void emit_event(string event_type, Object data) {
+            debug ("Emit: %s", event_type);
             event_manager.notify (event_type, data);
         }
     }

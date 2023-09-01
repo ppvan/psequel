@@ -5,9 +5,6 @@ namespace Psequel {
         public ObservableList<Table> tables { get; set; default = new ObservableList<Table> (); }
         public Table? selected_table { get; set; }
 
-        public TableDataViewModel tabledata_viewmodel { get; set; }
-        public TableStructureViewModel tablestructure_viewmodel {get; set;}
-
 
         public SQLService sql_service {get; private set;}
 
