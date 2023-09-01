@@ -222,6 +222,7 @@ namespace Psequel {
             var repository = new ConnectionRepository (Application.settings);
             var navigation = new NavigationService ();
             var export = new ExportService ();
+            var completer = new CompleterService (sql_service);
 
             // viewmodels
             var conn_vm = new ConnectionViewModel (repository, sql_service, navigation);
@@ -236,6 +237,7 @@ namespace Psequel {
             var query_vm = new QueryViewModel (query_history_vm);
 
             container.register (sql_service);
+            container.register (completer);
             container.register (schema_service);
             container.register (export);
             container.register (repository);
@@ -254,6 +256,7 @@ namespace Psequel {
             // events
             conn_vm.subcribe (Event.ACTIVE_CONNECTION, sche_vm);
 
+            sche_vm.subcribe (Event.SCHEMA_CHANGED, completer);
             sche_vm.subcribe (Event.SCHEMA_CHANGED, table_vm);
             sche_vm.subcribe (Event.SCHEMA_CHANGED, view_vm);
             sche_vm.subcribe (Event.SCHEMA_CHANGED, table_structure_vm);

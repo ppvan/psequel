@@ -64,17 +64,13 @@ namespace Psequel {
         private void on_query_history_exec (Gtk.ListView view, uint pos) {
 
             var history_query = (Query)selection_model.get_item (pos);
+            debug ("History activated, exec: %s", history_query.sql);
+            query_history_viewmodel.exec_history.begin (history_query);
 
-            debug ("%p", history_query);
-            debug ("%u", selection_model.get_n_items ());
-            debug ("%u %i", pos, query_history_viewmodel.query_history.size);
-            //  debug ("History activated, exec: %s", history_query.sql);
-            //  query_history_viewmodel.exec_history.begin (history_query);
+            var text = history_query.sql ?? "";
+            clear_and_insert (buffer, text);
 
-            //  var text = history_query.sql ?? "";
-            //  clear_and_insert (buffer, text);
-
-            //  popover.hide ();
+            popover.hide ();
         }
 
         /** Clear and insert insteal of manipulate .text to keep undo possible */
