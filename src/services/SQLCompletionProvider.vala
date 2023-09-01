@@ -101,15 +101,15 @@ namespace Psequel {
             /*
                 Query viewmodel is not set until the query view is created.
              */
-             yield schema_viewmodel.load_schema (schema_viewmodel.current_schema);
+            //   yield schema_viewmodel.load_schema (schema_viewmodel.current_schema);
              dynamic_candidates = new List<Model> ();
-             schema_viewmodel.current_schema.tables.foreach ((table) => {
-                 dynamic_candidates.append (new Model (table.name, "TABLE"));
-             });
+            //   schema_viewmodel.current_schema.tables.foreach ((table) => {
+            //       dynamic_candidates.append (new Model (table.name, "TABLE"));
+            //   });
  
-             schema_viewmodel.current_schema.views.foreach ((view) => {
-                 dynamic_candidates.append (new Model (view.name, "VIEW"));
-             });
+            //   schema_viewmodel.current_schema.views.foreach ((view) => {
+            //       dynamic_candidates.append (new Model (view.name, "VIEW"));
+            //   });
 
             var candidates = new ObservableList<Model> ();
             candidates.append_all (static_candidates);

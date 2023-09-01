@@ -32,12 +32,12 @@ namespace Psequel {
 
                 if (current_relation.fetch_time / SECOND_TO_MS > 0) {
                     if (current_relation.fetch_time / SECOND_TO_MS / MILISECS_TO_US > 0) {
-                        query_time = @"Exec time: $(current_relation.fetch_time / SECOND_TO_MS / MILISECS_TO_US) s";
+                        query_time = @"$(current_relation.fetch_time / SECOND_TO_MS / MILISECS_TO_US) s";
                     } else {
-                        query_time = @"Exec time: $(current_relation.fetch_time / SECOND_TO_MS) ms";
+                        query_time = @"$(current_relation.fetch_time / SECOND_TO_MS) ms";
                     }
                 } else {
-                    query_time = @"Exec time: $(current_relation.fetch_time) μs";
+                    query_time = @"$(current_relation.fetch_time) μs";
                 }
             });
         }

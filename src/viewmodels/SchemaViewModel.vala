@@ -17,9 +17,15 @@ namespace Psequel {
             this.schema_service = service;
 
             this.notify["current-schema"].connect (() => {
-                debug ("emit SCHEMA_CHANGED");
                 this.emit_event (Event.SCHEMA_CHANGED, current_schema);
             });
+        }
+
+        public void select_index (int index) {
+            if (index < 0 || index >= schemas.size) {
+                return;
+            }
+            select_schema.begin (schemas[index]);
         }
 
         public void update (Event event) {
@@ -28,39 +34,32 @@ namespace Psequel {
             }
         }
 
-        public async void database_connected () throws PsequelError {
-            // auto load schema list.
-            yield list_schemas ();
-            yield load_schema (schemas.find (s => s.name == DEFAULT));
-        }
-
-        public async void load_schema (Schema schema) throws PsequelError {
-            debug ("Loading schema: %s", schema.name);
-            current_schema = schema;
-
-            // force reload
-            this.notify_property ("current-schema");
-        }
-
         public async void reload () throws PsequelError {
             if (current_schema == null) {
                 return;
             }
-            yield load_schema (current_schema);
+            yield select_schema (current_schema);
         }
 
-        public async void list_schemas () throws PsequelError {
+        private async void database_connected () throws PsequelError {
+            // auto load schema list.
+            yield list_schemas ();
+            yield select_schema (schemas.find (s => s.name == DEFAULT));
+        }
+
+        /** Select current schema */
+        private async void select_schema (Schema schema) throws PsequelError {
+            debug ("Select schema: %s", schema.name);
+            current_schema = schema;
+            // force reload
+            this.notify_property ("current-schema");
+        }
+
+        /** List schema from database. */
+        private async void list_schemas () throws PsequelError {
             var unload_schemas = yield schema_service.get_schemas ();
 
             schemas.append_all (unload_schemas);
-        }
-
-        public void select_index (int index) {
-            if (index < 0 || index >= schemas.size) {
-                return;
-            }
-            debug ("Selecting schema: %s", schemas[index].name);
-            current_schema = schemas[index];
         }
     }
 }

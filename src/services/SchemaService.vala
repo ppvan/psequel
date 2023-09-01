@@ -88,93 +88,93 @@ namespace Psequel {
 
         /** Load table list, view list into the schema. */
         public async void load_schema (Schema schema) throws PsequelError.QUERY_FAIL {
-            yield load_tables_and_views (schema);
+            //  yield load_tables_and_views (schema);
         }
 
-        private async void load_tables_and_views (Schema schema) {
+        //  private async void load_tables_and_views (Schema schema) {
 
-            // old table auto clean by GC
-            schema.tables = new List<Table> ();
-            schema.views = new List<View> ();
+        //      // old table auto clean by GC
+        //      schema.tables = new List<Table> ();
+        //      schema.views = new List<View> ();
 
-            var table_groups = new HashTable<string, Table> (GLib.str_hash, GLib.str_equal);
-            var view_groups = new HashTable<string, View> (GLib.str_hash, GLib.str_equal);
+        //      var table_groups = new HashTable<string, Table> (GLib.str_hash, GLib.str_equal);
+        //      var view_groups = new HashTable<string, View> (GLib.str_hash, GLib.str_equal);
             
-            var table_names = yield get_tbnames (schema);
+        //      var table_names = yield get_tbnames (schema);
             
-            var view_names = yield get_viewnames (schema);
+        //      var view_names = yield get_viewnames (schema);
             
-            var columns = yield get_columns (schema);
+        //      var columns = yield get_columns (schema);
             
-            var indexes = yield get_indexes (schema);
+        //      var indexes = yield get_indexes (schema);
             
-            var fks = yield get_fks (schema);
+        //      var fks = yield get_fks (schema);
 
-            debug ("cols: %u indx: %u fks: %u", columns.length (), indexes.length (), fks.length ());
+        //      debug ("cols: %u indx: %u fks: %u", columns.length (), indexes.length (), fks.length ());
 
-            table_names.foreach ((tbname) => {
-                var table = new Table (schema) {
-                    name = tbname,
-                };
-                table_groups.insert (tbname, table);
-            });
+        //      table_names.foreach ((tbname) => {
+        //          var table = new Table (schema) {
+        //              name = tbname,
+        //          };
+        //          table_groups.insert (tbname, table);
+        //      });
 
-            view_names.foreach ((tbname) => {
-                var view = new View (schema) {
-                    name = tbname,
-                };
-                view_groups.insert (tbname, view);
-            });
+        //      view_names.foreach ((tbname) => {
+        //          var view = new View (schema) {
+        //              name = tbname,
+        //          };
+        //          view_groups.insert (tbname, view);
+        //      });
 
-            columns.foreach ((col) => {
-                if (table_groups.contains (col.table)) {
-                    var table = table_groups.get (col.table);
-                    table.columns.append (col);
-                }
+        //      columns.foreach ((col) => {
+        //          if (table_groups.contains (col.table)) {
+        //              var table = table_groups.get (col.table);
+        //              table.columns.append (col);
+        //          }
 
-                if (view_groups.contains (col.table)) {
-                    var view = view_groups.get (col.table);
-                    view.columns.append (col);
-                }
-            });
+        //          if (view_groups.contains (col.table)) {
+        //              var view = view_groups.get (col.table);
+        //              view.columns.append (col);
+        //          }
+        //      });
 
-            indexes.foreach ((index) => {
-                if (table_groups.contains (index.table)) {
-                    var table = table_groups.get (index.table);
-                    table.indexes.append (index);
-                }
+        //      indexes.foreach ((index) => {
+        //          if (table_groups.contains (index.table)) {
+        //              var table = table_groups.get (index.table);
+        //              table.indexes.append (index);
+        //          }
 
-                if (view_groups.contains (index.table)) {
-                    var view = view_groups.get (index.table);
-                    view.indexes.append (index);
-                }
-            });
+        //          if (view_groups.contains (index.table)) {
+        //              var view = view_groups.get (index.table);
+        //              view.indexes.append (index);
+        //          }
+        //      });
 
-            fks.foreach ((fk) => {
-                if (table_groups.contains (fk.table)) {
-                    var table = table_groups.get (fk.table);
-                    table.foreign_keys.append (fk);
-                }
-            });
+        //      fks.foreach ((fk) => {
+        //          if (table_groups.contains (fk.table)) {
+        //              var table = table_groups.get (fk.table);
+        //              table.foreign_keys.append (fk);
+        //          }
+        //      });
 
-            var tables = table_groups.steal_all_values ();
+        //      var tables = table_groups.steal_all_values ();
 
-            for (int i = 0; i < tables.length; i++) {
-                schema.tables.append (tables[i]);
-            }
+        //      for (int i = 0; i < tables.length; i++) {
+        //          schema.tables.append (tables[i]);
+        //      }
 
-            var views = view_groups.steal_all_values ();
+        //      var views = view_groups.steal_all_values ();
 
-            for (int i = 0; i < views.length; i++) {
-                schema.views.append (views[i]);
-            }
-        }
+        //      for (int i = 0; i < views.length; i++) {
+        //          schema.views.append (views[i]);
+        //      }
+        //  }
 
         private async List<string> get_tbnames (Schema schema) {
             var list = new List<string> ();
 
             try {
-                var query = new Query.with_params (TB_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (TB_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
@@ -191,7 +191,7 @@ namespace Psequel {
             var list = new List<string> ();
 
             try {
-                var query = new Query.with_params (VIEW_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (VIEW_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
@@ -209,7 +209,7 @@ namespace Psequel {
             var list = new List<Column> ();
 
             try {
-                var query = new Query.with_params (COLUMN_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (COLUMN_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
@@ -235,7 +235,7 @@ namespace Psequel {
             var list = new List<Index> ();
 
             try {
-                var query = new Query.with_params (INDEX_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (INDEX_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
@@ -260,7 +260,7 @@ namespace Psequel {
             var list = new List<ForeignKey> ();
 
             try {
-                var query = new Query.with_params (FK_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (FK_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {

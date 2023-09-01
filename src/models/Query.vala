@@ -1,26 +1,34 @@
 namespace Psequel {
     public class Query : Object, Json.Serializable {
-        public string sql { get; private set; }
-        public Variant[] params;
+
+        //  Properties must be public, get, set inorder to Json.Serializable works
+        public string sql { get; set; }
+        public string[] params {get; set;}
         public Query (string sql) {
             base();
             this.sql = sql;
         }
 
-        public Query.with_params (string sql, Variant[] params) {
+        public Query.with_params (string sql, string[] params) {
             this(sql);
             this.params = params;
         }
 
         public void set_limit (int limit) {
-            if (!is_select ()) {
+            if (!is_dql ()) {
                 return;
             }
             sql += @" LIMIT $limit";
         }
 
-        private inline bool is_select () {
+        public bool is_dql () {
             return sql.up (6) == "SELECT";
+        }
+
+        public bool is_ddl () {
+            var regex = /CREATE|DROP|RENAME|ALTER|INSERT|UPDATE|DELETE/;
+            var query = sql.up (6);
+            return regex.match (query, 0, null);
         }
 
         public Query clone () {

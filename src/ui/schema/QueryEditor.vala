@@ -6,10 +6,12 @@ namespace Psequel {
     public class QueryEditor : Adw.Bin {
 
 
-        const string TAG_NAME = "query-block";
+        const string LIGHT_TAG = "query-block-light";
+        const string DARK_TAG = "query-block-dark";
 
         delegate void ChangeStateFunc (SimpleAction action, Variant? new_state);
 
+        public ExportService export_service {get; set;}
         public QueryViewModel query_viewmodel { get; set; }
 
 
@@ -31,6 +33,7 @@ namespace Psequel {
 
         construct {
             debug ("[CONTRUCT] %s", this.name);
+            this.export_service = autowire<ExportService> ();
             this.query_viewmodel = autowire<QueryViewModel> ();
             this.query_history_viewmodel = autowire<QueryHistoryViewModel> ();
 
@@ -46,50 +49,6 @@ namespace Psequel {
         }
 
 
-        private void highlight_current_query () {
-
-            var stmts = PGQuery.split_statement (buffer.text);
-
-            // return;
-
-            this.clear_highlight ();
-            stmts.foreach ((token) => {
-
-                var start = token.location;
-                var end = token.location + token.statement.length;
-
-                // debug ("[%d, %d], %s", token.location, token.end, token.value);
-
-                Gtk.TextIter iter1;
-                Gtk.TextIter iter2;
-
-                // buffer.get_start_iter (out iter1);
-                // buffer.get_end_iter (out iter2);
-                // buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
-
-                buffer.get_iter_at_offset (out iter1, start);
-                buffer.get_iter_at_offset (out iter2, end);
-
-                if (start < buffer.cursor_position && buffer.cursor_position <= end + 1) {
-                    buffer.apply_tag_by_name (TAG_NAME, iter1, iter2);
-
-                    // Important
-                    query_viewmodel.selected_query_changed (token.statement);
-                } else {
-                    buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
-                }
-            });
-        }
-
-        private inline void clear_highlight () {
-            Gtk.TextIter start;
-            Gtk.TextIter end;
-
-            buffer.get_start_iter (out start);
-            buffer.get_end_iter (out end);
-            buffer.remove_tag_by_name (TAG_NAME, start, end);
-        }
-
         [GtkCallback]
         private void run_query_cb (Gtk.Button btn) {
             query_viewmodel.run_selected_query.begin ();
@@ -104,12 +63,18 @@ namespace Psequel {
         [GtkCallback]
         private void on_query_history_exec (Gtk.ListView view, uint pos) {
 
-            query_history_viewmodel.exec_history.begin (selected_query);
+            var history_query = (Query)selection_model.get_item (pos);
 
-            var text = selected_query == null ? "" : selected_query.sql;
-            clear_and_insert (buffer, text);
+            debug ("%p", history_query);
+            debug ("%u", selection_model.get_n_items ());
+            debug ("%u %i", pos, query_history_viewmodel.query_history.size);
+            //  debug ("History activated, exec: %s", history_query.sql);
+            //  query_history_viewmodel.exec_history.begin (history_query);
 
-            popover.hide ();
+            //  var text = history_query.sql ?? "";
+            //  clear_and_insert (buffer, text);
+
+            //  popover.hide ();
         }
 
         /** Clear and insert insteal of manipulate .text to keep undo possible */
@@ -140,14 +105,18 @@ namespace Psequel {
             var lang = lang_manager.get_language ("sql");
             buffer.language = lang;
 
-            var tag = new Gtk.TextTag (TAG_NAME);
+            // rgba(104, 109, 224,1.0)
+            var light_tag = new Gtk.TextTag (LIGHT_TAG);
+            light_tag.background_rgba = { 237 / 255f, 255 / 255f, 255 / 255f, 0.9f };
+
+            // rgba(149, 175, 192,1.0)
+            var dark_tag = new Gtk.TextTag (DARK_TAG);
+            dark_tag.background_rgba = { 149 / 255f, 175 / 255f, 192 / 255f, 0.2f };
             // tag.background = "sidebar_backdrop_color";
             // rgba(52, 73, 94,1.0)
-            tag.background_rgba = { 52 / 255f, 73 / 255f, 94 / 255f, 0.3f };
-            buffer.tag_table.add (tag);
-
-
-
+            // rgb(237, 255, 255)
+            buffer.tag_table.add (light_tag);
+            buffer.tag_table.add (dark_tag);
 
             Application.app.style_manager.bind_property ("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
                 var is_dark = from.get_boolean ();
@@ -161,6 +130,61 @@ namespace Psequel {
 
                 return true;
             });
+        }
+
+        private void highlight_current_query () {
+
+            var stmts = PGQuery.split_statement (buffer.text);
+            this.clear_highlight ();
+            stmts.foreach ((token) => {
+
+                var start = token.location;
+                var end = token.location + token.statement.length;
+
+                // debug ("[%d, %d], %s", token.location, token.end, token.value);
+
+                Gtk.TextIter iter1;
+                Gtk.TextIter iter2;
+
+                // buffer.get_start_iter (out iter1);
+                // buffer.get_end_iter (out iter2);
+                // buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
+
+                buffer.get_iter_at_offset (out iter1, start);
+                buffer.get_iter_at_offset (out iter2, end);
+
+                if (start < buffer.cursor_position && buffer.cursor_position <= end + 1) {
+
+                    // Double-check with strict mode.
+                    string statement = buffer.get_text (iter1, iter2, false);
+                    if (PGQuery.split_statement (statement, true) == null) {
+                        return;
+                    }
+
+
+                    if (Application.app.style_manager.dark) {
+                        buffer.apply_tag_by_name (DARK_TAG, iter1, iter2);
+                    } else {
+                        buffer.apply_tag_by_name (LIGHT_TAG, iter1, iter2);
+                    }
+
+                    // Important
+                    query_viewmodel.selected_query_changed (token.statement);
+                } else {
+                    buffer.remove_tag_by_name (DARK_TAG, iter1, iter2);
+                    buffer.remove_tag_by_name (LIGHT_TAG, iter1, iter2);
+                }
+            });
+        }
+
+        private inline void clear_highlight () {
+            Gtk.TextIter start;
+            Gtk.TextIter end;
+
+            buffer.get_start_iter (out start);
+            buffer.get_end_iter (out end);
+            buffer.remove_tag_by_name (DARK_TAG, start, end);
+            buffer.remove_tag_by_name (LIGHT_TAG, start, end);
         }
 
         private void create_action_group () {
@@ -235,6 +259,43 @@ namespace Psequel {
             to.set_uint (Gtk.INVALID_LIST_POSITION);
 
             return true;
+        }
+
+        [GtkCallback]
+        private void on_export_csv (Gtk.Button btn) {
+            export_to_csv_file.begin ();
+        }
+
+        private async void export_to_csv_file (string title = "Open File") {
+            var filter = new Gtk.FileFilter ();
+            //  filter.add_pattern ("*.csv");
+            filter.add_mime_type ("text/csv");
+            var filters = new ListStore (typeof (Gtk.FileFilter));
+            filters.append (filter);
+
+            var window = (Window) get_parrent_window (this);
+
+            var file_dialog = new Gtk.FileDialog () {
+                modal = true,
+                initial_folder = GLib.File.new_for_path (Environment.get_home_dir ()),
+                title = title,
+                default_filter = filter,
+                filters = filters
+            };
+
+            try {
+                var dest = yield file_dialog.save (window, null);
+                yield export_service.export_csv (dest, query_history_viewmodel.current_relation);
+
+            } catch (GLib.Error err) {
+                debug (err.message);
+
+                var toast = new Adw.Toast (err.message) {
+                    timeout = 3,
+                };
+
+                window.add_toast (toast);
+            }
         }
 
         [GtkChild]

@@ -49,7 +49,7 @@ namespace Psequel {
             var list = new List<Column> ();
 
             try {
-                var query = new Query.with_params (COLUMN_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (COLUMN_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
@@ -75,7 +75,7 @@ namespace Psequel {
             var list = new List<Index> ();
 
             try {
-                var query = new Query.with_params (INDEX_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (INDEX_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {
@@ -100,7 +100,7 @@ namespace Psequel {
             var list = new List<ForeignKey> ();
 
             try {
-                var query = new Query.with_params (FK_SQL, { new Variant.string (schema.name) });
+                var query = new Query.with_params (FK_SQL, { schema.name });
                 var relation = yield sql_service.exec_query_params (query);
 
                 foreach (var row in relation) {

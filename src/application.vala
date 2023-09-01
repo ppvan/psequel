@@ -41,9 +41,6 @@ namespace Psequel {
         public int color_scheme { get; set; }
         public const int MAX_COLUMNS = 100;
 
-        private PreferencesWindow preference;
-
-
         public Application () {
             Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
         }
@@ -191,14 +188,13 @@ namespace Psequel {
 
         private void on_preferences_action () {
 
-            if (this.preference == null) {
-                this.preference = new PreferencesWindow () {
-                    transient_for = this.active_window,
-                    modal = true,
-                    application = this,
-                };
-            }
-            this.preference.present ();
+            var preference = new PreferencesWindow () {
+                transient_for = this.active_window,
+                modal = true,
+                application = this,
+            };
+
+            preference.present ();
         }
 
         /**
@@ -225,6 +221,7 @@ namespace Psequel {
             var schema_service = new SchemaService (sql_service);
             var repository = new ConnectionRepository (Application.settings);
             var navigation = new NavigationService ();
+            var export = new ExportService ();
 
             // viewmodels
             var conn_vm = new ConnectionViewModel (repository, sql_service, navigation);
@@ -240,6 +237,7 @@ namespace Psequel {
 
             container.register (sql_service);
             container.register (schema_service);
+            container.register (export);
             container.register (repository);
             container.register (navigation);
             container.register (conn_vm);

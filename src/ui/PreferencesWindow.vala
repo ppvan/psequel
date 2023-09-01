@@ -12,7 +12,6 @@ namespace Psequel {
         }
 
         construct {
-            debug ("[CONTRUCT] %s", this.name);
             setup_binding ();
             defaults ();
         }
@@ -43,16 +42,11 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_font_chooser (Adw.ActionRow row) {
-            old_choser ();
-            // new_choser ();
-        }
-
-        private void old_choser () {
-            // Create dialog
             var dialog = new Gtk.FontChooserDialog (_("Select font"), this) {
                 modal = true,
                 transient_for = this,
                 level = Gtk.FontChooserLevel.FAMILY | Gtk.FontChooserLevel.SIZE | Gtk.FontChooserLevel.STYLE,
+                font = Application.settings.get_string ("editor-font"),
             };
 
             dialog.set_filter_func ((desc) => {
@@ -69,13 +63,14 @@ namespace Psequel {
                     Application.settings.set_string ("editor-font", dialog.font_desc.to_string ());
                 }
 
-                dialog.close ();
+                dialog.destroy ();
             });
 
 
             /* Show dialog */
-            dialog.present ();
+            dialog.show ();
         }
+
 
         //  private void new_choser () {
         //      var dialog = new Gtk.FontDialog () {

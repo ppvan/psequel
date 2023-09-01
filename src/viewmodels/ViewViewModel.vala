@@ -5,12 +5,8 @@ namespace Psequel {
         public ObservableList<View> views { get; set; default = new ObservableList<View> (); }
         public View? selected_view { get; set; }
 
-
         public Schema schema { get; private set; }
         public SQLService sql_service { get; private set; }
-
-        public ViewStructureViewModel viewstructure_viewmodel {get; set;}
-        public ViewDataViewModel viewdata_viewmodel {get; set;}
 
 
         public ViewViewModel (SQLService service) {
@@ -29,7 +25,7 @@ namespace Psequel {
             }
         }
 
-        public void select_view (View view) {
+        public void select_view (View? view) {
             if (view == null) {
                 return;
             }
