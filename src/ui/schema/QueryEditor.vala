@@ -105,11 +105,13 @@ namespace Psequel {
             var lang = lang_manager.get_language ("sql");
             buffer.language = lang;
 
+            // rgba(104, 109, 224,1.0)
             var light_tag = new Gtk.TextTag (LIGHT_TAG);
-            light_tag.background_rgba = { 237 / 255f, 255 / 255f, 255 / 255f, 0.8f };
+            light_tag.background_rgba = { 237 / 255f, 255 / 255f, 255 / 255f, 0.9f };
 
+            // rgba(149, 175, 192,1.0)
             var dark_tag = new Gtk.TextTag (DARK_TAG);
-            dark_tag.background_rgba = { 55 / 255f, 55 / 255f, 55 / 255f, 0.8f };
+            dark_tag.background_rgba = { 149 / 255f, 175 / 255f, 192 / 255f, 0.2f };
             // tag.background = "sidebar_backdrop_color";
             // rgba(52, 73, 94,1.0)
             // rgb(237, 255, 255)
@@ -152,7 +154,14 @@ namespace Psequel {
                 buffer.get_iter_at_offset (out iter2, end);
 
                 if (start < buffer.cursor_position && buffer.cursor_position <= end + 1) {
-                    
+
+                    // Double-check with strict mode.
+                    string statement = buffer.get_text (iter1, iter2, false);
+                    if (PGQuery.split_statement (statement, true) == null) {
+                        return;
+                    }
+
+
                     if (Application.app.style_manager.dark) {
                         buffer.apply_tag_by_name (DARK_TAG, iter1, iter2);
                     } else {

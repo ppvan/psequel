@@ -10,17 +10,23 @@ namespace Psequel{
         // Implement accordding to https://en.wikipedia.org/wiki/Comma-separated_values?useskin=vector#Basic_rules
         public async void export_csv (File dest, Relation relation) throws PsequelError {
 
-            string[] rows = new string[relation.rows];
+            string[] rows = new string[relation.rows + 1];
+            string[] cols = new string[relation.cols];
+
+            // headers
+            for (int j = 0; j < relation.cols; j++) {
+                cols[j] = quote (relation.get_header (j));
+            }
+            rows[0] = string.joinv (DELIMETER, cols);
+
             for (int i = 0; i < relation.rows; i++) {
-                string[] cols = new string[relation.cols];
+                cols = new string[relation.cols];
                 var row = relation[i];
                 for (int j = 0; j < relation.cols; j++) {
                     cols[j] = quote (row[j]);
-
-                    debug (cols[j]);
                 }
 
-                rows[i] = string.joinv (DELIMETER, cols);
+                rows[i + 1] = string.joinv (DELIMETER, cols);
             }
             
             var bytes = new Bytes.take (string.joinv (NEWLINE, rows).data);
