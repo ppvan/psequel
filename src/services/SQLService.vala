@@ -145,21 +145,7 @@ namespace Psequel {
             }
         }
 
-        private async Result exec_query_params_internal (string query, Variant[] params) throws PsequelError {
-
-            int n_params = params.length;
-            string[] values = new string[n_params];
-
-            for (int i = 0; i < n_params; i++) {
-                if (params[i].is_of_type (VariantType.STRING)) {
-                    values[i] = params[i].get_string ();
-                } else if (params[i].get_type ().is_basic ()) {
-                    values[i] = params[i].print (false);
-                } else {
-                    warning ("Programming error, got type '%s'", params[i].get_type_string ());
-                    assert_not_reached ();
-                }
-            }
+        private async Result exec_query_params_internal (string query, string[] params) throws PsequelError {
 
             debug ("Exec Param: %s", query);
             TimePerf.begin ();
@@ -169,7 +155,7 @@ namespace Psequel {
 
             try {
                 var worker = new Worker ("exec query params", () => {
-                    result = active_db.exec_params (query, n_params, null, values, null, null, 0);
+                    result = active_db.exec_params (query, params.length, null, params, null, null, 0);
                     // Jump to yield
                     Idle.add ((owned) callback);
                 });

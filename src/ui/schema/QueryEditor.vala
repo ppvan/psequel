@@ -48,50 +48,6 @@ namespace Psequel {
         }
 
 
-        private void highlight_current_query () {
-
-            var stmts = PGQuery.split_statement (buffer.text);
-
-            // return;
-
-            this.clear_highlight ();
-            stmts.foreach ((token) => {
-
-                var start = token.location;
-                var end = token.location + token.statement.length;
-
-                // debug ("[%d, %d], %s", token.location, token.end, token.value);
-
-                Gtk.TextIter iter1;
-                Gtk.TextIter iter2;
-
-                // buffer.get_start_iter (out iter1);
-                // buffer.get_end_iter (out iter2);
-                // buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
-
-                buffer.get_iter_at_offset (out iter1, start);
-                buffer.get_iter_at_offset (out iter2, end);
-
-                if (start < buffer.cursor_position && buffer.cursor_position <= end + 1) {
-                    buffer.apply_tag_by_name (TAG_NAME, iter1, iter2);
-
-                    // Important
-                    query_viewmodel.selected_query_changed (token.statement);
-                } else {
-                    buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
-                }
-            });
-        }
-
-        private inline void clear_highlight () {
-            Gtk.TextIter start;
-            Gtk.TextIter end;
-
-            buffer.get_start_iter (out start);
-            buffer.get_end_iter (out end);
-            buffer.remove_tag_by_name (TAG_NAME, start, end);
-        }
-
         [GtkCallback]
         private void run_query_cb (Gtk.Button btn) {
             query_viewmodel.run_selected_query.begin ();
@@ -106,12 +62,18 @@ namespace Psequel {
         [GtkCallback]
         private void on_query_history_exec (Gtk.ListView view, uint pos) {
 
-            query_history_viewmodel.exec_history.begin (selected_query);
+            var history_query = (Query)selection_model.get_item (pos);
 
-            var text = selected_query == null ? "" : selected_query.sql;
-            clear_and_insert (buffer, text);
+            debug ("%p", history_query);
+            debug ("%u", selection_model.get_n_items ());
+            debug ("%u %i", pos, query_history_viewmodel.query_history.size);
+            //  debug ("History activated, exec: %s", history_query.sql);
+            //  query_history_viewmodel.exec_history.begin (history_query);
 
-            popover.hide ();
+            //  var text = history_query.sql ?? "";
+            //  clear_and_insert (buffer, text);
+
+            //  popover.hide ();
         }
 
         /** Clear and insert insteal of manipulate .text to keep undo possible */
@@ -165,6 +127,47 @@ namespace Psequel {
             });
         }
 
+        private void highlight_current_query () {
+
+            var stmts = PGQuery.split_statement (buffer.text);
+            this.clear_highlight ();
+            stmts.foreach ((token) => {
+
+                var start = token.location;
+                var end = token.location + token.statement.length;
+
+                // debug ("[%d, %d], %s", token.location, token.end, token.value);
+
+                Gtk.TextIter iter1;
+                Gtk.TextIter iter2;
+
+                // buffer.get_start_iter (out iter1);
+                // buffer.get_end_iter (out iter2);
+                // buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
+
+                buffer.get_iter_at_offset (out iter1, start);
+                buffer.get_iter_at_offset (out iter2, end);
+
+                if (start < buffer.cursor_position && buffer.cursor_position <= end + 1) {
+                    buffer.apply_tag_by_name (TAG_NAME, iter1, iter2);
+
+                    // Important
+                    query_viewmodel.selected_query_changed (token.statement);
+                } else {
+                    buffer.remove_tag_by_name (TAG_NAME, iter1, iter2);
+                }
+            });
+        }
+
+        private inline void clear_highlight () {
+            Gtk.TextIter start;
+            Gtk.TextIter end;
+
+            buffer.get_start_iter (out start);
+            buffer.get_end_iter (out end);
+            buffer.remove_tag_by_name (TAG_NAME, start, end);
+        }
+
         private void create_action_group () {
 
             var group = new SimpleActionGroup ();
@@ -185,7 +188,7 @@ namespace Psequel {
 
             var action = new SimpleAction.stateful (name, null, new Variant.boolean (init));
             action.activate.connect (toggle_boolean);
-            action.change_state.connect ((owned)func);
+            action.change_state.connect (func);
 
             return action;
         }
