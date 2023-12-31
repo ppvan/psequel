@@ -77,9 +77,6 @@ namespace Psequel {
             debug ("Begin to load resources");
 
             Application.app = this;
-            Application.settings = new Settings (this.application_id);
-            settings.bind ("color-scheme", this, "color_scheme", SettingsBindFlags.GET);
-            this.notify["color-scheme"].connect (update_color_scheme);
 
             try {
 
@@ -216,16 +213,22 @@ namespace Psequel {
         private Container create_viewmodels () {
             var container = new Container ();
 
+            var settings = new Settings (this.application_id);
+            Application.settings = settings;
+            settings.bind ("color-scheme", this, "color_scheme", SettingsBindFlags.GET);
+            this.notify["color-scheme"].connect (update_color_scheme);
+
             // services
             var sql_service = new SQLService (Application.background);
             var schema_service = new SchemaService (sql_service);
-            var repository = new ConnectionRepository (Application.settings);
+            var connection_repo = new ConnectionRepository (settings);
+            var query_repo = new QueryRepository (settings);
             var navigation = new NavigationService ();
             var export = new ExportService ();
             var completer = new CompleterService (sql_service);
 
             // viewmodels
-            var conn_vm = new ConnectionViewModel (repository, sql_service, navigation);
+            var conn_vm = new ConnectionViewModel (connection_repo, sql_service, navigation);
             var sche_vm = new SchemaViewModel (schema_service);
             var table_vm = new TableViewModel (sql_service);
             var view_vm = new ViewViewModel (sql_service);
@@ -233,14 +236,14 @@ namespace Psequel {
             var view_structure_vm = new ViewStructureViewModel (sql_service);
             var table_data_vm = new TableDataViewModel (sql_service);
             var view_data_vm = new ViewDataViewModel (sql_service);
-            var query_history_vm = new QueryHistoryViewModel (sql_service);
+            var query_history_vm = new QueryHistoryViewModel (sql_service, query_repo);
             var query_vm = new QueryViewModel (query_history_vm);
 
             container.register (sql_service);
             container.register (completer);
             container.register (schema_service);
             container.register (export);
-            container.register (repository);
+            container.register (connection_repo);
             container.register (navigation);
             container.register (conn_vm);
             container.register (sche_vm);

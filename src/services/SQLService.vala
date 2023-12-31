@@ -8,12 +8,13 @@ namespace Psequel {
     public class SQLService : Object {
 
         public int query_limit { get; set; }
+        public int query_timeout { get; set; }
 
         public SQLService (ThreadPool<Worker> background) {
             Object ();
             this.background = background;
 
-            Application.settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
+            //  Application.settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
         }
 
         /** Select info from a table. */

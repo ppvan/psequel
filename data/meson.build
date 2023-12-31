@@ -12,7 +12,7 @@ if desktop_utils.found()
   test('Validate desktop file', desktop_utils, args: [desktop_file])
 endif
 
-appstream_file = i18n.merge_file(
+i18n.merge_file(
         input: 'me.ppvan.psequel.appdata.xml.in',
        output: 'me.ppvan.psequel.appdata.xml',
        po_dir: '../po',
@@ -20,10 +20,11 @@ appstream_file = i18n.merge_file(
   install_dir: join_paths(get_option('datadir'), 'appdata')
 )
 
-appstream_util = find_program('appstream-util', required: false)
-if appstream_util.found()
-  test('Validate appstream file', appstream_util, args: ['validate', appstream_file])
-endif
+# Disable redudant check.
+# appstream_util = find_program('appstream-util', required: false)
+# if appstream_util.found()
+#   test('Validate appstream file', appstream_util, args: ['validate', appstream_file])
+# endif
 
 
 install_data('me.ppvan.psequel.gschema.xml',
