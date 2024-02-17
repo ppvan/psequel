@@ -145,9 +145,8 @@ namespace Psequel {
         }
 
         private void extract_info () {
-
             //  Match the index type and column from fk_def
-            var regex = /FOREIGN KEY \(([$a-zA-Z_, ]+)\) REFERENCES ([a-zA-Z_, ]+)\(([a-zA-Z_, ]+)\)( ON UPDATE (CASCADE))?( ON DELETE (RESTRICT))?/;
+            var regex = /FOREIGN KEY \(([$a-zA-Z_, ]+)\) REFERENCES ([a-zA-Z_,"]+)\(([a-zA-Z_, ]+)\)( ON UPDATE (CASCADE))?( ON DELETE (RESTRICT))?/;
             MatchInfo match_info;
             if (regex.match (fk_def, 0, out match_info)) {
 

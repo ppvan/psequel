@@ -1,4 +1,4 @@
-namespace Psequel{
+namespace Psequel {
     public class ExportService : Object {
 
         public const string DELIMETER = ",";
@@ -28,13 +28,13 @@ namespace Psequel{
 
                 rows[i + 1] = string.joinv (DELIMETER, cols);
             }
-            
+
             var bytes = new Bytes.take (string.joinv (NEWLINE, rows).data);
 
             try {
                 yield dest.replace_contents_bytes_async (bytes, null, false, FileCreateFlags.PRIVATE, null, null);
             } catch (GLib.Error err) {
-                throw new PsequelError.EXPORT_ERROR(err.message);
+                throw new PsequelError.EXPORT_ERROR (err.message);
             }
         }
 
@@ -44,6 +44,6 @@ namespace Psequel{
             }
 
             return str;
-        } 
+        }
     }
 }

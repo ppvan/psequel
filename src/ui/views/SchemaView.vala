@@ -1,29 +1,35 @@
 namespace Psequel {
 
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/schema-sidebar.ui")]
-    public class SchemaSidebar : Gtk.Box {
-
-
-        public NavigationService navigation_service { get; set; }
+    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/schema-view.ui")]
+    public class SchemaView : Adw.Bin {
         public SchemaViewModel schema_viewmodel { get; set; }
         public TableViewModel table_viewmodel {get; set;}
         public ViewViewModel view_viewmodel {get; set;}
+        public NavigationService navigation_service { get; set; }
 
         public string view_mode {get; set;}
 
-        public SchemaSidebar () {
+        public signal void request_logout ();
+
+        public SchemaView () {
             Object ();
         }
 
         construct {
+            setup_paned (paned);
+            this.schema_viewmodel = autowire<SchemaViewModel> ();
             this.table_viewmodel = autowire<TableViewModel> ();
             this.view_viewmodel = autowire<ViewViewModel> ();
-            this.schema_viewmodel = autowire<SchemaViewModel> ();
             this.navigation_service = autowire<NavigationService> ();
 
             sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
 
             dropdown.notify["selected"].connect (() => {
+
+                if (dropdown.selected == Gtk.INVALID_LIST_POSITION) {
+                    return;
+                }
+
                 schema_viewmodel.select_index ((int)dropdown.selected);
             });
             table_selection.notify["selected"].connect (() => {
@@ -39,6 +45,10 @@ namespace Psequel {
             table_filter.expression = new Gtk.PropertyExpression (typeof (Table), null, "name");
             view_filter.expression = new Gtk.PropertyExpression (typeof (View), null, "name");
         }
+
+
+        [GtkChild]
+        private unowned Gtk.Paned paned;
 
         [GtkCallback]
         private void on_table_search (Gtk.SearchEntry entry) {

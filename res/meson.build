@@ -10,9 +10,6 @@ blueprints = custom_target('blueprints',
   input: files(
 
     'gtk/style-switcher.blp',
-
-    'gtk/connection-form.blp',
-    'gtk/connection-sidebar.blp',
     'gtk/connection-view.blp',
     'gtk/connection-row.blp',
     'gtk/connection-listitem.blp',
@@ -21,8 +18,6 @@ blueprints = custom_target('blueprints',
     'gtk/query-results.blp',
 
     'gtk/schema-view.blp',
-    'gtk/schema-sidebar.blp',
-    'gtk/schema-main.blp',
     
     'gtk/table-data-view.blp',
     'gtk/view-data-view.blp',

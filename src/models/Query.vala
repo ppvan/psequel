@@ -4,6 +4,9 @@ namespace Psequel {
         //  Properties must be public, get, set inorder to Json.Serializable works
         public string sql { get; set; }
         public string[] params {get; set;}
+
+        public static Regex DDL_REG = /^(CREATE|DROP|RENAME|ALTER|INSERT|UPDATE|DELETE).*$/i;
+
         public Query (string sql) {
             base();
             this.sql = sql;
@@ -26,9 +29,7 @@ namespace Psequel {
         }
 
         public bool is_ddl () {
-            var regex = /CREATE|DROP|RENAME|ALTER|INSERT|UPDATE|DELETE/;
-            var query = sql.up (6);
-            return regex.match (query, 0, null);
+            return DDL_REG.match (sql, 0, null);
         }
 
         public Query clone () {

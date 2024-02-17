@@ -1,30 +1,5 @@
 # Source code
-psequel_sources = [
-    'application.vala',
-    'ui/connection/ConnectionForm.vala',
-    'ui/connection/ConnectionSidebar.vala',
-    'ui/connection/ConnectionView.vala',
-
-
-    'ui/schema/SchemaView.vala',
-    'ui/schema/SchemaSidebar.vala',
-    'ui/schema/SchemaMain.vala',
-    'ui/schema/QueryResult.vala',
-    'ui/schema/TableStructureView.vala',
-    'ui/schema/ViewStructureView.vala',
-    'ui/schema/TableColumnInfo.vala',
-    'ui/schema/TableForeignKeyInfo.vala',
-    'ui/schema/TableIndexInfo.vala',
-    'ui/schema/TableDataView.vala',
-    'ui/schema/ViewDataView.vala',
-    
-    'ui/editor/QueryEditor.vala',
-    'ui/editor/SQLCompletionProvider.vala',
-
-    'ui/widgets/StyleSwitcher.vala',
-    'ui/Window.vala',
-    'ui/PreferencesWindow.vala',
-
+psequel_sources = files([
     'models/Connection.vala',
     'models/Schema.vala',
     'models/Relation.vala',
@@ -33,7 +8,7 @@ psequel_sources = [
     # 'models/utils.vala',
 
     'services/SQLService.vala',
-    'services/CompleterService.vala',
+    'services/SQLCompletionService.vala',
     'services/ExportService.vala',
     'services/NavigationService.vala',
     'services/ConnectionService.vala',
@@ -60,14 +35,37 @@ psequel_sources = [
     'utils/ObservableList.vala',
     'utils/ValueConverter.vala',
     'utils/Event.vala',
-    'utils/helpers.vala',
     'utils/logging.vala',
     'utils/errors.vala',
-]
+    'utils/types.vala',
+])
 
+ui_sources = files([
+    'ui/views/ConnectionView.vala',
+    'ui/views/SchemaView.vala',
+    'ui/schema/QueryResult.vala',
+    'ui/schema/TableStructureView.vala',
+    'ui/schema/ViewStructureView.vala',
+    'ui/schema/TableColumnInfo.vala',
+    'ui/schema/TableForeignKeyInfo.vala',
+    'ui/schema/TableIndexInfo.vala',
+    'ui/schema/TableDataView.vala',
+    'ui/schema/ViewDataView.vala',
+    
+    'ui/editor/QueryEditor.vala',
+
+    'ui/widgets/StyleSwitcher.vala',
+    'ui/Window.vala',
+    'ui/PreferencesWindow.vala',
+
+    'utils/helpers.vala',
+
+])
 
 # add_project_arguments(['--gresourcesdir', 'res/' ], language: 'vala')
 # add_project_arguments(['--enable-experimental' ], language: 'vala')
+
+# Create config data, this will create a config.h file, then be bind to Config class.
 
 conf = configuration_data()
 conf.set_quoted('APP_ID', app_id)
@@ -92,14 +90,16 @@ psequel_deps = [
 ]
 
 
+
 add_project_arguments(
     '-include', 'config.h',
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
     language: 'c'
 )
 
+psequel_sources_main = psequel_sources + ui_sources + files(['application.vala'])
 
-executable('psequel', [blueprint_hack, psequel_resources, psequel_sources],
+executable('psequel', [blueprint_hack, psequel_resources, psequel_sources_main],
   dependencies: psequel_deps,
   vala_args: [
     '--gresourcesdir=' + blueprints_output_dir,

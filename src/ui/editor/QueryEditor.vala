@@ -21,11 +21,14 @@ namespace Psequel {
 
 
         private GtkSource.Completion completion;
-        private SQLCompletionProvider provider;
+        private SQLCompletionService provider;
 
 
         private LanguageManager lang_manager;
         private StyleSchemeManager style_manager;
+
+        private Settings? settings;
+        private Application? app;
 
         public class QueryEditor () {
             Object ();
@@ -36,6 +39,8 @@ namespace Psequel {
             this.export_service = autowire<ExportService> ();
             this.query_viewmodel = autowire<QueryViewModel> ();
             this.query_history_viewmodel = autowire<QueryHistoryViewModel> ();
+            this.settings = autowire<Settings> ();
+            this.app = autowire<Application> ();
 
             default_setttings ();
             selection_model.bind_property ("selected", this, "selected-query", BindingFlags.BIDIRECTIONAL, from_selected, to_selected);
@@ -95,7 +100,7 @@ namespace Psequel {
             completion = editor.get_completion ();
             completion.select_on_show = true;
             completion.page_size = 8;
-            provider = new SQLCompletionProvider ();
+            provider = new SQLCompletionService ();
             completion.add_provider (provider);
 
             var lang = lang_manager.get_language ("sql");
@@ -114,7 +119,8 @@ namespace Psequel {
             buffer.tag_table.add (light_tag);
             buffer.tag_table.add (dark_tag);
 
-            Application.app.style_manager.bind_property ("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
+
+            app.style_manager.bind_property ("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
                 var is_dark = from.get_boolean ();
                 if (is_dark) {
                     var scheme = style_manager.get_scheme ("Adwaita-dark");
@@ -158,7 +164,7 @@ namespace Psequel {
                     }
 
 
-                    if (Application.app.style_manager.dark) {
+                    if (app.style_manager.dark) {
                         buffer.apply_tag_by_name (DARK_TAG, iter1, iter2);
                     } else {
                         buffer.apply_tag_by_name (LIGHT_TAG, iter1, iter2);
@@ -199,7 +205,7 @@ namespace Psequel {
         }
 
         private SimpleAction boolean_state_factory (string name, owned ChangeStateFunc func) {
-            bool init = Application.settings.get_boolean (name);
+            bool init = settings.get_boolean (name);
 
             var action = new SimpleAction.stateful (name, null, new Variant.boolean (init));
             action.activate.connect (toggle_boolean);
@@ -221,7 +227,7 @@ namespace Psequel {
             debug ("Change auto uppercase");
 
             action.set_state (new_state);
-            Application.settings.set_boolean ("auto-uppercase", autouppercase);
+            settings.set_boolean ("auto-uppercase", autouppercase);
         }
 
         private void change_auto_exec_history (SimpleAction action, Variant? new_state) {
@@ -229,7 +235,7 @@ namespace Psequel {
             bool auto_exec = new_state.get_boolean ();
 
             action.set_state (new_state);
-            Application.settings.set_boolean ("auto-exec-history", auto_exec);
+            settings.set_boolean ("auto-exec-history", auto_exec);
         }
 
         private bool from_selected (Binding binding, Value from, ref Value to) {

@@ -2,45 +2,7 @@ using Gtk 4.0;
 using Gio 2.0;
 using Adw 1;
 
-template $PsequelConnectionView : Adw.Bin {
-    hexpand: true;
-    vexpand: true;
-
-    Gtk.Paned paned {
-        // can-shrink: false;
-        shrink-start-child: false;
-        shrink-end-child: false;
-
-
-        [start]
-        $PsequelConnectionSidebar sidebar {
-            width-request: 300;
-
-            connections: bind template.viewmodel as <$PsequelConnectionViewModel>.connections;
-            selected-connection: bind template.viewmodel as <$PsequelConnectionViewModel>.selected-connection;
-
-            request-new-connection => $add_new_connection();
-            request_dup_connection => $dup_connection ();
-            request_remove_connection => $remove_connection ();
-            request_connect_database => $active_connection ();
-        }
-
-        [end]
-        $PsequelConnectionForm form {
-            width-request: 800;
-
-            selected-connection: bind sidebar.selected-connection;
-            is-connectting: bind template.viewmodel as <$PsequelConnectionViewModel>.is-connectting;
-            menu-model: primary_menu;
-            request-database => $active_connection ();
-            connections-changed => $save_connections ();
-        }
-    }
-}
-
-
 menu primary_menu {
-
   section {
     item {
       custom: "style-switcher";
@@ -53,14 +15,15 @@ menu primary_menu {
       action: "app.new-window";
     }
   }
+
   section {
     item {
-      label: _("_Import Connections");
+      label: _("_Import");
       action: "win.import";
     }
 
     item {
-      label: _("_Export Connections");
+      label: _("_Export");
       action: "win.export";
     }
   }
@@ -80,10 +43,374 @@ menu primary_menu {
       label: _("_About");
       action: "app.about";
     }
+  }
+}
 
-    item {
-        label: _("_Dark");
-        action: "app.dark";
+template $PsequelConnectionView: Adw.Bin {
+  hexpand: true;
+  vexpand: true;
+
+  Gtk.Paned paned {
+    // can-shrink: false;
+    shrink-start-child: false;
+    shrink-end-child: false;
+
+    [start]
+    Box {
+      width-request: 300;
+      orientation: vertical;
+      spacing: 4;
+      margin-top: 4;
+
+      Box {
+        Label {
+          styles [
+            "text-bold"
+          ]
+
+          margin-top: 6;
+          margin-start: 8;
+          halign: start;
+          margin-bottom: 6;
+          use-markup: true;
+          label: "<b>Connections</b>";
+        }
+
+        Box {
+          spacing: 4;
+          hexpand: true;
+          halign: end;
+
+          Button {
+            tooltip-text: "Add new connection";
+
+            styles [
+              "flat"
+            ]
+
+            icon-name: "plus-large-symbolic";
+            clicked => $add_new_connection();
+          }
+        }
+      }
+
+      ScrolledWindow {
+        vexpand: true;
+
+        ListView listview {
+          styles [
+            "navigation-sidebar"
+          ]
+
+          model: SingleSelection selection_model {
+            model: bind template.viewmodel as <$PsequelConnectionViewModel>.connections;
+            autoselect: true;
+          };
+
+          activate => $active_connection();
+
+          factory: BuilderListItemFactory {
+            resource: "/me/ppvan/psequel/gtk/connection-listitem.ui";
+          };
+        }
+      }
     }
+
+    // $PsequelConnectionSidebar sidebar {
+    //   width-request: 300;
+    //   connections: bind template.viewmodel as <$PsequelConnectionViewModel>.connections;
+    //   selected-connection: bind template.viewmodel as <$PsequelConnectionViewModel>.selected-connection;
+    //   request-new-connection => $add_new_connection();
+    //   request_dup_connection => $dup_connection();
+    //   request_remove_connection => $remove_connection();
+    //   request_connect_database => $active_connection();
+    // }
+
+    [end]
+    Adw.Bin {
+      child: WindowHandle {
+        Box {
+          orientation: vertical;
+          hexpand: true;
+          vexpand: true;
+
+          Adw.HeaderBar header {
+            styles [
+              "flat"
+            ]
+
+            [title]
+            Label {
+              label: "";
+            }
+
+            // Dupplicate primary_menu in query-view.blp.
+            // Update both if you change something
+
+            [end]
+            MenuButton {
+              icon-name: "open-menu-symbolic";
+              menu-model: primary_menu;
+
+              popover: Gtk.PopoverMenu {
+                menu-model: primary_menu;
+
+                [style-switcher]
+                $PsequelStyleSwitcher {}
+              };
+            }
+          }
+
+          Adw.Clamp {
+            valign: start;
+            hexpand: true;
+            vexpand: true;
+            maximum-size: 700;
+
+            child: Box {
+              orientation: vertical;
+
+              Box {
+                orientation: vertical;
+
+                styles [
+                  "connection-form"
+                ]
+
+                // vexpand: true;
+                spacing: 4;
+
+                Label {
+                  margin-top: 20;
+                  margin-bottom: 60;
+
+                  styles [
+                    "title-0"
+                  ]
+
+                  label: "Connect with Psequel";
+                }
+
+                Grid {
+                  hexpand: true;
+                  vexpand: true;
+                  row-homogeneous: true;
+                  row-spacing: 8;
+                  column-spacing: 8;
+                  margin-start: 4;
+                  margin-end: 4;
+
+                  Label {
+                    halign: end;
+                    label: "Name:";
+
+                    layout {
+                      row: 0;
+                      column: 0;
+                      column-span: 3;
+                    }
+                  }
+
+                  Label {
+                    halign: end;
+                    label: "Host:";
+
+                    layout {
+                      row: 1;
+                      column: 0;
+                      column-span: 3;
+                    }
+                  }
+
+                  Label {
+                    halign: end;
+                    label: "User:";
+
+                    layout {
+                      row: 2;
+                      column: 0;
+                      column-span: 3;
+                    }
+                  }
+
+                  Label {
+                    halign: end;
+                    label: "Password:";
+
+                    layout {
+                      row: 3;
+                      column: 0;
+                      column-span: 3;
+                    }
+                  }
+
+                  Label {
+                    halign: end;
+                    label: "Database:";
+
+                    layout {
+                      row: 4;
+                      column: 0;
+                      column-span: 3;
+                    }
+                  }
+
+                  Entry name_entry {
+                    placeholder-text: "Connection name";
+                    hexpand: true;
+                    activate => $on_entry_activated();
+                    changed => $on_text_changed();
+
+                    layout {
+                      row: 0;
+                      column: 3;
+                      column-span: 7;
+                    }
+                  }
+
+                  Entry host_entry {
+                    placeholder-text: "localhost";
+                    activate => $on_entry_activated();
+                    changed => $on_text_changed();
+
+                    layout {
+                      row: 1;
+                      column: 3;
+                      column-span: 5;
+                    }
+                  }
+
+                  Label {
+                    label: "Port";
+                    halign: end;
+
+                    layout {
+                      row: 1;
+                      column: 8;
+                    }
+                  }
+
+                  Entry port_entry {
+                    placeholder-text: "5432";
+                    activate => $on_entry_activated();
+                    changed => $on_text_changed();
+
+                    layout {
+                      row: 1;
+                      column: 9;
+                      column-span: 1;
+                    }
+                  }
+
+                  Entry user_entry {
+                    placeholder-text: "postgres";
+                    activate => $on_entry_activated();
+                    changed => $on_text_changed();
+
+                    layout {
+                      row: 2;
+                      column: 3;
+                      column-span: 7;
+                    }
+                  }
+
+                  PasswordEntry password_entry {
+                    placeholder-text: "";
+                    show-peek-icon: true;
+                    activate => $on_entry_activated();
+                    changed => $on_text_changed();
+
+                    layout {
+                      row: 3;
+                      column: 3;
+                      column-span: 7;
+                    }
+                  }
+
+                  Entry database_entry {
+                    placeholder-text: "postgres";
+                    activate => $on_entry_activated();
+                    changed => $on_text_changed();
+
+                    layout {
+                      row: 4;
+                      column: 3;
+                      column-span: 7;
+                    }
+                  }
+
+                  Label {
+                    label: "SSL:";
+                    halign: end;
+
+                    layout {
+                      row: 5;
+                      column: 0;
+                      column-span: 3;
+                    }
+                  }
+
+                  Box {
+                    orientation: horizontal;
+
+                    Box {
+                      valign: center;
+                      orientation: vertical;
+
+                      Switch ssl_switch {
+                        activate => $on_switch_changed();
+                      }
+                    }
+
+                    layout {
+                      row: 5;
+                      column: 3;
+                    }
+                  }
+                }
+              }
+
+              Box {
+                margin-top: 20;
+                margin-bottom: 10;
+
+                Label status_label {
+                  label: "Hello world";
+                  halign: start;
+                  hexpand: true;
+                }
+
+                Box {
+                  spacing: 8;
+
+                  Spinner spinner {
+                    spinning: bind template.viewmodel as <$PsequelConnectionViewModel>.is-connectting;
+                  }
+
+                  Button connect_btn {
+                    styles [
+                      "suggested-action"
+                    ]
+
+                    label: "Connect";
+                    clicked => $on_connect_clicked();
+                  }
+                }
+              }
+            };
+          }
+        }
+      };
+    }
+
+    // $PsequelConnectionForm form {
+    //     width-request: 800;
+    //     selected-connection: bind sidebar.selected-connection;
+    //     is-connectting: bind template.viewmodel as <$PsequelConnectionViewModel>.is-connectting;
+    //     current-state: bind template.viewmodel as <$PsequelConnectionViewModel>.current-state;
+    //     menu-model: primary_menu;
+    //     request-database => $active_connection ();
+    //     connections-changed => $save_connections ();
+    // }
   }
 }

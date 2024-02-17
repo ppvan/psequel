@@ -1,10 +1,10 @@
 using Gtk 4.0;
 
 template ListItem {
-    child: Label {
-        label: bind template.item as <$PsequelQuery>.sql;
-        halign: start;
-        ellipsize: end;
-        single-line-mode: true;
-    };
+  child: Label {
+    label: bind template.item as <$PsequelQuery>.sql;
+    halign: start;
+    ellipsize: end;
+    single-line-mode: true;
+  };
 }

@@ -1,18 +1,20 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PsequelTableFKInfo : Adw.Bin {
-    ScrolledWindow {
-        ColumnView view {
+template $PsequelTableFKInfo: Adw.Bin {
+  ScrolledWindow {
+    ColumnView view {
+      model: NoSelection {
+        model: bind template.fks;
+      };
 
-            model: NoSelection {
-                model: bind template.fks;
-            };
+      styles [
+        "data-table"
+      ]
 
-            styles ["data-table"]
-            show-column-separators: true;
-            show-row-separators: true;
-            vexpand: true;
-        }
+      show-column-separators: true;
+      show-row-separators: true;
+      vexpand: true;
     }
+  }
 }

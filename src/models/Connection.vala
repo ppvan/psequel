@@ -26,6 +26,7 @@ namespace Psequel {
     public class Connection : Object, Json.Serializable {
 
         public const string DEFAULT = "";
+        public const string SCHEME = "postgresql";
 
         public string name { get; set; default = DEFAULT; }
         public string host { get; set; default = DEFAULT; }
@@ -34,6 +35,8 @@ namespace Psequel {
         public string password { get; set; default = DEFAULT; }
         public string database { get; set; default = DEFAULT; }
         public bool use_ssl { get; set; default = false; }
+
+        public string options { get; set; default = DEFAULT; }
 
 
         public Connection (string name = "New Connection") {
@@ -47,23 +50,28 @@ namespace Psequel {
          */
         public string url_form () {
             // postgresql://[user[:password]@][host][:port][/dbname][?param1=value1&...]
-            var builder = new StringBuilder ("postgres://");
-            if (user != DEFAULT) {
-                builder.append (user);
-                if (password != DEFAULT) {
-                    builder.append (@":$password@");
-                } else {
-                    builder.append ("@");
-                }
+
+            var parsed_port = 5432;
+            if (!int.try_parse (port, out parsed_port, null, 10)) {
+                debug ("Parse port error: defautl to 5432");
             }
 
-            builder.append (host != DEFAULT ? host : "127.0.0.1");
-            builder.append (port != DEFAULT ? @":$port" : ":5432");
-            builder.append (database != DEFAULT ? @"/$database" : "/postgres");
-            builder.append (use_ssl ? "?sslmode=require" : "?sslmode=disable");
+
+            var safe_user = user != DEFAULT ? user : "postgres";
+            var safe_password = password != DEFAULT ? password : "postgres";
+            var safe_host = host != DEFAULT ? host : "localhost"; // TODO IPv6 check
+            var safe_port = port != DEFAULT ? parsed_port : 5432;
+            var safe_db = database != DEFAULT ? @"/$database" : "/postgres";
+
+            var safe_options = use_ssl ? "sslmode=required" : "sslmode=disable";
+            if (options != DEFAULT) {
+                safe_options = @"$safe_options&$options";
+            }
 
 
-            return builder.free_and_steal ();
+            var url = Uri.join_with_user (UriFlags.NONE, SCHEME, safe_user, safe_password, null, safe_host, safe_port, safe_db, safe_options, null);
+
+            return url.to_string ();
         }
 
         /**

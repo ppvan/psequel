@@ -1,33 +1,29 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PsequelWindow : Adw.ApplicationWindow {
-    default-width: 1280;
-    default-height: 800;
-    
-    width-request: 1280;
-    height-request: 800;
-    title: "Psequel";
+template $PsequelWindow: Adw.ApplicationWindow {
+  default-width: 1280;
+  default-height: 800;
+  width-request: 1280;
+  height-request: 800;
+  title: "Psequel";
 
+  Adw.ToastOverlay overlay {
+    Stack stack {
+      transition-type: slide_up_down;
+      visible-child-name: bind template.navigation as <$PsequelNavigationService>.current-view;
 
-    Adw.ToastOverlay overlay {
-        Stack stack {
-            transition-type: slide_up_down;
-            visible-child-name: bind template.navigation as <$PsequelNavigationService>.current-view;
+      StackPage {
+        name: "connection-view";
 
-            StackPage {
-                name: "connection-view";
-                child: $PsequelConnectionView {
-                };
-            }
+        child: $PsequelConnectionView {};
+      }
 
-            StackPage query-view {
-                name: "query-view";
-                child: $PsequelSchemaView {
-                    // schema-viewmodel: bind template.schema-viewmodel;
-                    // request_logout => $on_request_logout ();
-                };
-            }
-        }
+      StackPage query-view {
+        name: "query-view";
+
+        child: $PsequelSchemaView {};
+      }
     }
+  }
 }

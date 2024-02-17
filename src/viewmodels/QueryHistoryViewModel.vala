@@ -2,7 +2,7 @@ namespace Psequel {
     public class QueryHistoryViewModel : BaseViewModel {
         const string AUTO_EXEC_HISTORY = "auto-exec-history";
 
-        public QueryRepository query_repository {get; private set;}
+        
         public ObservableList<Query> query_history { get; set; default = new ObservableList<Query> (); }
         public Query? selected_query { get; set; }
 
@@ -19,13 +19,13 @@ namespace Psequel {
         public string query_time { get; private set; }
 
         public SQLService sql_service { get; construct; }
+        public QueryRepository query_repository {get; construct;}
 
 
-        public QueryHistoryViewModel (SQLService sql_service) {
-            Object (sql_service: sql_service);
-            query_repository = new QueryRepository (Application.settings);
-            query_history.append_all (query_repository.get_queries ());
+        public QueryHistoryViewModel (SQLService sql_service, QueryRepository query_repository) {
+            Object (sql_service: sql_service, query_repository: query_repository);
 
+            this.query_history.append_all (query_repository.get_queries ());
             this.notify["current-relation"].connect (() => {
                 success = true;
                 row_affected = @"$(current_relation.row_affected) row affected.";
@@ -51,9 +51,11 @@ namespace Psequel {
         }
 
         public async void exec_history (Query query) {
-            if (Application.settings.get_boolean (AUTO_EXEC_HISTORY)) {
-                yield run_query_internal (query);
-            }
+            //  if (Application.settings.get_boolean (AUTO_EXEC_HISTORY)) {
+                
+            //  }
+
+            yield run_query_internal (query);
 
             query_history.remove (query);
             query_history.prepend (query);

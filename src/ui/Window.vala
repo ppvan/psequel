@@ -25,9 +25,6 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
 
-        public static Container? temp;
-        public Container containter { get; construct; }
-
         const ActionEntry[] ACTIONS = {
             { "import", import_connection },
             { "export", export_connection },
@@ -39,11 +36,12 @@ namespace Psequel {
         public ConnectionViewModel connection_viewmodel { get; construct; }
         public QueryViewModel query_viewmodel { get; private set; }
 
+        private Settings? settings; 
 
-        public Window (Application app, Container container) {
+
+        public Window (Application app) {
             Object (
-                    application: app,
-                    containter: container
+                    application: app
             );
         }
 
@@ -51,10 +49,11 @@ namespace Psequel {
             this.navigation = autowire<NavigationService> ();
             this.connection_viewmodel = autowire<ConnectionViewModel> ();
             this.query_viewmodel = autowire<QueryViewModel> ();
+            this.settings = autowire<Settings> ();
 
             debug ("[CONTRUCT] %s", this.name);
-            Application.settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
-            Application.settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
+            settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
+            settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
             this.add_action_entries (ACTIONS, this);
         }
 

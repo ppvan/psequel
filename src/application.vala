@@ -34,8 +34,6 @@ namespace Psequel {
          * Static field for easy access in other places.
          * If need to create many application instance (rarely happens) reconsider this approach.
          */
-        public static Application app;
-        public static Settings settings;
         public static ThreadPool<Worker> background;
 
         public int color_scheme { get; set; }
@@ -74,22 +72,24 @@ namespace Psequel {
             base.startup ();
             GtkSource.init ();
             set_up_logging ();
-            debug ("Begin to load resources");
 
-            Application.app = this;
-            Application.settings = new Settings (this.application_id);
+            var settings = new Settings (this.application_id);
             settings.bind ("color-scheme", this, "color_scheme", SettingsBindFlags.GET);
             this.notify["color-scheme"].connect (update_color_scheme);
 
-            try {
+            var container = Container.instance ();
+            container.register (settings);
+            container.register (this);
 
+            debug ("Begin to load resources");
+            try {
                 // Don't change the max_thread because libpq did not support many query with 1 connection.
                 background = new ThreadPool<Worker>.with_owned_data ((worker) => {
                     worker.run ();
                 }, 1, false);
             } catch (ThreadError err) {
                 debug (err.message);
-                return_if_reached ();
+                assert_not_reached ();
             }
             debug ("Resources loaded");
         }
@@ -141,13 +141,9 @@ namespace Psequel {
             typeof (Psequel.StyleSwitcher).ensure ();
             typeof (Psequel.ConnectionViewModel).ensure ();
             typeof (Psequel.SchemaView).ensure ();
-            typeof (Psequel.SchemaSidebar).ensure ();
-            typeof (Psequel.SchemaMain).ensure ();
 
             typeof (Psequel.ConnectionRow).ensure ();
             typeof (Psequel.ConnectionView).ensure ();
-            typeof (Psequel.ConnectionSidebar).ensure ();
-            typeof (Psequel.ConnectionForm).ensure ();
             typeof (Psequel.QueryResults).ensure ();
             typeof (Psequel.QueryEditor).ensure ();
             typeof (Psequel.TableStructureView).ensure ();
@@ -206,26 +202,28 @@ namespace Psequel {
         private Window new_window () {
 
             // give temp access because window is not created yet
-            Window.temp = create_viewmodels ();
-            var window = new Window (this, Window.temp);
-            // Window.temp = null;
+            create_viewmodels ();
+            var window = new Window (this);
 
             return window;
         }
 
         private Container create_viewmodels () {
-            var container = new Container ();
+            var container = Container.instance ();
+
+            var settings = autowire<Settings> ();
 
             // services
             var sql_service = new SQLService (Application.background);
             var schema_service = new SchemaService (sql_service);
-            var repository = new ConnectionRepository (Application.settings);
+            var connection_repo = new ConnectionRepository (settings);
+            var query_repo = new QueryRepository (settings);
             var navigation = new NavigationService ();
             var export = new ExportService ();
             var completer = new CompleterService (sql_service);
 
             // viewmodels
-            var conn_vm = new ConnectionViewModel (repository, sql_service, navigation);
+            var conn_vm = new ConnectionViewModel (connection_repo, sql_service, navigation);
             var sche_vm = new SchemaViewModel (schema_service);
             var table_vm = new TableViewModel (sql_service);
             var view_vm = new ViewViewModel (sql_service);
@@ -233,14 +231,14 @@ namespace Psequel {
             var view_structure_vm = new ViewStructureViewModel (sql_service);
             var table_data_vm = new TableDataViewModel (sql_service);
             var view_data_vm = new ViewDataViewModel (sql_service);
-            var query_history_vm = new QueryHistoryViewModel (sql_service);
+            var query_history_vm = new QueryHistoryViewModel (sql_service, query_repo);
             var query_vm = new QueryViewModel (query_history_vm);
 
             container.register (sql_service);
             container.register (completer);
             container.register (schema_service);
             container.register (export);
-            container.register (repository);
+            container.register (connection_repo);
             container.register (navigation);
             container.register (conn_vm);
             container.register (sche_vm);
