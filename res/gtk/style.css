@@ -8,6 +8,14 @@
     margin-bottom: 32px;
 }
 
+.badges {
+    font-size: 14px;
+	padding: 4px 6px;
+	font-weight: bold;
+	background-color: @sidebar_bg_color;
+	border-radius: 8px;
+}
+
 
 .big-icon image {
     -gtk-icon-size: 20px;

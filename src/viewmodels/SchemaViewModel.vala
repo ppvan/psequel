@@ -6,6 +6,9 @@ namespace Psequel {
         public ObservableList<Schema> schemas { get; set; default = new ObservableList<Schema> (); }
         public Schema? current_schema { get; set; }
 
+        //  Needed to interact with gtk.dropdown properly.
+        public int current_index { get; set;}
+
         public SchemaRepository repository;
 
         // Services
@@ -22,9 +25,11 @@ namespace Psequel {
         }
 
         public void select_index (int index) {
+
             if (index < 0 || index >= schemas.size) {
                 return;
             }
+            debug ("Select index %d, %s\n", index, schemas[index].name);
             select_schema.begin (schemas[index]);
         }
 
@@ -55,15 +60,23 @@ namespace Psequel {
         private async void select_schema (Schema schema) throws PsequelError {
             debug ("Select schema: %s", schema.name);
             current_schema = schema;
-            // force reload
-            this.notify_property ("current-schema");
         }
 
         /** List schema from database. */
         private async void list_schemas () throws PsequelError {
             var unload_schemas = yield schema_service.schema_list ();
 
-            schemas.append_all (unload_schemas);
+            var public_first_schemas = new List<Schema> ();
+            
+            foreach(var s in unload_schemas) {
+                if (s.name == DEFAULT) {
+                    public_first_schemas.insert (s, 0);
+                } else {
+                    public_first_schemas.append (s);
+                }
+            }
+
+            schemas.append_all (public_first_schemas);
         }
     }
 }

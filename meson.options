@@ -1,0 +1,1 @@
+option('with_query', type : 'boolean', value : false, description : 'Run real query test(need postgresql server setup)')

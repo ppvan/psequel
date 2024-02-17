@@ -67,13 +67,13 @@ namespace Psequel {
             _data.remove (position);
         }
 
-        public void insert (uint pos, Connection conn) {
-            _data.insert (pos, conn);
+        public void insert (uint pos, T conn) {
+            _data.insert (pos, (Object)conn);
         }
 
-        public uint indexof (Connection conn) {
+        public uint indexof (T conn) {
             uint pos;
-            _data.find (conn, out pos);
+            _data.find ((Object)conn, out pos);
 
             return pos;
         }

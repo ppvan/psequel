@@ -1,79 +1,93 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PsequelQueryResults : Adw.Bin {
+template $PsequelQueryResults: Adw.Bin {
+  wellcome_message: "Select a table";
 
-    wellcome_message: "Select a table";
-    Stack stack {
-        StackPage {
-            name: "empty";
+  Stack stack {
+    StackPage {
+      name: "empty";
 
-            child: Adw.Clamp {
-                maximum-size: 32;
+      child: Adw.Clamp {
+        maximum-size: 32;
 
-                Box {
-                    styles ["icon-xl"]
-                    orientation: vertical;
-                    valign: center;
-                    Image {
-                        icon-name: "webview-filler-symbolic";
-                    }
+        Box {
+          styles [
+            "icon-xl"
+          ]
 
-                    Label label {
-                        styles ["title-2"]
-                        halign: center;
-                        valign: center;
-                        margin-start: 24;
-                        margin-top: 24;
-                        margin-bottom: 24;
-                        margin-end: 24;
+          orientation: vertical;
+          valign: center;
 
-                        label: bind template.wellcome_message as <string>;
-                    }
-                }
-            };
+          Image {
+            icon-name: "webview-filler-symbolic";
+          }
+
+          Label label {
+            styles [
+              "title-2"
+            ]
+
+            halign: center;
+            valign: center;
+            margin-start: 24;
+            margin-top: 24;
+            margin-bottom: 24;
+            margin-end: 24;
+            label: bind template.wellcome_message as <string>;
+          }
         }
-
-
-        StackPage {
-            name: "data";
-            child: ScrolledWindow {
-                ColumnView data_view {
-                    show-row-separators: true;
-                    show-column-separators: true;
-                    styles ["data-table"]
-                    vexpand: true;
-                }
-            };
-        }
-
-        StackPage {
-            name: "loading";
-            child: Adw.Clamp {
-                maximum-size: 32;
-
-                Spinner spinner {
-                    spinning: bind template.is-loading;
-                }
-            };
-        }
-
-        StackPage {
-            name: "error";
-
-            child: ScrolledWindow {
-                Label status_label {
-                    halign: start;
-                    valign: start;
-                    margin-start: 24;
-                    margin-top: 24;
-                    margin-bottom: 24;
-                    margin-end: 24;
-
-                    styles ["error"]
-                    label: bind template.err_msg;
-                }
-            };
-        }
+      };
     }
+
+    StackPage {
+      name: "data";
+
+      child: ScrolledWindow {
+        ColumnView data_view {
+          show-row-separators: true;
+          show-column-separators: true;
+
+          styles [
+            "data-table"
+          ]
+
+          vexpand: true;
+        }
+      };
+    }
+
+    StackPage {
+      name: "loading";
+
+      child: Adw.Clamp {
+        maximum-size: 32;
+
+        Spinner spinner {
+          spinning: bind template.is-loading;
+        }
+      };
+    }
+
+    StackPage {
+      name: "error";
+
+      child: ScrolledWindow {
+        Label status_label {
+          halign: start;
+          valign: start;
+          margin-start: 24;
+          margin-top: 24;
+          margin-bottom: 24;
+          margin-end: 24;
+
+          styles [
+            "error"
+          ]
+
+          label: bind template.err_msg;
+        }
+      };
+    }
+  }
 }

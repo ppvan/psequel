@@ -7,18 +7,21 @@ namespace Psequel {
         //      { "editor-font", old_choser },
         //  };
 
+        private Settings? settings;
+
         public PreferencesWindow () {
             Object ();
         }
 
         construct {
+            this.settings = autowire<Settings> ();
             setup_binding ();
             defaults ();
         }
 
 
         private void defaults () {
-            var desc = Pango.FontDescription.from_string (Application.settings.get_string ("editor-font"));
+            var desc = Pango.FontDescription.from_string (settings.get_string ("editor-font"));
 
             font_label.get_pango_context ().set_font_description (desc);
             font_label.label = desc.to_string ();
@@ -27,12 +30,12 @@ namespace Psequel {
         }
 
         private void setup_binding () {
-            // Application.settings.bind_with_mapping (string key, GLib.Object object, string property, GLib.SettingsBindFlags flags, GLib.SettingsBindGetMappingShared get_mapping, GLib.SettingsBindSetMappingShared set_mapping, void* user_data, GLib.DestroyNotify? notify)
-            Application.settings.bind ("query-limit", query_limit, "value", SettingsBindFlags.DEFAULT);
-            Application.settings.bind ("query-timeout", query_timeout, "value", SettingsBindFlags.DEFAULT);
-            Application.settings.bind ("connection-timeout", conn_timeout, "value", SettingsBindFlags.DEFAULT);
+            // settings.bind_with_mapping (string key, GLib.Object object, string property, GLib.SettingsBindFlags flags, GLib.SettingsBindGetMappingShared get_mapping, GLib.SettingsBindSetMappingShared set_mapping, void* user_data, GLib.DestroyNotify? notify)
+            settings.bind ("query-limit", query_limit, "value", SettingsBindFlags.DEFAULT);
+            settings.bind ("query-timeout", query_timeout, "value", SettingsBindFlags.DEFAULT);
+            settings.bind ("connection-timeout", conn_timeout, "value", SettingsBindFlags.DEFAULT);
 
-            Application.settings.changed["editor-font"].connect ((_setting, key) => {
+            settings.changed["editor-font"].connect ((_setting, key) => {
 
                 var desc = Pango.FontDescription.from_string (_setting.get_string (key));
 
@@ -46,7 +49,7 @@ namespace Psequel {
                 modal = true,
                 transient_for = this,
                 level = Gtk.FontChooserLevel.FAMILY | Gtk.FontChooserLevel.SIZE | Gtk.FontChooserLevel.STYLE,
-                font = Application.settings.get_string ("editor-font"),
+                font = settings.get_string ("editor-font"),
             };
 
             dialog.set_filter_func ((desc) => {
@@ -60,7 +63,7 @@ namespace Psequel {
                     font_label.get_pango_context ().set_font_description (dialog.font_desc);
                     font_label.label = dialog.font_desc.to_string ();
 
-                    Application.settings.set_string ("editor-font", dialog.font_desc.to_string ());
+                    settings.set_string ("editor-font", dialog.font_desc.to_string ());
                 }
 
                 dialog.destroy ();

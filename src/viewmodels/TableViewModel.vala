@@ -8,6 +8,8 @@ namespace Psequel {
 
         public SQLService sql_service {get; private set;}
 
+        //  public signal void table_changed (Table table);
+
         public TableViewModel (SQLService sql_service) {
             base ();
             this.sql_service = sql_service;

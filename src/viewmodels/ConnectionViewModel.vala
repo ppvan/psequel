@@ -1,10 +1,23 @@
 namespace Psequel {
     public class ConnectionViewModel : BaseViewModel {
+
+        public enum State {
+            IDLE,
+            CONNECTING,
+            ERROR
+        }
+
+
         uint timeout_id = 0;
         public ConnectionRepository repository { get; private set; }
         public SQLService sql_service { get; private set; }
         public NavigationService navigation_service { get; private set; }
 
+
+
+        //  States
+
+        public State current_state {get; private set; default = State.IDLE;}
         public ObservableList<Connection> connections { get; private set; default = new ObservableList<Connection> (); }
         public Connection? selected_connection { get; set; }
 
@@ -65,6 +78,7 @@ namespace Psequel {
 
         public async void active_connection (Connection connection) {
             this.is_connectting = true;
+            this.current_state = State.CONNECTING;
             try {
                 yield sql_service.connect_db (connection);
                 this.navigation_service.navigate (NavigationService.QUERY_VIEW);
@@ -72,8 +86,10 @@ namespace Psequel {
 
             } catch (PsequelError err) {
                 debug ("Error: %s", err.message);
-                create_dialog ("Connection Error", err.message.dup ()).present ();
+                this.current_state = State.ERROR;
+                return;
             }
+            this.current_state = State.IDLE;
             this.is_connectting = false;
         }
 

@@ -1,89 +1,99 @@
 using Gtk 4.0;
-
 using Adw 1;
 
-template $PsequelTableDataView : Gtk.Box {
+template $PsequelTableDataView: Gtk.Box {
+  width-request: 900;
+  height-request: 600;
+  orientation: vertical;
+  spacing: 4;
+  margin-start: 8;
+  margin-top: 8;
+  margin-end: 8;
+  margin-bottom: 8;
 
-    width-request: 900;
-    height-request: 600;
-
-    orientation: vertical;
-    spacing: 4;
-    margin-start: 8;
+  Box {
+    visible: false;
+    spacing: 12;
     margin-top: 8;
-    margin-end: 8;
     margin-bottom: 8;
-    
-    Box {
-        visible: false;
-        spacing: 12;
-        margin-top: 8;
-        margin-bottom: 8;
-        Entry filter_entry {
-            hexpand: true;
-            placeholder-text: "WHERE clause";
-            // activate => $on_entry_activated();
-        }
 
-        Button filter_btn {
-            styles ["suggested-action"]
-            label: "Filter";
-            
-            // clicked => $filter_query();
-        }
+    Entry filter_entry {
+      hexpand: true;
+      placeholder-text: "WHERE clause";
+      // activate => $on_entry_activated();
     }
 
-    $PsequelQueryResults query_results {
-        current-relation: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.current-relation;
-        is-loading: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.is-loading;
-        err-msg: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.err-msg;
+    Button filter_btn {
+      styles [
+        "suggested-action"
+      ]
+
+      label: "Filter";
+      // clicked => $filter_query();
+    }
+  }
+
+  $PsequelQueryResults query_results {
+    current-relation: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.current-relation;
+    is-loading: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.is-loading;
+    err-msg: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.err-msg;
+  }
+
+  Box {
+    spacing: 8;
+    // height-request: 40;
+    Button {
+      visible: false;
+
+      styles [
+        "flat"
+      ]
+
+      icon-name: "plus-large-symbolic";
+      tooltip-text: "Insert Row";
     }
 
+    Button reload {
+      styles [
+        "flat"
+      ]
 
-    Box {
-        spacing: 8;
-        // height-request: 40;
-        Button {
-            visible: false;
-            styles ["flat"]
-            icon-name: "plus-large-symbolic";
-            tooltip-text: "Insert Row";
-        }
-        
-        Button reload {
-            styles ["flat"]
-            icon-name: "refresh-large-symbolic";
-            tooltip-text: "Reload Data";
-            clicked => $reload_data();
-        }
-        
-        // Separator {}
-        
-        Label status_label {
-            label: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.row-ranges;
-            halign: start;
-        }
-        
-        // Separator {}
-
-        Label {
-            hexpand: true;
-        }
-        
-        Button left_page {
-            styles ["flat"]
-            sensitive: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.has-pre-page;
-            icon-name: "left-large-symbolic";
-            tooltip-text: "Last Page";
-            clicked => $pre_page();
-        }
-        
-        Button right_page {
-            styles ["flat"]
-            sensitive: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.has-next-page;
-            icon-name: "right-large-symbolic";
-            tooltip-text: "Next Page";
-            clicked => $next_page();
-        }
+      icon-name: "refresh-large-symbolic";
+      tooltip-text: "Reload Data";
+      clicked => $reload_data();
     }
+
+    // Separator {}
+    Label status_label {
+      label: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.row-ranges;
+      halign: start;
+    }
+
+    // Separator {}
+    Label {
+      hexpand: true;
+    }
+
+    Button left_page {
+      styles [
+        "flat"
+      ]
+
+      sensitive: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.has-pre-page;
+      icon-name: "left-large-symbolic";
+      tooltip-text: "Last Page";
+      clicked => $pre_page();
+    }
+
+    Button right_page {
+      styles [
+        "flat"
+      ]
+
+      sensitive: bind template.tabledata-viewmodel as <$PsequelTableDataViewModel>.has-next-page;
+      icon-name: "right-large-symbolic";
+      tooltip-text: "Next Page";
+      clicked => $next_page();
+    }
+  }
 }

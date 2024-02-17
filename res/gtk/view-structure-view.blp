@@ -1,34 +1,36 @@
 using Gtk 4.0;
 
+template $PsequelViewStructureView: Box {
+  orientation: vertical;
+  spacing: 4;
+  margin-start: 8;
+  margin-top: 12;
+  margin-bottom: 12;
+  // width-request: 960;
+  // height-request: 800;
+  Label {
+    styles [
+      "title-3"
+    ]
 
-template $PsequelViewStructureView : Box {
-    orientation: vertical;
-    spacing: 4;
-    margin-start: 8;
-    margin-top: 12;
-    margin-bottom: 12;
+    label: "Column Info";
+    halign: start;
+  }
 
-    // width-request: 960;
-    // height-request: 800;
+  $PsequelTableColInfo columns {
+    columns: bind template.columns;
+  }
 
-    Label {
-        styles ["title-3"]
-        label: "Column Info";
-        halign: start;
-    }
+  Label {
+    styles [
+      "title-3"
+    ]
 
-    $PsequelTableColInfo columns {
-        columns: bind template.columns;
-    }
+    label: "Indexes";
+    halign: start;
+  }
 
-
-    Label {
-        styles ["title-3"]
-        label: "Indexes";
-        halign: start;
-    }
-
-    $PsequelTableIndexInfo indexes {
-        indexes: bind template.indexes;
-    }
+  $PsequelTableIndexInfo indexes {
+    indexes: bind template.indexes;
+  }
 }

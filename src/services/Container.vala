@@ -2,6 +2,15 @@ namespace Psequel {
     public class Container : Object {
 
         private HashTable<GLib.Type, Object> dependencies;
+        private static Container? _instance;
+
+        public static Container instance() {
+            if (_instance == null) {
+                _instance = new Container();
+            }
+
+            return _instance;
+        }
 
 
         /** Manual dependency injection map */

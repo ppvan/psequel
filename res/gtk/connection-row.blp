@@ -1,28 +1,28 @@
 using Gtk 4.0;
 
-template $PsequelConnectionRow : Gtk.Box {
-    orientation: horizontal;
-    spacing: 12;
+template $PsequelConnectionRow: Gtk.Box {
+  orientation: horizontal;
+  spacing: 12;
 
-    Image {
-        icon-name: "text-sql-symbolic";
-    }
+  Image {
+    icon-name: "text-sql-symbolic";
+  }
 
-    Label {
-      label: bind template.item as <$PsequelConnection>.name;
-      halign: start;
-      ellipsize: end;
-      single-line-mode: true;
-    }
+  Label {
+    label: bind template.item as <$PsequelConnection>.name;
+    halign: start;
+    ellipsize: end;
+    single-line-mode: true;
+  }
 
-    PopoverMenu popover {
-        menu-model: menu;
-    }
+  PopoverMenu popover {
+    menu-model: menu;
+  }
 
-    GestureClick {
-        button: 3; // right clicked
-        released => $on_right_clicked();
-    }
+  GestureClick {
+    button: 3; // right clicked
+    released => $on_right_clicked();
+  }
 }
 
 menu menu {

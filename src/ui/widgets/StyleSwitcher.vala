@@ -18,7 +18,7 @@ namespace Psequel {
         construct {
             this.notify["style"].connect (this.on_style_changed);
 
-            var s = Application.settings;
+            var s = autowire<Settings> ();
             s.bind ("color-scheme", this, "style", GLib.SettingsBindFlags.DEFAULT);
         }
 
