@@ -1,57 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
+<component type="desktop-application">
     <id>me.ppvan.psequel</id>
-    <name>PSequel</name>
-    <summary>Run your SQL query</summary>
-    <metadata_license>CC0-1.0</metadata_license>
+
+    <name>psequel</name>
+    <summary>A simple SQL client</summary>
+
+    <metadata_license>MIT</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
+
+    <recommends>
+        <display_length compare="ge">960</display_length>
+    </recommends>
+
     <description>
-        <p>Basic features of a SQL client</p>
+        <p>Psequel is a modern, yet minial SQL client.</p>
         <ul>
             <li>Create connection, import, export connection to database</li>
             <li>View tables, scshema, views, columns, indexes, foreign key</li>
             <li>Execute query, query history</li>
         </ul>
 
-        <p>This project is not a part of or affiliated with PostgreSQL.</p>
+        <p>
+            This project is not a part of or affiliated with PostgreSQL.
+        </p>
     </description>
-    <categories>
-        <category>Development</category>
-        <category>Database</category>
-    </categories>
-    <keywords>
-        <keyword>Database</keyword>
-        <keyword>Postgress</keyword>
-    </keywords>
     <content_rating type="oars-1.1" />
     <provides>
         <binary>psequel</binary>
     </provides>
-    <launchable type="desktop-id">me.ppvan.psequel.desktop</launchable>
-    <developer_name>ppvan</developer_name>
     <url type="homepage">https://github.com/ppvan/psequel</url>
     <url type="bugtracker">https://github.com/ppvan/psequel/issues</url>
-    <requires>
-        <display_length compare="ge">medium</display_length>
-    </requires>
-    <recommends>
-        <control>keyboard</control>
-    </recommends>
+
+    <developer id="io.github.jtheoof">
+        <name>Jeremy Attali</name>
+        <url>https://github.com/jtheoof</url>
+    </developer>
+    <launchable type="desktop-id">me.ppvan.psequel.desktop</launchable>
     <screenshots>
         <screenshot type="default">
             <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot1.png</image>
         </screenshot>
-        <screenshot type="default">
+        <screenshot>
             <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot2.png</image>
         </screenshot>
-        <screenshot type="default">
+        <screenshot>
             <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot3.png</image>
         </screenshot>
-        <screenshot type="default">
+        <screenshot>
             <image>https://raw.githubusercontent.com/ppvan/psequel/main/screenshots/screenshot4.png</image>
         </screenshot>
     </screenshots>
-    <content_rating type="oars-1.1" />
+
     <releases>
         <release version="0.1.9" date="2023-02-18">
             <description>

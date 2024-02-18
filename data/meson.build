@@ -12,18 +12,10 @@ if desktop_utils.found()
   test('Validate desktop file', desktop_utils, args: [desktop_file])
 endif
 
-i18n.merge_file(
-        input: 'me.ppvan.psequel.appdata.xml.in',
-       output: 'me.ppvan.psequel.appdata.xml',
-       po_dir: '../po',
-      install: true,
-  install_dir: join_paths(get_option('datadir'), 'appdata')
-)
-
 
 appstream_file = i18n.merge_file(
-        input: 'example.com.temp.metainfo.xml.in',
-       output: 'example.com.temp.metainfo.xml',
+        input: 'me.ppvan.psequel.metainfo.xml.in',
+       output: 'me.ppvan.psequel.metainfo.xml',
        po_dir: '../po',
       install: true,
   install_dir: get_option('datadir') / 'metainfo'
