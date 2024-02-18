@@ -33,10 +33,10 @@ namespace Psequel {
             set_up_bindings ();
         }
 
-        //  [GtkCallback]
-        //  public void save_connections () {
-        //      viewmodel.save_connections ();
-        //  }
+        // [GtkCallback]
+        // public void save_connections () {
+        // viewmodel.save_connections ();
+        // }
 
         [GtkCallback]
         public void add_new_connection () {
@@ -55,7 +55,7 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_entry_activated (Gtk.Entry entry) {
-            on_connect_connection();
+            on_connect_connection ();
         }
 
         [GtkCallback]
@@ -109,12 +109,19 @@ namespace Psequel {
         }
 
         private void set_up_bindings () {
-            
-            //  Save ref so it does not be cleaned
+
+            // Save ref so it does not be cleaned
             this.bindings = create_form_bind_group ();
 
             viewmodel.bind_property ("selected-connection", this.bindings, "source", BindingFlags.SYNC_CREATE);
             viewmodel.bind_property ("is-connectting", connect_btn, "sensitive", INVERT_BOOLEAN | SYNC_CREATE);
+            viewmodel.notify["current-state"].connect(() => {
+                if (viewmodel.current_state == ConnectionViewModel.State.ERROR) {
+                    var err_dialog = create_dialog ("Connection Failed", viewmodel.err_msg);
+                    err_dialog.show ();
+                }
+            });
+            
             selection_model.bind_property ("selected", viewmodel, "selected-connection",
                                            DEFAULT | BIDIRECTIONAL, from_selected, to_selected);
             password_entry.bind_property ("text",
@@ -128,8 +135,6 @@ namespace Psequel {
 
                 return true;
             });
-
-
         }
 
         private BindingGroup create_form_bind_group () {
@@ -154,6 +159,8 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.Paned paned;
 
+        [GtkChild]
+        private unowned Gtk.Spinner spinner;
 
         [GtkChild]
         private unowned Gtk.Button connect_btn;

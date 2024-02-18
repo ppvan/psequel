@@ -18,6 +18,7 @@ namespace Psequel {
         //  States
 
         public State current_state {get; private set; default = State.IDLE;}
+        public string err_msg {get; private set; default = "hello world";}
         public ObservableList<Connection> connections { get; private set; default = new ObservableList<Connection> (); }
         public Connection? selected_connection { get; set; }
 
@@ -36,6 +37,8 @@ namespace Psequel {
             if (connections.empty ()) {
                 new_connection ();
             }
+
+            this.bind_property ("current-state", this, "is-connectting", SYNC_CREATE, from_state_to_connecting);
 
             // Auto save data each 10 secs in case app crash.
             Timeout.add_seconds (10, () => {
@@ -77,7 +80,6 @@ namespace Psequel {
         }
 
         public async void active_connection (Connection connection) {
-            this.is_connectting = true;
             this.current_state = State.CONNECTING;
             try {
                 yield sql_service.connect_db (connection);
@@ -85,12 +87,12 @@ namespace Psequel {
                 this.emit_event (Event.ACTIVE_CONNECTION, connection);
 
             } catch (PsequelError err) {
+                this.err_msg = err.message.dup ();
                 debug ("Error: %s", err.message);
                 this.current_state = State.ERROR;
                 return;
             }
             this.current_state = State.IDLE;
-            this.is_connectting = false;
         }
 
         public unowned List<Connection> export_connections () {
@@ -110,6 +112,17 @@ namespace Psequel {
 
                 return Source.REMOVE;
             });
+        }
+
+        private bool from_state_to_connecting (Binding binding, Value from, ref Value to) {
+            ConnectionViewModel.State state = (ConnectionViewModel.State) from.get_enum ();
+            if (state == ConnectionViewModel.State.CONNECTING) {
+                to.set_boolean (true);
+            } else {
+                to.set_boolean (false);
+            }
+
+            return true;
         }
     }
 }
