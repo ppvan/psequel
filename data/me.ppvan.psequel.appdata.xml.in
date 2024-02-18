@@ -43,6 +43,14 @@
   </screenshots>
   <content_rating type="oars-1.1" />
   <releases>
+
+    <release version="0.1.9" date="2023-02-18">
+      <description>
+        <p>Clean up and bug fix</p>
+        <p>Show number of tables and views</p>
+      </description>
+    </release>
+
     <release version="0.1.5" date="2023-08-15">
       <description>
         <p>Basic autocompletion</p>
