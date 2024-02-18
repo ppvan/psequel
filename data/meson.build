@@ -20,11 +20,21 @@ i18n.merge_file(
   install_dir: join_paths(get_option('datadir'), 'appdata')
 )
 
+
+appstream_file = i18n.merge_file(
+        input: 'example.com.temp.metainfo.xml.in',
+       output: 'example.com.temp.metainfo.xml',
+       po_dir: '../po',
+      install: true,
+  install_dir: get_option('datadir') / 'metainfo'
+)
+
 # Disable redudant check.
-# appstream_util = find_program('appstream-util', required: false)
-# if appstream_util.found()
-#   test('Validate appstream file', appstream_util, args: ['validate', appstream_file])
-# endif
+appstreamcli = find_program('appstreamcli', required: false, disabler: true)
+if appstreamcli.found()
+  test('Validate appstream file', appstreamcli,
+     args: ['validate', '--no-net', '--explain', appstream_file])
+endif
 
 
 install_data('me.ppvan.psequel.gschema.xml',

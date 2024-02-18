@@ -46,6 +46,8 @@ namespace Psequel {
         var window = app.active_window;
         var dialog = new Adw.MessageDialog (window, heading, body);
 
+        debug (body);
+
         dialog.close_response = "okay";
         dialog.add_response ("okay", "OK");
 
