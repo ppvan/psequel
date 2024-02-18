@@ -160,9 +160,6 @@ namespace Psequel {
         private unowned Gtk.Paned paned;
 
         [GtkChild]
-        private unowned Gtk.Spinner spinner;
-
-        [GtkChild]
         private unowned Gtk.Button connect_btn;
 
         [GtkChild]

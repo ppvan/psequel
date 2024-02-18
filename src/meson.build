@@ -99,7 +99,7 @@ add_project_arguments(
 
 psequel_sources_main = psequel_sources + ui_sources + files(['application.vala'])
 
-executable('psequel', [blueprint_hack, psequel_resources, psequel_sources_main],
+executable(meson.project_name(), [blueprint_hack, psequel_resources, psequel_sources_main],
   dependencies: psequel_deps,
   vala_args: [
     '--gresourcesdir=' + blueprints_output_dir,

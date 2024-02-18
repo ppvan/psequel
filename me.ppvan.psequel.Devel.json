@@ -1,7 +1,7 @@
 {
     "app-id": "me.ppvan.psequel",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "44",
+    "runtime-version": "45",
     "sdk": "org.gnome.Sdk",
     "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.vala"
@@ -12,7 +12,8 @@
         "--share=ipc",
         "--socket=fallback-x11",
         "--device=dri",
-        "--socket=wayland"
+        "--socket=wayland",
+        "--env=G_MESSAGES_DEBUG=all"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/vala/bin",
@@ -47,7 +48,7 @@
                     "sources": [
                         {
                             "type": "git",
-                            "url": "file:///home/ppvan/Downloads/blueprint-compiler",
+                            "url": "https://gitlab.gnome.org/jwestman/blueprint-compiler",
                             "tag": "v0.10.0"
                         }
                     ],
