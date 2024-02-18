@@ -16,6 +16,12 @@
 </p>
 
 <p align="center">
+<a href="https://flathub.org/apps/me.ppvan.psequel">
+    <img width="200" src="https://flathub.org/assets/badges/flathub-badge-en.png" alt="Download on Flathub">
+</a>
+</p>
+
+<p align="center">
     <img alt="Screenshot" src="screenshots/screenshot.png"/>
 </p>
 
@@ -37,10 +43,7 @@ Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for 
 ## Flatpak file
 > **Recommended**
 
-Download flatpak file from in [Releases](https://github.com/ppvan/psequel/releases) tab, then install it by:
-```bash
-flatpak install me.ppvan.psequel.flatpak
-```
+<a href="https://flathub.org/apps/me.ppvan.psequel">Click here</a> to install app from Flathub.
 
 ## Build from source
 ### Via GNOME Builder
