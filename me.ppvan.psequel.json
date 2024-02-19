@@ -11,6 +11,10 @@
         "--device=dri",
         "--socket=wayland"
     ],
+    "build-options": {
+        "append-path": "/usr/lib/sdk/vala/bin",
+        "prepend-ld-library-path": "/usr/lib/sdk/vala/lib"
+    },
     "cleanup": [
         "/include",
         "/lib/pkgconfig",
@@ -27,12 +31,10 @@
         {
             "name": "psequel",
             "buildsystem": "meson",
-            "builddir": true,
             "sources": [
                 {
-                    "type": "git",
-                    "url": "https://github.com/ppvan/psequel",
-                    "commit": "33a0704cbbc7ab7ef8483404a4578319c001b1f9"
+                    "type": "dir",
+                    "path": "."
                 }
             ],
             "modules": [
