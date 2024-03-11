@@ -32,6 +32,14 @@ namespace Psequel {
             load_data ((owned) res);
         }
 
+        public Relation.raw(owned List<string> headers, owned List<Row> data) {
+            Object (fetch_time: 0);
+            this.rows = (int)data.length ();
+            this.cols = (int)headers.length ();
+            this.headers = (owned) headers;
+            this.data = (owned) data;
+        }
+
         public Type get_column_type (int index) {
             return this.cols_type.nth_data ((uint) index);
         }

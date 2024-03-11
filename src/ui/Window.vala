@@ -138,7 +138,7 @@ namespace Psequel {
                 filters = filters,
             };
 
-            unowned var conns = connection_viewmodel.export_connections ();
+            var conns = connection_viewmodel.export_connections ();
             var content = ValueConverter.serialize_connection (conns);
             var bytes = new Bytes.take (content.data);  // Move data to byte so it live when out scope
             var window = (Window) get_parrent_window (this);

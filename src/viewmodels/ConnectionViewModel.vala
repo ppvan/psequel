@@ -31,7 +31,7 @@ namespace Psequel {
             this.sql_service = sql_service;
             this.navigation_service = navigation_service;
 
-            unowned var loaded_conn = repository.get_connections ();
+            var loaded_conn = repository.find_all ();
             connections.extend (loaded_conn);
 
             if (connections.empty ()) {
@@ -41,36 +41,34 @@ namespace Psequel {
             this.bind_property ("current-state", this, "is-connectting", SYNC_CREATE, from_state_to_connecting);
 
             // Auto save data each 10 secs in case app crash.
-            Timeout.add_seconds (10, () => {
-                repository.save ();
-                return Source.CONTINUE;
-            }, Priority.LOW);
+            //  Timeout.add_seconds (10, () => {
+            //      repository.save (connections.to_list ());
+            //      return Source.CONTINUE;
+            //  }, Priority.LOW);
         }
 
         public void new_connection () {
             var conn = new Connection ();
-            repository.append_connection (conn);
+            conn = repository.append_connection (conn);
             connections.append (conn);
             selected_connection = conn;
 
-            save_connections ();
+            //  save_connections ();
         }
 
         public void dupplicate_connection (Connection conn) {
             var clone = conn.clone ();
             clone.name = clone.name + " (copy)";
+            clone.id = 0;
             repository.append_connection (clone);
             connections.insert (connections.indexof (conn) + 1, clone);
             selected_connection = clone;
-
-            save_connections ();
         }
 
         public void remove_connection (Connection conn) {
             repository.remove_connection (conn);
             connections.remove (conn);
 
-            save_connections ();
         }
 
         public void import_connections (List<Connection> connections) {
@@ -95,8 +93,8 @@ namespace Psequel {
             this.current_state = State.IDLE;
         }
 
-        public unowned List<Connection> export_connections () {
-            return repository.get_connections ();
+        public List<Connection> export_connections () {
+            return repository.find_all ();
         }
 
         public void save_connections () {
@@ -106,10 +104,7 @@ namespace Psequel {
 
             timeout_id = Timeout.add (500, () => {
                 timeout_id = 0;
-
-                // debug ("SAVE: %s", conn.name);
-                repository.save ();
-
+                repository.save (connections.to_list());
                 return Source.REMOVE;
             });
         }

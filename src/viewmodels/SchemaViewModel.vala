@@ -51,7 +51,7 @@ namespace Psequel {
 
         private async void database_connected () throws PsequelError {
             // auto load schema list.
-            yield list_schemas ();
+            yield load_schemas ();
             
             yield select_schema (schemas.find (s => s.name == DEFAULT));
         }
@@ -63,7 +63,7 @@ namespace Psequel {
         }
 
         /** List schema from database. */
-        private async void list_schemas () throws PsequelError {
+        private async void load_schemas () throws PsequelError {
             var unload_schemas = yield schema_service.schema_list ();
 
             var public_first_schemas = new List<Schema> ();
@@ -76,6 +76,7 @@ namespace Psequel {
                 }
             }
 
+            schemas.clear ();
             schemas.append_all (public_first_schemas);
         }
     }

@@ -5,7 +5,7 @@ namespace Psequel {
     public class ConnectionView : Adw.Bin {
 
         public ConnectionViewModel viewmodel { get; private set; }
-        public ObservableList<Connection> connections { get; set; }
+        //  public ObservableList<Connection> connections { get; set; }
         public Connection? selected_connection { get; set; }
 
         BindingGroup bindings;

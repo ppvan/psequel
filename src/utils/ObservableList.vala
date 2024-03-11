@@ -21,6 +21,16 @@ namespace Psequel {
             });
         }
 
+        public List<T> to_list() {
+            List<T> list = new List<T> ();
+
+            for (uint i = 0; i < this.size; i++) {
+                list.append (this._data.get_item (i));
+            }
+
+            return list;
+        }
+
         public new T @get (int i) {
             return (T)_data.get_item ((uint)i);
         }

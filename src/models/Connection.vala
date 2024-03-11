@@ -28,12 +28,13 @@ namespace Psequel {
         public const string DEFAULT = "";
         public const string SCHEME = "postgresql";
 
+        public int64 id {get; set; default = 0;}
         public string name { get; set; default = DEFAULT; }
-        public string host { get; set; default = DEFAULT; }
-        public string port { get; set; default = DEFAULT; }
-        public string user { get; set; default = DEFAULT; }
-        public string password { get; set; default = DEFAULT; }
-        public string database { get; set; default = DEFAULT; }
+        public string host { get; set; default = "localhost"; }
+        public string port { get; set; default = "5432"; }
+        public string user { get; set; default = "postgres"; }
+        public string password { get; set; default = "postgres"; }
+        public string database { get; set; default = "postgres"; }
         public bool use_ssl { get; set; default = false; }
 
         public string options { get; set; default = DEFAULT; }

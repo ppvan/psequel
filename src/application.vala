@@ -40,7 +40,7 @@ namespace Psequel {
         public const int MAX_COLUMNS = 100;
 
         public Application () {
-            Object (application_id: "me.ppvan.psequel", flags: ApplicationFlags.DEFAULT_FLAGS);
+            Object (application_id: Config.APP_ID, flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
         construct {
@@ -212,8 +212,12 @@ namespace Psequel {
             var container = Container.instance ();
 
             var settings = autowire<Settings> ();
-
+            var db_path = @"$(GLib.Environment.get_user_data_dir ())/$(Config.APP_ID)/database.sqlite3";
             // services
+            var storage_service = new StorageService (db_path);
+            container.register (storage_service);
+
+
             var sql_service = new SQLService (Application.background);
             var schema_service = new SchemaService (sql_service);
             var connection_repo = new ConnectionRepository (settings);
