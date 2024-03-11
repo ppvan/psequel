@@ -9,12 +9,13 @@ namespace Psequel {
             "id"	INTEGER,
             "name"	TEXT NOT NULL,
             "host"	TEXT NOT NULL,
-            "port"  TEXT NOT NULL,
+            "port"	TEXT NOT NULL,
             "user"	TEXT NOT NULL,
             "password"	TEXT NOT NULL,
             "database"	TEXT NOT NULL,
             "use_ssl"	INT NOT NULL,
             "options"	TEXT NOT NULL,
+            "create_at"	DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY("id" AUTOINCREMENT)
         )
         """;
@@ -41,7 +42,6 @@ namespace Psequel {
         private Sqlite.Statement delete_stmt;
 
         private StorageService db;
-        private Settings settings;
         private List<Connection> _data;
 
 
@@ -94,7 +94,7 @@ namespace Psequel {
         }
 
         public void update_connection (Connection connection) {
-            debug ("Update id = %lli, name = %s", connection.id, connection.name);
+            //  debug ("Update id = %lli, name = %s", connection.id, connection.name);
             this.update_stmt.reset ();
             update_stmt.bind_text (1, connection.name);
             update_stmt.bind_text (2, connection.host);
@@ -140,7 +140,7 @@ namespace Psequel {
                     append_connection (connection);
                 } else {
                     if (exist_ids.index((uint32)connection.id) > 0) {
-                        debug ("Update: %lli", connection.id);
+                        debug ("Update: %lli %s", connection.id, connection.name);
                         update_connection (connection);
                     }
                 }
@@ -148,7 +148,6 @@ namespace Psequel {
 
             foreach (var connection in exist_connections) {
                 if (ids.index((uint32)connection.id) < 0) {
-                    debug ("Remove: %lli", connection.id);
                     remove_connection (connection);
                 }
             }
@@ -212,41 +211,6 @@ namespace Psequel {
                 debug ("Error: %s\n", errmsg);
                 Process.exit (1);
             }
-        }
-
-        private List<Connection> deserialize_connection (string json_data) {
-            var parser = new Json.Parser ();
-            var recent_connections = new List<Connection> ();
-
-            try {
-                parser.load_from_data (json_data);
-                var root = parser.get_root ();
-                var conns = root.get_array ();
-
-                conns.foreach_element ((array, index, node) => {
-                    var conn = (Connection) Json.gobject_deserialize (typeof (Connection), node);
-                    recent_connections.append (conn);
-                });
-            } catch (Error err) {
-                debug (err.message);
-            }
-
-            return (owned) recent_connections;
-        }
-
-        private string serialize_connection (List<Connection> conns) {
-
-            var builder = new Json.Builder ();
-            builder.begin_array ();
-
-            foreach (var conn in conns) {
-                builder.add_value (Json.gobject_serialize (conn));
-            }
-
-            builder.end_array ();
-
-            var node = builder.get_root ();
-            return Json.to_string (node, true);
         }
     }
 }

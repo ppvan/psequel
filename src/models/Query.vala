@@ -1,20 +1,37 @@
 namespace Psequel {
     public class Query : Object, Json.Serializable {
 
-        //  Properties must be public, get, set inorder to Json.Serializable works
+        // Properties must be public, get, set inorder to Json.Serializable works
+        public int64 id {get; set; default = 0;}
         public string sql { get; set; }
-        public string[] params {get; set;}
+        public string[] params { get; set; }
+        public Postgres.Oid[] param_types { get; set; }
 
-        public static Regex DDL_REG = /^(CREATE|DROP|RENAME|ALTER|INSERT|UPDATE|DELETE).*$/i;
+        public static Regex DDL_REG = /^(CREATE | DROP | RENAME | ALTER | INSERT | UPDATE | DELETE).*$/i;
 
         public Query (string sql) {
-            base();
+            base ();
             this.sql = sql;
         }
 
         public Query.with_params (string sql, string[] params) {
             this(sql);
             this.params = params;
+        }
+
+        public void bind_text (int index, string value) {
+            this.params[index] = value;
+            this.param_types[index] = (Postgres.Oid)25;
+        }
+
+        public void bind_int (int index, string value) {
+            this.params[index] = value;
+            this.param_types[index] = (Postgres.Oid)20;
+        }
+
+        public void bind_raw (int index, string value) {
+            this.params[index] = value;
+            this.param_types[index] = (Postgres.Oid)0;
         }
 
         public void set_limit (int limit) {
@@ -33,7 +50,7 @@ namespace Psequel {
         }
 
         public Query clone () {
-            return (Query)Json.gobject_deserialize (typeof (Query), Json.gobject_serialize (this));
+            return (Query) Json.gobject_deserialize (typeof (Query), Json.gobject_serialize (this));
         }
     }
 }

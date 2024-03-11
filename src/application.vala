@@ -210,11 +210,14 @@ namespace Psequel {
 
         private Container create_viewmodels () {
             var container = Container.instance ();
-
             var settings = autowire<Settings> ();
-            var db_path = @"$(GLib.Environment.get_user_data_dir ())/$(Config.APP_ID)/database.sqlite3";
+            var app_data_dir = Path.build_filename (GLib.Environment.get_user_data_dir (), Config.APP_ID);
+            DirUtils.create_with_parents (app_data_dir, 0777);
+
+            var db_file = File.new_for_path (Path.build_filename (app_data_dir, "database.sqlite3"));
+
             // services
-            var storage_service = new StorageService (db_path);
+            var storage_service = new StorageService (db_file.get_path ());
             container.register (storage_service);
 
 
