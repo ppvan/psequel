@@ -39,5 +39,18 @@ namespace Psequel {
             var node = builder.get_root ();
             return Json.to_string (node, true);
         }
+
+
+        public static T[] list_to_array<T>(List<T> list) {
+            int len = (int) list.length ();
+            int i = 0;
+            T[] array = new T[len];
+
+            list.foreach ((item) => {
+                array[i++] = item;
+            });
+
+            return array;
+        }
     }
 }

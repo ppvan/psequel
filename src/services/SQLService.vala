@@ -152,17 +152,19 @@ namespace Psequel {
             }
         }
 
-        private async Result exec_query_params_internal (string query, string[] params) throws PsequelError {
+        private async Result exec_query_params_internal (string query, List<string> params) throws PsequelError {
 
             debug ("Exec Param: %s", query);
             TimePerf.begin ();
 
             SourceFunc callback = exec_query_params_internal.callback;
             Result result = null;
+            var params_array = ValueConverter.list_to_array<string>(params);
+
 
             try {
                 var worker = new Worker ("exec query params", () => {
-                    result = active_db.exec_params (query, params.length, null, params, null, null, 0);
+                    result = active_db.exec_params (query, (int)params.length (), null, params_array, null, null, 0);
                     // Jump to yield
                     Idle.add ((owned) callback);
                 });

@@ -2,7 +2,7 @@ namespace Psequel {
 
     public Window get_parrent_window (Gtk.Widget widget) {
 
-        var window_type = GLib.Type.from_name("GtkWindow");
+        var window_type = GLib.Type.from_name ("GtkWindow");
         var window = widget.get_ancestor (window_type);
 
         if (window is Gtk.Window) {
@@ -39,7 +39,6 @@ namespace Psequel {
         });
     }
 
-
     public Adw.MessageDialog create_dialog (string heading, string body) {
         var app = autowire<Application> ();
         var window = app.active_window;
@@ -51,5 +50,21 @@ namespace Psequel {
         dialog.add_response ("okay", "OK");
 
         return dialog;
+    }
+
+    public class MonospaceFilter : Gtk.Filter {
+        public override bool match (GLib.Object? item) {
+
+            if (item is Pango.FontFace) {
+                var fontface = item as Pango.FontFace;
+                return fontface.get_family ().is_monospace ();
+            } else if (item is Pango.FontFamily) {
+                var family = item as Pango.FontFamily;
+                return family.is_monospace ();
+            } else {
+                debug ("Check the FontDialog docs: https://docs.gtk.org/gtk4/method.FontDialog.set_filter.html");
+                assert_not_reached ();
+            }
+        }
     }
 }

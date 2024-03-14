@@ -18,6 +18,8 @@ namespace Psequel {
         public QueryHistoryViewModel query_history_viewmodel { get; set; }
         public Query? selected_query { get; set; }
 
+        private GLib.SimpleAction auto_uppercase;
+        private GLib.SimpleAction auto_exec_history;
 
 
         private GtkSource.Completion completion;
@@ -193,49 +195,30 @@ namespace Psequel {
             var group = new SimpleActionGroup ();
             this.insert_action_group ("editor", group);
 
-            var auto_uppercase = boolean_state_factory ("auto-uppercase", change_autouppercase);
+            auto_uppercase = boolean_state_factory ("auto-uppercase");
+            auto_exec_history = boolean_state_factory ("auto-exec-history");
 
-            var auto_exec_history = boolean_state_factory ("auto-exec-history", change_auto_exec_history);
-
-            group.add_action (auto_uppercase);
-            group.add_action (auto_exec_history);
+            group.add_action ((owned)auto_uppercase);
+            group.add_action ((owned)auto_exec_history);
 
             this.insert_action_group ("editor", group);
         }
 
-        private SimpleAction boolean_state_factory (string name, owned ChangeStateFunc func) {
+        private SimpleAction boolean_state_factory (string name) {
             bool init = settings.get_boolean (name);
-
             var action = new SimpleAction.stateful (name, null, new Variant.boolean (init));
             action.activate.connect (toggle_boolean);
-            action.change_state.connect ((owned)func);
-
             return action;
         }
 
         private void toggle_boolean (Action action, Variant? parameter) {
-            debug ("Activate autouppercase");
             Variant state = action.state;
             bool old_state = state.get_boolean ();
             bool new_state = !old_state;
             action.change_state (new_state);
+            settings.set_boolean (action.name, new_state);
         }
 
-        private void change_autouppercase (SimpleAction action, Variant? new_state) {
-            bool autouppercase = new_state.get_boolean ();
-            debug ("Change auto uppercase");
-
-            action.set_state (new_state);
-            settings.set_boolean ("auto-uppercase", autouppercase);
-        }
-
-        private void change_auto_exec_history (SimpleAction action, Variant? new_state) {
-            debug ("change_auto_exec_history");
-            bool auto_exec = new_state.get_boolean ();
-
-            action.set_state (new_state);
-            settings.set_boolean ("auto-exec-history", auto_exec);
-        }
 
         private bool from_selected (Binding binding, Value from, ref Value to) {
             uint pos = from.get_uint ();

@@ -41,8 +41,16 @@ namespace Psequel {
                 view_viewmodel.select_view ((View)view);
             });
 
+            var table_name_expression = new Gtk.PropertyExpression (typeof (Table), null, "name");
+            var view_name_expression = new Gtk.PropertyExpression (typeof (View), null, "name");
+
+            var table_name_sorter = new Gtk.StringSorter (table_name_expression);
+            var view_name_sorter = new Gtk.StringSorter (view_name_expression);
+
             dropdown.expression = new Gtk.PropertyExpression (typeof (Schema), null, "name");
             table_filter.expression = new Gtk.PropertyExpression (typeof (Table), null, "name");
+            table_sort_model.sorter = table_name_sorter;
+            view_sort_model.sorter = view_name_sorter;
             view_filter.expression = new Gtk.PropertyExpression (typeof (View), null, "name");
             stack.visible_child_name = "data-view";
         }
@@ -93,6 +101,12 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Gtk.StringFilter table_filter;
+
+        [GtkChild]
+        private unowned Gtk.SortListModel table_sort_model;
+
+        [GtkChild]
+        private unowned Gtk.SortListModel view_sort_model;
 
         [GtkChild]
         private unowned Gtk.FilterListModel table_model;

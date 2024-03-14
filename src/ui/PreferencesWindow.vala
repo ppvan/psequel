@@ -45,33 +45,24 @@ namespace Psequel {
 
         [GtkCallback]
         private void on_font_chooser (Adw.ActionRow row) {
-            var dialog = new Gtk.FontChooserDialog (_("Select font"), this) {
+            var dialog = new Gtk.FontDialog () {
                 modal = true,
-                transient_for = this,
-                level = Gtk.FontChooserLevel.FAMILY | Gtk.FontChooserLevel.SIZE | Gtk.FontChooserLevel.STYLE,
-                font = settings.get_string ("editor-font"),
+                title = _("Select Font")
             };
+            dialog.filter = new MonospaceFilter();
 
-            dialog.set_filter_func ((desc) => {
-                return desc.is_monospace ();
-            });
+            var current_font = Pango.FontDescription.from_string (settings.get_string ("editor-font"));
 
-
-            // Set font and close dialog on response
-            dialog.response.connect ((res) => {
-                if (res == Gtk.ResponseType.OK && dialog.font != null) {
-                    font_label.get_pango_context ().set_font_description (dialog.font_desc);
-                    font_label.label = dialog.font_desc.to_string ();
-
-                    settings.set_string ("editor-font", dialog.font_desc.to_string ());
+            dialog.choose_font.begin(this, current_font, null, (obj, res) => {
+                try {
+                    Pango.FontDescription val = dialog.choose_font.end (res);
+                    font_label.get_pango_context ().set_font_description (val);
+                    font_label.label = val.to_string ();
+                    settings.set_string ("editor-font", val.to_string ());
+                } catch (Error err) {
+                    debug (err.message);
                 }
-
-                dialog.destroy ();
             });
-
-
-            /* Show dialog */
-            dialog.show ();
         }
 
 
@@ -86,13 +77,13 @@ namespace Psequel {
         //      init.set_size (14);
 
         //      dialog.choose_font.begin (this, init, null, (obj, res) => {
-        //          try {
-        //              var val = dialog.choose_font.end (res);
-        //              font_label.get_pango_context ().set_font_description (val);
-        //              font_label.label = val.get_family ();
-        //          } catch (Error err) {
-        //              debug (err.message);
-        //          }
+                //  try {
+                //      var val = dialog.choose_font.end (res);
+                //      font_label.get_pango_context ().set_font_description (val);
+                //      font_label.label = val.get_family ();
+                //  } catch (Error err) {
+                //      debug (err.message);
+                //  }
         //      });
         //  }
 

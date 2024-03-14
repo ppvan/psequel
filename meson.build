@@ -33,7 +33,6 @@ add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
 subdir('data')
 subdir('res')
 subdir('src')
-subdir('test')
 subdir('po')
 
 # Using gnome module to do some task after the app is installed, like compile schema (settings data)

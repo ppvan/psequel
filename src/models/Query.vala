@@ -4,8 +4,9 @@ namespace Psequel {
         // Properties must be public, get, set inorder to Json.Serializable works
         public int64 id {get; set; default = 0;}
         public string sql { get; set; }
-        public string[] params { get; set; }
-        public Postgres.Oid[] param_types { get; set; }
+
+        public List<string> params {get; owned set; default = new List<string>();}
+        public List<uint> param_types { get; owned set; default = new List<uint>();}
 
         public static Regex DDL_REG = /^(CREATE | DROP | RENAME | ALTER | INSERT | UPDATE | DELETE).*$/i;
 
@@ -16,37 +17,10 @@ namespace Psequel {
 
         public Query.with_params (string sql, string[] params) {
             this(sql);
-            this.params = params;
-        }
 
-        public void bind_text (int index, string value) {
-            this.params[index] = value;
-            this.param_types[index] = (Postgres.Oid)25;
-        }
-
-        public void bind_int (int index, string value) {
-            this.params[index] = value;
-            this.param_types[index] = (Postgres.Oid)20;
-        }
-
-        public void bind_raw (int index, string value) {
-            this.params[index] = value;
-            this.param_types[index] = (Postgres.Oid)0;
-        }
-
-        public void set_limit (int limit) {
-            if (!is_dql ()) {
-                return;
+            for(int i = 0; i < params.length; i++) {
+                this.params.append ((owned)params[i]);
             }
-            sql += @" LIMIT $limit";
-        }
-
-        public bool is_dql () {
-            return sql.up (6) == "SELECT";
-        }
-
-        public bool is_ddl () {
-            return DDL_REG.match (sql, 0, null);
         }
 
         public Query clone () {

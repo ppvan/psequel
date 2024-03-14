@@ -2,7 +2,7 @@ namespace Psequel {
     /**
      * Util class to mesure execution time than log it using debug()
      */
-     public class TimePerf {
+    public class TimePerf {
         private static int64 _start;
         private static int64 _end;
 
@@ -26,6 +26,7 @@ namespace Psequel {
     }
 
     public delegate void Job ();
+
     public class Worker {
         public string thread_name { private set; get; }
         public Job task;
@@ -37,13 +38,13 @@ namespace Psequel {
 
         public void run () {
 
-            //  Thread.usleep ((ulong)1e6);
+            // Thread.usleep ((ulong)1e6);
             this.task ();
         }
     }
 
     public T autowire<T> () {
         var container = Container.instance ();
-        return (T)container.find_type (typeof (T));
+        return (T) container.find_type (typeof (T));
     }
 }
