@@ -13,7 +13,6 @@ namespace Psequel {
         }
 
         construct {
-            debug ("[CONTRUCT] %s", this.name);
             setup_name_col ();
             setup_indexcolumns_col ();
             setup_indextype_col ();

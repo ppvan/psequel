@@ -22,7 +22,6 @@ namespace Psequel {
 
         // Connect event.
         construct {
-            debug ("[CONTRUCT] %s", this.name);
             setup_paned (paned);
             viewmodel = autowire<ConnectionViewModel> ();
 
@@ -140,7 +139,7 @@ namespace Psequel {
         private BindingGroup create_form_bind_group () {
 
             var binddings = new BindingGroup ();
-            debug ("set_up connection form bindings group");
+            //  debug ("set_up connection form bindings group");
             binddings.bind ("name", name_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("host", host_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("port", port_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
@@ -148,7 +147,7 @@ namespace Psequel {
             binddings.bind ("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
             binddings.bind ("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
-            debug ("set_up binddings done");
+            //  debug ("set_up binddings done");
 
 
             return binddings;

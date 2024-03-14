@@ -44,10 +44,9 @@ namespace Psequel {
         private Sqlite.Statement delete_all_stmt;
 
         private StorageService db;
-        private Settings settings;
         private List<Query> _data;
 
-        public QueryRepository (Settings settings) {
+        public QueryRepository () {
             base ();
 
             this.db = autowire<StorageService> ();
@@ -62,7 +61,7 @@ namespace Psequel {
 
         public List<Query> get_queries () {
 
-            debug ("Get query");
+            //  debug ("Get query");
 
             return this.find_all ();
         }
@@ -119,7 +118,7 @@ namespace Psequel {
                     }
                 }
 
-                debug ("id = %lli, sql = %s", query.id, query.sql);
+                //  debug ("id = %lli, sql = %s", query.id, query.sql);
                 list.append (query);
             }
 

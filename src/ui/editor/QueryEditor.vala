@@ -35,7 +35,6 @@ namespace Psequel {
         }
 
         construct {
-            debug ("[CONTRUCT] %s", this.name);
             this.export_service = autowire<ExportService> ();
             this.query_viewmodel = autowire<QueryViewModel> ();
             this.query_history_viewmodel = autowire<QueryHistoryViewModel> ();

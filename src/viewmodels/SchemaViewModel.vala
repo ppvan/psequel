@@ -49,6 +49,11 @@ namespace Psequel {
             yield select_schema (current_schema);
         }
 
+        public async void logout () throws  PsequelError {
+            current_schema = null;
+            schemas.clear ();
+        }
+
         private async void database_connected () throws PsequelError {
             // auto load schema list.
             yield load_schemas ();

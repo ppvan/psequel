@@ -48,7 +48,6 @@ namespace Psequel {
         }
 
         construct {
-            debug ("[CONTRUCT] %s", this.name);
             stack.visible_child_name = EMPTY;
             rows = new ObservableList<Relation.Row> ();
             alloc_columns ();

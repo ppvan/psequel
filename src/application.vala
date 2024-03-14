@@ -26,7 +26,6 @@ namespace Psequel {
         LIGHT,
         DARK
     }
-    // public string APP_ID = "me.ppvan.Psequel";
 
     public class Application : Adw.Application {
 
@@ -37,7 +36,7 @@ namespace Psequel {
         public static ThreadPool<Worker> background;
 
         public int color_scheme { get; set; }
-        public const int MAX_COLUMNS = 100;
+        public const int MAX_COLUMNS = 128;
 
         public Application () {
             Object (application_id: Config.APP_ID, flags: ApplicationFlags.DEFAULT_FLAGS);
@@ -95,8 +94,6 @@ namespace Psequel {
         }
 
         public override void shutdown () {
-
-
             base.shutdown ();
         }
 
@@ -210,7 +207,6 @@ namespace Psequel {
 
         private Container create_viewmodels () {
             var container = Container.instance ();
-            var settings = autowire<Settings> ();
             var app_data_dir = Path.build_filename (GLib.Environment.get_user_data_dir (), Config.APP_ID);
             DirUtils.create_with_parents (app_data_dir, 0777);
 
@@ -223,8 +219,8 @@ namespace Psequel {
 
             var sql_service = new SQLService (Application.background);
             var schema_service = new SchemaService (sql_service);
-            var connection_repo = new ConnectionRepository (settings);
-            var query_repo = new QueryRepository (settings);
+            var connection_repo = new ConnectionRepository ();
+            var query_repo = new QueryRepository ();
             var navigation = new NavigationService ();
             var export = new ExportService ();
             var completer = new CompleterService (sql_service);

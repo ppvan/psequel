@@ -42,28 +42,18 @@ namespace Psequel {
         private Sqlite.Statement delete_stmt;
 
         private StorageService db;
-        private List<Connection> _data;
 
 
 
-        public ConnectionRepository (Settings settings) {
+        public ConnectionRepository () {
             base ();
             this.db = autowire<StorageService> ();
             create_table ();
-
-            // this.settings = settings;
             this.insert_stmt = this.db.prepare (insert_sql);
             this.select_stmt = this.db.prepare (select_sql);
             this.update_stmt = this.db.prepare (update_sql);
             this.delete_stmt = this.db.prepare (delete_sql);
-
-
-            this._data = new List<Connection> ();
             find_all ();
-        }
-
-        public unowned List<Connection> get_connections () {
-            return this._data;
         }
 
         public Connection append_connection (Connection connection) {
@@ -113,7 +103,6 @@ namespace Psequel {
         }
 
         public void remove_connection (Connection connection) {
-            _data.remove (connection);
             this.delete_stmt.reset ();
             delete_stmt.bind_int64 (1, connection.id);
 
@@ -140,7 +129,7 @@ namespace Psequel {
                     append_connection (connection);
                 } else {
                     if (exist_ids.index((uint32)connection.id) > 0) {
-                        debug ("Update: %lli %s", connection.id, connection.name);
+                        //  debug ("Update: %lli %s", connection.id, connection.name);
                         update_connection (connection);
                     }
                 }

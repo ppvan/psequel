@@ -7,15 +7,12 @@ namespace Psequel {
             return (Window) window;
         } else {
             warning ("Widget %s root is not a window", widget.name);
-
             assert_not_reached ();
         }
     }
 
     /** Why it has to be like this? you ask. Because i don't find a way to limit paned postion that never hide it's child */
     public void setup_paned (Gtk.Paned paned) {
-
-        debug ("Pann");
 
         paned.notify["position"].connect (() => {
             var start = paned.start_child;

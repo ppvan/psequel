@@ -11,7 +11,7 @@ namespace Psequel {
 
         public TableStructureViewModel (SQLService sql_service) {
             base ();
-            debug ("TableStructureViewModel created ");
+            //  debug ("TableStructureViewModel created ");
             this.sql_service = sql_service;
 
             //  selected_table = table;

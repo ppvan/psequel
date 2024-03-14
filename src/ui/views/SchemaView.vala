@@ -44,6 +44,7 @@ namespace Psequel {
             dropdown.expression = new Gtk.PropertyExpression (typeof (Schema), null, "name");
             table_filter.expression = new Gtk.PropertyExpression (typeof (Table), null, "name");
             view_filter.expression = new Gtk.PropertyExpression (typeof (View), null, "name");
+            stack.visible_child_name = "data-view";
         }
 
 
@@ -77,6 +78,7 @@ namespace Psequel {
 
         [GtkCallback]
         private void logout_btn_clicked (Gtk.Button btn) {
+            schema_viewmodel.logout.begin();
             navigation_service.navigate (NavigationService.CONNECTION_VIEW);
         }
 
@@ -109,5 +111,8 @@ namespace Psequel {
 
         [GtkChild]
         private unowned Adw.ViewStack sql_views;
+
+        [GtkChild]
+        private unowned Adw.ViewStack stack;
     }
 }

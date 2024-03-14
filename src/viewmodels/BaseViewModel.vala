@@ -10,7 +10,7 @@ namespace Psequel {
 
         protected BaseViewModel () {
             event_manager = new EventManager ();
-            debug ("BaseViewModel created");
+            //  debug ("BaseViewModel created");
         }
 
         public void subcribe (string event_type, Observer observer) {
