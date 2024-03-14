@@ -14,4 +14,4 @@ flatpak:
 	flatpak-builder _build/ me.ppvan.psequel.Devel.json --force-clean
 
 run:
-	G_MESSAGES_DEBUG=Psequel ./_build/files/bin/psequel
+	G_MESSAGES_DEBUG=Psequel ./build/src/psequel

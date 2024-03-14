@@ -75,6 +75,16 @@ namespace Psequel {
             return url.to_string ();
         }
 
+        public string connection_string (int connection_timeout, int query_timeout) {
+
+            var ssl_mode = use_ssl ? "required" : "disable";
+            var options=@"\'-c statement_timeout=$(query_timeout * 1000)\'";
+            var base_str = @"user=$user password=$password port=$port host=$host dbname=$database application_name=$(Config.APP_NAME) sslmode=$ssl_mode connect_timeout=$connection_timeout options=$options";
+
+
+            return base_str;
+        }
+
         /**
          * Make a deep copy of Connection
          */

@@ -1,7 +1,9 @@
 namespace Psequel {
 
     public Window get_parrent_window (Gtk.Widget widget) {
-        var window = widget.get_root ();
+
+        var window_type = GLib.Type.from_name("GtkWindow");
+        var window = widget.get_ancestor (window_type);
 
         if (window is Gtk.Window) {
             return (Window) window;

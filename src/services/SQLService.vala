@@ -10,12 +10,15 @@ namespace Psequel {
         public int query_limit { get; set; default = 100; }
         public int query_timeout { get; set; }
 
+        private Settings settings;
+
         public SQLService (ThreadPool<Worker> background) {
             Object ();
             this.background = background;
-            var settings = autowire<Settings> ();
+            this.settings = autowire<Settings> ();
 
             settings.bind ("query-limit", this, "query-limit", SettingsBindFlags.GET);
+            settings.bind ("query-timeout", this, "query-timeout", SettingsBindFlags.GET);
         }
 
         /** Select info from a table. */
@@ -31,7 +34,9 @@ namespace Psequel {
 
         /** Make a connection to database and active connection. */
         public async void connect_db (Connection conn) throws PsequelError {
-            string db_url = conn.url_form ();
+            var connection_timeout = settings.get_int ("connection-timeout");
+            var query_timeout = settings.get_int ("query-timeout");
+            string db_url = conn.connection_string (connection_timeout, query_timeout);
             debug ("Connecting to %s", db_url);
             TimePerf.begin ();
             SourceFunc callback = connect_db.callback;

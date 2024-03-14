@@ -41,7 +41,7 @@ namespace Psequel {
 
         public Window (Application app) {
             Object (
-                    application: app
+                application: app
             );
         }
 
