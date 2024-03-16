@@ -17,6 +17,10 @@
 }
 
 
+.table-cell {
+    padding: 6px;
+}
+
 .big-icon image {
     -gtk-icon-size: 20px;
 }

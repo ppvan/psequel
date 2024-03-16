@@ -101,18 +101,16 @@ namespace Psequel {
                 factory.setup.connect ((_fact, obj) => {
 
                     var _item = (Gtk.ListItem) obj;
-                    var label = new Gtk.Label (null);
-                    label.halign = Gtk.Align.START;
-                    label.margin_start = 8;
-                    _item.child = label;
+                    var cell = new DataCell ();
+                    _item.child = cell;
                 });
 
                 factory.bind.connect ((_fact, obj) => {
                     var _item = (Gtk.ListItem) obj;
                     var row = _item.item as Relation.Row;
-                    var label = _item.child as Gtk.Label;
+                    var cell = _item.child as Psequel.DataCell;
                     int index = _fact.get_data<int> ("index");
-                    label.label = row[index];
+                    cell.bind_data (row, index);
                 });
 
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);

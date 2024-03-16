@@ -51,6 +51,7 @@ ui_sources = files([
     'ui/schema/TableIndexInfo.vala',
     'ui/schema/TableDataView.vala',
     'ui/schema/ViewDataView.vala',
+    'ui/widgets/DataCell.vala',
     
     'ui/editor/QueryEditor.vala',
 

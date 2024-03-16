@@ -58,6 +58,8 @@ namespace Psequel {
             this.set_accels_for_action ("win.import", { "<Ctrl><Shift>o" });
             this.set_accels_for_action ("win.export", { "<Ctrl><Shift>e" });
             this.set_accels_for_action ("win.run-query", { "<Ctrl>Return" });
+
+            //  this.set_accels_for_action ("conn.dupplicate", { "<Ctrl>D" });
         }
 
         public override void activate () {
@@ -136,6 +138,7 @@ namespace Psequel {
         private static void ensure_types () {
 
             typeof (Psequel.StyleSwitcher).ensure ();
+            typeof (Psequel.DataCell).ensure ();
             typeof (Psequel.ConnectionViewModel).ensure ();
             typeof (Psequel.SchemaView).ensure ();
 

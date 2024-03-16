@@ -22,6 +22,8 @@ namespace Psequel {
             this.view_viewmodel = autowire<ViewViewModel> ();
             this.navigation_service = autowire<NavigationService> ();
 
+            
+
             sql_views.bind_property ("visible-child-name", this, "view-mode", DEFAULT);
 
             dropdown.notify["selected"].connect (() => {
@@ -33,11 +35,11 @@ namespace Psequel {
                 schema_viewmodel.select_index ((int)dropdown.selected);
             });
             table_selection.notify["selected"].connect (() => {
-                var table = table_model.get_item ((int)table_selection.selected);
+                var table = table_selection.get_selected_item () as Table;
                 table_viewmodel.select_table ((Table)table);
             });
             view_selection.notify["selected"].connect (() => {
-                var view = view_model.get_item ((int)view_selection.selected);
+                var view = view_selection.get_selected_item () as View;
                 view_viewmodel.select_view ((View)view);
             });
 
@@ -90,6 +92,8 @@ namespace Psequel {
             navigation_service.navigate (NavigationService.CONNECTION_VIEW);
         }
 
+
+
         [GtkChild]
         private unowned Gtk.DropDown dropdown;
 
@@ -108,11 +112,7 @@ namespace Psequel {
         [GtkChild]
         private unowned Gtk.SortListModel view_sort_model;
 
-        [GtkChild]
-        private unowned Gtk.FilterListModel table_model;
-
-        [GtkChild]
-        private unowned Gtk.FilterListModel view_model;
+        
 
         [GtkChild]
         private unowned Gtk.StringFilter view_filter;

@@ -26,22 +26,22 @@ template $PsequelConnectionRow: Gtk.Box {
 }
 
 menu menu {
-  section {
-    item {
-      label: _("_Connect");
-      action: "conn.connect";
+    section {
+        item {
+            label: _("_Connect");
+            action: "conn.connect";
+        }
+
+        item {
+            label: _("_Dupplicate");
+            action: "conn.dupplicate";
+        }
     }
 
-    item {
-      label: _("_Dupplicate");
-      action: "conn.dupplicate";
+    section {
+        item {
+            label: _("_Delete");
+            action: "conn.delete";
+        }
     }
-  }
-
-  section {
-    item {
-      label: _("_Delete");
-      action: "conn.delete";
-    }
-  }
 }

@@ -10,6 +10,7 @@ blueprints = custom_target('blueprints',
   input: files(
 
     'gtk/style-switcher.blp',
+    'gtk/datacell.blp',
     'gtk/connection-view.blp',
     'gtk/connection-row.blp',
     'gtk/connection-listitem.blp',

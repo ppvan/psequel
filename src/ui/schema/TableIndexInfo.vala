@@ -27,6 +27,7 @@ namespace Psequel {
                 var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
                 label.halign = Gtk.Align.START;
+                label.css_classes = {"table-cell"};
                 listitem.child = label;
             });
             factory.bind.connect ((obj) => {

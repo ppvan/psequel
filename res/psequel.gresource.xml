@@ -6,6 +6,7 @@
     <file preprocess="xml-stripblanks">gtk/connection-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-row.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-listitem.ui</file>
+    <file preprocess="xml-stripblanks">gtk/datacell.ui</file>
     <file preprocess="xml-stripblanks">gtk/schema-view.ui</file>
 
     <file preprocess="xml-stripblanks">gtk/query-editor.ui</file>
