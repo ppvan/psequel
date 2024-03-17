@@ -7,7 +7,6 @@ namespace Psequel {
         public ExportService () {
         }
 
-        // Implement accordding to https://en.wikipedia.org/wiki/Comma-separated_values?useskin=vector#Basic_rules
         public async void export_csv (File dest, Relation relation) throws PsequelError {
 
             string[] rows = new string[relation.rows + 1];
@@ -39,11 +38,7 @@ namespace Psequel {
         }
 
         private string quote (string str) {
-            if (str.contains (DELIMETER)) {
-                return @"\"$(str)\"";
-            }
-
-            return str;
+            return Csv.quote (str);
         }
     }
 }

@@ -259,12 +259,16 @@ namespace Psequel {
 
             var window = (Window) get_parrent_window (this);
 
+            var now = new GLib.DateTime.now();
+            var initial_name = @"query-export-$(now).csv";
+
             var file_dialog = new Gtk.FileDialog () {
                 modal = true,
                 initial_folder = GLib.File.new_for_path (Environment.get_home_dir ()),
                 title = title,
                 default_filter = filter,
-                filters = filters
+                filters = filters,
+                initial_name = initial_name,
             };
 
             try {

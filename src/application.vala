@@ -17,6 +17,7 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
+using Csv;
 
 namespace Psequel {
 
@@ -116,7 +117,6 @@ namespace Psequel {
         }
 
         public void on_something () {
-            debug ("DO something");
             debug ("Dark: %b", style_manager.dark);
             if (style_manager.dark) {
                 style_manager.color_scheme = Adw.ColorScheme.FORCE_LIGHT;

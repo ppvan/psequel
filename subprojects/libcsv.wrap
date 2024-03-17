@@ -1,0 +1,6 @@
+[wrap-git]
+directory = libcsv
+url = https://github.com/ppvan/libcsv.git
+revision = master
+depth = 1
+

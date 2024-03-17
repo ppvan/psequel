@@ -5,3 +5,6 @@ build
 export
 *~
 /subprojects/blueprint-compiler
+/subprojects/libcsv
+
+/.cache

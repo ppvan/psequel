@@ -78,6 +78,14 @@ conf.set_quoted('DATADIR', join_paths(get_option('prefix'), get_option('datadir'
 conf.set_quoted('GNOMELOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 configure_file(output: 'config.h', configuration: conf)
 
+
+csv_dep = dependency('csv', required : false)
+if not csv_dep.found()
+  libsimple_proj = subproject('libcsv')
+  libsimple_dep = libsimple_proj.get_variable('libcsv_deps')
+endif
+
+
 psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
   dependency('gtk4', version: '>=4.10'),
@@ -86,8 +94,8 @@ psequel_deps = [
   dependency('gtksourceview-5', version: '>= 5.0'),
   dependency('libpq', version: '>= 15.3'),
   dependency('sqlite3'),
+  csv_dep,
   dependency('pgquery-vala'),
-
   valac.find_library('config', dirs: vapi_dir),
 ]
 
