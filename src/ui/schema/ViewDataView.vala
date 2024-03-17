@@ -2,7 +2,6 @@ namespace Psequel {
 
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/view-data-view.ui")]
     public class ViewDataView : Gtk.Box {
-
         public ViewDataViewModel viewdata_viewmodel {get; set;}
 
         public ViewDataView () {

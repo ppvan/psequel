@@ -119,6 +119,10 @@ namespace Psequel {
             return @"Table ($rows x $cols)";
         }
 
+        public List<Row> steal() {
+            return (owned)this.data;
+        }
+
         public string name { get; set; }
 
         public new Row @get (int index) {

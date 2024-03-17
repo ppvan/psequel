@@ -83,7 +83,24 @@ namespace Psequel {
 
         [GtkCallback]
         private void reload_btn_clicked (Gtk.Button btn) {
-            schema_viewmodel.reload.begin ();
+
+            btn.sensitive = false;
+            schema_viewmodel.reload.begin ((obj, res) => {
+                var window = get_parrent_window (this);
+                Adw.Toast toast;
+                try {
+                    schema_viewmodel.reload.end (res);
+                    toast = new Adw.Toast ("Schema Reloaded") {
+                        timeout = 1,
+                    };
+                } catch (Psequel.PsequelError err) {
+                    toast = new Adw.Toast (err.message) {
+                        timeout = 1,
+                    };
+                }
+                window.add_toast (toast);
+                btn.sensitive = true;
+            });
         }
 
         [GtkCallback]

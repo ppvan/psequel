@@ -139,6 +139,7 @@ template $PsequelQueryEditor: Adw.Bin {
 
       $PsequelQueryResults query_results {
         wellcome_message: "Run a query";
+        show_loading: true;
         current-relation: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.current-relation;
         is-loading: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
         err-msg: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.err-msg;

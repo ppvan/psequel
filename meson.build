@@ -12,8 +12,8 @@ project(
 app_is_development = false
 app_id = 'me.ppvan.psequel'
 
-if get_option('profile') == 'development'
-  add_project_arguments('-D', 'DEVEL', language: 'vala')
+if get_option('buildtype') == 'debug'
+  add_project_arguments('--debug', language: 'vala')
   app_is_development = true
 endif
 

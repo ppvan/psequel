@@ -9,6 +9,7 @@ namespace Psequel {
         const string ERROR = "error";
 
         public string wellcome_message { get; set; }
+        public bool show_loading { get; set;}
 
         private Relation _current_relation;
         public Relation current_relation {
@@ -43,7 +44,7 @@ namespace Psequel {
         private Gtk.SortListModel sort_model;
         private Gtk.SelectionModel selection_model;
 
-        public class QueryResults () {
+        public class QueryResults (bool show_loading) {
             Object ();
         }
 
@@ -51,12 +52,22 @@ namespace Psequel {
             stack.visible_child_name = EMPTY;
             rows = new ObservableList<Relation.Row> ();
             alloc_columns ();
+            
+            this.bind_property ("is-loading", stack, "visible-child-name", BindingFlags.SYNC_CREATE, (binging, from, ref to) => {
+                bool current_name = from.get_boolean ();
+                if (show_loading && current_name) {
+                    to.set_string (LOADING);
+                } else {
+                    //  to.set_string (MAIN);
+                }
+            });
         }
 
         private void on_current_relation_change () {
             debug ("%d ", current_relation.rows);
             stack.visible_child_name = LOADING;
             load_data_to_view.begin (current_relation, (obj, res) => {
+                load_data_to_view.end (res);
                 stack.visible_child_name = MAIN;
             });
         }
@@ -66,15 +77,14 @@ namespace Psequel {
         }
 
         private async void load_data_to_view (Relation relation) {
-            // if (relation == null) {
-            // return;
-            // }
-
             var columns = data_view.columns;
-            uint n = columns.get_n_items ();
             debug ("Begin add rows to views");
-            for (int i = 0; i < n; i++) {
-                var col = columns.get_item (i) as Gtk.ColumnViewColumn;
+            for (int i = 0;; i++) {
+                var raw_col = columns.get_item (i);
+                if (raw_col == null) {
+                    break;
+                }
+                var col = raw_col as Gtk.ColumnViewColumn;
                 if (i >= relation.cols) {
                     col.set_visible (false);
                     continue;
@@ -86,11 +96,11 @@ namespace Psequel {
 
             this.selection_model.unselect_all ();
             this.sort_model.sorter = data_view.get_sorter ();
-            rows.clear ();
 
-            foreach (var row in relation) {
-                rows.append (row);
-            }
+            rows.freeze_notify ();
+            rows.clear ();
+            rows.append_all (relation.steal ());
+            rows.thaw_notify ();
         }
 
         private void alloc_columns () {
@@ -101,7 +111,14 @@ namespace Psequel {
                 factory.setup.connect ((_fact, obj) => {
 
                     var _item = (Gtk.ListItem) obj;
-                    var cell = new DataCell ();
+                    if (DataCell.cell_pool == null || DataCell.cell_pool.next == null) {
+                        for (size_t j = 0; j < Application.BATCH_SIZE; j++) {
+                            DataCell.cell_pool.append (new DataCell());
+                        }
+                    }
+
+                    var cell = DataCell.cell_pool.data;
+                    DataCell.cell_pool = (owned)DataCell.cell_pool.next;
                     _item.child = cell;
                 });
 
@@ -111,6 +128,19 @@ namespace Psequel {
                     var cell = _item.child as Psequel.DataCell;
                     int index = _fact.get_data<int> ("index");
                     cell.bind_data (row, index);
+                });
+
+                factory.unbind.connect ((obj) => {
+                    var _item = (Gtk.ListItem) obj;
+                    var row = _item.item as Relation.Row;
+                    var cell = _item.child as Psequel.DataCell;
+                    cell.unbind_data (row);
+                });
+
+                factory.teardown.connect ((obj) => {
+                    var _item = (Gtk.ListItem) obj;
+                    var cell = _item.child as Psequel.DataCell;
+                    DataCell.cell_pool.append ((owned)cell);
                 });
 
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn ("", factory);

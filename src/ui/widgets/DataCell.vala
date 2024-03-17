@@ -11,6 +11,8 @@ namespace Psequel {
         private Relation.Row current_row;
         private int current_index;
 
+        public static List<DataCell> cell_pool;
+
         const ActionEntry[] ACTION_ENTRIES = {
             { "copy", on_cell_copy },
             { "edit", on_cell_edit },
@@ -35,6 +37,10 @@ namespace Psequel {
             this.current_row = row;
             this.current_index = index;
             this.label.label = row[index];
+        }
+
+        public void unbind_data(Psequel.Relation.Row row) {
+
         }
 
         [GtkCallback]

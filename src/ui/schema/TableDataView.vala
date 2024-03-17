@@ -3,7 +3,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-data-view.ui")]
     public class TableDataView : Gtk.Box {
 
-        public TableDataViewModel tabledata_viewmodel {get; set;}
+        public TableDataViewModel tabledata_viewmodel { get; set; }
 
         public TableDataView () {
             Object ();
@@ -14,8 +14,16 @@ namespace Psequel {
         }
 
         [GtkCallback]
-        private async void reload_data () {
-            yield tabledata_viewmodel.reload_data ();
+        private void reload_data (Gtk.Button btn) {
+            btn.sensitive = false;
+            tabledata_viewmodel.reload_data.begin ((obj, res) => {
+                var window = get_parrent_window (this);
+                Adw.Toast toast = new Adw.Toast ("Data Reloaded") {
+                    timeout = 1,
+                };
+                window.add_toast (toast);
+                btn.sensitive = true;
+            });
         }
 
         [GtkCallback]

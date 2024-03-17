@@ -37,11 +37,11 @@ namespace Psequel {
 
             this.notify["current-relation"].connect (() => {
 
-                int offset = sql_service.query_limit * current_page;
+                int offset = TableDataViewModel.MAX_FETCHED_ROW * current_page;
                 row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
 
 
-                if (current_relation.rows < sql_service.query_limit) {
+                if (current_relation.rows < TableDataViewModel.MAX_FETCHED_ROW) {
                     has_next_page = false;
 
                 } else {
@@ -76,7 +76,7 @@ namespace Psequel {
 
             try {
                 is_loading = true;
-                current_relation = yield sql_service.select (view, page);
+                current_relation = yield sql_service.select (view, page, TableDataViewModel.MAX_FETCHED_ROW);
 
                 is_loading = false;
                 debug ("Rows: %d", current_relation.rows);

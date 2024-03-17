@@ -1,6 +1,9 @@
 namespace Psequel {
 
     public class TableDataViewModel : BaseViewModel, Observer {
+
+        public const int MAX_FETCHED_ROW = 50;
+
         public Table? selected_table { get; set; }
         // public View? current_view {get; set;}
 
@@ -33,11 +36,10 @@ namespace Psequel {
 
             this.notify["current-relation"].connect (() => {
 
-                int offset = sql_service.query_limit * current_page;
+                int offset = MAX_FETCHED_ROW * current_page;
                 row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
 
-
-                if (current_relation.rows < sql_service.query_limit) {
+                if (current_relation.rows < MAX_FETCHED_ROW) {
                     has_next_page = false;
 
                 } else {
@@ -78,7 +80,7 @@ namespace Psequel {
 
             try {
                 is_loading = true;
-                current_relation = yield sql_service.select (table, page);
+                current_relation = yield sql_service.select (table, page, MAX_FETCHED_ROW);
 
                 is_loading = false;
                 debug ("Rows: %d", current_relation.rows);

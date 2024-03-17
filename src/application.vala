@@ -38,6 +38,11 @@ namespace Psequel {
 
         public int color_scheme { get; set; }
         public const int MAX_COLUMNS = 128;
+        public const int PRE_ALLOCATED_CELL = 1024;
+        public const int BATCH_SIZE = 16;
+
+        public static List<uint> tasks;
+        public static bool is_running = false;
 
         public Application () {
             Object (application_id: Config.APP_ID, flags: ApplicationFlags.DEFAULT_FLAGS);
@@ -60,7 +65,7 @@ namespace Psequel {
             this.set_accels_for_action ("win.export", { "<Ctrl><Shift>e" });
             this.set_accels_for_action ("win.run-query", { "<Ctrl>Return" });
 
-            //  this.set_accels_for_action ("conn.dupplicate", { "<Ctrl>D" });
+            // this.set_accels_for_action ("conn.dupplicate", { "<Ctrl>D" });
         }
 
         public override void activate () {
@@ -68,6 +73,26 @@ namespace Psequel {
 
             var window = new_window ();
             window.present ();
+
+
+            //  Pre-allocated widget, scheduled after window presented
+            DataCell.cell_pool = new List<DataCell> ();
+            var id = Idle.add (() => {
+
+                size_t empty_cells = DataCell.cell_pool.length ();
+                if (empty_cells < Application.PRE_ALLOCATED_CELL) {
+                    debug ("Empty Cell: %llu", empty_cells);
+                    for (size_t i = 0; i < Application.BATCH_SIZE; i++) {
+                        DataCell.cell_pool.append (new DataCell());
+                    }
+                } else if (empty_cells >= Application.PRE_ALLOCATED_CELL) {
+                    return false;
+                }
+
+                return Application.is_running;
+            }, Priority.DEFAULT_IDLE);
+
+            Application.tasks.append (id);
         }
 
         public override void startup () {
@@ -82,6 +107,9 @@ namespace Psequel {
             var container = Container.instance ();
             container.register (settings);
             container.register (this);
+
+            Application.tasks = new List<uint>();
+            this.is_running = true;
 
             debug ("Begin to load resources");
             try {
@@ -98,6 +126,7 @@ namespace Psequel {
 
         public override void shutdown () {
             base.shutdown ();
+            Application.is_running = false;
         }
 
         public void update_color_scheme () {

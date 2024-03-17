@@ -15,8 +15,9 @@ namespace Psequel {
             this._data = new ListStore (typeof (T));
 
             // Forward item changed event.
-            this._data.items_changed.connect (this.items_changed);
-            this._data.items_changed.connect (() => {
+            //  this._data.items_changed.connect (this.items_changed);
+            this._data.items_changed.connect ((pos, removed, added) => {
+                this.items_changed(pos, removed, added);
                 this.size = (int)this._data.get_n_items ();
             });
         }
