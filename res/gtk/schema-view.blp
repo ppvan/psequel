@@ -187,6 +187,8 @@ template $PsequelSchemaView: Adw.Bin {
                                         autoselect: true;
                                     };
 
+                                    activate => $on_tablelist_activate();
+
                                     factory: BuilderListItemFactory {
                                         resource: "/me/ppvan/psequel/gtk/table-listitem.ui";
                                     };

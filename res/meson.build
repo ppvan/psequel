@@ -25,6 +25,7 @@ blueprints = custom_target('blueprints',
     
     'gtk/table-cols.blp',
     'gtk/table-listitem.blp',
+    'gtk/table-row.blp',
     'gtk/query-listitem.blp',
     'gtk/view-listitem.blp',
     'gtk/table-fk.blp',

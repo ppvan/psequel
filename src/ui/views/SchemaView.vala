@@ -102,6 +102,12 @@ public class SchemaView : Adw.Bin {
     }
 
     [GtkCallback]
+    private void on_tablelist_activate(Gtk.ListView view, uint pos) {
+        stack.visible_child_name = "data-view";
+        //  reload_btn_clicked(reload);
+    }
+
+    [GtkCallback]
     private void logout_btn_clicked(Gtk.Button btn) {
         schema_viewmodel.logout.begin();
         navigation_service.navigate(NavigationService.CONNECTION_VIEW);

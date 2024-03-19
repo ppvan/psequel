@@ -174,6 +174,7 @@ public class Application : Adw.Application {
     /* register needed types, allow me to ref a template inside a template */
     private static void ensure_types() {
         typeof(Psequel.StyleSwitcher).ensure();
+        typeof(Psequel.TableRow).ensure();
         typeof(Psequel.DataCell).ensure();
         typeof(Psequel.ConnectionViewModel).ensure();
         typeof(Psequel.SchemaView).ensure();
