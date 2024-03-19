@@ -21,146 +21,144 @@
 using GLib;
 
 namespace Psequel {
+[GtkTemplate(ui = "/me/ppvan/psequel/gtk/window.ui")]
+public class Window : Adw.ApplicationWindow {
+    const ActionEntry[] ACTIONS = {
+        { "import",    import_connection },
+        { "export",    export_connection },
 
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
-    public class Window : Adw.ApplicationWindow {
+        { "run-query", run_query         },
+    };
 
-        const ActionEntry[] ACTIONS = {
-            { "import", import_connection },
-            { "export", export_connection },
+    public NavigationService navigation { get; private set; }
+    public ConnectionViewModel connection_viewmodel { get; construct; }
+    public QueryViewModel query_viewmodel { get; private set; }
 
-            { "run-query", run_query },
+    private Settings ?settings;
+
+
+    public Window(Application app) {
+        Object(
+            application: app
+            );
+    }
+
+    construct {
+        this.navigation           = autowire <NavigationService> ();
+        this.connection_viewmodel = autowire <ConnectionViewModel> ();
+        this.query_viewmodel      = autowire <QueryViewModel> ();
+        this.settings             = autowire <Settings> ();
+        settings.bind("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
+        settings.bind("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
+        this.add_action_entries(ACTIONS, this);
+    }
+
+    public void add_toast(Adw.Toast toast) {
+        overlay.add_toast(toast);
+    }
+
+    // Actions:
+    public void run_query() {
+        if (query_viewmodel == null)
+        {
+            return;
+        }
+
+        query_viewmodel.run_selected_query.begin();
+    }
+
+    public void import_connection() {
+        open_file_dialog.begin("Import connections");
+    }
+
+    public void export_connection() {
+        save_file_dialog.begin("Export connections");
+    }
+
+    private async void open_file_dialog(string title = "Open File") {
+        var filter = new Gtk.FileFilter();
+        filter.add_pattern("*.json");
+
+        var filters = new ListStore(typeof(Gtk.FileFilter));
+        filters.append(filter);
+
+        var window = (Window)get_parrent_window(this);
+
+        var file_dialog = new Gtk.FileDialog() {
+            modal          = true,
+            initial_folder = File.new_for_path(Environment.get_home_dir()),
+            title          = title,
+            initial_name   = "connections",
+            default_filter = filter,
+            filters        = filters
         };
 
-        public NavigationService navigation { get; private set; }
-        public ConnectionViewModel connection_viewmodel { get; construct; }
-        public QueryViewModel query_viewmodel { get; private set; }
+        uint8[] contents;
 
-        private Settings? settings; 
+        try {
+            var file = yield file_dialog.open(window, null);
 
+            yield file.load_contents_async(null, out contents, null);
 
-        public Window (Application app) {
-            Object (
-                application: app
-            );
-        }
+            var json_str = (string)contents;
+            var conns    = ValueConverter.deserialize_connection(json_str);
+            connection_viewmodel.import_connections(conns);
 
-        construct {
-            this.navigation = autowire<NavigationService> ();
-            this.connection_viewmodel = autowire<ConnectionViewModel> ();
-            this.query_viewmodel = autowire<QueryViewModel> ();
-            this.settings = autowire<Settings> ();
-            settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
-            settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
-            this.add_action_entries (ACTIONS, this);
-        }
-
-        public void add_toast (Adw.Toast toast) {
-            overlay.add_toast (toast);
-        }
-
-        // Actions:
-        public void run_query () {
-            if (query_viewmodel == null) {
-                return;
-            }
-
-            query_viewmodel.run_selected_query.begin ();
-        }
-
-        public void import_connection () {
-            open_file_dialog.begin ("Import connections");
-        }
-
-        public void export_connection () {
-            save_file_dialog.begin ("Export connections");
-        }
-
-        private async void open_file_dialog (string title = "Open File") {
-            var filter = new Gtk.FileFilter ();
-            filter.add_pattern ("*.json");
-
-            var filters = new ListStore (typeof (Gtk.FileFilter));
-            filters.append (filter);
-
-            var window = (Window) get_parrent_window (this);
-
-            var file_dialog = new Gtk.FileDialog () {
-                modal = true,
-                initial_folder = File.new_for_path (Environment.get_home_dir ()),
-                title = title,
-                initial_name = "connections",
-                default_filter = filter,
-                filters = filters
+            var toast = new Adw.Toast(@"Loaded $(conns.length ()) connections") {
+                timeout = 3,
             };
+            window.add_toast(toast);
+        } catch (Error err) {
+            debug(err.message);
 
-            uint8[] contents;
-
-            try {
-                var file = yield file_dialog.open (window, null);
-
-                yield file.load_contents_async (null, out contents, null);
-
-                var json_str = (string) contents;
-                var conns = ValueConverter.deserialize_connection (json_str);
-                connection_viewmodel.import_connections (conns);
-
-                var toast = new Adw.Toast (@"Loaded $(conns.length ()) connections") {
-                    timeout = 3,
-                };
-                window.add_toast (toast);
-            } catch (Error err) {
-                debug (err.message);
-
-                var toast = new Adw.Toast (err.message) {
-                    timeout = 3,
-                };
-                window.add_toast (toast);
-            }
-        }
-
-        private async void save_file_dialog (string title = "Save to file") {
-
-            var filter = new Gtk.FileFilter ();
-            filter.add_suffix ("json");
-
-            var filters = new ListStore (typeof (Gtk.FileFilter));
-            filters.append (filter);
-
-            var file_dialog = new Gtk.FileDialog () {
-                modal = true,
-                initial_folder = File.new_for_path (Environment.get_home_dir ()),
-                title = title,
-                initial_name = "connections",
-                default_filter = filter,
-                filters = filters,
+            var toast = new Adw.Toast(err.message) {
+                timeout = 3,
             };
-
-            var conns = connection_viewmodel.export_connections ();
-            var content = ValueConverter.serialize_connection (conns);
-            var bytes = new Bytes.take (content.data);  // Move data to byte so it live when out scope
-            var window = (Window) get_parrent_window (this);
-
-            try {
-                var file = yield file_dialog.save (window, null);
-
-                yield file.replace_contents_bytes_async (bytes, null, false, FileCreateFlags.NONE, null, null);
-
-                var toast = new Adw.Toast ("Data saved successfully.") {
-                    timeout = 2,
-                };
-                window.add_toast (toast);
-            } catch (Error err) {
-                debug (err.message);
-
-                var toast = new Adw.Toast (err.message) {
-                    timeout = 3,
-                };
-                window.add_toast (toast);
-            }
+            window.add_toast(toast);
         }
-
-        [GtkChild]
-        private unowned Adw.ToastOverlay overlay;
     }
+
+    private async void save_file_dialog(string title = "Save to file") {
+        var filter = new Gtk.FileFilter();
+        filter.add_suffix("json");
+
+        var filters = new ListStore(typeof(Gtk.FileFilter));
+        filters.append(filter);
+
+        var file_dialog = new Gtk.FileDialog() {
+            modal          = true,
+            initial_folder = File.new_for_path(Environment.get_home_dir()),
+            title          = title,
+            initial_name   = "connections",
+            default_filter = filter,
+            filters        = filters,
+        };
+
+        var conns   = connection_viewmodel.export_connections();
+        var content = ValueConverter.serialize_connection(conns);
+        var bytes   = new Bytes.take(content.data);     // Move data to byte so it live when out scope
+        var window  = (Window)get_parrent_window(this);
+
+        try {
+            var file = yield file_dialog.save(window, null);
+
+            yield file.replace_contents_bytes_async(bytes, null, false, FileCreateFlags.NONE, null, null);
+
+            var toast = new Adw.Toast("Data saved successfully.") {
+                timeout = 2,
+            };
+            window.add_toast(toast);
+        } catch (Error err) {
+            debug(err.message);
+
+            var toast = new Adw.Toast(err.message) {
+                timeout = 3,
+            };
+            window.add_toast(toast);
+        }
+    }
+
+    [GtkChild]
+    private unowned Adw.ToastOverlay overlay;
+}
 }

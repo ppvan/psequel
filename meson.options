@@ -1,6 +1,0 @@
-option ('profile',
-  type: 'combo',
-  value: 'development',
-  choices: ['release', 'development'],
-  description: 'The build profile for the app. If none specified, "development" is used.'
-)
