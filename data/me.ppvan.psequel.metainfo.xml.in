@@ -3,7 +3,7 @@
     <id>me.ppvan.psequel</id>
 
     <name>psequel</name>
-    <summary>A simple SQL client</summary>
+    <summary>A minimal SQL client</summary>
 
     <metadata_license>MIT</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
@@ -13,7 +13,7 @@
     </recommends>
 
     <description>
-        <p>Psequel is a modern, yet minial SQL client.</p>
+        <p>Psequel is a modern, yet another Postgres SQL client, build with GTK 4 and Libadwaita</p>
         <ul>
             <li>Create connection, import, export connection to database</li>
             <li>View tables, scshema, views, columns, indexes, foreign key</li>
@@ -31,9 +31,9 @@
     <url type="homepage">https://github.com/ppvan/psequel</url>
     <url type="bugtracker">https://github.com/ppvan/psequel/issues</url>
 
-    <developer id="io.github.jtheoof">
-        <name>Jeremy Attali</name>
-        <url>https://github.com/jtheoof</url>
+    <developer id="io.github.ppvan">
+        <name>Phạm Văn Phúc</name>
+        <url>https://github.com/ppvan</url>
     </developer>
     <launchable type="desktop-id">me.ppvan.psequel.desktop</launchable>
     <screenshots>
@@ -52,7 +52,15 @@
     </screenshots>
 
     <releases>
-        <release version="0.1.9" date="2023-02-18">
+        <release version="0.2.0" date="2024-03-31">
+            <description>
+                <p>UI improvements</p>
+                <p>Copiable query result</p>
+                <p>Dataview performance gain</p>
+                <p>Robust CSV exporter</p>
+            </description>
+        </release>
+        <release version="0.1.9" date="2024-02-18">
             <description>
                 <p>Clean up and bug fix</p>
                 <p>Show number of tables and views</p>
