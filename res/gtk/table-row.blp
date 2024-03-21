@@ -1,1 +1,49 @@
 using Gtk 4.0;
+using Gtk 4.0;
+using Adw 1;
+
+menu menu {
+    section {
+        item {
+            icon: "category-search-symbolic";
+            label: _("_Copy");
+            action: "sidebar.copy";
+        }
+    }
+
+    section {
+        item {
+            label: _("_Refresh");
+            action: "sidebar.refresh";
+        }
+    }
+}
+
+template $PsequelTableRow: Box {
+    orientation: horizontal;
+    spacing: 12;
+
+    Image icon_image {
+      icon-name: bind template.icon-name;
+    }
+
+    Box {
+        Label label {
+            label: bind template.content;
+            halign: start;
+            ellipsize: end;
+            single-line-mode: true;
+            extra-menu: menu;
+        }
+
+        PopoverMenu popover {
+            menu-model: menu;
+            has-arrow: false;
+        }
+    }
+
+    GestureClick {
+        button: 3; // right clicked
+        released => $on_right_clicked();
+    }
+}

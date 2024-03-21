@@ -1,7 +1,7 @@
 project(
     'psequel',
     ['c', 'vala'],
-    version: '0.1.9',
+    version: '0.2.0',
     meson_version: '>= 1.2.0',
     default_options: [
         'warning_level=2',
@@ -12,8 +12,8 @@ project(
 app_is_development = false
 app_id = 'me.ppvan.psequel'
 
-if get_option('profile') == 'development'
-  add_project_arguments('-D', 'DEVEL', language: 'vala')
+if get_option('buildtype') == 'debug'
+  add_project_arguments('--debug', language: 'vala')
   app_is_development = true
 endif
 
@@ -33,7 +33,6 @@ add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
 subdir('data')
 subdir('res')
 subdir('src')
-subdir('test')
 subdir('po')
 
 # Using gnome module to do some task after the app is installed, like compile schema (settings data)

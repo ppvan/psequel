@@ -4,203 +4,208 @@ using Gdk 4.0;
 using GtkSource 5;
 
 template $PsequelQueryEditor: Adw.Bin {
-  selected-query: bind template.query-viewmodel as <$PsequelQueryViewModel>.selected-query;
+    selected-query: bind template.query-viewmodel as <$PsequelQueryViewModel>.selected-query;
 
-  Paned paned {
-    orientation: vertical;
-    shrink-start-child: false;
-    resize-start-child: true;
-    shrink-end-child: false;
-    resize-end-child: false;
+    Paned paned {
+        orientation: vertical;
+        shrink-start-child: false;
+        resize-start-child: true;
+        shrink-end-child: false;
+        resize-end-child: false;
 
-    Adw.Bin {
-      height-request: 250;
+        Adw.Bin {
+            height-request: 250;
 
-      ScrolledWindow {
-        hscrollbar-policy: never;
+            ScrolledWindow {
+                hscrollbar-policy: never;
 
-        GtkSource.View editor {
-          buffer: GtkSource.Buffer buffer {};
+                GtkSource.View editor {
+                    buffer: GtkSource.Buffer buffer {};
 
-          wrap-mode: word;
-          monospace: true;
-          auto-indent: true;
-          show-line-numbers: true;
-          smart-backspace: true;
-          smart-home-end: before;
-          top-margin: 6;
-          highlight-current-line: true;
-          insert-spaces-instead-of-tabs: true;
-        }
-      }
-    }
-
-    Box {
-      orientation: vertical;
-      height-request: 400;
-
-      Box {
-        margin-top: 8;
-        margin-bottom: 8;
-        margin-start: 8;
-        margin-end: 8;
-        spacing: 8;
-
-        MenuButton {
-          styles [
-            "big-icon"
-          ]
-
-          tooltip-text: "editor setting";
-          icon-name: "settings-symbolic";
-          halign: start;
-          valign: start;
-          direction: down;
-          menu-model: menu;
+                    wrap-mode: word;
+                    monospace: true;
+                    auto-indent: true;
+                    show-line-numbers: true;
+                    smart-backspace: true;
+                    smart-home-end: before;
+                    top-margin: 6;
+                    highlight-current-line: true;
+                    insert-spaces-instead-of-tabs: true;
+                }
+            }
         }
 
-        MenuButton {
-          styles [
-            "big-icon"
-          ]
-
-          icon-name: "history-undo-symbolic";
-          tooltip-text: "Query History";
-
-          popover: Popover popover {
-            height-request: 300;
-            width-request: 600;
+        Box {
+            orientation: vertical;
+            height-request: 400;
 
             Box {
-              spacing: 4;
-              orientation: vertical;
-              // SearchEntry {
-              //     placeholder-text: "Find Query";
-              // }
-              ScrolledWindow {
-                vexpand: true;
-                min-content-width: 300;
-                max-content-width: 600;
+                margin-top: 8;
+                margin-bottom: 8;
+                margin-start: 8;
+                margin-end: 8;
+                spacing: 8;
 
-                ListView {
-                  styles [
-                    "navigation-sidebar"
-                  ]
+                MenuButton {
+                    styles [
+                        "big-icon"
+                    ]
 
-                  model: SingleSelection selection_model {
-                    model: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-history;
-                  };
-
-                  factory: BuilderListItemFactory {
-                    resource: "/me/ppvan/psequel/gtk/query-listitem.ui";
-                  };
-
-                  activate => $on_query_history_exec();
+                    tooltip-text: "editor setting";
+                    icon-name: "settings-symbolic";
+                    halign: start;
+                    valign: start;
+                    direction: down;
+                    menu-model: menu;
                 }
-              }
 
-              Separator {}
+                MenuButton {
+                    styles [
+                        "big-icon"
+                    ]
 
-              Button {
-                styles [
-                  "destructive-action"
-                ]
+                    icon-name: "history-undo-symbolic";
+                    tooltip-text: "Query History";
 
-                label: "Clear History";
-                clicked => $on_clear_history();
-              }
+                    popover: Popover popover {
+                        height-request: 300;
+                        width-request: 600;
+
+                        Box {
+                            spacing: 4;
+                            orientation: vertical;
+                            // SearchEntry {
+                            //     placeholder-text: "Find Query";
+                            // }
+                            ScrolledWindow {
+                                vexpand: true;
+                                min-content-width: 300;
+                                max-content-width: 600;
+
+                                ListView {
+                                    styles [
+                                        "navigation-sidebar"
+                                    ]
+
+                                    model: SingleSelection selection_model {
+                                        model: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-history;
+                                    };
+
+                                    factory: BuilderListItemFactory {
+                                        resource: "/me/ppvan/psequel/gtk/query-listitem.ui";
+                                    };
+
+                                    activate => $on_query_history_exec();
+                                }
+                            }
+
+                            Separator {}
+
+                            Button {
+                                styles [
+                                    "destructive-action"
+                                ]
+
+                                label: "Clear History";
+                                clicked => $on_clear_history();
+                            }
+                        }
+                    };
+                }
+
+                Button export {
+                    styles [
+                        "export"
+                    ]
+                    tooltip-text: "Export Result";
+                    icon-name: "export-symbolic";
+                    clicked => $on_export_csv();
+                }
+
+                Label {
+                    hexpand: true;
+                }
+
+                Spinner spinner {
+                    spinning: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
+                }
+
+                // Label query_time {
+                //     label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-time;
+                // }
+                Button run_query_btn {
+                    styles [
+                        "suggested-action"
+                    ]
+
+                    label: "Run Query";
+                    tooltip-text: "Ctrl+Enter";
+                    clicked => $run_query_cb();
+                }
             }
-          };
+
+            Separator {}
+
+            $PsequelQueryResults query_results {
+                wellcome_message: "Run a query";
+                show_loading: true;
+                current-relation: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.current-relation;
+                is-loading: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
+                err-msg: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.err-msg;
+            }
+
+            Box {
+                spacing: 4;
+                margin-start: 12;
+                margin-top: 8;
+                margin-bottom: 8;
+                margin-end: 12;
+
+                Image {
+                    icon-size: normal;
+                    margin-end: 6;
+
+                    styles [
+                        "success"
+                    ]
+
+                    icon-name: "test-pass-symbolic";
+                    pixel-size: 20;
+                    visible: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.success;
+                }
+
+                Label row_affect {
+                    label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.row-affected;
+                }
+
+                Label {
+                    hexpand: true;
+                }
+            }
         }
-
-        Label {
-          hexpand: true;
-        }
-
-        Spinner spinner {
-          spinning: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
-        }
-
-        // Label query_time {
-        //     label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.query-time;
-        // }
-        Button run_query_btn {
-          styles [
-            "suggested-action"
-          ]
-
-          label: "Run Query";
-          tooltip-text: "Ctrl+Enter";
-          clicked => $run_query_cb();
-        }
-      }
-
-      Separator {}
-
-      $PsequelQueryResults query_results {
-        wellcome_message: "Run a query";
-        current-relation: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.current-relation;
-        is-loading: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.is-loading;
-        err-msg: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.err-msg;
-      }
-
-      Box {
-        spacing: 4;
-        margin-start: 12;
-        margin-top: 8;
-        margin-bottom: 8;
-        margin-end: 12;
-
-        Image {
-          icon-size: normal;
-          margin-end: 6;
-
-          styles [
-            "success"
-          ]
-
-          icon-name: "test-pass-symbolic";
-          pixel-size: 20;
-          visible: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.success;
-        }
-
-        Label row_affect {
-          label: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.row-affected;
-        }
-
-        Label {
-          hexpand: true;
-        }
-
-        Button export {
-          label: "Export";
-          clicked => $on_export_csv();
-        }
-      }
     }
-  }
 }
 
 menu menu {
-  section {
-    item {
-      label: _("_Editor Font");
-      action: "app.preferences";
-    }
+    section {
+        item {
+            label: _("_Editor Font");
+            action: "app.preferences";
+        }
 
-    item {
-      label: _("Auto Exec History");
-      action: "editor.auto-exec-history";
-    }
+        item {
+            label: _("Auto Exec History");
+            action: "editor.auto-exec-history";
+        }
 
-    item {
-      label: _("_Auto Uppercase");
-      action: "editor.auto-uppercase";
-    }
+        item {
+            label: _("_Auto Uppercase");
+            action: "editor.auto-uppercase";
+        }
 
-    // item {
-    //   label: _("_Auto Completion");
-    //   action: "editor.auto-completion";
-    // }
-  }
+        // item {
+        //   label: _("_Auto Completion");
+        //   action: "editor.auto-completion";
+        // }
+    }
 }

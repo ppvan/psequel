@@ -1,83 +1,155 @@
 namespace Psequel {
-    public class QueryRepository : Object {
+public class QueryRepository : Object {
+    const string KEY = "queries";
 
-        const string KEY = "queries";
 
-        private Settings settings;
-        private List<Query> _data;
+    const string DDL = """
+        CREATE TABLE IF NOT EXISTS "queries" (
+            "id"	INTEGER,
+            "sql"	TEXT NOT NULL,
+            "create_at" DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY("id" AUTOINCREMENT)
+        );
+        """;
 
-        public QueryRepository (Settings settings) {
-            base ();
-            this.settings = settings;
-            this._data = deserialize_queries (settings.get_string (KEY));
-        }
+    const string select_sql = """
+        SELECT id, sql FROM "queries"
+        ORDER BY create_at DESC;
+        """;
 
-        public unowned List<Query> get_queries () {
-            return this._data;
-        }
+    const string insert_sql = """
+        INSERT INTO "queries" (sql) VALUES (?);
+        """;
 
-        public void append_query (Query query) {
-            _data.append (query);
+    const string update_sql = """
+        UPDATE "queries"
+        SET sql = ?
+        WHERE id = ?;
+        """;
 
-            save ();
-        }
+    const string delete_sql = """
+        DELETE FROM "queries"
+        WHERE id = ?;
+        """;
 
-        public void update_query (Query query) {
-            assert_not_reached ();
-        }
+    const string delete_all_sql = """
+        DELETE FROM "queries";
+        """;
 
-        public void remove_query (Query query) {
-            _data.remove (query);
-        }
+    private Sqlite.Statement select_stmt;
+    private Sqlite.Statement insert_stmt;
+    private Sqlite.Statement update_stmt;
+    private Sqlite.Statement delete_stmt;
+    private Sqlite.Statement delete_all_stmt;
 
-        public void append_all (List<Query> items) {
-            items.foreach ((item) => append_query (item));
-        }
+    private StorageService db;
+    private List <Query> _data;
 
-        private void save () {
-            string json_data = serialize_queries (this._data);
-            //  _data.foreach ((item) => debug ("%s", item.sql));
-            settings.set_string (KEY, json_data);
-        }
+    public QueryRepository() {
+        base();
 
-        public void clear () {
-            _data = new List<Query> ();
-            save ();
-        }
+        this.db = autowire <StorageService> ();
+        create_table();
 
-        private List<Query> deserialize_queries (string json_data) {
-            var parser = new Json.Parser ();
-            var recent_queries = new List<Query> ();
+        select_stmt     = db.prepare(select_sql);
+        insert_stmt     = db.prepare(insert_sql);
+        update_stmt     = db.prepare(update_sql);
+        delete_stmt     = db.prepare(delete_sql);
+        delete_all_stmt = db.prepare(delete_all_sql);
+    }
 
-            try {
-                parser.load_from_data (json_data);
-                var root = parser.get_root ();
-                var queries = root.get_array ();
+    public List <Query> get_queries() {
+        //  debug ("Get query");
 
-                queries.foreach_element ((array, index, node) => {
-                    var query = (Query) Json.gobject_deserialize (typeof (Query), node);
-                    recent_queries.append (query);
-                });
-            } catch (Error err) {
-                debug (err.message);
-            }
+        return(this.find_all());
+    }
 
-            return (owned) recent_queries;
-        }
+    public void append_query(Query query) {
+        _data.append(query);
 
-        private string serialize_queries (List<Query> queries) {
-
-            var builder = new Json.Builder ();
-            builder.begin_array ();
-
-            foreach (var query in queries) {
-                builder.add_value (Json.gobject_serialize (query));
-            }
-
-            builder.end_array ();
-
-            var node = builder.get_root ();
-            return Json.to_string (node, true);
+        insert_stmt.reset();
+        insert_stmt.bind_text(1, query.sql);
+        if (insert_stmt.step() != Sqlite.DONE)
+        {
+            debug("Error: %s", db.err_message());
         }
     }
+
+    public void update_query(Query query) {
+        update_stmt.reset();
+        update_stmt.bind_text(1, query.sql);
+        update_stmt.bind_int64(2, query.id);
+        if (update_stmt.step() != Sqlite.DONE)
+        {
+            debug("Error: %s", db.err_message());
+        }
+    }
+
+    public void remove_query(Query query) {
+        _data.remove(query);
+        delete_stmt.reset();
+        delete_stmt.bind_int64(1, query.id);
+        if (delete_stmt.step() != Sqlite.DONE)
+        {
+            debug("Error: %s", db.err_message());
+        }
+    }
+
+    public List <Query> find_all() {
+        select_stmt.reset();
+        int cols = select_stmt.column_count();
+        var list = new List <Query> ();
+
+        while (select_stmt.step() == Sqlite.ROW)
+        {
+            Query query = new Query("");
+            for (int i = 0; i < cols; i++)
+            {
+                string col_name = select_stmt.column_name(i) ?? "<none>";
+                switch (col_name)
+                {
+                case "id":
+                    query.id = select_stmt.column_int64(i);
+                    break;
+
+                case "sql":
+                    query.sql = select_stmt.column_text(i);
+                    break;
+
+                default:
+                    debug("Unexpect column: %s\n", col_name);
+                    break;
+                }
+            }
+
+            //  debug ("id = %lli, sql = %s", query.id, query.sql);
+            list.append(query);
+        }
+
+        return(list);
+    }
+
+    public void append_all(List <Query> items) {
+        items.foreach((item) => append_query(item));
+    }
+
+    public void clear() {
+        delete_all_stmt.reset();
+        if (delete_all_stmt.step() != Sqlite.DONE)
+        {
+            debug("Error: %s", db.err_message());
+        }
+    }
+
+    private void create_table() {
+        string errmsg = null;
+        db.exec(DDL, out errmsg);
+
+        if (errmsg != null)
+        {
+            debug("Error: %s\n", errmsg);
+            Process.exit(1);
+        }
+    }
+}
 }

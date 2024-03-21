@@ -11,7 +11,7 @@ psequel_sources = files([
     'services/SQLCompletionService.vala',
     'services/ExportService.vala',
     'services/NavigationService.vala',
-    'services/ConnectionService.vala',
+    'services/StorageService.vala',
     'services/Container.vala',
     'services/ResourceManager.vala',
     'services/SchemaService.vala',
@@ -51,10 +51,12 @@ ui_sources = files([
     'ui/schema/TableIndexInfo.vala',
     'ui/schema/TableDataView.vala',
     'ui/schema/ViewDataView.vala',
-    
-    'ui/editor/QueryEditor.vala',
 
+    'ui/widgets/DataCell.vala',
+    'ui/widgets/TableRow.vala',
     'ui/widgets/StyleSwitcher.vala',
+
+    'ui/editor/QueryEditor.vala',
     'ui/Window.vala',
     'ui/PreferencesWindow.vala',
 
@@ -77,15 +79,24 @@ conf.set_quoted('DATADIR', join_paths(get_option('prefix'), get_option('datadir'
 conf.set_quoted('GNOMELOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 configure_file(output: 'config.h', configuration: conf)
 
+
+csv_dep = dependency('csv', required : false)
+if not csv_dep.found()
+  libsimple_proj = subproject('libcsv')
+  libsimple_dep = libsimple_proj.get_variable('libcsv_deps')
+endif
+
+
 psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
   dependency('gtk4', version: '>=4.10'),
-  dependency('libadwaita-1', version: '>= 1'),
+  dependency('libadwaita-1', version: '>= 1.4'),
   dependency('json-glib-1.0', version: '>= 1.6'),
   dependency('gtksourceview-5', version: '>= 5.0'),
   dependency('libpq', version: '>= 15.3'),
+  dependency('sqlite3'),
+  csv_dep,
   dependency('pgquery-vala'),
-
   valac.find_library('config', dirs: vapi_dir),
 ]
 

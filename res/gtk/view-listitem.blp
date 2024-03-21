@@ -1,19 +1,8 @@
 using Gtk 4.0;
 
 template ListItem {
-  child: Box {
-    orientation: horizontal;
-    spacing: 12;
-
-    Image {
-      icon-name: "category-search-symbolic";
-    }
-
-    Label {
-      label: bind template.item as <$PsequelView>.name;
-      halign: start;
-      ellipsize: end;
-      single-line-mode: true;
-    }
-  };
+    child: $PsequelTableRow {
+        icon-name: "category-search-symbolic";
+        content: bind template.item as <$PsequelView>.name;
+    };
 }

@@ -1,6 +1,12 @@
+.vscode
 .flatpak-builder
 builddir
 build
 export
 *~
 /subprojects/blueprint-compiler
+/subprojects/libcsv
+
+/.cache
+
+/build-aux
