@@ -133,7 +133,7 @@ public class ConnectionRepository : Object {
             }
             else
             {
-                if (exist_ids.index((uint32)connection.id) > 0)
+                if (exist_ids.index((uint32)connection.id) >= 0)
                 {
                     //  debug ("Update: %lli %s", connection.id, connection.name);
                     update_connection(connection);

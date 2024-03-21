@@ -25,6 +25,10 @@
     -gtk-icon-size: 20px;
 }
 
+.export {
+    -gtk-icon-size: 24px;
+}
+
 .icon-xl image {
     -gtk-icon-size: 50%;
 }

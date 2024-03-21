@@ -20,11 +20,13 @@ public class QueryHistoryViewModel : BaseViewModel {
 
     public SQLService sql_service { get; construct; }
     public QueryRepository query_repository { get; construct; }
+    private Settings settings;
 
 
     public QueryHistoryViewModel(SQLService sql_service, QueryRepository query_repository) {
         Object(sql_service: sql_service, query_repository: query_repository);
 
+        this.settings = autowire<Settings>();
         this.query_history.append_all(query_repository.get_queries());
         this.notify["current-relation"].connect(() => {
                 success      = true;
@@ -57,10 +59,12 @@ public class QueryHistoryViewModel : BaseViewModel {
     }
 
     public async void exec_history(Query query) {
-        //  if (Application.settings.get_boolean (AUTO_EXEC_HISTORY)) {
+        if (!settings.get_boolean ("auto-exec-history")) {
+            return;
+        }
 
-        //  }
-
+        debug ("setting: %s", settings.get_boolean("auto-exec-history") ? "true" : "false");
+        
         yield run_query_internal(query);
 
         query_history.remove(query);
@@ -78,8 +82,6 @@ public class QueryHistoryViewModel : BaseViewModel {
 
         try {
             current_relation = yield sql_service.exec_query(query);
-
-            debug("Rows: %d", current_relation.rows);
             is_loading = false;
 
             return(true);

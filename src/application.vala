@@ -79,7 +79,7 @@ public class Application : Adw.Application {
                 size_t empty_cells = DataCell.cell_pool.length();
                 if (empty_cells < Application.PRE_ALLOCATED_CELL)
                 {
-                    debug("Empty Cell: %llu", empty_cells);
+                    //  debug("Empty Cell: %llu", empty_cells);
                     for (size_t i = 0; i < Application.BATCH_SIZE; i++)
                     {
                         DataCell.cell_pool.append(new DataCell());

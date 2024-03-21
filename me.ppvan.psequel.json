@@ -69,6 +69,17 @@
                     ]
                 },
                 {
+                    "name": "libcsv",
+                    "buildsystem": "meson",
+                    "sources": [
+                        {
+                            "type": "git",
+                            "url": "https://github.com/ppvan/libcsv",
+                            "commit": "c8f01b8b4aa8d8156a624405b8a4c646e3f6efaa"
+                        }
+                    ]
+                },
+                {
                     "name": "libquery-vala",
                     "buildsystem": "meson",
                     "sources": [

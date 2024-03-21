@@ -32,15 +32,18 @@ Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for 
 
 # Features
 - Load and save connections.
+- Import and Export connections info
 - List schema info, tables, views.
 - View table columns info, indexes, foreign keys
 - View table data, sort by column
 - Write query
 - Query History
+- Hightlight current query
+- Export query data
 
 # Installation
 
-## Flatpak file
+## Flatpak
 > **Recommended**
 
 <a href="https://flathub.org/apps/me.ppvan.psequel">Click here</a> to install app from Flathub.
@@ -69,16 +72,15 @@ If you use GNOME Builder or Flatpak, dependencies will be installed automaticall
 - gtksourceview >= 5.0
 - gio >= 2.74
 - json-glib >= 1.6
-- libadwaita >= 1.0
-- postgres-libs >= 15.3
+- libadwaita >= 1.4
+- postgres-libs >= 16.2
+- libcsv >= 3.0
 
 # Contributions
 Contributions are welcome.
-
-# FAQ
-
 
 # Credits
 
 - [Psequel](https://psequel.com/) - MacOS postgresql client. This project is inspired by Psequel.
 - [libpg_query](https://github.com/pganalyze/libpg_query) - PostgresSQL parser
+- [libcsv](https://github.com/rgamble/libcsv) - Robust C csv library

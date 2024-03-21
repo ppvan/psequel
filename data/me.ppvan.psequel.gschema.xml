@@ -74,7 +74,7 @@
         </key>
 
         <key name="auto-exec-history" type="b">
-            <default>true</default>
+            <default>false</default>
             <summary>Auto Execute History Query</summary>
             <description>
                 Auto Execute History Query when activated, instead of showing the query in the editor.

@@ -69,7 +69,7 @@ public class QueryEditor : Adw.Bin {
         debug("History activated, exec: %s", history_query.sql);
         query_history_viewmodel.exec_history.begin(history_query);
 
-        var text = history_query.sql ?? "";
+        var text = history_query.sql ?? "error";
         clear_and_insert(buffer, text);
 
         popover.hide();
@@ -83,7 +83,9 @@ public class QueryEditor : Adw.Bin {
         Gtk.TextIter iter2;
         buffer.get_end_iter(out iter2);
 
-        buffer.delete_range(iter1, iter2);
+        if (!iter1.equal(iter2)) {
+            buffer.delete_range(iter1, iter2);
+        }
 
         // buffer.insert (ref iter1, );
         buffer.insert_at_cursor(text, text.length);
@@ -262,7 +264,8 @@ public class QueryEditor : Adw.Bin {
         var window = (Window)get_parrent_window(this);
 
         var now          = new GLib.DateTime.now();
-        var initial_name = @"query-export-$(now).csv";
+        var local_time = now.format("%F-%H:%M:%S");
+        var initial_name = @"query-export-$(local_time).csv";
 
         var file_dialog = new Gtk.FileDialog() {
             modal          = true,

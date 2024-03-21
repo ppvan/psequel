@@ -36,7 +36,7 @@ public class ConnectionViewModel : BaseViewModel {
 
         if (connections.empty())
         {
-            new_connection();
+            //  new_connection();
         }
 
         this.bind_property("current-state", this, "is-connectting", SYNC_CREATE, from_state_to_connecting);
@@ -103,7 +103,7 @@ public class ConnectionViewModel : BaseViewModel {
             Source.remove(timeout_id);
         }
 
-        timeout_id = Timeout.add(500, () => {
+        timeout_id = Timeout.add(200, () => {
                 timeout_id = 0;
                 repository.save(connections.to_list());
                 return(Source.REMOVE);

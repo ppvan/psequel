@@ -47,21 +47,30 @@ class TableRow : Gtk.Box {
         //  Assume the content of the label item is the same as the model-item.name
         //  and the list view is a single selection.
 
-        var listview_type = GLib.Type.from_name("GtkListView");
-        Gtk.ListView view = this.get_ancestor(listview_type) as Gtk.ListView;
-        Gtk.SingleSelection model = view.model as Gtk.SingleSelection;
+        var                 listview_type = GLib.Type.from_name("GtkListView");
+        Gtk.ListView        view          = this.get_ancestor(listview_type) as Gtk.ListView;
+        Gtk.SingleSelection model         = view.model as Gtk.SingleSelection;
 
         uint n = model.get_n_items();
 
-        for (uint i = 0; i < n; i++) {
+        for (uint i = 0; i < n; i++)
+        {
             Object obj = model.model.get_item(i);
-            Value v = {};
+            Value  v   = {};
             obj.get_property("name", ref v);
             string key = v.get_string();
 
-            if (key == this.content) {
+            if (key == this.content)
+            {
                 model.select_item(i, true);
                 view.activate(i);
+
+                var       window = get_parrent_window(this);
+                Adw.Toast toast  = new Adw.Toast(@"\"$content\" Refreshed") {
+                    timeout = 1,
+                };
+                window.add_toast(toast);
+
                 break;
             }
         }
