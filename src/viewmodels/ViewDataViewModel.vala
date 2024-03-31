@@ -1,5 +1,5 @@
 namespace Psequel {
-public class ViewDataViewModel : Object, Observer {
+public class ViewDataViewModel : Object {
     public View ?selected_view { get; set; }
     // public View? current_view {get; set;}
 
@@ -52,15 +52,10 @@ public class ViewDataViewModel : Object, Observer {
                     has_next_page = true;
                 }
             });
-    }
 
-    public void update(Event event) {
-        switch (event.type)
-        {
-        case Event.SELECTED_VIEW_CHANGED:
-            selected_view = event.data as View;
-            break;
-        }
+        EventBus.instance().selected_view_changed.connect((view) => {
+                selected_view = view;
+            });
     }
 
     public async void reload_data() {

@@ -81,9 +81,7 @@ public class ConnectionViewModel : BaseViewModel {
         this.current_state = State.CONNECTING;
         try {
             yield sql_service.connect_db(connection);
-
-            this.navigation_service.navigate(NavigationService.QUERY_VIEW);
-            this.emit_event(Event.ACTIVE_CONNECTION, connection);
+            EventBus.instance().connection_active(connection);
         } catch (PsequelError err) {
             this.err_msg = err.message.dup();
             debug("Error: %s", err.message);

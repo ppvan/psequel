@@ -1,53 +1,23 @@
 namespace Psequel {
-public class EventManager : Object {
-    private List <EventTarget> targets;
+public class EventBus : Object {
+    public signal void schema_changed(Schema schema);
+    public signal void connection_active(Connection connection);
+    public signal void connection_disabled();
+    public signal void selected_table_changed(Table table);
+    public signal void selected_view_changed(View view);
+    public signal void schema_reload();
 
-    private class EventTarget {
-        public string event_type;
-        public Observer observer;
-    }
-
-    public new void notify(string event_type, Object data) {
-        foreach (EventTarget target in targets)
+    private static EventBus _instance;
+    public static EventBus instance() {
+        if (EventBus._instance == null)
         {
-            if (target.event_type == event_type)
-            {
-                Event event = new Event(event_type, data);
-                target.observer.update(event);
-            }
+            _instance = new EventBus();
         }
+
+        return(_instance);
     }
 
-    public EventManager() {
-        Object();
-        targets = new List <EventTarget>();
+    private EventBus() {
     }
-
-    public void subcribe(string event_type, Observer observer) {
-        EventTarget target = new EventTarget();
-        target.event_type = event_type;
-        target.observer   = observer;
-
-        targets.append(target);
-    }
-}
-
-public class Event : Object {
-    public const string SCHEMA_CHANGED         = "schema-changed";
-    public const string SELECTED_TABLE_CHANGED = "selected-table-changed";
-    public const string SELECTED_VIEW_CHANGED  = "selected-view-changed";
-    public const string ACTIVE_CONNECTION      = "active-connection";
-    public string type;
-    public Object data;
-
-    public Event(string type, Object data) {
-        base();
-        this.type = type;
-        this.data = data;
-    }
-}
-
-public interface Observer : Object {
-    public abstract void update(Event event);
 }
 }

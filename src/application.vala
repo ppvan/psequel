@@ -293,21 +293,6 @@ public class Application : Adw.Application {
         container.register(query_history_vm);
         container.register(query_vm);
 
-        // events
-        conn_vm.subcribe(Event.ACTIVE_CONNECTION, sche_vm);
-
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, completer);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, table_vm);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, view_vm);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, table_structure_vm);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, view_structure_vm);
-
-        table_vm.subcribe(Event.SELECTED_TABLE_CHANGED, table_structure_vm);
-        table_vm.subcribe(Event.SELECTED_TABLE_CHANGED, table_data_vm);
-
-        view_vm.subcribe(Event.SELECTED_VIEW_CHANGED, view_structure_vm);
-        view_vm.subcribe(Event.SELECTED_VIEW_CHANGED, view_data_vm);
-
 
         return(container);
     }

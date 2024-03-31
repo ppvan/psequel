@@ -1,6 +1,6 @@
 namespace Psequel {
 /* View here is database view (virtual tables), not UI */
-public class ViewViewModel : BaseViewModel, Observer {
+public class ViewViewModel : BaseViewModel {
     public ObservableList <View> views { get; set; default = new ObservableList <View> (); }
     public View ?selected_view { get; set; }
 
@@ -12,17 +12,13 @@ public class ViewViewModel : BaseViewModel, Observer {
         base();
         this.sql_service = service;
         this.notify["selected-view"].connect(() => {
-                this.emit_event(Event.SELECTED_VIEW_CHANGED, selected_view);
+                EventBus.instance().selected_view_changed(selected_view);
             });
-    }
 
-    public void update(Event event) {
-        if (event.type == Event.SCHEMA_CHANGED)
-        {
-            schema = (Schema)event.data;
-            views.clear();
-            load_views.begin(schema);
-        }
+        EventBus.instance().schema_changed.connect((schema) => {
+                views.clear();
+                load_views.begin(schema);
+            });
     }
 
     public void select_view(View ?view) {

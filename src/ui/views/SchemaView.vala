@@ -42,6 +42,15 @@ public class SchemaView : Adw.Bin {
                 view_viewmodel.select_view((View)view);
             });
 
+        EventBus.instance().schema_reload.connect_after(() => {
+                var window = get_parrent_window(this);
+                Adw.Toast toast;
+                toast = new Adw.Toast("Schema Reloaded") {
+                    timeout = 1,
+                };
+                window.add_toast(toast);
+            });
+
         var table_name_expression = new Gtk.PropertyExpression(typeof(Table), null, "name");
         var view_name_expression  = new Gtk.PropertyExpression(typeof(View), null, "name");
 
@@ -83,22 +92,8 @@ public class SchemaView : Adw.Bin {
     [GtkCallback]
     private void reload_btn_clicked(Gtk.Button btn) {
         btn.sensitive = false;
-        schema_viewmodel.reload.begin((obj, res) => {
-                var window = get_parrent_window(this);
-                Adw.Toast toast;
-                try {
-                    schema_viewmodel.reload.end(res);
-                    toast = new Adw.Toast("Schema Reloaded") {
-                        timeout = 1,
-                    };
-                } catch (Psequel.PsequelError err) {
-                    toast = new Adw.Toast(err.message) {
-                        timeout = 1,
-                    };
-                }
-                window.add_toast(toast);
-                btn.sensitive = true;
-            });
+        EventBus.instance().schema_reload();
+        btn.sensitive = true;
     }
 
     [GtkCallback]
@@ -109,8 +104,9 @@ public class SchemaView : Adw.Bin {
 
     [GtkCallback]
     private void logout_btn_clicked(Gtk.Button btn) {
-        schema_viewmodel.logout.begin();
-        navigation_service.navigate(NavigationService.CONNECTION_VIEW);
+        btn.sensitive = false;
+        EventBus.instance().connection_disabled();
+        btn.sensitive = true;
     }
 
     [GtkChild]

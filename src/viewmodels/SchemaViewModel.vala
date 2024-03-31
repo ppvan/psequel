@@ -1,5 +1,5 @@
 namespace Psequel {
-public class SchemaViewModel : BaseViewModel, Observer {
+public class SchemaViewModel : BaseViewModel {
     const string DEFAULT = "public";
 
     public ObservableList <Schema> schemas { get; set; default = new ObservableList <Schema> (); }
@@ -19,8 +19,22 @@ public class SchemaViewModel : BaseViewModel, Observer {
         this.schema_service = service;
 
         this.notify["current-schema"].connect(() => {
-                this.emit_event(Event.SCHEMA_CHANGED, current_schema);
+                EventBus.instance().schema_changed(current_schema);
             });
+
+        EventBus.instance().connection_active.connect(() => {
+            Timeout.add_once(300, () => {
+                database_connected.begin();
+            });
+        });
+
+        EventBus.instance().schema_reload.connect(() => {
+            this.reload.begin();
+        });
+
+        EventBus.instance().connection_disabled.connect(() => {
+            this.logout.begin();
+        });
     }
 
     public void select_index(int index) {
@@ -30,16 +44,6 @@ public class SchemaViewModel : BaseViewModel, Observer {
         }
         debug("Select index %d, %s\n", index, schemas[index].name);
         select_schema.begin(schemas[index]);
-    }
-
-    public void update(Event event) {
-        if (event.type == Event.ACTIVE_CONNECTION)
-        {
-            // delay for ui to play animation
-            Timeout.add_once(300, () => {
-                    database_connected.begin();
-                });
-        }
     }
 
     public async void reload() throws PsequelError {

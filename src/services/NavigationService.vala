@@ -7,6 +7,13 @@ public class NavigationService : Object {
     public string current_view { get; set; default = CONNECTION_VIEW; }
 
     public NavigationService() {
+        EventBus.instance().connection_disabled.connect_after(() => {
+            this.navigate(CONNECTION_VIEW);
+        });
+
+        EventBus.instance().connection_active.connect_after((_conn) => {
+            this.navigate(QUERY_VIEW);
+        });
     }
 
     public void navigate(string view_name) {

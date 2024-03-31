@@ -1,5 +1,5 @@
 namespace Psequel {
-public class TableViewModel : BaseViewModel, Observer {
+public class TableViewModel : BaseViewModel {
     public Schema schema { get; set; }
     public ObservableList <Table> tables { get; set; default = new ObservableList <Table> (); }
     public Table ?selected_table { get; set; }
@@ -13,17 +13,13 @@ public class TableViewModel : BaseViewModel, Observer {
         base();
         this.sql_service = sql_service;
         this.notify["selected-table"].connect(() => {
-                this.emit_event(Event.SELECTED_TABLE_CHANGED, selected_table);
+                EventBus.instance().selected_table_changed(selected_table);
             });
-    }
 
-    public void update(Event event) {
-        if (event.type == Event.SCHEMA_CHANGED)
-        {
-            schema = (Schema)event.data;
+        EventBus.instance().schema_changed.connect((schema) => {
             tables.clear();
             load_tables.begin(schema);
-        }
+        });
     }
 
     public void select_table(Table ?table) {

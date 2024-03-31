@@ -1,5 +1,5 @@
 namespace Psequel {
-public class ViewStructureViewModel : Object, Observer {
+public class ViewStructureViewModel : Object {
     public SQLService sql_service { get; private set; }
 
     public View selected_view { get; set; }
@@ -10,24 +10,14 @@ public class ViewStructureViewModel : Object, Observer {
     public ViewStructureViewModel(SQLService sql_service) {
         base();
         this.sql_service = sql_service;
-    }
 
-    public void update(Event event) {
-        switch (event.type)
-        {
-        case Event.SCHEMA_CHANGED:
-            var schema = event.data as Schema;
-            load_data.begin(schema);
-            break;
-
-        case Event.SELECTED_VIEW_CHANGED:
-            var view = event.data as View;
+        EventBus.instance().selected_view_changed.connect((view) => {
             selected_view = view;
-            break;
+        });
 
-        default:
-            break;
-        }
+        EventBus.instance().schema_changed.connect((schema) => {
+            load_data.begin(schema);
+        });
     }
 
     private async void load_data(Schema schema) {

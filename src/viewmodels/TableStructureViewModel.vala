@@ -1,5 +1,5 @@
 namespace Psequel {
-public class TableStructureViewModel : Observer, Object {
+public class TableStructureViewModel : Object {
     public SQLService sql_service { get; set; }
     public Table selected_table { get; set; }
     public Schema current_schema { get; set; }
@@ -14,30 +14,18 @@ public class TableStructureViewModel : Observer, Object {
         base();
         //  debug ("TableStructureViewModel created ");
         this.sql_service = sql_service;
-
-        //  selected_table = table;
-    }
-
-    public void update(Event event) {
-        switch (event.type)
-        {
-        case Event.SCHEMA_CHANGED:
-            var schema = event.data as Schema;
+        EventBus.instance().schema_changed.connect((schema) => {
             this.current_schema = schema;
-            //  load_data.begin();
-            break;
+        });
 
-        case Event.SELECTED_TABLE_CHANGED:
-            var table = event.data as Table;
+        EventBus.instance().selected_table_changed.connect((table) => {
             load_data.begin((obj, res) => {
                 load_data.end(res);
                 selected_table = table;
             });
-            break;
+        });
 
-        default:
-            break;
-        }
+        //  selected_table = table;
     }
 
     private async void load_data() {
