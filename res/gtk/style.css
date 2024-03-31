@@ -29,6 +29,10 @@
     -gtk-icon-size: 24px;
 }
 
+border {
+    border: #1e1e1e 1px solid;
+}
+
 .icon-xl image {
     -gtk-icon-size: 50%;
 }

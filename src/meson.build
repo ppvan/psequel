@@ -54,6 +54,7 @@ ui_sources = files([
 
     'ui/widgets/DataCell.vala',
     'ui/widgets/TableRow.vala',
+    'ui/widgets/TableGraph.vala',
     'ui/widgets/StyleSwitcher.vala',
 
     'ui/editor/QueryEditor.vala',
@@ -95,6 +96,8 @@ psequel_deps = [
   dependency('gtksourceview-5', version: '>= 5.0'),
   dependency('libpq', version: '>= 15.3'),
   dependency('sqlite3'),
+  dependency('libgvc'),
+  dependency('librsvg-2.0'),
   csv_dep,
   dependency('pgquery-vala'),
   valac.find_library('config', dirs: vapi_dir),
@@ -107,6 +110,7 @@ add_project_arguments(
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
     language: 'c'
 )
+add_project_arguments(['-D', 'WITH_CGRAPH'], language: 'vala')
 
 psequel_sources_main = psequel_sources + ui_sources + files(['application.vala'])
 

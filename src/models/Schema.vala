@@ -125,11 +125,19 @@ namespace Psequel {
     }
 
 
+    public class PrimaryKey : BaseType {
+        public string[] columns { get; set; }
+
+        public PrimaryKey () {
+        }
+    }
     /** Table foreign key info */
     public class ForeignKey : BaseType {
         public string columns { get; set; default = ""; }
+        public string[] columns_v2 { get; set; }
         public string fk_table { get; set; default = ""; }
         public string fk_columns { get; set; default = ""; }
+        public string[] fk_columns_v2 { get; set; }
         public FKType on_update { get; set; default = NO_ACTION; }
         public FKType on_delete { get; set; default = NO_ACTION; }
 

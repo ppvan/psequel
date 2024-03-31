@@ -53,7 +53,7 @@ public class SchemaView : Adw.Bin {
         table_sort_model.sorter  = table_name_sorter;
         view_sort_model.sorter   = view_name_sorter;
         view_filter.expression   = new Gtk.PropertyExpression(typeof(View), null, "name");
-        stack.visible_child_name = "data-view";
+        stack.visible_child_name = "structure-view";
     }
 
 
