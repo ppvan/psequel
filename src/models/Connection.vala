@@ -37,6 +37,7 @@ public class Connection : Object, Json.Serializable {
 
     public string options { get; set; default = DEFAULT; }
 
+    public string cert_path {get; set; default = "";}
 
     public Connection(string name = "New Connection") {
         this._name = name;
@@ -76,12 +77,18 @@ public class Connection : Object, Json.Serializable {
     }
 
     public string connection_string(int connection_timeout, int query_timeout) {
-        var ssl_mode = use_ssl ? "required" : "disable";
+        var ssl_mode = use_ssl ? "verify-full" : "disable";
         var options  = @"\'-c statement_timeout=$(query_timeout * 1000)\'";
+
         var base_str = @"user=$user password=$password port=$port host=$host dbname=$database application_name=$(Config.APP_NAME) sslmode=$ssl_mode connect_timeout=$connection_timeout options=$options";
+        var builder = new StringBuilder(base_str);
+
+        if (use_ssl) {
+            builder.append(@" sslrootcert=$(cert_path) ");
+        }
 
 
-        return(base_str);
+        return(builder.free_and_steal());
     }
 
     /**

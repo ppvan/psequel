@@ -52,5 +52,7 @@
     <file preprocess="xml-stripblanks" alias="history-undo-symbolic.svg">gtk/icons/history-undo-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="check-plain-symbolic.svg">gtk/icons/check-plain-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="export-symbolic.svg">gtk/icons/export-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="filemanager-app-symbolic.svg">gtk/icons/filemanager-app-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="application-certificate-symbolic.svg">gtk/icons/application-certificate-symbolic.svg</file>
   </gresource>
 </gresources>
