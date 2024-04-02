@@ -2,6 +2,11 @@
 <gresources>
   <gresource prefix="/me/ppvan/psequel">
     <file alias="style.css">gtk/style.css</file>
+
+    <file>migrations/version-0.sql</file>
+    <file>migrations/version-1.sql</file>
+
+
     <file preprocess="xml-stripblanks">gtk/style-switcher.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-row.ui</file>

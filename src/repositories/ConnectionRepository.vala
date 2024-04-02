@@ -1,33 +1,16 @@
 namespace Psequel {
 public class ConnectionRepository : Object {
-    const string KEY        = "connections";
     const string table_name = "connections";
 
-    const string DDL = """
-        CREATE TABLE IF NOT EXISTS "connections" (
-            "id"	INTEGER,
-            "name"	TEXT NOT NULL,
-            "host"	TEXT NOT NULL,
-            "port"	TEXT NOT NULL,
-            "user"	TEXT NOT NULL,
-            "password"	TEXT NOT NULL,
-            "database"	TEXT NOT NULL,
-            "use_ssl"	INT NOT NULL,
-            "options"	TEXT NOT NULL,
-            "create_at"	DATETIME DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY("id" AUTOINCREMENT)
-        )
-        """;
-
     const string insert_sql = """
-        INSERT INTO connections(name, host, port, user, password, database, use_ssl, options) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+        INSERT INTO connections(name, host, port, user, password, database, use_ssl, options, cert_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """;
     const string select_sql = """
-        SELECT id, name, host, port, user, password, database, use_ssl, options FROM connections;
+        SELECT id, name, host, port, user, password, database, use_ssl, options, cert_path FROM connections;
         """;
     const string update_sql = """
         UPDATE connections
-        SET name = ?, host = ?, port = ?, user = ?, password = ?, database = ?, use_ssl = ?, options = ?
+        SET name = ?, host = ?, port = ?, user = ?, password = ?, database = ?, use_ssl = ?, options = ?, cert_path = ?
         WHERE id = ?;
         """;
     const string delete_sql = """
@@ -46,8 +29,7 @@ public class ConnectionRepository : Object {
 
     public ConnectionRepository() {
         base();
-        this.db = autowire <StorageService> ();
-        create_table();
+        this.db          = autowire <StorageService> ();
         this.insert_stmt = this.db.prepare(insert_sql);
         this.select_stmt = this.db.prepare(select_sql);
         this.update_stmt = this.db.prepare(update_sql);
@@ -65,6 +47,7 @@ public class ConnectionRepository : Object {
         insert_stmt.bind_text(6, connection.database);
         insert_stmt.bind_int(7, connection.use_ssl ? 1 : 0);
         insert_stmt.bind_text(8, connection.options);
+        insert_stmt.bind_text(9, connection.cert_path);
 
         if (insert_stmt.step() != Sqlite.DONE)
         {
@@ -94,7 +77,8 @@ public class ConnectionRepository : Object {
         update_stmt.bind_text(6, connection.database);
         update_stmt.bind_int(7, connection.use_ssl ? 1 : 0);
         update_stmt.bind_text(8, connection.options);
-        update_stmt.bind_int64(9, connection.id);
+        update_stmt.bind_text(9, connection.cert_path);
+        update_stmt.bind_int64(10, connection.id);
 
         int code = update_stmt.step();
         if (code != Sqlite.DONE)
@@ -199,6 +183,10 @@ public class ConnectionRepository : Object {
                     conn.options = select_stmt.column_text(i);
                     break;
 
+                case "cert_path":
+                    conn.cert_path = select_stmt.column_text(i);
+                    break;
+
                 default:
                     debug("Unexpect column: %s\n", col_name);
                     break;
@@ -209,17 +197,6 @@ public class ConnectionRepository : Object {
         }
 
         return(list);
-    }
-
-    private void create_table() {
-        string errmsg = null;
-        db.exec(DDL, out errmsg);
-
-        if (errmsg != null)
-        {
-            debug("Error: %s\n", errmsg);
-            Process.exit(1);
-        }
     }
 }
 }

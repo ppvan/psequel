@@ -15,6 +15,7 @@ psequel_sources = files([
     'services/Container.vala',
     'services/ResourceManager.vala',
     'services/SchemaService.vala',
+    'services/MigrationService.vala',
 
     'repositories/ConnectionRepository.vala',
     'repositories/QueryRepository.vala',

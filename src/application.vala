@@ -38,6 +38,7 @@ public class Application : Adw.Application {
     public const int MAX_COLUMNS        = 128;
     public const int PRE_ALLOCATED_CELL = 1024;
     public const int BATCH_SIZE         = 16;
+    public const int MIGRATION_VERSION = 1;
 
     public static List <uint> tasks;
     public static bool is_running = false;
@@ -110,7 +111,7 @@ public class Application : Adw.Application {
         container.register(this);
 
         Application.tasks = new List <uint> ();
-        this.is_running   = true;
+        Application.is_running   = true;
 
         debug("Begin to load resources");
         try {
@@ -254,6 +255,11 @@ public class Application : Adw.Application {
         // services
         var storage_service = new StorageService(db_file.get_path());
         container.register(storage_service);
+
+        var migration_service = new MigrationService();
+        migration_service.set_up_baseline();
+        migration_service.apply_migrations(Application.MIGRATION_VERSION);
+        container.register(migration_service);
 
 
         var sql_service     = new SQLService(Application.background);

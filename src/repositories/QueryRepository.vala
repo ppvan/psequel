@@ -2,16 +2,6 @@ namespace Psequel {
 public class QueryRepository : Object {
     const string KEY = "queries";
 
-
-    const string DDL = """
-        CREATE TABLE IF NOT EXISTS "queries" (
-            "id"	INTEGER,
-            "sql"	TEXT NOT NULL,
-            "create_at" DATETIME DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY("id" AUTOINCREMENT)
-        );
-        """;
-
     const string select_sql = """
         SELECT id, sql FROM "queries"
         ORDER BY create_at DESC;
@@ -49,8 +39,6 @@ public class QueryRepository : Object {
         base();
 
         this.db = autowire <StorageService> ();
-        create_table();
-
         select_stmt     = db.prepare(select_sql);
         insert_stmt     = db.prepare(insert_sql);
         update_stmt     = db.prepare(update_sql);
@@ -138,17 +126,6 @@ public class QueryRepository : Object {
         if (delete_all_stmt.step() != Sqlite.DONE)
         {
             debug("Error: %s", db.err_message());
-        }
-    }
-
-    private void create_table() {
-        string errmsg = null;
-        db.exec(DDL, out errmsg);
-
-        if (errmsg != null)
-        {
-            debug("Error: %s\n", errmsg);
-            Process.exit(1);
         }
     }
 }
