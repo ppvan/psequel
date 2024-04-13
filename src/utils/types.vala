@@ -47,6 +47,12 @@ public T autowire <T> () {
     return((T)container.find_type(typeof(T)));
 }
 
+public string[] parse_array_result(string array_str) {
+    int    len     = array_str.length - 2;
+    string content = array_str.substring(1, len);
+    return(Csv.parse_row(content));
+}
+
 public class Vec <T> : Object {
     static int DEFAULT_CAPACITY = 16;
 
@@ -54,15 +60,15 @@ public class Vec <T> : Object {
     private int size;
     private int capacity;
 
-
+    public delegate bool Predicate <T> (T item);
 
     public Vec() {
         this.with_capacity(DEFAULT_CAPACITY);
     }
 
     public Vec.with_data(owned T[] data) {
-        this.data = data;
-        this.size = data.length;
+        this.data     = data;
+        this.size     = data.length;
         this.capacity = data.length;
     }
 
@@ -81,6 +87,30 @@ public class Vec <T> : Object {
 
 
         this.data[size++] = item;
+    }
+
+    public int index(T item) {
+        for (int i = 0; i < this.size; i++)
+        {
+            if (item == this.data[i])
+            {
+                return(i);
+            }
+        }
+
+        return(-1);
+    }
+
+    public int find(Predicate <T> pred) {
+        for (int i = 0; i < this.size; i++)
+        {
+            if (pred(this.data[i]))
+            {
+                return(i);
+            }
+        }
+
+        return(-1);
     }
 
     public T pop() {
@@ -105,46 +135,49 @@ public class Vec <T> : Object {
         this.data[index] = item;
     }
 
-    public new Vec<T> slice(int begin, int end) {
+    public new Vec <T> slice(int begin, int end) {
         bound_check(begin);
         bound_check(end - 1);
 
-        return new Vec<T>.with_data(this.data[begin:end]);
+        return(new Vec <T> .with_data(this.data[begin:end]));
     }
 
     public bool contains(T item) {
         bool flag = false;
 
-        for (int i = 0; i < size; i++) {
-            if (data[i] == item) {
+        for (int i = 0; i < size; i++)
+        {
+            if (data[i] == item)
+            {
                 flag = true;
                 break;
             }
         }
 
-        return flag;
+        return(flag);
     }
 
-    public class Iterator<T> {
+    public class Iterator <T> {
         private int index;
-        private Vec<T> vec;
+        private Vec <T> vec;
 
         public Iterator(Vec vec) {
-            this.vec = vec;
+            this.vec   = vec;
             this.index = 0;
         }
 
         public bool next() {
-            return index < vec.size -1 ;
+            return(index < vec.size - 1);
         }
 
         public T get() {
-            return this.vec[this.index++];
+            return(this.vec[this.index++]);
         }
     }
 
     private inline void bound_check(int index) {
-        if (index < 0 || index >= size) {
+        if (index < 0 || index >= size)
+        {
             error("Array index out of bound (index = %d, size = %d)", index, size);
         }
     }

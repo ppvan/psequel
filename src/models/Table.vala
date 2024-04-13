@@ -7,9 +7,10 @@ public abstract class BaseTable : Object {
 
 /** Table object in database, hold meta-data about the table */
 public sealed class Table : BaseTable {
-    public List <Column> columns { get; owned set; default = new List <Column> (); }
-    public List <Index> indexes { get; owned set; default = new List <Index> (); }
-    public List <ForeignKey> foreign_keys { get; owned set; default = new List <ForeignKey> (); }
+    public Vec <Column> columns { get; owned set; default = new Vec <Column> (); }
+    public Vec <Index> indexes { get; owned set; default = new Vec <Index> (); }
+    public Vec <ForeignKey> foreign_keys { get; owned set; default = new Vec <ForeignKey> (); }
+    public Vec <PrimaryKey> primaty_keys { get; owned set; default = new Vec <PrimaryKey> (); }
 
     public Table(Schema schema) {
         Object(schema: schema);

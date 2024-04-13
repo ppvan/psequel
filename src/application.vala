@@ -38,7 +38,7 @@ public class Application : Adw.Application {
     public const int MAX_COLUMNS        = 128;
     public const int PRE_ALLOCATED_CELL = 1024;
     public const int BATCH_SIZE         = 16;
-    public const int MIGRATION_VERSION = 1;
+    public const int MIGRATION_VERSION  = 1;
 
     public static List <uint> tasks;
     public static bool is_running = false;
@@ -110,8 +110,8 @@ public class Application : Adw.Application {
         container.register(settings);
         container.register(this);
 
-        Application.tasks = new List <uint> ();
-        Application.is_running   = true;
+        Application.tasks      = new List <uint> ();
+        Application.is_running = true;
 
         debug("Begin to load resources");
         try {
@@ -185,13 +185,10 @@ public class Application : Adw.Application {
         typeof(Psequel.ConnectionView).ensure();
         typeof(Psequel.QueryResults).ensure();
         typeof(Psequel.QueryEditor).ensure();
-        typeof(Psequel.TableStructureView).ensure();
+        //  typeof(Psequel.TableStructureView).ensure();
         typeof(Psequel.ViewStructureView).ensure();
         typeof(Psequel.TableDataView).ensure();
         typeof(Psequel.ViewDataView).ensure();
-        typeof(Psequel.TableColInfo).ensure();
-        typeof(Psequel.TableIndexInfo).ensure();
-        typeof(Psequel.TableFKInfo).ensure();
     }
 
     private void on_about_action() {
@@ -271,16 +268,16 @@ public class Application : Adw.Application {
         var completer       = new CompleterService(sql_service);
 
         // viewmodels
-        var conn_vm            = new ConnectionViewModel(connection_repo, sql_service, navigation);
-        var sche_vm            = new SchemaViewModel(schema_service);
-        var table_vm           = new TableViewModel(sql_service);
-        var view_vm            = new ViewViewModel(sql_service);
-        var table_structure_vm = new TableStructureViewModel(sql_service);
-        var view_structure_vm  = new ViewStructureViewModel(sql_service);
-        var table_data_vm      = new TableDataViewModel(sql_service);
-        var view_data_vm       = new ViewDataViewModel(sql_service);
-        var query_history_vm   = new QueryHistoryViewModel(sql_service, query_repo);
-        var query_vm           = new QueryViewModel(query_history_vm);
+        var conn_vm  = new ConnectionViewModel(connection_repo, sql_service, navigation);
+        var sche_vm  = new SchemaViewModel(schema_service);
+        var table_vm = new TableViewModel(sql_service);
+        var view_vm  = new ViewViewModel(sql_service);
+        //  var table_structure_vm = new TableStructureViewModel(sql_service);
+        var view_structure_vm = new ViewStructureViewModel(sql_service);
+        var table_data_vm     = new TableDataViewModel(sql_service);
+        var view_data_vm      = new ViewDataViewModel(sql_service);
+        var query_history_vm  = new QueryHistoryViewModel(sql_service, query_repo);
+        var query_vm          = new QueryViewModel(query_history_vm);
 
         container.register(sql_service);
         container.register(completer);
@@ -292,7 +289,7 @@ public class Application : Adw.Application {
         container.register(sche_vm);
         container.register(table_vm);
         container.register(view_vm);
-        container.register(table_structure_vm);
+        //  container.register(table_structure_vm);
         container.register(view_structure_vm);
         container.register(table_data_vm);
         container.register(view_data_vm);
