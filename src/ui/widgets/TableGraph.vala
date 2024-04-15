@@ -3,7 +3,10 @@ using Rsvg;
 namespace Psequel {
 [GtkTemplate(ui = "/me/ppvan/psequel/gtk/table-graph.ui")]
 public class TableGraph : Gtk.Box {
-    private uint8[] buff;
+    private TableViewModel viewmodel;
+
+    private TableBox current_table;
+    private UIContext ctx;
 
 
     public TableGraph() {
@@ -11,130 +14,106 @@ public class TableGraph : Gtk.Box {
     }
 
     construct {
-        //  this.viewmodel = autowire <TableStructureViewModel>();
+        this.viewmodel = autowire <TableViewModel>();
 
-        //  this.viewmodel.notify["selected-table"].connect(() => {
-        //          debug("Test: %s", this.viewmodel.selected_table.name);
-        //          var table = this.viewmodel.selected_table;
-        //          this.render_graph.begin(table);
-        //      });
+        this.viewmodel.notify["selected-table"].connect(() => {
+                debug("Test: %s", this.viewmodel.selected_table.name);
+                var table          = this.viewmodel.selected_table;
+                this.current_table = new TableBox(table);
+
+                area.queue_draw();
+            });
+
+        this.ctx = new UIContext();
+
+
+        this.realize.connect(() => {
+                var scrollEvent = new Gtk.EventControllerScroll(Gtk.EventControllerScrollFlags.VERTICAL);
+                scrollEvent.scroll.connect(this.handle_scroll);
+
+
+                area.add_controller(scrollEvent);
+                area.set_draw_func(redraw);
+            });
     }
 
-    public async void render_graph(Table table) {
-        //  var     fks          = this.viewmodel.foreign_keys;
-        //  uint8[] buff         = generate_graph(table, fks.to_list());
-        //  var     svgPaintable = new SvgPaintable(buff);
+    private bool handle_scroll(Gtk.EventControllerScroll event, double dx, double dy) {
+        Gdk.ModifierType mask = event.get_current_event_state();
+        if (mask != Gdk.ModifierType.CONTROL_MASK)
+        {
+            return(false);
+        }
 
-        //  pic.set_paintable(svgPaintable);
+        if (dy > 0)
+        {
+            this.ctx.zoom *= 0.9;
+        }
+        else
+        {
+            this.ctx.zoom *= 1.1;
+        }
+
+        debug("scrolling, zoom: %.2f", this.ctx.zoom);
+
+        this.area.queue_draw();
+
+        return(true);
     }
 
-    public uint8[] generate_graph(Table table, List <ForeignKey> fks) {
-        //  var gvc = new Gvc.Context();
-        //  var g   = new Gvc.Graph("g", Gvc.Agdirected, 0);
-        //  g.safe_set("rankdir", "LR", "");
-        //  g.safe_set("fontname", "Roboto", "");
-        //  g.safe_set("bgcolor", "transparent", "");
+    private void redraw(Gtk.DrawingArea area, Cairo.Context cr, int width, int height) {
+        cr.translate(width / 2, height / 2);
+        cr.scale(ctx.zoom, ctx.zoom);
 
-        //  foreach (var item in fks)
-        //  {
-        //      if (item.table != table.name && item.fk_table != table.name)
-        //      {
-        //          continue;
-        //      }
+        cr.set_source_rgb(30 / 255.0, 30 / 255.0, 30 / 255.0);
+        cr.paint();
 
-        //      var begin = g.create_node(item.table);
-        //      var end   = g.create_node(item.fk_table);
-
-        //      //  var begin_label = generate_table_details(g, item.table);
-        //      //  var end_label   = generate_table_details(g, item.fk_table);
-
-        //      begin.safe_set("fontname", "Roboto", "");
-        //      begin.safe_set("shape", "plaintext", "");
-        //      begin.safe_set("label", begin_label, "");
-        //      begin.safe_set("fontcolor", "#D1CDC7", "");
-        //      begin.safe_set("color", "#858786", "");
+        debug("draw, zoom: %.2f", this.ctx.zoom);
 
 
-        //      end.safe_set("fontname", "Roboto", "");
-        //      end.safe_set("shape", "plaintext", "");
-        //      end.safe_set("label", end_label, "");
-        //      end.safe_set("fontcolor", "#D1CDC7", "");
-        //      end.safe_set("color", "#858786", "");
-        //      var edge = g.create_edge(begin, end);
-        //      edge.safe_set("color", "#858786", "");
-        //      edge.safe_set("tailport", item.fk_columns[0], "");
-        //      edge.safe_set("headport", item.columns[0], "");
-        //  }
-        //  gvc.layout(g, "dot");
-        //  gvc.render_data(g, "svg", out this.buff);
-        //  gvc.free_layout(g);
+        var text_h    = line_height(cr);
+        var cur_color = this.get_color();
 
-        return(this.buff);
+
+        var table        = this.viewmodel.selected_table;
+        var table_width  = width / 2;
+        var table_height = (table.columns.length + 1) * (text_h + 2 * TextBox.DEFAULT_PAD);
+
+        this.current_table.boundary = { -table_width / 2, -table_height / 2, table_width, table_height };
+        this.current_table.color    = cur_color;
+
+        current_table.update(ctx);
+        current_table.draw(cr);
     }
 
-    //  private Gvc.HtmlString generate_table_details(Gvc.Graph g, string table) {
-    //      var stringBuilder = new StringBuilder("""<table border="0" cellborder="1" cellspacing="0">""");
-    //      stringBuilder.append(@"<tr><td bgcolor=\"#858786\" colspan=\"2\"><b><font color=\"#272727\">$(table)</font></b></td></tr>");
-    //      string[] current_pks = new string[0];
-    //      string[] current_fks = new string[0];
+    private void mouse_hover() {
+        debug("Hover");
+    }
 
-    //      foreach (var pk in this.viewmodel.primary_keys)
-    //      {
-    //          if (pk.table == table)
-    //          {
-    //              current_pks = pk.columns;
-    //              break;
-    //          }
-    //      }
+    private void mouse_click() {
+        debug("Click");
+    }
 
-    //      foreach (var fk in this.viewmodel.foreign_keys)
-    //      {
-    //          if (fk.table == table)
-    //          {
-    //              current_fks = fk.columns;
-    //              break;
-    //          }
-    //      }
+    private int line_height(Cairo.Context cr) {
+        var layout = Pango.cairo_create_layout(cr);
+        layout.set_font_description(Pango.FontDescription.from_string("Roboto 16"));
+        layout.set_text("jjjjjjjjjj", -1);
 
-    //      debug(table);
+        int text_w = 0, text_h = 0;
+        layout.get_pixel_size(out text_w, out text_h);
 
-    //      for (int i = 0; i < current_pks.length; i++)
-    //      {
-    //          debug("PK: %s", current_pks[i]);
-    //      }
-
-    //      for (int i = 0; i < current_fks.length; i++)
-    //      {
-    //          debug("FK: %s", current_fks[i]);
-    //      }
-
-    //      foreach (var col in this.viewmodel.columns)
-    //      {
-    //          if (col.table != table)
-    //          {
-    //              continue;
-    //          }
-
-    //          if (col.name in current_fks)
-    //          {
-    //              stringBuilder.append_printf("""<tr><td align="left">%s</td><td align="right" port="%s">%s</td></tr>""", col.name, col.name, col.column_type);
-    //          }
-    //          else if (col.name in current_pks)
-    //          {
-    //              stringBuilder.append_printf("""<tr><td align="left" port="%s">%s</td><td align="right">%s</td></tr>""", col.name, col.name, col.column_type);
-    //          }
-    //          else
-    //          {
-    //              stringBuilder.append_printf("""<tr><td align="left">%s</td><td align="right" port="%s">%s</td></tr>""", col.name, col.name, col.column_type);
-    //          }
-    //      }
-
-    //      stringBuilder.append("</table>");
-    //      var markup = stringBuilder.free_and_steal();
-    //      return(Gvc.HtmlString.make_html(g, markup));
-    //  }
+        return(text_h);
+    }
 
     [GtkChild]
-    private unowned Gtk.Picture pic;
+    private unowned Gtk.DrawingArea area;
+}
+
+public class UIContext : Object {
+    public double mouse_x { get; set; }
+    public double mouse_y { get; set; }
+    public double zoom { get; set; default = 1.0; }
+
+    public UIContext() {
+    }
 }
 }

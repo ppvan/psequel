@@ -44,15 +44,13 @@ public class TableViewModel : BaseViewModel {
         debug("loading tables");
         var query    = new Query.with_params(TABLE_LIST, { schema.name });
         var relation = yield sql_service.exec_query_params(query);
-
         var table_vec = new Vec <Table>();
 
         foreach (var item in relation)
         {
             var table = new Table(schema);
             table.name = item[0];
-            tables.append(table);
-            //  table_vec.append(table);
+            table_vec.append(table);
         }
 
         debug("%d tables loaded", tables.size);
@@ -83,8 +81,9 @@ public class TableViewModel : BaseViewModel {
             }
 
             table_vec[index].columns.append(col);
-        }
 
+            debug("table-name: %s, columns: %d, col-name: %s", table_vec[index].name, table_vec[index].columns.length, col.name);
+        }
 
         var indexes_query    = new Query.with_params(INDEX_SQL, { schema.name });
         var indexes_relation = yield sql_service.exec_query_params(indexes_query);
@@ -170,6 +169,12 @@ public class TableViewModel : BaseViewModel {
 
             table_vec[idx].foreign_keys.append(fk);
         }
+
+        this.tables.clear();
+        foreach (var item in table_vec) {
+            this.tables.append(item);
+        }
+
     }
 
     public const string TABLE_LIST = """
@@ -177,7 +182,7 @@ public class TableViewModel : BaseViewModel {
         """;
 
     public const string COLUMN_SQL = """
-        SELECT cls.relname AS tbl ,attname AS col, atttypid::regtype AS datatype, attnotnull, pg_get_expr(d.adbin, d.adrelid) AS default_value
+        SELECT cls.relname AS tbl, attname AS col, format_type(a.atttypid, a.atttypmod) AS datatype, attnotnull, pg_get_expr(d.adbin, d.adrelid) AS default_value
         FROM   pg_attribute a
         LEFT JOIN pg_catalog.pg_attrdef d ON (a.attrelid, a.attnum) = (d.adrelid, d.adnum)
         LEFT JOIN pg_class cls ON cls.oid = a.attrelid

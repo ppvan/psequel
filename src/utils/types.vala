@@ -60,6 +60,9 @@ public class Vec <T> : Object {
     private int size;
     private int capacity;
 
+    public int length {get {
+        return this.size;
+    }}
     public delegate bool Predicate <T> (T item);
 
     public Vec() {
@@ -123,6 +126,10 @@ public class Vec <T> : Object {
         return(this.data[--size]);
     }
 
+    public Iterator<T> iterator () {
+        return new Iterator<T>(this);
+    }
+
     public new T get(int index) {
         bound_check(index);
 
@@ -167,7 +174,7 @@ public class Vec <T> : Object {
         }
 
         public bool next() {
-            return(index < vec.size - 1);
+            return(index < vec.size);
         }
 
         public T get() {

@@ -51,6 +51,7 @@ ui_sources = files([
     'ui/widgets/DataCell.vala',
     'ui/widgets/TableRow.vala',
     'ui/widgets/TableGraph.vala',
+    'ui/widgets/Shape.vala',
     'ui/widgets/StyleSwitcher.vala',
 
     'ui/editor/QueryEditor.vala',
