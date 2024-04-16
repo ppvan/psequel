@@ -2,7 +2,7 @@ using Gtk;
 using Gdk;
 namespace Psequel {
 public interface Shape : Object {
-    public abstract void draw(Cairo.Context cr);
+    public abstract void draw(Cairo.Context cr, int width, int height);
 }
 
 public sealed class TextBox : Object, Shape {
@@ -30,7 +30,7 @@ public sealed class TextBox : Object, Shape {
         this.boundary = rect;
     }
 
-    public void draw(Cairo.Context cr) {
+    public void draw(Cairo.Context cr, int width, int height) {
         cr.move_to(boundary.x, boundary.y);
 
         if ((show_box))
@@ -103,18 +103,10 @@ public sealed class TableBox : Object, Shape {
         this.isHover = this.boundary.contains_point((int)ctx.mouse_x, (int)ctx.mouse_y);
     }
 
-    public void draw(Cairo.Context cr) {
+    public void draw(Cairo.Context cr, int width, int height) {
         cr.move_to(boundary.x, boundary.y);
 
-        if (isHover)
-        {
-            cr.set_source_rgba(1, 0, 0, color.alpha);
-        }
-        else
-        {
-            cr.set_source_rgba(color.red, color.green, color.blue, color.alpha);
-        }
-
+        cr.set_source_rgba(color.red, color.green, color.blue, color.alpha);
         cr.rectangle(boundary.x, boundary.y, boundary.width, boundary.height);
         cr.stroke();
 
@@ -123,7 +115,7 @@ public sealed class TableBox : Object, Shape {
         header.custom_font.set_weight(Pango.Weight.BOLD);
         header.bg_color = { 64 / 255f, 64 / 255f, 64 / 255f, 1 };
         header.color    = this.color;
-        header.draw(cr);
+        header.draw(cr, width, height);
 
 
         int index = 1;
@@ -137,10 +129,42 @@ public sealed class TableBox : Object, Shape {
             col_type.color      = this.color;
             col_type.text_align = TextBox.Align.RIGHT;
 
-            col_name.draw(cr);
-            col_type.draw(cr);
+            col_name.draw(cr, width, height);
+            col_type.draw(cr, width, height);
             index++;
         }
+
+        int spacing = TextBox.DEFAULT_PAD * 16;
+        int next_y = -(table.foreign_keys.length * row_height + (table.foreign_keys.length - 1) * spacing / 2);
+        int next_x = width / 2 - boundary.width / 2 - TextBox.DEFAULT_PAD * 8;
+        foreach (var fk in table.foreign_keys)
+        {
+            debug("name = %s: %s -> %s", fk.name, fk.table, fk.fk_table);
+            var fk_header = new TextBox(fk.fk_table, { next_x + TextBox.DEFAULT_PAD, next_y, boundary.width / 2, row_height });
+            fk_header.custom_font.set_weight(Pango.Weight.BOLD);
+            fk_header.bg_color = { 64 / 255f, 64 / 255f, 64 / 255f, 1 };
+            fk_header.color    = this.color;
+            fk_header.draw(cr, width, height);
+
+            string fk_compose     = string.joinv(", ", fk.fk_columns);
+            var    fk_compose_box = new TextBox(fk_compose, { next_x + TextBox.DEFAULT_PAD, next_y + row_height, boundary.width / 2, row_height });
+            fk_compose_box.color      = this.color;
+            fk_compose_box.text_align = TextBox.Align.CENTER;
+
+            fk_compose_box.draw(cr, width, height);
+
+            next_y += 2 * row_height + spacing;
+        }
+    }
+}
+
+public class Arrow: Object, Shape {
+
+    public Arrow (int x1, int y1, int x2, int y2) {
+
+    }
+    public void draw(Cairo.Context cr, int width, int height) {
+        assert_not_reached();
     }
 }
 
@@ -161,7 +185,7 @@ public sealed class CairoIcon : Object, Shape {
         //  debug ((string)file_content);
     }
 
-    public void draw(Cairo.Context cr) {
+    public void draw(Cairo.Context cr, int width, int height) {
         //  Cairo.SvgSurface surface = new Cairo.SvgSurface(this.filepath, 48, 48);
         //  cr.set_source_surface(surface, 0, 0);
     }

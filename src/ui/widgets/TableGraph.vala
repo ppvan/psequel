@@ -53,8 +53,6 @@ public class TableGraph : Gtk.Box {
             this.ctx.zoom *= 1.1;
         }
 
-        debug("scrolling, zoom: %.2f", this.ctx.zoom);
-
         this.area.queue_draw();
 
         return(true);
@@ -67,36 +65,25 @@ public class TableGraph : Gtk.Box {
         cr.set_source_rgb(30 / 255.0, 30 / 255.0, 30 / 255.0);
         cr.paint();
 
-        debug("draw, zoom: %.2f", this.ctx.zoom);
-
-
         var text_h    = line_height(cr);
         var cur_color = this.get_color();
 
 
         var table        = this.viewmodel.selected_table;
-        var table_width  = width / 2;
+        var table_width  = width * 2 / 5;
         var table_height = (table.columns.length + 1) * (text_h + 2 * TextBox.DEFAULT_PAD);
 
-        this.current_table.boundary = { -table_width / 2, -table_height / 2, table_width, table_height };
+        this.current_table.boundary = { -(width / 2 - TextBox.DEFAULT_PAD * 8), -table_height / 2, table_width, table_height };
         this.current_table.color    = cur_color;
 
         current_table.update(ctx);
-        current_table.draw(cr);
-    }
-
-    private void mouse_hover() {
-        debug("Hover");
-    }
-
-    private void mouse_click() {
-        debug("Click");
+        current_table.draw(cr, width, height);
     }
 
     private int line_height(Cairo.Context cr) {
         var layout = Pango.cairo_create_layout(cr);
         layout.set_font_description(Pango.FontDescription.from_string("Roboto 16"));
-        layout.set_text("jjjjjjjjjj", -1);
+        layout.set_text("jjjjjjjjjj", -1); // j is the highest character, good for line height measure.
 
         int text_w = 0, text_h = 0;
         layout.get_pixel_size(out text_w, out text_h);
