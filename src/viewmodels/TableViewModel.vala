@@ -200,8 +200,7 @@ public class TableViewModel : BaseViewModel {
         JOIN pg_class rel_cls ON idx.indrelid = rel_cls.oid
         JOIN pg_namespace nsp ON cls.relnamespace = nsp.oid
         JOIN pg_am am ON am.oid = cls.relam
-        WHERE nsp.nspname = $1 AND cls.relkind = 'i';
-    
+        WHERE nsp.nspname = $1 AND cls.relkind = 'i' AND NOT indisprimary;
         """;
 
     public const string PK_SQL = """
@@ -225,7 +224,8 @@ public class TableViewModel : BaseViewModel {
         cls1.relname AS src_table,
         ARRAY_AGG(attr1.attname) AS src_columns,
         cls2.relname AS dest_table,
-        ARRAY_AGG(attr2.attname) AS dest_columns
+        ARRAY_AGG(attr2.attname) AS dest_columns,
+        ARRAY_AGG(attr1.attnum) AS src_columns_num
     FROM pg_catalog.pg_constraint con
     JOIN pg_catalog.pg_class cls1 ON con.conrelid = cls1.oid
     JOIN pg_catalog.pg_class cls2 ON con.confrelid = cls2.oid
@@ -239,6 +239,7 @@ public class TableViewModel : BaseViewModel {
         AND attr1.attnum = ANY(con.conkey)
         AND attr2.attnum = ANY(con.confkey)
     GROUP BY nsp.nspname, con.oid, cls1.relname, cls2.relname
+    ORDER BY src_table, src_columns_num;
     """;
 }
 }

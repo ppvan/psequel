@@ -7,6 +7,7 @@ public interface Shape : Object {
 
 public sealed class TextBox : Object, Shape {
     public static int DEFAULT_PAD = 8;
+    public static int DEFAULT_LINE_HEIGHT = 20;
 
     private string text;
     private Gdk.Rectangle boundary;
@@ -97,6 +98,10 @@ public sealed class TableBox : Object, Shape {
 
     public TableBox(Table table) {
         this.table = table;
+
+        //  this.boundary.height = (table.columns.length + 1) * (TextBox.DEFAULT_LINE_HEIGHT + 2 * TextBox.DEFAULT_PAD);
+        //  this.boundary.width = 0;
+
     }
 
     public void update(UIContext ctx) {
@@ -134,12 +139,11 @@ public sealed class TableBox : Object, Shape {
             index++;
         }
 
-        int spacing = TextBox.DEFAULT_PAD * 16;
-        int next_y = -(table.foreign_keys.length * row_height + (table.foreign_keys.length - 1) * spacing / 2);
-        int next_x = width / 2 - boundary.width / 2 - TextBox.DEFAULT_PAD * 8;
+        int spacing = (height - table.foreign_keys.length * 2 * row_height) / (table.foreign_keys.length + 1);
+        int next_y  = -(table.foreign_keys.length * row_height + (table.foreign_keys.length - 1) * spacing / 2);
+        int next_x  = width / 2 - boundary.width / 2 - TextBox.DEFAULT_PAD * 8;
         foreach (var fk in table.foreign_keys)
         {
-            debug("name = %s: %s -> %s", fk.name, fk.table, fk.fk_table);
             var fk_header = new TextBox(fk.fk_table, { next_x + TextBox.DEFAULT_PAD, next_y, boundary.width / 2, row_height });
             fk_header.custom_font.set_weight(Pango.Weight.BOLD);
             fk_header.bg_color = { 64 / 255f, 64 / 255f, 64 / 255f, 1 };
@@ -153,18 +157,79 @@ public sealed class TableBox : Object, Shape {
 
             fk_compose_box.draw(cr, width, height);
 
+            string col_compose     = string.joinv(", ", fk.columns);
+            var col_index = table.columns.find((_col) => {
+                return _col.name == col_compose;
+            });
+
+            if (col_index != -1) {
+                var arrow = new Arrow({ boundary.x + boundary.width, boundary.y + (col_index + 1) * row_height + row_height / 2 }, { next_x + TextBox.DEFAULT_PAD, next_y + row_height });
+                arrow.draw(cr, width, height);
+            } else {
+                //  TODO: handle compose foreign key case (2 or more column in 1 fk)
+            }
+
             next_y += 2 * row_height + spacing;
         }
     }
 }
 
-public class Arrow: Object, Shape {
+public struct Vec2D
+{
+    double x;
+    double y;
 
-    public Arrow (int x1, int y1, int x2, int y2) {
-
+    public Vec2D add(Vec2D other) {
+        return({ this.x + other.x, this.y + other.y });
     }
+
+    public Vec2D substract(Vec2D other) {
+        return({ this.x - other.x, this.y - other.y });
+    }
+
+    public Vec2D orthogonal() {
+        return({ -this.y, this.x });
+    }
+
+    public Vec2D divide(double d) {
+        return({ this.x / d, this.y / d });
+    }
+
+    public Vec2D normalize() {
+        var length = GLib.Math.hypot(this.x, this.y);
+        return({ this.x / length, this.y / length });
+    }
+
+    public string to_str() {
+        return("(%.2f, %.2f)".printf(x, y));
+    }
+}
+
+public class Arrow : Object, Shape {
+    private Vec2D tail;
+    private Vec2D head;
+
+
+    public Arrow(Vec2D tail, Vec2D head) {
+        this.tail = tail;
+        this.head = head;
+    }
+
     public void draw(Cairo.Context cr, int width, int height) {
-        assert_not_reached();
+        var orthogonal = tail.substract(head).orthogonal().normalize();
+        var mid        = tail.add(head).divide(2);
+        var p2         = mid.add(orthogonal.divide(1 / 64.0));
+        var p1         = mid.substract(orthogonal.divide(1 / 64.0));
+
+        cr.move_to(tail.x, tail.y);
+
+        if (tail.y < head.y) {
+            cr.curve_to(p2.x, p2.y, p1.x, p1.y, head.x, head.y);
+        } else {
+            cr.curve_to(p1.x, p1.y, p2.x, p2.y, head.x, head.y);
+        }
+
+        cr.stroke();
     }
 }
 
