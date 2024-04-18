@@ -60,6 +60,21 @@ public class ConnectionView : Adw.Bin {
     }
 
     [GtkCallback]
+    private void on_cert_file_chooser(Gtk.EntryIconPosition pos) {
+        if (pos != Gtk.EntryIconPosition.SECONDARY)
+        {
+            return;
+        }
+
+        open_file_dialog.begin();
+    }
+
+    [GtkCallback]
+    private void on_cert_entry_activate(Gtk.Entry entry) {
+        open_file_dialog.begin();
+    }
+
+    [GtkCallback]
     private void on_switch_changed() {
         viewmodel.save_connections();
     }
@@ -106,6 +121,39 @@ public class ConnectionView : Adw.Bin {
         return(true);
     }
 
+    private async void open_file_dialog(string title = "Choose certificate file") {
+        var filter = new Gtk.FileFilter();
+        filter.add_mime_type("application/x-x509-ca-cert");
+
+        var filters = new ListStore(typeof(Gtk.FileFilter));
+        filters.append(filter);
+
+        var window = (Window)get_parrent_window(this);
+
+        var file_dialog = new Gtk.FileDialog() {
+            modal          = true,
+            initial_folder = File.new_for_path(Environment.get_home_dir()),
+            title          = title,
+            initial_name   = "server.cert",
+            default_filter = filter,
+            filters        = filters
+        };
+
+        try {
+            var file = yield file_dialog.open(window, null);
+            var path = file.get_path();
+
+            this.viewmodel.selected_connection.cert_path = path;
+        } catch (Error err) {
+            debug(err.message);
+
+            var toast = new Adw.Toast(err.message) {
+                timeout = 3,
+            };
+            window.add_toast(toast);
+        }
+    }
+
     private void set_up_bindings() {
         // Save ref so it does not be cleaned
         this.bindings = create_form_bind_group();
@@ -144,6 +192,7 @@ public class ConnectionView : Adw.Bin {
         binddings.bind("password", password_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
         binddings.bind("database", database_entry, "text", SYNC_CREATE | BIDIRECTIONAL);
         binddings.bind("use_ssl", ssl_switch, "active", SYNC_CREATE | BIDIRECTIONAL);
+        binddings.bind("cert_path", cert_path, "text", SYNC_CREATE | BIDIRECTIONAL);
         //  debug ("set_up binddings done");
 
 
@@ -172,6 +221,9 @@ public class ConnectionView : Adw.Bin {
 
     [GtkChild]
     private unowned Gtk.Entry database_entry;
+
+    [GtkChild]
+    private unowned Gtk.Entry cert_path;
 
     [GtkChild]
     private unowned Gtk.Switch ssl_switch;

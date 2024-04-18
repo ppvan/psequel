@@ -38,6 +38,7 @@ public class Application : Adw.Application {
     public const int MAX_COLUMNS        = 128;
     public const int PRE_ALLOCATED_CELL = 1024;
     public const int BATCH_SIZE         = 16;
+    public const int MIGRATION_VERSION  = 1;
 
     public static List <uint> tasks;
     public static bool is_running = false;
@@ -109,8 +110,8 @@ public class Application : Adw.Application {
         container.register(settings);
         container.register(this);
 
-        Application.tasks = new List <uint> ();
-        this.is_running   = true;
+        Application.tasks      = new List <uint> ();
+        Application.is_running = true;
 
         debug("Begin to load resources");
         try {
@@ -175,6 +176,7 @@ public class Application : Adw.Application {
     private static void ensure_types() {
         typeof(Psequel.StyleSwitcher).ensure();
         typeof(Psequel.TableRow).ensure();
+        typeof(Psequel.TableGraph).ensure();
         typeof(Psequel.DataCell).ensure();
         typeof(Psequel.ConnectionViewModel).ensure();
         typeof(Psequel.SchemaView).ensure();
@@ -183,13 +185,10 @@ public class Application : Adw.Application {
         typeof(Psequel.ConnectionView).ensure();
         typeof(Psequel.QueryResults).ensure();
         typeof(Psequel.QueryEditor).ensure();
-        typeof(Psequel.TableStructureView).ensure();
+        //  typeof(Psequel.TableStructureView).ensure();
         typeof(Psequel.ViewStructureView).ensure();
         typeof(Psequel.TableDataView).ensure();
         typeof(Psequel.ViewDataView).ensure();
-        typeof(Psequel.TableColInfo).ensure();
-        typeof(Psequel.TableIndexInfo).ensure();
-        typeof(Psequel.TableFKInfo).ensure();
     }
 
     private void on_about_action() {
@@ -254,6 +253,11 @@ public class Application : Adw.Application {
         var storage_service = new StorageService(db_file.get_path());
         container.register(storage_service);
 
+        var migration_service = new MigrationService();
+        migration_service.set_up_baseline();
+        migration_service.apply_migrations(Application.MIGRATION_VERSION);
+        container.register(migration_service);
+
 
         var sql_service     = new SQLService(Application.background);
         var schema_service  = new SchemaService(sql_service);
@@ -264,16 +268,16 @@ public class Application : Adw.Application {
         var completer       = new CompleterService(sql_service);
 
         // viewmodels
-        var conn_vm            = new ConnectionViewModel(connection_repo, sql_service, navigation);
-        var sche_vm            = new SchemaViewModel(schema_service);
-        var table_vm           = new TableViewModel(sql_service);
-        var view_vm            = new ViewViewModel(sql_service);
-        var table_structure_vm = new TableStructureViewModel(sql_service);
-        var view_structure_vm  = new ViewStructureViewModel(sql_service);
-        var table_data_vm      = new TableDataViewModel(sql_service);
-        var view_data_vm       = new ViewDataViewModel(sql_service);
-        var query_history_vm   = new QueryHistoryViewModel(sql_service, query_repo);
-        var query_vm           = new QueryViewModel(query_history_vm);
+        var conn_vm  = new ConnectionViewModel(connection_repo, sql_service, navigation);
+        var sche_vm  = new SchemaViewModel(schema_service);
+        var table_vm = new TableViewModel(sql_service);
+        var view_vm  = new ViewViewModel(sql_service);
+        //  var table_structure_vm = new TableStructureViewModel(sql_service);
+        var view_structure_vm = new ViewStructureViewModel(sql_service);
+        var table_data_vm     = new TableDataViewModel(sql_service);
+        var view_data_vm      = new ViewDataViewModel(sql_service);
+        var query_history_vm  = new QueryHistoryViewModel(sql_service, query_repo);
+        var query_vm          = new QueryViewModel(query_history_vm);
 
         container.register(sql_service);
         container.register(completer);
@@ -285,27 +289,12 @@ public class Application : Adw.Application {
         container.register(sche_vm);
         container.register(table_vm);
         container.register(view_vm);
-        container.register(table_structure_vm);
+        //  container.register(table_structure_vm);
         container.register(view_structure_vm);
         container.register(table_data_vm);
         container.register(view_data_vm);
         container.register(query_history_vm);
         container.register(query_vm);
-
-        // events
-        conn_vm.subcribe(Event.ACTIVE_CONNECTION, sche_vm);
-
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, completer);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, table_vm);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, view_vm);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, table_structure_vm);
-        sche_vm.subcribe(Event.SCHEMA_CHANGED, view_structure_vm);
-
-        table_vm.subcribe(Event.SELECTED_TABLE_CHANGED, table_structure_vm);
-        table_vm.subcribe(Event.SELECTED_TABLE_CHANGED, table_data_vm);
-
-        view_vm.subcribe(Event.SELECTED_VIEW_CHANGED, view_structure_vm);
-        view_vm.subcribe(Event.SELECTED_VIEW_CHANGED, view_data_vm);
 
 
         return(container);

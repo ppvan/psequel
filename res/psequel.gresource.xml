@@ -2,6 +2,11 @@
 <gresources>
   <gresource prefix="/me/ppvan/psequel">
     <file alias="style.css">gtk/style.css</file>
+
+    <file>migrations/version-0.sql</file>
+    <file>migrations/version-1.sql</file>
+
+
     <file preprocess="xml-stripblanks">gtk/style-switcher.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/connection-row.ui</file>
@@ -19,6 +24,7 @@
     <file preprocess="xml-stripblanks">gtk/table-structure-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/view-structure-view.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-row.ui</file>
+    <file preprocess="xml-stripblanks">gtk/table-graph.ui</file>
     <file preprocess="xml-stripblanks">gtk/table-listitem.ui</file>
     <file preprocess="xml-stripblanks">gtk/view-listitem.ui</file>
     <file preprocess="xml-stripblanks">gtk/query-listitem.ui</file>
@@ -51,5 +57,7 @@
     <file preprocess="xml-stripblanks" alias="history-undo-symbolic.svg">gtk/icons/history-undo-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="check-plain-symbolic.svg">gtk/icons/check-plain-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="export-symbolic.svg">gtk/icons/export-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="filemanager-app-symbolic.svg">gtk/icons/filemanager-app-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="application-certificate-symbolic.svg">gtk/icons/application-certificate-symbolic.svg</file>
   </gresource>
 </gresources>

@@ -77,7 +77,7 @@ public class Window : Adw.ApplicationWindow {
 
     private async void open_file_dialog(string title = "Open File") {
         var filter = new Gtk.FileFilter();
-        filter.add_pattern("*.json");
+        filter.add_mime_type("application/json");
 
         var filters = new ListStore(typeof(Gtk.FileFilter));
         filters.append(filter);
@@ -88,7 +88,7 @@ public class Window : Adw.ApplicationWindow {
             modal          = true,
             initial_folder = File.new_for_path(Environment.get_home_dir()),
             title          = title,
-            initial_name   = "connections",
+            initial_name   = "connections.json",
             default_filter = filter,
             filters        = filters
         };
@@ -120,7 +120,8 @@ public class Window : Adw.ApplicationWindow {
 
     private async void save_file_dialog(string title = "Save to file") {
         var filter = new Gtk.FileFilter();
-        filter.add_suffix("json");
+
+        filter.add_mime_type("application/json");
 
         var filters = new ListStore(typeof(Gtk.FileFilter));
         filters.append(filter);
@@ -129,7 +130,7 @@ public class Window : Adw.ApplicationWindow {
             modal          = true,
             initial_folder = File.new_for_path(Environment.get_home_dir()),
             title          = title,
-            initial_name   = "connections",
+            initial_name   = "connections.json",
             default_filter = filter,
             filters        = filters,
         };

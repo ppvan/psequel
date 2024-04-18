@@ -78,4 +78,5 @@ public class MonospaceFilter : Gtk.Filter {
         }
     }
 }
+
 }

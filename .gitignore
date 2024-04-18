@@ -10,3 +10,5 @@ export
 /.cache
 
 /build-aux
+
+*.dot

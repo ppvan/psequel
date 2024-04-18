@@ -122,7 +122,7 @@ public class SQLCompletionService : Object, GtkSource.CompletionProvider {
     }
 }
 
-public class CompleterService : Object, Observer {
+public class CompleterService : Object {
     public SQLService sql_service { get; construct; }
 
     public List <string> schemas { get; owned set; }
@@ -133,6 +133,12 @@ public class CompleterService : Object, Observer {
 
     public CompleterService(SQLService sql_service) {
         Object(sql_service: sql_service);
+    }
+
+    construct {
+        EventBus.instance().schema_changed.connect((schema) => {
+            refresh_data(schema);
+        });
     }
 
     public List <Candidate> get_suggestions(SchemaContext context, string last_word) {
@@ -149,14 +155,6 @@ public class CompleterService : Object, Observer {
         keywords.concat((owned)schemas);
 
         return(keywords);
-    }
-
-    public void update(Event event) {
-        if (event.type == Event.SCHEMA_CHANGED)
-        {
-            var schema = (Schema)event.data;
-            refresh_data(schema);
-        }
     }
 
     private List <Candidate> suggest_keywords(string prefix = "") {

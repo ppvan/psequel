@@ -1,5 +1,5 @@
 namespace Psequel {
-public class TableDataViewModel : BaseViewModel, Observer {
+public class TableDataViewModel : BaseViewModel {
     public const int MAX_FETCHED_ROW = 50;
 
     public Table ?selected_table { get; set; }
@@ -54,15 +54,10 @@ public class TableDataViewModel : BaseViewModel, Observer {
                 current_page = 0;
                 reload_data.begin();
             });
-    }
 
-    public void update(Event event) {
-        switch (event.type)
-        {
-        case Event.SELECTED_TABLE_CHANGED:
-            selected_table = event.data as Table;
-            break;
-        }
+        EventBus.instance().selected_table_changed.connect((table) => {
+            selected_table = table;
+        });
     }
 
     public async void reload_data() {

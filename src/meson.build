@@ -15,6 +15,7 @@ psequel_sources = files([
     'services/Container.vala',
     'services/ResourceManager.vala',
     'services/SchemaService.vala',
+    'services/MigrationService.vala',
 
     'repositories/ConnectionRepository.vala',
     'repositories/QueryRepository.vala',
@@ -26,7 +27,6 @@ psequel_sources = files([
     'viewmodels/BaseViewModel.vala',
     'viewmodels/SchemaViewModel.vala',
     'viewmodels/TableViewModel.vala',
-    'viewmodels/TableStructureViewModel.vala',
     'viewmodels/ViewStructureViewModel.vala',
     'viewmodels/TableDataViewModel.vala',
     'viewmodels/ViewViewModel.vala',
@@ -44,16 +44,14 @@ ui_sources = files([
     'ui/views/ConnectionView.vala',
     'ui/views/SchemaView.vala',
     'ui/schema/QueryResult.vala',
-    'ui/schema/TableStructureView.vala',
     'ui/schema/ViewStructureView.vala',
-    'ui/schema/TableColumnInfo.vala',
-    'ui/schema/TableForeignKeyInfo.vala',
-    'ui/schema/TableIndexInfo.vala',
     'ui/schema/TableDataView.vala',
     'ui/schema/ViewDataView.vala',
 
     'ui/widgets/DataCell.vala',
     'ui/widgets/TableRow.vala',
+    'ui/widgets/TableGraph.vala',
+    'ui/widgets/Shape.vala',
     'ui/widgets/StyleSwitcher.vala',
 
     'ui/editor/QueryEditor.vala',
@@ -86,6 +84,9 @@ if not csv_dep.found()
   libsimple_dep = libsimple_proj.get_variable('libcsv_deps')
 endif
 
+cc = meson.get_compiler('c')
+math_dep = cc.find_library('m', required : false)
+
 
 psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
@@ -96,6 +97,7 @@ psequel_deps = [
   dependency('libpq', version: '>= 15.3'),
   dependency('sqlite3'),
   csv_dep,
+  math_dep,
   dependency('pgquery-vala'),
   valac.find_library('config', dirs: vapi_dir),
 ]
@@ -107,6 +109,7 @@ add_project_arguments(
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
     language: 'c'
 )
+add_project_arguments(['-D', 'WITH_CGRAPH'], language: 'vala')
 
 psequel_sources_main = psequel_sources + ui_sources + files(['application.vala'])
 
