@@ -84,6 +84,9 @@ if not csv_dep.found()
   libsimple_dep = libsimple_proj.get_variable('libcsv_deps')
 endif
 
+cc = meson.get_compiler('c')
+math_dep = cc.find_library('m', required : false)
+
 
 psequel_deps = [
   dependency('glib-2.0', version: '>=2.74'),
@@ -93,9 +96,8 @@ psequel_deps = [
   dependency('gtksourceview-5', version: '>= 5.0'),
   dependency('libpq', version: '>= 15.3'),
   dependency('sqlite3'),
-  dependency('libgvc'),
-  dependency('librsvg-2.0'),
   csv_dep,
+  math_dep,
   dependency('pgquery-vala'),
   valac.find_library('config', dirs: vapi_dir),
 ]

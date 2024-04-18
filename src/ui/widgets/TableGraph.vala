@@ -1,4 +1,4 @@
-using Rsvg;
+
 
 namespace Psequel {
 [GtkTemplate(ui = "/me/ppvan/psequel/gtk/table-graph.ui")]
