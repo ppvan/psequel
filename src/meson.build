@@ -8,7 +8,7 @@ psequel_sources = files(
     'repositories/ConnectionRepository.vala',
     'repositories/QueryRepository.vala',
     'repositories/SchemaRepository.vala',
-'services/Container.vala',
+    'services/Container.vala',
     'services/ExportService.vala',
     'services/MigrationService.vala',
 'services/NavigationService.vala',
@@ -33,10 +33,6 @@ psequel_sources = files(
     'viewmodels/ViewDataViewModel.vala',
 'viewmodels/ViewStructureViewModel.vala',
     'viewmodels/ViewViewModel.vala',
-    
-    
-    
-    # 'models/utils.vala',
 
 )
 
@@ -56,10 +52,6 @@ ui_sources = files(
 'ui/widgets/TableGraph.vala',
     'ui/widgets/TableRow.vala',
     'utils/helpers.vala',
-
-    
-    
-    
 )
 
 # Create config data, this will create a config.h file, then be bind to Config class.
@@ -120,7 +112,10 @@ add_project_arguments(
         '-Wall',
         '-Wno-pointer-sign',
         '-Wno-deprecated-declarations',
+        '-Wno-format',
         '-Wno-unused',
+        '-Wno-address',
+        '-Wno-switch',
         '-Wno-incompatible-pointer-types',
         '-Wno-discarded-qualifiers',
     ],
@@ -132,7 +127,7 @@ add_project_arguments(
 psequel_sources_main = psequel_sources + ui_sources + files('application.vala')
 
 executable(
-    meson.project_name(),
+    app_name,
     [psequel_resources, psequel_sources_main],
     dependencies: psequel_deps,
     install: true,

@@ -61,7 +61,7 @@ public class ConnectionRepository : Object {
 
         connection.id = db.last_insert_rowid();
 
-        debug("id = %lli", connection.id);
+        debug("id = %lld", connection.id);
 
         return(connection);
     }
