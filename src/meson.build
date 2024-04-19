@@ -62,12 +62,11 @@ ui_sources = files([
 
 ])
 
-# add_project_arguments(['--gresourcesdir', 'res/' ], language: 'vala')
-# add_project_arguments(['--enable-experimental' ], language: 'vala')
-
 # Create config data, this will create a config.h file, then be bind to Config class.
 
+vapi_dir = join_paths(meson.current_source_dir(), 'vapi')
 conf = configuration_data()
+
 conf.set_quoted('APP_ID', app_id)
 conf.set_quoted('APP_NAME', 'Psequel')
 conf.set_quoted('G_LOG_DOMAIN', 'Psequel')
@@ -103,20 +102,17 @@ psequel_deps = [
 ]
 
 
-
+add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
 add_project_arguments(
     '-include', 'config.h',
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
     language: 'c'
 )
-add_project_arguments(['-D', 'WITH_CGRAPH'], language: 'vala')
 
 psequel_sources_main = psequel_sources + ui_sources + files(['application.vala'])
 
-executable(meson.project_name(), [blueprint_hack, psequel_resources, psequel_sources_main],
+executable(meson.project_name(), [psequel_resources, psequel_sources_main],
   dependencies: psequel_deps,
-  vala_args: [
-    '--gresourcesdir=' + blueprints_output_dir,
-  ],
+  vala_args: '--gresourcesdir=' + psequel_resources_dir,
   install: true,
 )
