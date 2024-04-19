@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="@PREFIX@">
+  <gresource prefix="/@PREFIX@">
     <file alias="style.css">gtk/style.css</file>
     <file>migrations/version-0.sql</file>
     <file>migrations/version-1.sql</file>
     @UI_FILES@
   </gresource>
 
-  <gresource prefix="@PREFIX@/icons/scalable/actions/">
+  <gresource prefix="/@PREFIX@/icons/scalable/actions/">
     @ICON_FILES@
   </gresource>
 </gresources>

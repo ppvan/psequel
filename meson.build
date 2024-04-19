@@ -4,7 +4,7 @@ project(
     version: '0.2.0',
     meson_version: '>= 1.2.0',
     default_options: [
-        'warning_level=2',
+        'warning_level=1',
         'werror=false',
     ],
 )
