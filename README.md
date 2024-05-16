@@ -73,8 +73,9 @@ If you use GNOME Builder or Flatpak, dependencies will be installed automaticall
 - gio >= 2.74
 - json-glib >= 1.6
 - libadwaita >= 1.4
-- postgres-libs >= 16.2
-- libcsv >= 3.0
+- postgres-libs >= 15.3
+- libcsv >= 3.0 (built as subproject if missing)
+- pgquery-vala
 
 # Contributions
 Contributions are welcome.

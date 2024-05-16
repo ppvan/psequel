@@ -1,7 +1,7 @@
 # This is just a file for me to type command faster, not the build file.
 
 debug:
-	ninja -C build/ && G_MESSAGES_DEBUG=Psequel ./build/src/me.ppvan.psequel
+	ninja -C build/ && G_MESSAGES_DEBUG=Psequel ./build/src/psequel
 
 clean:
 	rm -rf build/res
@@ -15,4 +15,4 @@ flatpak:
 	flatpak build-bundle export me.ppvan.psequel.flatpak --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
 
 run:
-	G_MESSAGES_DEBUG=Psequel ./build/src/me.ppvan.psequel
+	G_MESSAGES_DEBUG=Psequel ./build/src/psequel

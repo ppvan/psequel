@@ -64,6 +64,7 @@ public class Vec <T> : Object {
         return this.size;
     }}
     public delegate bool Predicate <T> (T item);
+    public delegate U MapFunc <U, T> (T item);
 
     public Vec() {
         this.with_capacity(DEFAULT_CAPACITY);
@@ -128,6 +129,25 @@ public class Vec <T> : Object {
 
     public Iterator<T> iterator () {
         return new Iterator<T>(this);
+    }
+
+    public List<T> as_list() {
+        var list = new List<T>();
+        for (int i = 0; i < this.size; i++) {
+            list.append(this.data[i]);
+        }
+
+        return list;
+    }
+
+    public Vec<U> map <U>(MapFunc<U, T> func) {
+        var vec = new Vec<U>.with_capacity(this.capacity);
+
+        foreach (var item in this) {
+            vec.append(func(item));
+        }
+
+        return vec;
     }
 
     public new T get(int index) {

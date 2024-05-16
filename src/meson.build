@@ -92,7 +92,7 @@ psequel_deps = [
     dependency('json-glib-1.0', version: '>= 1.6'),
     dependency('gtksourceview-5', version: '>= 5.0'),
     dependency('libpq', version: '>= 15.3'),
-    dependency('sqlite3'),
+    dependency('sqlite3', version: '>= 3.45'),
     csv_dep,
     math_dep,
     dependency('pgquery-vala'),
@@ -100,7 +100,7 @@ psequel_deps = [
 ]
 
 
-add_project_arguments(['--vapidir', vapi_dir], language: 'vala')
+add_project_arguments(['--target-glib=2.80','--vapidir', vapi_dir], language: 'vala')
 add_project_arguments(
     '-include',
     'config.h',
