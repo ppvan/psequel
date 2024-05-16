@@ -7,11 +7,13 @@ class TableRow : Gtk.Box {
     public string icon_name { get; set; default = ""; }
 
     private TableDataViewModel tabledata_viewmodel { get; set; }
+    private ViewViewModel view_model { get; set; }
 
 
     const ActionEntry[] ACTION_ENTRIES = {
-        { "copy",    on_row_copy    },
-        { "refresh", on_row_refresh },
+        { "copy",     on_row_copy       },
+        { "copy_ddl", on_table_ddl_copy },
+        { "refresh",  on_row_refresh    },
     };
 
     public TableRow() {
@@ -23,6 +25,7 @@ class TableRow : Gtk.Box {
         action_group.add_action_entries(ACTION_ENTRIES, this);
         this.insert_action_group("sidebar", action_group);
         tabledata_viewmodel = autowire <TableDataViewModel> ();
+        view_model          = autowire <ViewViewModel>();
     }
 
 
@@ -40,6 +43,26 @@ class TableRow : Gtk.Box {
             timeout = 1,
         };
         window.add_toast(toast);
+    }
+
+    // [GtkAction]
+    private void on_table_ddl_copy() {
+        if (view_model.is_view(this.content))
+        {
+            view_model.get_viewdef.begin(this.content, (obj, res) => {
+                    var def = view_model.get_viewdef.end(res);
+                    clipboard_push(def);
+
+                    var window      = get_parrent_window(this);
+                    Adw.Toast toast = new Adw.Toast(this.content + " view definitions copied") {
+                        timeout = 1,
+                    };
+                    window.add_toast(toast);
+                });
+        }
+        else
+        {
+        }
     }
 
     private void on_row_refresh() {

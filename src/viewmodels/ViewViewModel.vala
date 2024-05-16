@@ -42,6 +42,29 @@ public class ViewViewModel : BaseViewModel {
         selected_view = views[index];
     }
 
+    public bool is_view(string view_name) {
+        return views.find((view) => {
+            return view.name == view_name;
+        }) != null;
+    }
+
+    public async string get_viewdef(string view_name) {
+        debug("loading views");
+        var query = new Query.with_params(VIEW_DEF, { view_name });
+        try {
+            var relation = yield sql_service.exec_query_params(query);
+
+            if (relation.rows > 0)
+            {
+                return(relation[0][0]);
+            }
+        } catch (PsequelError err) {
+            debug("Error: " + err.message);
+        }
+
+        return("Error: can't get view def for " + view_name);
+    }
+
     private async void load_views(Schema schema) throws PsequelError {
         debug("loading views");
         var query    = new Query.with_params(VIEW_LIST, { schema.name });
@@ -59,6 +82,10 @@ public class ViewViewModel : BaseViewModel {
 
     public const string VIEW_LIST = """
         SELECT table_name FROM INFORMATION_SCHEMA.views WHERE table_schema = $1;
+        """;
+
+    public const string VIEW_DEF = """
+        SELECT pg_get_viewdef($1);
         """;
 }
 }
