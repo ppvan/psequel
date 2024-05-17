@@ -3,49 +3,32 @@ using Gio 2.0;
 using Adw 1;
 
 template $PsequelTableStructureView: Gtk.Box {
-  orientation: vertical;
-  spacing: 4;
-  margin-start: 8;
-  margin-top: 12;
-  margin-bottom: 12;
-  // width-request: 960;
-  // height-request: 800;
-  Label {
-    styles [
-      "title-3"
-    ]
+    orientation: vertical;
+    margin-top: 22;
+    margin-bottom: 12;
+    // width-request: 960;
+    // height-request: 800;
+    Grid {
+        hexpand: true;
+        vexpand: true;
+        row-homogeneous: true;
+        column-homogeneous: true;
+        row-spacing: 24;
+        $PsequelTableColumnInfo columns {
+            columns: bind template.columns;
+            layout {
+              row: 0;
+              column: 1;
+              row-span: 2;
+            }
+        }
 
-    label: "Column Info";
-    halign: start;
-  }
-
-  $PsequelTableColInfo columns {
-    columns: bind template.columns;
-  }
-
-  Label {
-    styles [
-      "title-3"
-    ]
-
-    label: "Indexes";
-    halign: start;
-  }
-
-  $PsequelTableIndexInfo indexes {
-    indexes: bind template.indexes;
-  }
-
-  Label {
-    styles [
-      "title-3"
-    ]
-
-    label: "Foreign Keys";
-    halign: start;
-  }
-
-  $PsequelTableFKInfo foreign_keys {
-    fks: bind template.fks;
-  }
+        $PsequelTableIndexInfo indexes {
+            indexes: bind template.indexes;
+            layout {
+              row: 2;
+              column: 1;
+            }
+        }
+    }
 }

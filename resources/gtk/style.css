@@ -46,7 +46,7 @@
 
 columnview>header label {
     font-size: 1rem;
-    padding: 4px 8px;
+    padding: 4px 0px;
     color: @window_fg_color;
 }
 

@@ -1,11 +1,12 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $PsequelTableColInfo: Adw.Bin {
+template $PsequelTableColumnInfo: Adw.Bin {
   ScrolledWindow {
     ColumnView view {
-      model: NoSelection {
+      model: SingleSelection {
         model: bind template.columns;
+        autoselect: true;
       };
 
       styles [
@@ -14,7 +15,7 @@ template $PsequelTableColInfo: Adw.Bin {
 
       show-column-separators: true;
       show-row-separators: true;
-      vexpand: true;
     }
+    vexpand: true;
   }
 }
