@@ -382,8 +382,22 @@ template $PsequelSchemaView: Adw.Bin {
                         icon-name: "library-symbolic";
                         title: "Structure";
 
-                        // child: $PsequelTableGraph {};
-                        child: $PsequelTableStructureView {};
+                        child: Stack {
+                            visible-child-name: bind template.view-mode;
+                            transition-type: slide_left_right;
+
+                            StackPage {
+                                name: "table";
+
+                                child: $PsequelTableStructureView {};
+                            }
+
+                            StackPage {
+                                name: "view";
+
+                                child: $PsequelViewStructureView {};
+                            }
+                        };
                     }
 
                     Adw.ViewStackPage {

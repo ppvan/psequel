@@ -2,20 +2,23 @@ using Gtk 4.0;
 using Adw 1;
 
 template $PsequelTableColumnInfo: Adw.Bin {
-  ScrolledWindow {
-    ColumnView view {
-      model: SingleSelection {
-        model: bind template.columns;
-        autoselect: true;
-      };
+    ScrolledWindow {
+        ColumnView view {
+            model: SingleSelection {
+                model: bind template.columns;
+                autoselect: true;
+            };
 
-      styles [
-        "data-table"
-      ]
+            styles [
+                "data-table"
+            ]
 
-      show-column-separators: true;
-      show-row-separators: true;
+            show-column-separators: true;
+            show-row-separators: true;
+        }
+
+        vexpand: true;
     }
+
     vexpand: true;
-  }
 }

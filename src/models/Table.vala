@@ -19,8 +19,8 @@ public sealed class Table : BaseTable {
 }
 
 public sealed class View : BaseTable {
-    public List <Column> columns { get; owned set; default = new List <Column> (); }
-    public List <Index> indexes { get; owned set; default = new List <Index> (); }
+    public Vec <Column> columns { get; owned set; default = new Vec <Column> (); }
+    public string defs {get; set; default = "";}
 
     public View(Schema schema) {
         Object(schema: schema);

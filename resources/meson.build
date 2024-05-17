@@ -57,6 +57,7 @@ icons = [
     'export-symbolic.svg',
     'filemanager-app-symbolic.svg',
     'application-certificate-symbolic.svg',
+    'copy-symbolic.svg'
 ]
 
 
