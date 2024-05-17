@@ -81,7 +81,7 @@ public class ViewViewModel : BaseViewModel {
     }
 
     public const string VIEW_LIST = """
-        SELECT table_name FROM INFORMATION_SCHEMA.views WHERE table_schema = $1;
+    SELECT pv.viewname FROM pg_views pv WHERE schemaname = $1;
         """;
 
     public const string VIEW_DEF = """

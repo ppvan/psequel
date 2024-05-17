@@ -10,10 +10,10 @@
 
 .badges {
     font-size: 14px;
-	padding: 4px 6px;
-	font-weight: bold;
-	background-color: @sidebar_bg_color;
-	border-radius: 8px;
+    padding: 4px 6px;
+    font-weight: bold;
+    background-color: @sidebar_bg_color;
+    border-radius: 8px;
 }
 
 
@@ -43,6 +43,12 @@
     /* padding: 1rem; */
 }
 
+
+columnview>header label {
+    font-size: 1rem;
+    padding: 4px 8px;
+    color: @window_fg_color;
+}
 
 themeswitcher {
     padding: 6px;

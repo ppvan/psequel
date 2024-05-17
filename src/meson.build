@@ -28,6 +28,7 @@ psequel_sources = files(
     'viewmodels/QueryHistoryViewModel.vala',
     'viewmodels/QueryViewModel.vala',
     'viewmodels/SchemaViewModel.vala',
+    'viewmodels/DataViewModel.vala',
     'viewmodels/TableDataViewModel.vala',
     'viewmodels/TableViewModel.vala',
     'viewmodels/ViewDataViewModel.vala',

@@ -1,21 +1,7 @@
 namespace Psequel {
-public class ViewDataViewModel : Object {
+public class ViewDataViewModel : DataViewModel {
     public View ?selected_view { get; set; }
     // public View? current_view {get; set;}
-
-    public bool has_pre_page { get; private set; }
-    public bool has_next_page { get; private set; }
-    public int current_page { get; set; }
-
-    public string row_ranges { get; private set; default = ""; }
-
-    public bool is_loading { get; set; }
-    public string err_msg { get; set; }
-
-    public Relation current_relation { get; set; }
-    public Relation.Row ?selected_row { get; set; }
-
-    public SQLService sql_service { get; private set; }
 
 
     public ViewDataViewModel(SQLService service) {
