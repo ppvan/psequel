@@ -96,7 +96,7 @@ psequel_deps = [
     dependency('json-glib-1.0', version: '>= 1.6'),
     dependency('gtksourceview-5', version: '>= 5.0'),
     dependency('libpq', version: '>= 15.3'),
-    dependency('sqlite3', version: '>= 3.45'),
+    dependency('sqlite3', version: '>= 3'),
     csv_dep,
     math_dep,
     dependency('pgquery-vala'),
