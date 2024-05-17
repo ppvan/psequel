@@ -44,12 +44,15 @@ public class TableViewModel : BaseViewModel {
         debug("loading tables");
         var query    = new Query.with_params(TABLE_LIST, { schema.name });
         var relation = yield sql_service.exec_query_params(query);
+
         var table_vec = new Vec <Table>();
 
         foreach (var item in relation)
         {
             var table = new Table(schema);
             table.name = item[0];
+            table.row_count = int64.parse(item[1], 10);
+            
             table_vec.append(table);
         }
 
@@ -171,14 +174,16 @@ public class TableViewModel : BaseViewModel {
         }
 
         this.tables.clear();
-        foreach (var item in table_vec) {
+        foreach (var item in table_vec)
+        {
             this.tables.append(item);
         }
-
     }
 
     public const string TABLE_LIST = """
-        SELECT tablename FROM pg_tables WHERE schemaname=$1;
+    SELECT ta.tablename, cls.reltuples::bigint AS estimate FROM pg_tables ta
+    JOIN pg_class cls ON cls.relname = ta.tablename 
+    WHERE schemaname=$1;
         """;
 
     public const string COLUMN_SQL = """

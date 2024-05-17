@@ -11,6 +11,7 @@ public sealed class Table : BaseTable {
     public Vec <Index> indexes { get; owned set; default = new Vec <Index> (); }
     public Vec <ForeignKey> foreign_keys { get; owned set; default = new Vec <ForeignKey> (); }
     public Vec <PrimaryKey> primaty_keys { get; owned set; default = new Vec <PrimaryKey> (); }
+    public int64 row_count {get; set;}
 
     public Table(Schema schema) {
         Object(schema: schema);

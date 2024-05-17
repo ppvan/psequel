@@ -8,8 +8,14 @@ public class TableDataViewModel : BaseViewModel {
     public bool has_pre_page { get; private set; default = false; }
     public bool has_next_page { get; private set; default = true; }
     public int current_page { get; set; }
+    public int64 total_records { get; set; }
+    public int64 total_pages { get; set; }
+
+
 
     public string row_ranges { get; private set; default = ""; }
+
+
 
     public bool is_loading { get; set; }
     public string err_msg { get; set; }
@@ -37,7 +43,8 @@ public class TableDataViewModel : BaseViewModel {
 
         this.notify["current-relation"].connect(() => {
                 int offset = MAX_FETCHED_ROW * current_page;
-                row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
+
+                row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(total_records) records)";
 
                 if (current_relation.rows < MAX_FETCHED_ROW)
                 {
@@ -57,6 +64,8 @@ public class TableDataViewModel : BaseViewModel {
 
         EventBus.instance().selected_table_changed.connect((table) => {
             selected_table = table;
+            this.total_records = table.row_count;
+            this.total_pages = (table.row_count + MAX_FETCHED_ROW - 1) / MAX_FETCHED_ROW;
         });
     }
 
