@@ -58,7 +58,8 @@
                     "build-commands": [
                         "./configure --prefix=/app --with-ssl=openssl",
                         "make -C src/include install",
-                        "make -C src/interfaces/libpq install"
+                        "make -C src/interfaces/libpq install",
+                        "make -C src/bin/pg_dump install"
                     ],
                     "sources": [
                         {
