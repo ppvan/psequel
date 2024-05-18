@@ -16,6 +16,16 @@ menu primary_menu {
     }
 
     section {
+      item {
+        label: _("_Back up");
+        action: "win.backup";
+      }
+      item {
+        label: _("_Restore");
+      }
+    }
+
+    section {
         item {
             label: _("_Preferences");
             action: "app.preferences";
@@ -302,7 +312,7 @@ template $PsequelSchemaView: Adw.Bin {
 
                 Box {
                     spacing: 4;
-                    margin-bottom: 2;
+                    margin-bottom: 8;
                     margin-end: 2;
                     margin-start: 4;
 

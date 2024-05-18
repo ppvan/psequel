@@ -53,6 +53,13 @@ public string[] parse_array_result(string array_str) {
     return(Csv.parse_row(content));
 }
 
+public string time_local(string format = "%F-%H:%M") {
+    var now          = new GLib.DateTime.now();
+    var local_time = now.format(format);
+
+    return local_time;
+}
+
 public class Vec <T> : Object {
     static int DEFAULT_CAPACITY = 16;
 

@@ -24,7 +24,7 @@ public class TableDataViewModel : DataViewModel {
 
                 row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(total_records) records)";
 
-                if (current_relation.rows < MAX_FETCHED_ROW)
+                if (offset + current_relation.rows >= total_records)
                 {
                     has_next_page = false;
                 }

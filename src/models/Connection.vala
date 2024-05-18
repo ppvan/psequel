@@ -76,6 +76,19 @@ public class Connection : Object, Json.Serializable {
         return(url.to_string());
     }
 
+    public string backup_connection_string() {
+        var ssl_mode = use_ssl ? "verify-full" : "disable";
+
+        var base_str = @"user=$user password=$password port=$port host=$host dbname=$database application_name=$(Config.APP_NAME) sslmode=$ssl_mode";
+        var builder = new StringBuilder(base_str);
+
+        if (use_ssl) {
+            builder.append(@" sslrootcert=$(cert_path) ");
+        }
+
+        return(builder.free_and_steal());
+    }
+
     public string connection_string(int connection_timeout, int query_timeout) {
         var ssl_mode = use_ssl ? "verify-full" : "disable";
         var options  = @"\'-c statement_timeout=$(query_timeout * 1000)\'";

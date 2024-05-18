@@ -13,6 +13,7 @@ psequel_sources = files(
     'services/MigrationService.vala',
 'services/NavigationService.vala',
     'services/ResourceManager.vala',
+    'services/BackupService.vala',
     'services/SQLCompletionService.vala',
     'services/SQLService.vala',
     'services/SchemaService.vala',

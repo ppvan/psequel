@@ -26,6 +26,8 @@ public class Window : Adw.ApplicationWindow {
     const ActionEntry[] ACTIONS = {
         { "import",    import_connection },
         { "export",    export_connection },
+        { "backup",    backup_database   },
+        { "restore",   export_connection },
 
         { "run-query", run_query         },
     };
@@ -33,6 +35,7 @@ public class Window : Adw.ApplicationWindow {
     public NavigationService navigation { get; private set; }
     public ConnectionViewModel connection_viewmodel { get; construct; }
     public QueryViewModel query_viewmodel { get; private set; }
+    public BackupService backup_service { get; private set; }
 
     private Settings ?settings;
 
@@ -48,6 +51,7 @@ public class Window : Adw.ApplicationWindow {
         this.connection_viewmodel = autowire <ConnectionViewModel> ();
         this.query_viewmodel      = autowire <QueryViewModel> ();
         this.settings             = autowire <Settings> ();
+        this.backup_service       = autowire <BackupService>();
         settings.bind("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
         settings.bind("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
         this.add_action_entries(ACTIONS, this);
@@ -73,6 +77,10 @@ public class Window : Adw.ApplicationWindow {
 
     public void export_connection() {
         save_file_dialog.begin("Export connections");
+    }
+
+    public void backup_database() {
+        backup_dialog.begin();
     }
 
     private async void open_file_dialog(string title = "Open File") {
@@ -146,6 +154,45 @@ public class Window : Adw.ApplicationWindow {
             yield file.replace_contents_bytes_async(bytes, null, false, FileCreateFlags.NONE, null, null);
 
             var toast = new Adw.Toast("Data saved successfully.") {
+                timeout = 2,
+            };
+            window.add_toast(toast);
+        } catch (Error err) {
+            debug(err.message);
+
+            var toast = new Adw.Toast(err.message) {
+                timeout = 3,
+            };
+            window.add_toast(toast);
+        }
+    }
+
+    private async void backup_dialog() {
+        var filter = new Gtk.FileFilter();
+        filter.add_mime_type("text/x-sql");
+        var filters = new ListStore(typeof(Gtk.FileFilter));
+        filters.append(filter);
+
+        var local        = time_local();
+        var dbname       = connection_viewmodel?.selected_connection.database ?? "database";
+        var initial_name = @"$(dbname)-backup-$(local).sql";
+
+        var file_dialog = new Gtk.FileDialog() {
+            modal          = true,
+            initial_folder = File.new_for_path(Environment.get_home_dir()),
+            title          = title,
+            initial_name   = initial_name,
+            default_filter = filter,
+            filters        = filters,
+        };
+
+        var window = get_parrent_window(this);
+        var conn = connection_viewmodel.selected_connection;
+        try {
+            var file = yield file_dialog.save(window, null);
+            yield backup_service.backup_db(file, conn);
+
+            var toast = new Adw.Toast(@"Backup $dbname successfully") {
                 timeout = 2,
             };
             window.add_toast(toast);
