@@ -18,12 +18,24 @@ menu primary_menu {
 
     section {
         item {
-            label: _("_Import");
+            label: _("_Back up database");
+            action: "win.backup";
+        }
+
+        item {
+            label: _("_Restore database");
+            action: "win.restore";
+        }
+    }
+
+    section {
+        item {
+            label: _("_Import connections");
             action: "win.import";
         }
 
         item {
-            label: _("_Export");
+            label: _("_Export connections");
             action: "win.export";
         }
     }
@@ -361,6 +373,7 @@ template $PsequelConnectionView: Adw.Bin {
                                                 activate => $on_switch_changed();
                                             }
                                         }
+
                                         layout {
                                             row: 5;
                                             column: 3;
@@ -368,22 +381,20 @@ template $PsequelConnectionView: Adw.Bin {
                                     }
 
                                     Box {
-
                                         visible: bind ssl_switch.active;
                                         orientation: vertical;
+
                                         Entry cert_path {
                                             editable: false;
                                             can-focus: true;
                                             placeholder-text: "SSL certificate-path";
                                             primary-icon-name: "application-certificate-symbolic";
                                             secondary-icon-name: "filemanager-app-symbolic";
-
                                             icon-release => $on_cert_file_chooser();
                                             secondary-icon-activatable: true;
                                             changed => $on_text_changed();
                                             activate => $on_cert_entry_activate();
                                         }
-
 
                                         layout {
                                             row: 5;

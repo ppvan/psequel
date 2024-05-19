@@ -82,12 +82,12 @@ public class Window : Adw.ApplicationWindow {
     }
 
     public void backup_database() {
-        this.backup_dialog = new BackupDialog();
+        this.backup_dialog = new BackupDialog(connection_viewmodel);
         var window = get_parrent_window(this);
 
-        backup_dialog.on_backup.connect((options) => {
-                save_backup_dialog.begin(options, (obj, res) => {
-                    backup_dialog.close();
+        backup_dialog.on_backup.connect((conn, options) => {
+                save_backup_dialog.begin(conn, options, (obj, res) => {
+                    //  backup_dialog.close();
                 });
             });
 
@@ -191,14 +191,22 @@ public class Window : Adw.ApplicationWindow {
         }
     }
 
-    private async void save_backup_dialog(Vec <string> options) {
-        var filter = new Gtk.FileFilter();
-        filter.add_mime_type("text/x-sql");
+    private async void save_backup_dialog(Connection conn, Vec <string> options) {
+        var custom_filter = new Gtk.FileFilter();
+        custom_filter.add_mime_type("text/x-sql");
+        custom_filter.add_mime_type("application/x-tar");
+        custom_filter.add_mime_type("application/octet-stream");
+
+        var all_files = new Gtk.FileFilter();
+        all_files.add_pattern("*");
+        all_files.set_filter_name("All Files");
+
         var filters = new ListStore(typeof(Gtk.FileFilter));
-        filters.append(filter);
+        filters.append(custom_filter);
+        filters.append(all_files);
 
         var local        = time_local();
-        var dbname       = connection_viewmodel?.selected_connection.database ?? "database";
+        var dbname       = conn.database ?? "database";
         var ext          = backup_dialog.get_extension();
         var initial_name = @"$(dbname)-backup-$(local)$(ext)";
 
@@ -207,12 +215,11 @@ public class Window : Adw.ApplicationWindow {
             initial_folder = File.new_for_path(Environment.get_home_dir()),
             title          = backup_dialog.is_choose_directory() ? "Select target directory" : "Select target file",
             initial_name   = initial_name,
-            default_filter = filter,
+            default_filter = custom_filter,
             filters        = filters,
         };
 
         var window = get_parrent_window(this);
-        var conn   = connection_viewmodel.selected_connection;
         try {
             File ?file = null;
             if (backup_dialog.is_choose_directory())

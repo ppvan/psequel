@@ -34,6 +34,12 @@ template $PsequelBackupDialog: Adw.Dialog {
 
                         selection-mode: none;
 
+                        Adw.ComboRow database_row {
+                            title: _("Database");
+                            subtitle: _("Database to backup");
+                            model: bind template.viewmodel as <$PsequelConnectionViewModel>.connections;
+                        }
+
                         Adw.ComboRow format_row {
                             title: _("Format");
                             subtitle: _("Output file format");
