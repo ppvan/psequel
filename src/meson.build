@@ -104,7 +104,7 @@ psequel_deps = [
     valac.find_library('config', dirs: vapi_dir),
 ]
 
-add_project_arguments(['--target-glib=2.80', '--vapidir', vapi_dir], language: 'vala')
+add_project_arguments(['--target-glib=2.80', '--vapidir', vapi_dir, '--gresourcesdir', psequel_resources_dir], language: 'vala')
 add_project_arguments(
     '-include', 'config.h',
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
