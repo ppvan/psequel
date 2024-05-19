@@ -27,7 +27,7 @@ public class Window : Adw.ApplicationWindow {
         { "import",    import_connection },
         { "export",    export_connection },
         { "backup",    backup_database   },
-        { "restore",   export_connection },
+        { "restore",   restore_database  },
 
         { "run-query", run_query         },
     };
@@ -38,7 +38,8 @@ public class Window : Adw.ApplicationWindow {
     public BackupService backup_service { get; private set; }
 
     private Settings ?settings;
-    private BackupDialog dialog;
+    private BackupDialog backup_dialog;
+    private RestoreDialog restore_dialog;
 
 
     public Window(Application app) {
@@ -81,17 +82,29 @@ public class Window : Adw.ApplicationWindow {
     }
 
     public void backup_database() {
-        this.dialog = new BackupDialog();
+        this.backup_dialog = new BackupDialog();
         var window = get_parrent_window(this);
 
-        dialog.on_backup.connect((options) => {
-
-            save_backup_dialog.begin(options, (obj, res) => {
-                dialog.close();
+        backup_dialog.on_backup.connect((options) => {
+                save_backup_dialog.begin(options, (obj, res) => {
+                    backup_dialog.close();
+                });
             });
-        });
-        
-        dialog.present(window);
+
+        backup_dialog.present(window);
+    }
+
+    public void restore_database() {
+        restore_dialog = new RestoreDialog();
+        var window = get_parrent_window(this);
+
+        restore_dialog.on_restore.connect((options) => {
+                save_restore_dialog.begin(options, (obj, res) => {
+                    restore_dialog.close();
+                });
+            });
+
+        restore_dialog.present(window);
     }
 
     private async void open_file_dialog(string title = "Open File") {
@@ -178,7 +191,7 @@ public class Window : Adw.ApplicationWindow {
         }
     }
 
-    private async void save_backup_dialog(string[] options) {
+    private async void save_backup_dialog(Vec <string> options) {
         var filter = new Gtk.FileFilter();
         filter.add_mime_type("text/x-sql");
         var filters = new ListStore(typeof(Gtk.FileFilter));
@@ -186,32 +199,91 @@ public class Window : Adw.ApplicationWindow {
 
         var local        = time_local();
         var dbname       = connection_viewmodel?.selected_connection.database ?? "database";
-        var ext = dialog.get_extension();
+        var ext          = backup_dialog.get_extension();
         var initial_name = @"$(dbname)-backup-$(local)$(ext)";
 
         var file_dialog = new Gtk.FileDialog() {
             modal          = true,
             initial_folder = File.new_for_path(Environment.get_home_dir()),
-            title          = dialog.is_choose_directory() ? "Select target directory" : "Select target file",
+            title          = backup_dialog.is_choose_directory() ? "Select target directory" : "Select target file",
             initial_name   = initial_name,
             default_filter = filter,
             filters        = filters,
         };
 
         var window = get_parrent_window(this);
-        var conn = connection_viewmodel.selected_connection;
+        var conn   = connection_viewmodel.selected_connection;
         try {
-
-            File? file = null;
-            if (dialog.is_choose_directory()) {
+            File ?file = null;
+            if (backup_dialog.is_choose_directory())
+            {
                 file = yield file_dialog.select_folder(window, null);
-            } else {
+            }
+            else
+            {
                 file = yield file_dialog.save(window, null);
             }
 
             yield backup_service.backup_db(file, conn, options);
 
             var toast = new Adw.Toast(@"Backup $dbname successfully") {
+                timeout = 2,
+            };
+            window.add_toast(toast);
+        } catch (Error err) {
+            debug(err.message);
+
+            var toast = new Adw.Toast(err.message) {
+                timeout = 3,
+            };
+            window.add_toast(toast);
+        }
+    }
+
+    private async void save_restore_dialog(Vec <string> options) {
+        var custom_filter = new Gtk.FileFilter();
+        custom_filter.add_mime_type("text/x-sql");
+        custom_filter.add_mime_type("application/x-tar");
+        custom_filter.add_mime_type("application/octet-stream");
+        custom_filter.set_filter_name("Backup file");
+
+        var all_files = new Gtk.FileFilter();
+        all_files.add_pattern("*");
+        all_files.set_filter_name("All Files");
+        var filters = new ListStore(typeof(Gtk.FileFilter));
+        filters.append(custom_filter);
+        filters.append(all_files);
+
+        var local        = time_local();
+        var dbname       = connection_viewmodel?.selected_connection.database ?? "database";
+        var ext          = restore_dialog.get_extension();
+        var initial_name = @"$(dbname)-backup-$(local)$(ext)";
+
+        var file_dialog = new Gtk.FileDialog() {
+            modal          = true,
+            initial_folder = File.new_for_path(Environment.get_home_dir()),
+            title          = restore_dialog.is_choose_directory() ? "Select target directory" : "Select target file",
+            initial_name   = initial_name,
+            default_filter = custom_filter,
+            filters        = filters,
+        };
+
+        var window = get_parrent_window(this);
+        var conn   = connection_viewmodel.selected_connection;
+        try {
+            File ?file = null;
+            if (restore_dialog.is_choose_directory())
+            {
+                file = yield file_dialog.select_folder(window, null);
+            }
+            else
+            {
+                file = yield file_dialog.open(window, null);
+            }
+
+            yield backup_service.restore_db(file, conn, options);
+
+            var toast = new Adw.Toast(@"Restore $dbname successfully") {
                 timeout = 2,
             };
             window.add_toast(toast);

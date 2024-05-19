@@ -1,8 +1,7 @@
 namespace Psequel {
-[GtkTemplate(ui = "/me/ppvan/psequel/gtk/backup-dialog.ui")]
-public class BackupDialog : Adw.Dialog {
+[GtkTemplate(ui = "/me/ppvan/psequel/gtk/restore-dialog.ui")]
+public class RestoreDialog : Adw.Dialog {
     public static string[] FORMATS = {
-        "plain",
         "custom",
         "directory",
         "tar"
@@ -14,19 +13,18 @@ public class BackupDialog : Adw.Dialog {
         "data only",
     };
 
-
-    public string format { get;  set; default = "plain"; }
+    public string format { get;  set; default = "custom"; }
     public string section { get;  set; default = "everything"; }
     public bool clean { get;  set; default = false; }
     public bool create { get; set; default = false; }
 
-    public Gtk.StringList formats { get;  set; default = new Gtk.StringList(BackupDialog.FORMATS); }
-    public Gtk.StringList sections { get; set; default = new Gtk.StringList(BackupDialog.SECTIONS); }
+    public Gtk.StringList formats { get;  set; default = new Gtk.StringList(RestoreDialog.FORMATS); }
+    public Gtk.StringList sections { get; set; default = new Gtk.StringList(RestoreDialog.SECTIONS); }
 
-    public signal void on_backup(Vec<string> options);
+    public signal void on_restore(Vec <string> options);
 
 
-    public BackupDialog() {
+    public RestoreDialog() {
         Object();
     }
 
@@ -41,49 +39,60 @@ public class BackupDialog : Adw.Dialog {
     }
 
     public bool is_choose_directory() {
-        return this.format == "directory";
+        return(this.format == "directory");
     }
 
     public string get_extension() {
-        if (this.format == "plain") {
-            return ".sql";
-        } else if (this.format == "custom") {
-            return ".dump";
-        } else if (this.format == "directory") {
-            return "";
-        } else if (this.format == "tar") {
-            return ".tar";
+        if (this.format == "custom")
+        {
+            return(".dump");
+        }
+        else if (this.format == "directory")
+        {
+            return("");
+        }
+        else if (this.format == "tar")
+        {
+            return(".tar");
         }
 
-        return ".dump";
+        return(".dump");
     }
 
-
     [GtkCallback]
-    private void on_do_backup_click() {
-        var vec = new Vec<string>();
+    private void on_do_restore_click() {
+        var vec = new Vec <string>();
         vec.append("--format");
         vec.append(this.format);
-        
-        if (section == "everything") {
+
+        if (section == "everything")
+        {
             // add not thing
-        } else if (section == "schema only") {
+        }
+        else if (section == "schema only")
+        {
             vec.append("--schema-only");
-        } else if (section == "data only") {
+        }
+        else if (section == "data only")
+        {
             vec.append("--data-only");
-        } else {
-            debug ("Invalid section: %s", section);
+        }
+        else
+        {
+            debug("Invalid section: %s", section);
         }
 
-        if (clean) {
+        if (clean)
+        {
             vec.append("--clean");
         }
 
-        if (create) {
+        if (create)
+        {
             vec.append("--create");
         }
 
-        on_backup(vec);
+        on_restore(vec);
     }
 
     [GtkChild]
