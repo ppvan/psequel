@@ -1,25 +1,9 @@
 namespace Psequel {
-public class TableDataViewModel : BaseViewModel {
+public class TableDataViewModel : DataViewModel {
     public const int MAX_FETCHED_ROW = 50;
 
     public Table ?selected_table { get; set; }
     // public View? current_view {get; set;}
-
-    public bool has_pre_page { get; private set; default = false; }
-    public bool has_next_page { get; private set; default = true; }
-    public int current_page { get; set; }
-
-    public string row_ranges { get; private set; default = ""; }
-
-    public bool is_loading { get; set; }
-    public string err_msg { get; set; }
-
-    public Relation current_relation { get; set; }
-    public Relation.Row ?selected_row { get; set; }
-
-    public SQLService sql_service { get; construct; }
-
-
 
     public TableDataViewModel(SQLService service) {
         Object(sql_service: service);
@@ -37,9 +21,10 @@ public class TableDataViewModel : BaseViewModel {
 
         this.notify["current-relation"].connect(() => {
                 int offset = MAX_FETCHED_ROW * current_page;
-                row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
 
-                if (current_relation.rows < MAX_FETCHED_ROW)
+                row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(total_records) records)";
+
+                if (offset + current_relation.rows >= total_records)
                 {
                     has_next_page = false;
                 }
@@ -57,6 +42,8 @@ public class TableDataViewModel : BaseViewModel {
 
         EventBus.instance().selected_table_changed.connect((table) => {
             selected_table = table;
+            this.total_records = table.row_count;
+            this.total_pages = (table.row_count + MAX_FETCHED_ROW - 1) / MAX_FETCHED_ROW;
         });
     }
 

@@ -1,7 +1,7 @@
 {
     "app-id": "me.ppvan.psequel",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "45",
+    "runtime-version": "46",
     "sdk": "org.gnome.Sdk",
     "command": "psequel",
     "finish-args": [
@@ -58,7 +58,8 @@
                     "build-commands": [
                         "./configure --prefix=/app --with-ssl=openssl",
                         "make -C src/include install",
-                        "make -C src/interfaces/libpq install"
+                        "make -C src/interfaces/libpq install",
+                        "make -C src/bin/pg_dump install"
                     ],
                     "sources": [
                         {

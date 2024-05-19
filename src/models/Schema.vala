@@ -26,7 +26,7 @@ public abstract class BaseType : Object {
 public class Index : BaseType {
     public bool unique { get; set; default = false; }
     public string index_type { get; set; default = "BTREE"; }
-    public string columns { get; set; default = ""; }
+    public string[] columns { get; set; default = new string[] {""}; }
     public string size { get; set; default = "0 kB"; }
 
     private string _indexdef;

@@ -42,6 +42,7 @@ public class Application : Adw.Application {
 
     public static List <uint> tasks;
     public static bool is_running = false;
+    public static Settings settings;
 
     public Application() {
         Object(application_id: Config.APP_ID, flags: ApplicationFlags.DEFAULT_FLAGS);
@@ -102,13 +103,9 @@ public class Application : Adw.Application {
         GtkSource.init();
         set_up_logging();
 
-        var settings = new Settings(this.application_id);
+        Application.settings = new Settings(this.application_id);
         settings.bind("color-scheme", this, "color_scheme", SettingsBindFlags.GET);
         this.notify["color-scheme"].connect(update_color_scheme);
-
-        var container = Container.instance();
-        container.register(settings);
-        container.register(this);
 
         Application.tasks      = new List <uint> ();
         Application.is_running = true;
@@ -178,14 +175,17 @@ public class Application : Adw.Application {
         typeof(Psequel.TableRow).ensure();
         typeof(Psequel.TableGraph).ensure();
         typeof(Psequel.DataCell).ensure();
-        typeof(Psequel.ConnectionViewModel).ensure();
+        typeof(Psequel.BackupDialog).ensure();
+        typeof(Psequel.RestoreDialog).ensure();
         typeof(Psequel.SchemaView).ensure();
 
         typeof(Psequel.ConnectionRow).ensure();
         typeof(Psequel.ConnectionView).ensure();
         typeof(Psequel.QueryResults).ensure();
         typeof(Psequel.QueryEditor).ensure();
-        //  typeof(Psequel.TableStructureView).ensure();
+        typeof(Psequel.TableStructureView).ensure();
+        typeof(Psequel.TableColumnInfo).ensure();
+        typeof(Psequel.TableIndexInfo).ensure();
         typeof(Psequel.ViewStructureView).ensure();
         typeof(Psequel.TableDataView).ensure();
         typeof(Psequel.ViewDataView).ensure();
@@ -235,7 +235,9 @@ public class Application : Adw.Application {
      * This result to another event to notify window is ready and widget should setup signals
      */
     private Window new_window() {
-        // give temp access because window is not created yet
+        // Clone all singleton instances for each window
+        Container.clone();
+        EventBus.clone();
         create_viewmodels();
         var window = new Window(this);
 
@@ -248,6 +250,11 @@ public class Application : Adw.Application {
         DirUtils.create_with_parents(app_data_dir, 0777);
 
         var db_file = File.new_for_path(Path.build_filename(app_data_dir, "database.sqlite3"));
+
+        // global things
+        container.register(this);
+        container.register(Application.settings);
+
 
         // services
         var storage_service = new StorageService(db_file.get_path());
@@ -265,6 +272,7 @@ public class Application : Adw.Application {
         var query_repo      = new QueryRepository();
         var navigation      = new NavigationService();
         var export          = new ExportService();
+        var backup_service = new BackupService();
         var completer       = new CompleterService(sql_service);
 
         // viewmodels
@@ -280,6 +288,7 @@ public class Application : Adw.Application {
         var query_vm          = new QueryViewModel(query_history_vm);
 
         container.register(sql_service);
+        container.register(backup_service);
         container.register(completer);
         container.register(schema_service);
         container.register(export);

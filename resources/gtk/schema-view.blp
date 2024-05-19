@@ -302,7 +302,7 @@ template $PsequelSchemaView: Adw.Bin {
 
                 Box {
                     spacing: 4;
-                    margin-bottom: 2;
+                    margin-bottom: 8;
                     margin-end: 2;
                     margin-start: 4;
 
@@ -382,7 +382,22 @@ template $PsequelSchemaView: Adw.Bin {
                         icon-name: "library-symbolic";
                         title: "Structure";
 
-                        child: $PsequelTableGraph {};
+                        child: Stack {
+                            visible-child-name: bind template.view-mode;
+                            transition-type: slide_left_right;
+
+                            StackPage {
+                                name: "table";
+
+                                child: $PsequelTableStructureView {};
+                            }
+
+                            StackPage {
+                                name: "view";
+
+                                child: $PsequelViewStructureView {};
+                            }
+                        };
                     }
 
                     Adw.ViewStackPage {

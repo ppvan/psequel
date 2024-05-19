@@ -44,12 +44,15 @@ public class TableViewModel : BaseViewModel {
         debug("loading tables");
         var query    = new Query.with_params(TABLE_LIST, { schema.name });
         var relation = yield sql_service.exec_query_params(query);
+
         var table_vec = new Vec <Table>();
 
         foreach (var item in relation)
         {
             var table = new Table(schema);
-            table.name = item[0];
+            table.name      = item[0];
+            table.row_count = int64.parse(item[1], 10);
+
             table_vec.append(table);
         }
 
@@ -93,10 +96,11 @@ public class TableViewModel : BaseViewModel {
             var index = new Index();
             index.name       = item[0];
             index.table      = item[1];
-            index.size       = item[2];
-            index.unique     = item[3] == "t" ? true: false;
-            index.index_type = item[4];
-            index.indexdef   = item[5];
+            index.columns    = parse_array_result(item[2]);
+            index.indexdef = item[2];
+            index.size       = item[3];
+            index.unique     = item[4] == "t" ? true: false;
+            index.index_type = item[5];
 
             int idx = table_vec.find((table) => {
                     return(table.name == index.table);
@@ -171,14 +175,16 @@ public class TableViewModel : BaseViewModel {
         }
 
         this.tables.clear();
-        foreach (var item in table_vec) {
+        foreach (var item in table_vec)
+        {
             this.tables.append(item);
         }
-
     }
 
     public const string TABLE_LIST = """
-        SELECT tablename FROM pg_tables WHERE schemaname=$1;
+    SELECT ta.tablename, cls.reltuples::bigint AS estimate FROM pg_tables ta
+    JOIN pg_class cls ON cls.relname = ta.tablename 
+    WHERE schemaname=$1;
         """;
 
     public const string COLUMN_SQL = """
@@ -194,13 +200,18 @@ public class TableViewModel : BaseViewModel {
         ORDER  BY attnum;
         """;
     public const string INDEX_SQL  = """
-        SELECT cls.relname, rel_cls.relname, pg_size_pretty(pg_relation_size(cls.relname::regclass)) as size, indisunique, am.amname
-        FROM pg_index idx
-        JOIN pg_class cls ON idx.indexrelid = cls.oid
-        JOIN pg_class rel_cls ON idx.indrelid = rel_cls.oid
-        JOIN pg_namespace nsp ON cls.relnamespace = nsp.oid
-        JOIN pg_am am ON am.oid = cls.relam
-        WHERE nsp.nspname = $1 AND cls.relkind = 'i' AND NOT indisprimary;
+    SELECT cls.relname, rel_cls.relname, ARRAY_AGG(attr.attname) AS indexed_columns, pg_size_pretty(pg_relation_size(cls.relname::regclass)) as size, indisunique, am.amname
+    FROM pg_index idx
+    JOIN pg_class cls ON idx.indexrelid = cls.oid
+    JOIN pg_class rel_cls ON idx.indrelid = rel_cls.oid
+    JOIN pg_catalog.pg_attribute attr ON attr.attrelid = rel_cls.oid
+    JOIN pg_namespace nsp ON cls.relnamespace = nsp.oid
+    JOIN pg_am am ON am.oid = cls.relam
+    WHERE nsp.nspname = $1
+    AND cls.relkind = 'i'
+    AND NOT indisprimary
+    AND attr.attnum = ANY(idx.indkey)
+    GROUP BY cls.relname, rel_cls.relname, indisunique, am.amname
         """;
 
     public const string PK_SQL = """

@@ -3,6 +3,13 @@ public class Container : Object {
     private HashTable <GLib.Type, Object> dependencies;
     private static Container ?_instance;
 
+
+    private static Vec <Container> protypes { get; private set; }
+
+    static construct {
+        Container._protypes = new Vec<Container>();
+    }
+
     public static Container instance() {
         if (_instance == null)
         {
@@ -12,8 +19,15 @@ public class Container : Object {
         return(_instance);
     }
 
+    public static void clone() {
+        if (_instance != null) {
+            Container._protypes.append(_instance);
+        }
+        _instance = new Container();
+    }
+
     /** Manual dependency injection map */
-    public Container() {
+    private Container() {
         Object();
         dependencies = new HashTable <GLib.Type, Object> (direct_hash, direct_equal);
     }
