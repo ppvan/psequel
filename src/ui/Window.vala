@@ -95,11 +95,11 @@ public class Window : Adw.ApplicationWindow {
     }
 
     public void restore_database() {
-        restore_dialog = new RestoreDialog();
+        restore_dialog = new RestoreDialog(this.connection_viewmodel);
         var window = get_parrent_window(this);
 
-        restore_dialog.on_restore.connect((options) => {
-                save_restore_dialog.begin(options, (obj, res) => {
+        restore_dialog.on_restore.connect((conn, options) => {
+                save_restore_dialog.begin(conn, options, (obj, res) => {
                     restore_dialog.close();
                 });
             });
@@ -247,7 +247,7 @@ public class Window : Adw.ApplicationWindow {
         }
     }
 
-    private async void save_restore_dialog(Vec <string> options) {
+    private async void save_restore_dialog(Connection conn, Vec <string> options) {
         var custom_filter = new Gtk.FileFilter();
         custom_filter.add_mime_type("text/x-sql");
         custom_filter.add_mime_type("application/x-tar");
@@ -262,7 +262,7 @@ public class Window : Adw.ApplicationWindow {
         filters.append(all_files);
 
         var local        = time_local();
-        var dbname       = connection_viewmodel?.selected_connection.database ?? "database";
+        var dbname       = conn.database ?? "database";
         var ext          = restore_dialog.get_extension();
         var initial_name = @"$(dbname)-backup-$(local)$(ext)";
 
@@ -276,7 +276,6 @@ public class Window : Adw.ApplicationWindow {
         };
 
         var window = get_parrent_window(this);
-        var conn   = connection_viewmodel.selected_connection;
         try {
             File ?file = null;
             if (restore_dialog.is_choose_directory())
