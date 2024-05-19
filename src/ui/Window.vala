@@ -38,6 +38,7 @@ public class Window : Adw.ApplicationWindow {
     public BackupService backup_service { get; private set; }
 
     private Settings ?settings;
+    private BackupDialog dialog;
 
 
     public Window(Application app) {
@@ -80,7 +81,17 @@ public class Window : Adw.ApplicationWindow {
     }
 
     public void backup_database() {
-        backup_dialog.begin();
+        this.dialog = new BackupDialog();
+        var window = get_parrent_window(this);
+
+        dialog.on_backup.connect((options) => {
+
+            save_backup_dialog.begin(options, (obj, res) => {
+                dialog.close();
+            });
+        });
+        
+        dialog.present(window);
     }
 
     private async void open_file_dialog(string title = "Open File") {
@@ -167,7 +178,7 @@ public class Window : Adw.ApplicationWindow {
         }
     }
 
-    private async void backup_dialog() {
+    private async void save_backup_dialog(string[] options) {
         var filter = new Gtk.FileFilter();
         filter.add_mime_type("text/x-sql");
         var filters = new ListStore(typeof(Gtk.FileFilter));
@@ -175,12 +186,13 @@ public class Window : Adw.ApplicationWindow {
 
         var local        = time_local();
         var dbname       = connection_viewmodel?.selected_connection.database ?? "database";
-        var initial_name = @"$(dbname)-backup-$(local).sql";
+        var ext = dialog.get_extension();
+        var initial_name = @"$(dbname)-backup-$(local)$(ext)";
 
         var file_dialog = new Gtk.FileDialog() {
             modal          = true,
             initial_folder = File.new_for_path(Environment.get_home_dir()),
-            title          = title,
+            title          = dialog.is_choose_directory() ? "Select target directory" : "Select target file",
             initial_name   = initial_name,
             default_filter = filter,
             filters        = filters,
@@ -189,8 +201,15 @@ public class Window : Adw.ApplicationWindow {
         var window = get_parrent_window(this);
         var conn = connection_viewmodel.selected_connection;
         try {
-            var file = yield file_dialog.save(window, null);
-            yield backup_service.backup_db(file, conn);
+
+            File? file = null;
+            if (dialog.is_choose_directory()) {
+                file = yield file_dialog.select_folder(window, null);
+            } else {
+                file = yield file_dialog.save(window, null);
+            }
+
+            yield backup_service.backup_db(file, conn, options);
 
             var toast = new Adw.Toast(@"Backup $dbname successfully") {
                 timeout = 2,

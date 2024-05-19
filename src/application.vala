@@ -175,7 +175,7 @@ public class Application : Adw.Application {
         typeof(Psequel.TableRow).ensure();
         typeof(Psequel.TableGraph).ensure();
         typeof(Psequel.DataCell).ensure();
-        typeof(Psequel.ConnectionViewModel).ensure();
+        typeof(Psequel.BackupDialog).ensure();
         typeof(Psequel.SchemaView).ensure();
 
         typeof(Psequel.ConnectionRow).ensure();

@@ -11,4 +11,6 @@ export
 
 /build-aux
 
+*.flatpak
 *.dot
+me.ppvan.psequel.flatpak

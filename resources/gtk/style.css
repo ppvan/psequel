@@ -16,6 +16,14 @@
     border-radius: 8px;
 }
 
+.backup-dialog dimming {
+    opacity: 0.25;
+    background: #131315;
+}
+
+.backup-dialog toolbarview {
+    background: @card_bg_color;
+}
 
 .table-cell {
     padding: 6px;

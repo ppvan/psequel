@@ -31,6 +31,7 @@ mark_ups = [
     'gtk/view-listitem.blp',
     'gtk/view-structure-view.blp',
     'gtk/window.blp',
+    'gtk/backup-dialog.blp'
 ]
 
 icons = [

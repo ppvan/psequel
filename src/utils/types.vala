@@ -147,6 +147,15 @@ public class Vec <T> : Object {
         return list;
     }
 
+    public T[] as_array() {
+        var dup = new T[this.size];
+        for(int i = 0; i < this.size; i++) {
+            dup[i] = this.data[i];
+        }
+
+        return (owned)dup;
+    }
+
     public Vec<U> map <U>(MapFunc<U, T> func) {
         var vec = new Vec<U>.with_capacity(this.capacity);
 

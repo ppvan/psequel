@@ -5,10 +5,22 @@ public class BackupService : Object {
     public BackupService() {
     }
 
-    public async void backup_db(File dest, Connection conn) throws GLib.Error {
+    public async void backup_db(File dest, Connection conn, string[] options) throws GLib.Error {
         //  var flags      = SubprocessFlags.NONE;
-        var flags      = SubprocessFlags.STDERR_PIPE;
-        var subprocess = new Subprocess.newv({ "pg_dump", conn.backup_connection_string(), "-f", dest.get_path() }, flags);
+        var          flags = SubprocessFlags.STDERR_PIPE;
+        Vec <string> args  = new Vec <string>();
+        args.append("pg_dump");
+
+        foreach (var item in options)
+        {
+            args.append(item);
+        }
+
+        args.append(conn.backup_connection_string());
+        args.append("-f");
+        args.append(dest.get_path());
+
+        var subprocess = new Subprocess.newv(args.as_array(), flags);
 
         // Wait for the subprocess to finish asynchronously
         yield subprocess.wait_async();

@@ -8,12 +8,12 @@ psequel_sources = files(
     'repositories/ConnectionRepository.vala',
     'repositories/QueryRepository.vala',
     'repositories/SchemaRepository.vala',
+    'services/BackupService.vala',
     'services/Container.vala',
     'services/ExportService.vala',
     'services/MigrationService.vala',
-'services/NavigationService.vala',
+    'services/NavigationService.vala',
     'services/ResourceManager.vala',
-    'services/BackupService.vala',
     'services/SQLCompletionService.vala',
     'services/SQLService.vala',
     'services/SchemaService.vala',
@@ -26,35 +26,36 @@ psequel_sources = files(
     'utils/types.vala',
     'viewmodels/BaseViewModel.vala',
     'viewmodels/ConnectionViewModel.vala',
+    'viewmodels/DataViewModel.vala',
     'viewmodels/QueryHistoryViewModel.vala',
     'viewmodels/QueryViewModel.vala',
     'viewmodels/SchemaViewModel.vala',
-    'viewmodels/DataViewModel.vala',
     'viewmodels/TableDataViewModel.vala',
     'viewmodels/TableViewModel.vala',
     'viewmodels/ViewDataViewModel.vala',
-'viewmodels/ViewStructureViewModel.vala',
+    'viewmodels/ViewStructureViewModel.vala',
     'viewmodels/ViewViewModel.vala',
 
 )
 
 ui_sources = files(
     'ui/PreferencesWindow.vala',
-'ui/Window.vala',
+    'ui/Window.vala',
     'ui/editor/QueryEditor.vala',
     'ui/schema/QueryResult.vala',
     'ui/schema/TableDataView.vala',
-    'ui/schema/ViewDataView.vala',
     'ui/schema/TableStructureView.vala',
-'ui/schema/ViewStructureView.vala',
+    'ui/schema/ViewDataView.vala',
+    'ui/schema/ViewStructureView.vala',
     'ui/views/ConnectionView.vala',
     'ui/views/SchemaView.vala',
+    'ui/widgets/BackupDialog.vala',
     'ui/widgets/DataCell.vala',
     'ui/widgets/Shape.vala',
-    'ui/widgets/TableColumnInfo.vala',
-    'ui/widgets/TableIndexInfo.vala',
     'ui/widgets/StyleSwitcher.vala',
-'ui/widgets/TableGraph.vala',
+    'ui/widgets/TableColumnInfo.vala',
+    'ui/widgets/TableGraph.vala',
+    'ui/widgets/TableIndexInfo.vala',
     'ui/widgets/TableRow.vala',
     'utils/helpers.vala',
 )
@@ -79,7 +80,6 @@ conf.set_quoted(
 )
 configure_file(output: 'config.h', configuration: conf)
 
-
 csv_dep = dependency('csv', required: false)
 if not csv_dep.found()
     libsimple_proj = subproject('libcsv')
@@ -88,7 +88,6 @@ endif
 
 cc = meson.get_compiler('c')
 math_dep = cc.find_library('m', required: false)
-
 
 psequel_deps = [
     dependency('glib-2.0', version: '>=2.74'),
@@ -104,11 +103,9 @@ psequel_deps = [
     valac.find_library('config', dirs: vapi_dir),
 ]
 
-
-add_project_arguments(['--target-glib=2.80','--vapidir', vapi_dir], language: 'vala')
+add_project_arguments(['--target-glib=2.80', '--vapidir', vapi_dir], language: 'vala')
 add_project_arguments(
-    '-include',
-    'config.h',
+    '-include', 'config.h',
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
     language: 'c',
 )
@@ -126,8 +123,6 @@ add_project_arguments(
     ],
     language: 'c',
 )
-
-
 
 psequel_sources_main = psequel_sources + ui_sources + files('application.vala')
 
