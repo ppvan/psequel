@@ -50,8 +50,8 @@ ui_sources = files(
     'ui/views/ConnectionView.vala',
     'ui/views/SchemaView.vala',
     'ui/widgets/BackupDialog.vala',
-    'ui/widgets/RestoreDialog.vala',
     'ui/widgets/DataCell.vala',
+    'ui/widgets/RestoreDialog.vala',
     'ui/widgets/Shape.vala',
     'ui/widgets/StyleSwitcher.vala',
     'ui/widgets/TableColumnInfo.vala',
@@ -104,7 +104,14 @@ psequel_deps = [
     valac.find_library('config', dirs: vapi_dir),
 ]
 
-add_project_arguments(['--target-glib=2.80', '--vapidir', vapi_dir, '--gresourcesdir', psequel_resources_dir], language: 'vala')
+add_project_arguments(
+    [
+        '--target-glib=2.80',
+        '--vapidir', vapi_dir,
+        '--gresourcesdir', psequel_resources_dir,
+    ],
+    language: 'vala',
+)
 add_project_arguments(
     '-include', 'config.h',
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
@@ -131,5 +138,8 @@ executable(
     app_name,
     [psequel_resources, psequel_sources_main],
     dependencies: psequel_deps,
+    vala_args: [
+        '--gresourcesdir=' + psequel_resources_dir,
+    ],
     install: true,
 )
