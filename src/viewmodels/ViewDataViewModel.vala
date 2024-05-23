@@ -58,6 +58,12 @@ public class ViewDataViewModel : DataViewModel {
         yield load_data(selected_view, current_page);
     }
 
+    [GtkCallback]
+    public async void filter_query(Gtk.Button btn) {
+        
+        debug("Hey");
+    }
+
     private inline async void load_data(View view, int page) {
         try {
             is_loading       = true;

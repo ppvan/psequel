@@ -48,6 +48,7 @@ template $PsequelSchemaView: Adw.Bin {
             Box sidebar {
                 orientation: vertical;
                 width-request: 300;
+                spacing: 3;
 
                 Box {
                     margin-start: 8;
@@ -82,7 +83,7 @@ template $PsequelSchemaView: Adw.Bin {
                     margin-start: 8;
                     margin-end: 8;
                     margin-top: 4;
-                    margin-bottom: 8;
+                    margin-bottom: 12;
                     policy: wide;
                     stack: sql_views;
                 }
@@ -384,9 +385,11 @@ template $PsequelSchemaView: Adw.Bin {
                         icon-name: "library-symbolic";
                         title: "Structure";
 
+
                         child: Stack {
                             visible-child-name: bind template.view-mode;
                             transition-type: slide_left_right;
+                            margin-top: 10;
 
                             StackPage {
                                 name: "table";

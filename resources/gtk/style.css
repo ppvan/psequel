@@ -8,6 +8,10 @@
     margin-bottom: 32px;
 }
 
+.data-filter {
+    padding: 4px 8px;
+}
+
 .badges {
     font-size: 14px;
     padding: 4px 6px;

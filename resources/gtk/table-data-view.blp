@@ -12,15 +12,19 @@ template $PsequelTableDataView: Gtk.Box {
   margin-bottom: 8;
 
   Box {
-    visible: false;
+    styles ["data-filter"]
+    visible: true;
     spacing: 12;
-    margin-top: 8;
+    margin-top: 4;
     margin-bottom: 8;
+    margin-end: 8;
+    margin-start: 4;
 
     Entry filter_entry {
       hexpand: true;
       placeholder-text: "WHERE clause";
-      // activate => $on_entry_activated();
+      changed => $on_filter_changed();
+      activate => $filter_query();
     }
 
     Button filter_btn {
@@ -29,7 +33,7 @@ template $PsequelTableDataView: Gtk.Box {
       ]
 
       label: "Filter";
-      // clicked => $filter_query();
+      clicked => $filter_query();
     }
   }
 
