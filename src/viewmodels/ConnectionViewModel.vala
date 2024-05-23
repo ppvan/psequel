@@ -67,6 +67,17 @@ public class ConnectionViewModel : BaseViewModel {
     }
 
     public void remove_connection(Connection conn) {
+
+        
+        uint target = connections.indexof(conn);
+        uint nearest = target < connections.size - 1 ? target + 1 : target - 1;
+        if (0 <= nearest && nearest < connections.size) {
+            selected_connection = connections[(int)nearest];
+        } else {
+            selected_connection = null;
+        }
+
+
         repository.remove_connection(conn);
         connections.remove(conn);
     }

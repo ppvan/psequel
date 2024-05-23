@@ -41,7 +41,7 @@ public class TableViewModel : BaseViewModel {
     }
 
     private async void load_tables(Schema schema) throws PsequelError {
-        debug("loading tables");
+        debug("loading tables in %s", schema.name);
         var query    = new Query.with_params(TABLE_LIST, { schema.name });
         var relation = yield sql_service.exec_query_params(query);
 
@@ -56,7 +56,7 @@ public class TableViewModel : BaseViewModel {
             table_vec.append(table);
         }
 
-        debug("%d tables loaded", tables.size);
+        debug("%d tables loaded", table_vec.length);
 
         var columns_query    = new Query.with_params(COLUMN_SQL, { schema.name });
         var columns_relation = yield sql_service.exec_query_params(columns_query);
@@ -179,6 +179,8 @@ public class TableViewModel : BaseViewModel {
         {
             this.tables.append(item);
         }
+
+        debug("%d tables loaded--", tables.size);
     }
 
     public const string TABLE_LIST = """
@@ -226,7 +228,7 @@ public class TableViewModel : BaseViewModel {
     WHERE con.contype = 'p'
         AND attr1.attnum = ANY(con.conkey)
         AND nsp.nspname = $1
-    GROUP BY con.oid, cls1.relname;
+    GROUP BY con.oid, con.conname, cls1.relname;
     """;
 
     public const string FK_SQL = """
@@ -249,7 +251,7 @@ public class TableViewModel : BaseViewModel {
         AND con.confrelid > 0
         AND attr1.attnum = ANY(con.conkey)
         AND attr2.attnum = ANY(con.confkey)
-    GROUP BY nsp.nspname, con.oid, cls1.relname, cls2.relname
+    GROUP BY nsp.nspname, con.oid, con.conname, cls1.relname, cls2.relname
     ORDER BY src_table, src_columns_num;
     """;
 }
