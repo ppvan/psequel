@@ -10,7 +10,7 @@ public class TableDataView : Gtk.Box {
     construct {
         tabledata_viewmodel = autowire <TableDataViewModel> ();
 
-        tabledata_viewmodel.bind_property("where-query", filter_entry, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL );
+        //  tabledata_viewmodel.bind_property("where-query", filter_entry, "text", BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL );
     }
 
     [GtkCallback]
@@ -26,12 +26,12 @@ public class TableDataView : Gtk.Box {
             });
     }
 
-    [GtkCallback]
+    //  [GtkCallback]
     private async void filter_query(Gtk.Button btn) {
         yield tabledata_viewmodel.reload_data();
     }
 
-    [GtkCallback]
+    //  [GtkCallback]
     private void on_filter_changed(Gtk.Editable entry) {
 
         if (entry.text == tabledata_viewmodel.where_query) {
@@ -41,6 +41,8 @@ public class TableDataView : Gtk.Box {
 
         this.tabledata_viewmodel.where_query = entry.text;
     }
+
+    
 
     [GtkCallback]
     private async void next_page() {
@@ -53,7 +55,7 @@ public class TableDataView : Gtk.Box {
     }
 
 
-    [GtkChild]
-    private unowned Gtk.Entry filter_entry;
+    //  [GtkChild]
+    //  private unowned Gtk.Entry filter_entry;
 }
 }

@@ -20,6 +20,17 @@
     border-radius: 8px;
 }
 
+.where-filter {
+    border-radius: 8px;
+    padding: 6px;
+    outline: yellow;
+    border: transparent 2px solid;
+}
+
+.where-filter:focus {
+    border: #6d7b99 2px solid;
+}
+
 .backup-dialog dimming {
     opacity: 0.25;
     background: #131315;
