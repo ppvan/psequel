@@ -177,10 +177,27 @@ public class TableViewModel : BaseViewModel {
         this.tables.clear();
         foreach (var item in table_vec)
         {
+
+            foreach (var col in item.columns) {
+                foreach (var pk in item.primaty_keys) {
+                    if (col.name in pk.columns) {
+                        col.is_primarykey = true;
+                        break;
+                    }
+                }
+
+                foreach (var fk in item.foreign_keys) {
+                    if (col.name in fk.columns) {
+                        col.is_foreignkey = true;
+                        break;
+                    }
+                }
+            }
+
+
             this.tables.append(item);
         }
 
-        debug("%d tables loaded--", tables.size);
     }
 
     public const string TABLE_LIST = """

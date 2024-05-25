@@ -62,6 +62,9 @@ public class Column : BaseType {
     public bool nullable { get; set; default = false; }
     public string default_val { get; set; default = ""; }
 
+    public bool is_primarykey {get; set; default = false;}
+    public bool is_foreignkey {get; set; default = false;}
+
     public Column() {
     }
 }

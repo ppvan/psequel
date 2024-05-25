@@ -34,7 +34,14 @@ namespace Psequel {
                 var listitem = obj as Gtk.ListItem;
                 var item = listitem.item as Column;
                 var label = listitem.child as Gtk.Label;
-                label.label = item.name;
+
+                if (item.is_primarykey) {
+                    label.label = @"$(item.name) *";
+                    label.tooltip_text = "Primary Key";
+                } else {
+                    label.label = @"$(item.name)";
+                }
+
             });
             var col = new Gtk.ColumnViewColumn ("Column Name", factory);
             col.fixed_width = 250;
