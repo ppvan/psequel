@@ -54,14 +54,8 @@ public class ConnectionRepository : Object {
             debug("Error: %s\n", db.err_message());
         }
 
-        debug("Error: %s\n", db.err_message());
-
-        List <Connection> f = find_all();
-        f.foreach((item) => debug("name = %s", item.name));
-
         connection.id = db.last_insert_rowid();
 
-        debug("id = %lld", connection.id);
 
         return(connection);
     }

@@ -8,6 +8,7 @@ public class DataViewModel : BaseViewModel {
 
     public bool is_loading { get; set; }
     public string err_msg { get; set; }
+    public string where_query {get; set; default = "";}
 
     public Relation current_relation { get; set; }
     public Relation.Row ?selected_row { get; set; }

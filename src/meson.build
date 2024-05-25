@@ -15,6 +15,7 @@ psequel_sources = files(
     'services/NavigationService.vala',
     'services/ResourceManager.vala',
     'services/SQLCompletionService.vala',
+    'services/TableColumnCompletionService.vala',
     'services/SQLService.vala',
     'services/SchemaService.vala',
     'services/StorageService.vala',
@@ -49,6 +50,7 @@ ui_sources = files(
     'ui/schema/ViewStructureView.vala',
     'ui/views/ConnectionView.vala',
     'ui/views/SchemaView.vala',
+    'ui/widgets/WhereEntry.vala',
     'ui/widgets/BackupDialog.vala',
     'ui/widgets/DataCell.vala',
     'ui/widgets/RestoreDialog.vala',
@@ -109,6 +111,7 @@ add_project_arguments(
         '--target-glib=2.80',
         '--vapidir', vapi_dir,
         '--gresourcesdir', psequel_resources_dir,
+        '--enable-deprecated'
     ],
     language: 'vala',
 )
@@ -117,9 +120,8 @@ add_project_arguments(
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
     language: 'c',
 )
-add_project_arguments(
+add_global_arguments(
     [
-        '-Wall',
         '-Wno-pointer-sign',
         '-Wno-deprecated-declarations',
         '-Wno-format',
@@ -127,7 +129,7 @@ add_project_arguments(
         '-Wno-address',
         '-Wno-switch',
         '-Wno-incompatible-pointer-types',
-        '-Wno-discarded-qualifiers',
+        '-Wno-discarded-qualifiers'
     ],
     language: 'c',
 )

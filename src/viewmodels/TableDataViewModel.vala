@@ -1,6 +1,6 @@
 namespace Psequel {
 public class TableDataViewModel : DataViewModel {
-    public const int MAX_FETCHED_ROW = 50;
+    public const int MAX_FETCHED_ROW = 200;
 
     public Table ?selected_table { get; set; }
     // public View? current_view {get; set;}
@@ -21,10 +21,15 @@ public class TableDataViewModel : DataViewModel {
 
         this.notify["current-relation"].connect(() => {
                 int offset = MAX_FETCHED_ROW * current_page;
+                if (where_query.strip() == "") {
+                    row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(total_records) records)";
+                } else {
+                    int count = current_relation.rows;
+                    row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(count) records)";
+                }
 
-                row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(total_records) records)";
 
-                if (offset + current_relation.rows >= total_records)
+                if (current_page + 1 >= total_pages)
                 {
                     has_next_page = false;
                 }
@@ -37,6 +42,7 @@ public class TableDataViewModel : DataViewModel {
 
         this.notify["selected-table"].connect(() => {
                 current_page = 0;
+                this.where_query = "";
                 reload_data.begin();
             });
 
@@ -64,7 +70,7 @@ public class TableDataViewModel : DataViewModel {
     private inline async void load_data(Table table, int page) {
         try {
             is_loading       = true;
-            current_relation = yield sql_service.select(table, page, MAX_FETCHED_ROW);
+            current_relation = yield sql_service.select_where(table, where_query, page, MAX_FETCHED_ROW);
 
             is_loading = false;
             debug("Rows: %d", current_relation.rows);
@@ -72,5 +78,7 @@ public class TableDataViewModel : DataViewModel {
             this.err_msg = err.message;
         }
     }
+
+    //  private inline async void 
 }
 }

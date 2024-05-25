@@ -32,6 +32,25 @@ public class SQLService : Object {
         return(yield exec_query(query));
     }
 
+    public async Relation select_where(BaseTable table, string where_clause, int page, int size = query_limit) throws PsequelError {
+        string schema_name   = active_db.escape_identifier(table.schema.name);
+        string escape_tbname = active_db.escape_identifier(table.name);
+        int    offset        = page * size;
+        int    limit         = size;
+
+        //  TODO make a better query builder
+        var query_builder = new StringBuilder("SELECT * FROM");
+        query_builder.append(@" $schema_name.$escape_tbname ");
+        if (where_clause.strip() != "") {
+            query_builder.append(@" WHERE $where_clause ");
+        }
+        query_builder.append(@" LIMIT $limit OFFSET $offset ");
+
+        string stmt  = query_builder.free_and_steal();
+        var    query = new Query(stmt);
+        return(yield exec_query(query));
+    }
+
     /** Make a connection to database and active connection. */
     public async void connect_db(Connection conn) throws PsequelError {
         var    connection_timeout = settings.get_int("connection-timeout");

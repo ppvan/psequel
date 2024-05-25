@@ -71,9 +71,9 @@ public class ObservableList <T> : Object, ListModel {
 
     public void remove(T item) {
         uint pos;
-        _data.find((Object)item, out pos);
-
-        _data.remove(pos);
+        if (_data.find((Object)item, out pos)) {
+            _data.remove(pos);
+        }
     }
 
     public void remove_at(uint position) {

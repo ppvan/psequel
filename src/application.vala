@@ -174,6 +174,7 @@ public class Application : Adw.Application {
         typeof(Psequel.StyleSwitcher).ensure();
         typeof(Psequel.TableRow).ensure();
         typeof(Psequel.TableGraph).ensure();
+        typeof(Psequel.WhereEntry).ensure();
         typeof(Psequel.DataCell).ensure();
         typeof(Psequel.BackupDialog).ensure();
         typeof(Psequel.RestoreDialog).ensure();

@@ -8,12 +8,27 @@
     margin-bottom: 32px;
 }
 
+.data-filter {
+    padding: 4px 8px;
+}
+
 .badges {
     font-size: 14px;
     padding: 4px 6px;
     font-weight: bold;
     background-color: @sidebar_bg_color;
     border-radius: 8px;
+}
+
+.where-filter {
+    border-radius: 8px;
+    padding: 6px;
+    outline: yellow;
+    border: transparent 2px solid;
+}
+
+.where-filter:focus {
+    border: #6d7b99 2px solid;
 }
 
 .backup-dialog dimming {

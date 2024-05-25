@@ -29,7 +29,7 @@ public class ViewDataViewModel : DataViewModel {
                 row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
 
 
-                if (current_relation.rows < TableDataViewModel.MAX_FETCHED_ROW)
+                if (current_page + 1 >= total_pages)
                 {
                     has_next_page = false;
                 }
@@ -56,6 +56,12 @@ public class ViewDataViewModel : DataViewModel {
     public async void pre_page() {
         current_page = current_page - 1;
         yield load_data(selected_view, current_page);
+    }
+
+    [GtkCallback]
+    public async void filter_query(Gtk.Button btn) {
+        
+        debug("Hey");
     }
 
     private inline async void load_data(View view, int page) {
