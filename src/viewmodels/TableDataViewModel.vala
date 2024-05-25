@@ -21,10 +21,15 @@ public class TableDataViewModel : DataViewModel {
 
         this.notify["current-relation"].connect(() => {
                 int offset = MAX_FETCHED_ROW * current_page;
+                if (where_query.strip() == "") {
+                    row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(total_records) records)";
+                } else {
+                    int count = current_relation.rows;
+                    row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(count) records)";
+                }
 
-                row_ranges = @"Page $(current_page + 1) of $(total_pages) ($(1 + offset) - $(offset + current_relation.rows) of $(total_records) records)";
 
-                if (offset + current_relation.rows >= total_records)
+                if (current_page + 1 >= total_pages)
                 {
                     has_next_page = false;
                 }

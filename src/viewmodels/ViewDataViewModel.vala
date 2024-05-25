@@ -29,7 +29,7 @@ public class ViewDataViewModel : DataViewModel {
                 row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
 
 
-                if (current_relation.rows < TableDataViewModel.MAX_FETCHED_ROW)
+                if (current_page + 1 >= total_pages)
                 {
                     has_next_page = false;
                 }

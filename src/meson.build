@@ -15,6 +15,7 @@ psequel_sources = files(
     'services/NavigationService.vala',
     'services/ResourceManager.vala',
     'services/SQLCompletionService.vala',
+    'services/TableColumnCompletionService.vala',
     'services/SQLService.vala',
     'services/SchemaService.vala',
     'services/StorageService.vala',
