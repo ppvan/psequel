@@ -1,6 +1,8 @@
 namespace Psequel {
 public void set_up_logging() {
     var debug_domain = Environment.get_variable("G_MESSAGES_DEBUG");
+    var prog         = GLib.Environment.get_prgname();
+    GLib.on_error_stack_trace(prog);
 
     switch (debug_domain)
     {
@@ -25,6 +27,7 @@ private void log_function(string ?domain, LogLevelFlags level, string message) {
         break;
 
     default:
+        print("Wack him");
         assert_not_reached();
     }
 }

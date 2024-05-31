@@ -18,16 +18,15 @@ public class StorageService : Object {
     }
 
     public Relation exec(string sql, out string errmsg = null) {
-        var           rows    = new List <Relation.Row>();
-        List <string> headers = null;
+        var          rows    = new Vec <Relation.Row>();
+        Vec <string> headers = new Vec <string>();
 
 
         this.connection.exec(sql, (n, values, colnames) => {
-                if (headers == null)
+                if (headers.length == 0)
                 {
-                    headers = new List <string> ();
-                    for (int i = 0; i < n; i++)
-                    {
+                    headers = new Vec <string> .with_capacity(n);
+                    for(int i = 0; i < n; i++) {
                         headers.append(colnames[i]);
                     }
                 }
@@ -42,7 +41,7 @@ public class StorageService : Object {
                 return(0);
             }, out errmsg);
 
-        return(new Relation.raw((owned)headers, (owned)rows));
+        return(new Relation.raw(headers, rows));
     }
 
     public int64 last_insert_rowid() {

@@ -5,7 +5,6 @@ public class Query : Object, Json.Serializable {
     public string sql { get; set; }
 
     public Vec <string> params { get; owned set; default = new Vec <string>(); }
-    public Vec <uint> param_types { get; owned set; default = new Vec <uint>(); }
 
     public Query(string sql) {
         base();

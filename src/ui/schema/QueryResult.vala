@@ -135,6 +135,9 @@ public class QueryResults : Adw.Bin {
                     var row   = _item.item as Relation.Row;
                     var cell  = _item.child as Psequel.DataCell;
                     int index = _fact.get_data <int> ("index");
+                    if (index >= row.size) {
+                        return ;
+                    }
                     cell.bind_data(row, index);
                 });
 

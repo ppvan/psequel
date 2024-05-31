@@ -16,9 +16,9 @@ public class Relation : Object {
 
     public string row_affected { get; private set; default = ""; }
 
-    private List <Row> data;
-    private List <string> headers;
-    private List <Type> cols_type;
+    private Vec <Row> data;
+    private Vec <string> headers;
+    private Vec <Type> cols_type;
 
     public Relation(owned Result res) {
         Object(fetch_time: 0);
@@ -30,16 +30,16 @@ public class Relation : Object {
         load_data((owned)res);
     }
 
-    public Relation.raw(owned List <string> headers, owned List <Row> data) {
+    public Relation.raw(Vec <string> headers, Vec <Row> data) {
         Object(fetch_time: 0);
-        this.rows    = (int)data.length();
-        this.cols    = (int)headers.length();
-        this.headers = (owned)headers;
-        this.data    = (owned)data;
+        this.rows    = data.length;
+        this.cols    = headers.length;
+        this.headers = headers;
+        this.data    = data;
     }
 
     public Type get_column_type(int index) {
-        return(this.cols_type.nth_data((uint)index));
+        return(this.cols_type[index]);
     }
 
     private void load_data(owned Result result) {
@@ -49,8 +49,8 @@ public class Relation : Object {
         cols         = result.get_n_fields();
         row_affected = result.get_cmd_tuples();
 
-        this.headers   = new List <string> ();
-        this.cols_type = new List <Type> ();
+        this.headers   = new Vec <string>.with_capacity(cols);
+        this.cols_type = new Vec <Type>.with_capacity(cols);
         for (int i = 0; i < cols; i++)
         {
             // Oid, should have enum for value type in VAPI but no.
@@ -87,7 +87,6 @@ public class Relation : Object {
                 break;
 
             default:
-                debug("Programming errors, unhandled Oid: %u", (uint)result.get_field_type(i));
                 this.cols_type.append(Type.STRING);
                 break;
                 // assert_not_reached ();
@@ -96,8 +95,7 @@ public class Relation : Object {
             headers.append(result.get_field_name(i));
         }
 
-        this.data = new List <Row> ();
-
+        this.data = new Vec<Row>.with_capacity (rows);
         for (int i = 0; i < rows; i++)
         {
             var row = new Row(this.headers);
@@ -114,12 +112,7 @@ public class Relation : Object {
     }
 
     public string get_header(int index) {
-        if (index >= cols)
-        {
-            return("");
-        }
-
-        return(headers.nth_data((uint)index));
+        return(headers[index]);
     }
 
     public string to_string() {
@@ -127,13 +120,13 @@ public class Relation : Object {
     }
 
     public List <Row> steal() {
-        return((owned)this.data);
+        return(this.data.as_list());
     }
 
     public string name { get; set; }
 
     public new Row @get(int index) {
-        return(data.nth_data((uint)index));
+        return(data[index]);
     }
 
     public class Iterator {
@@ -159,15 +152,15 @@ public class Relation : Object {
      * Helper class for ease of use with Relation.
      */
     public class Row : Object {
-        private List <string> data;
-        private unowned List <string> headers;
+        private Vec <string> data;
+        private unowned Vec <string> headers;
 
         public int size {
-            get { return((int)data.length()); }
+            get { return(data.length); }
         }
 
-        internal Row(List <string> headers) {
-            this.data    = new List <string> ();
+        internal Row(Vec <string> headers) {
+            this.data    = new Vec<string>.with_capacity(headers.length);
             this.headers = headers;
         }
 
@@ -175,49 +168,31 @@ public class Relation : Object {
             data.append(item);
         }
 
-        public void insert_field(int index, string item) {
-            data.insert(item, index);
-        }
-
-        public void remove_at(int index) {
-            assert(index < size);
-            assert(index >= 0);
-
-            data.remove(data.nth_data((uint)index));
-        }
-
         public new string ? @get(int index) {
-            if (index >= size)
-            {
-                return(null);
-            }
-            return(data.nth_data((uint)index));
+            return(data[index]);
         }
 
         public string ? get_by_header(string header) {
             var index = -1;
-            var cur = 0;
-            foreach (var item in this.headers) {
-                if (item == header) {
+            var cur   = 0;
+            foreach (var item in this.headers)
+            {
+                if (item == header)
+                {
                     index = cur;
                 }
-
                 cur++;
             }
 
-
-            if (index >= size || index < 0)
-            {
-                return(null);
-            }
-            return(data.nth_data((uint)index));
+            return(data[index]);
         }
 
         public string to_string() {
             var builder = new StringBuilder("");
-            data.foreach((item) => {
-                    builder.append_printf("%s\t\t", item);
-                });
+            foreach (var item in this.data)
+            {
+                builder.append_printf("%s\t\t", item);
+            }
 
             return(builder.free_and_steal());
         }
