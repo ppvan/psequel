@@ -42,6 +42,7 @@ public class Window : Adw.ApplicationWindow {
     private RestoreDialog restore_dialog;
 
 
+
     public Window(Application app) {
         Object(
             application: app

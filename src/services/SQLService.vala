@@ -175,27 +175,22 @@ public class SQLService : Object {
         }
     }
 
-    private async Result exec_query_params_internal(string query, List <string> params) throws PsequelError {
+    private async Result exec_query_params_internal(string query, Vec <string> params) throws PsequelError {
         debug("Exec Param: %s", query);
         TimePerf.begin();
 
         SourceFunc callback = exec_query_params_internal.callback;
         Result result       = null;
-        var    params_array = ValueConverter.list_to_array <string>(params);
 
 
         try {
             var worker = new Worker("exec query params", () => {
-                    result = active_db.exec_params(query, (int)params.length(), null, params_array, null, null, 0);
+                    result = active_db.exec_params(query, (int)params.length, null, params.as_array(), null, null, 0);
                     // Jump to yield
                     Idle.add((owned) callback);
                 });
             background.add(worker);
-
             yield;
-
-            // worker.get_result ();
-
             TimePerf.end();
 
             return((owned)result);

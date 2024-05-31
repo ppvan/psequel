@@ -1,6 +1,6 @@
 namespace Psequel {
 public class TableDataViewModel : DataViewModel {
-    public const int MAX_FETCHED_ROW = 200;
+    public const int MAX_FETCHED_ROW = 50;
 
     public Table ?selected_table { get; set; }
     // public View? current_view {get; set;}

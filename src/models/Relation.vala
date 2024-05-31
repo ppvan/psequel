@@ -100,7 +100,7 @@ public class Relation : Object {
 
         for (int i = 0; i < rows; i++)
         {
-            var row = new Row();
+            var row = new Row(this.headers);
             for (int j = 0; j < cols; j++)
             {
                 row.add_field(result.get_value(i, j));
@@ -160,13 +160,15 @@ public class Relation : Object {
      */
     public class Row : Object {
         private List <string> data;
+        private unowned List <string> headers;
 
         public int size {
             get { return((int)data.length()); }
         }
 
-        internal Row() {
-            this.data = new List <string> ();
+        internal Row(List <string> headers) {
+            this.data    = new List <string> ();
+            this.headers = headers;
         }
 
         public void add_field(string item) {
@@ -186,6 +188,25 @@ public class Relation : Object {
 
         public new string ? @get(int index) {
             if (index >= size)
+            {
+                return(null);
+            }
+            return(data.nth_data((uint)index));
+        }
+
+        public string ? get_by_header(string header) {
+            var index = -1;
+            var cur = 0;
+            foreach (var item in this.headers) {
+                if (item == header) {
+                    index = cur;
+                }
+
+                cur++;
+            }
+
+
+            if (index >= size || index < 0)
             {
                 return(null);
             }

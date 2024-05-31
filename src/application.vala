@@ -184,6 +184,7 @@ public class Application : Adw.Application {
         typeof(Psequel.ConnectionView).ensure();
         typeof(Psequel.QueryResults).ensure();
         typeof(Psequel.QueryEditor).ensure();
+        typeof(Psequel.EditRowDialog).ensure();
         typeof(Psequel.TableStructureView).ensure();
         typeof(Psequel.TableColumnInfo).ensure();
         typeof(Psequel.TableIndexInfo).ensure();

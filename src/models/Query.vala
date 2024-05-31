@@ -4,8 +4,8 @@ public class Query : Object, Json.Serializable {
     public int64 id { get; set; default = 0; }
     public string sql { get; set; }
 
-    public List <string> params { get; owned set; default = new List <string>(); }
-    public List <uint> param_types { get; owned set; default = new List <uint>(); }
+    public Vec <string> params { get; owned set; default = new Vec <string>(); }
+    public Vec <uint> param_types { get; owned set; default = new Vec <uint>(); }
 
     public Query(string sql) {
         base();

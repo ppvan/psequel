@@ -32,7 +32,7 @@ public class StorageService : Object {
                     }
                 }
 
-                var row = new Relation.Row();
+                var row = new Relation.Row(headers);
                 for (int i = 0; i < n; i++)
                 {
                     row.add_field(values[i]);

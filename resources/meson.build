@@ -33,6 +33,7 @@ mark_ups = [
     'gtk/window.blp',
     'gtk/backup-dialog.blp',
     'gtk/restore-dialog.blp',
+    'gtk/edit-row.blp',
     'gtk/where-entry.blp'
 ]
 

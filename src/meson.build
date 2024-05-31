@@ -52,6 +52,7 @@ ui_sources = files(
     'ui/views/SchemaView.vala',
     'ui/widgets/WhereEntry.vala',
     'ui/widgets/BackupDialog.vala',
+    'ui/widgets/EditRowDialog.vala',
     'ui/widgets/DataCell.vala',
     'ui/widgets/RestoreDialog.vala',
     'ui/widgets/Shape.vala',

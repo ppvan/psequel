@@ -81,6 +81,12 @@ public class DataCell : Adw.Bin {
     private void on_cell_edit() {
         //  viewmodel.active_connection.begin (viewmodel.selected_connection);
         debug("on_cell_edit");
+        var app = autowire<Application>();
+        var window = app.active_window;
+
+        var dialog = new EditRowDialog(current_row);
+
+        dialog.present(window);
     }
 
     [GtkChild]
