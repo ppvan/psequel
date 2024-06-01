@@ -3,7 +3,6 @@ public class TableDataViewModel : DataViewModel {
     public const int MAX_FETCHED_ROW = 50;
 
     public Table ?selected_table { get; set; }
-    // public View? current_view {get; set;}
 
     public TableDataViewModel(SQLService service) {
         Object(sql_service: service);
@@ -77,6 +76,15 @@ public class TableDataViewModel : DataViewModel {
         } catch (PsequelError err) {
             this.err_msg = err.message;
         }
+    }
+
+    public async void update_row(Vec<TableField> fields) {
+        var table = this.selected_table;
+        if (table == null) {
+            return ;
+        }
+
+        yield this.sql_service.update_row(table, fields);
     }
 
     //  private inline async void 

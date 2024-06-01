@@ -124,6 +124,19 @@ public class Vec <T> : Object {
         return(-1);
     }
 
+    public Vec<T> filter(Predicate <T> pred) {
+        var vec = new Vec<T>.with_capacity(this.size);
+        for (int i = 0; i < this.size; i++)
+        {
+            if (pred(this.data[i]))
+            {
+                vec.append(this.data[i]);
+            }
+        }
+
+        return vec;
+    }
+
     public T pop() {
         if (size <= capacity / 4)
         {

@@ -41,7 +41,8 @@ public class SQLService : Object {
         //  TODO make a better query builder
         var query_builder = new StringBuilder("SELECT * FROM");
         query_builder.append(@" $schema_name.$escape_tbname ");
-        if (where_clause.strip() != "") {
+        if (where_clause.strip() != "")
+        {
             query_builder.append(@" WHERE $where_clause ");
         }
         query_builder.append(@" LIMIT $limit OFFSET $offset ");
@@ -64,7 +65,7 @@ public class SQLService : Object {
                     active_db = Postgres.connect_db(db_url);
 
                     // Jump to yield
-                    Idle.add((owned) callback);
+                    Idle.add((owned)callback);
                 });
             background.add(worker);
 
@@ -104,6 +105,64 @@ public class SQLService : Object {
         var table = new Relation((owned)result);
 
         return(table);
+    }
+
+    public async void update_row(Table table, Vec <TableField> fields) throws PsequelError {
+        var stringBuilder = new StringBuilder("UPDATE ");
+        stringBuilder.append(escape_tablename(table));
+
+        var pk_fields = fields.filter((item) => {
+                return(item.column.is_primarykey);
+            });
+
+        var changed_fields = fields.filter((item) => {
+                return(item.old_value != item.new_value);
+            });
+
+        stringBuilder.append(" SET ");
+
+        bool has_changed = false;
+        int  index       = 0;
+        string[] params = new string[changed_fields.length + pk_fields.length];
+        foreach (var item in changed_fields)
+        {
+            has_changed = true;
+            index++;
+            params[index-1] = item.new_value;
+            stringBuilder.append_printf("%s = $%d,", item.column.name, index);
+        }
+
+        if (!has_changed)
+        {
+            return;
+        }
+
+        stringBuilder.erase(stringBuilder.len - 1, 1); // pop remaining ,
+
+        //  Has atleast one primary key to build WHERE clause
+        if (pk_fields.length > 0)
+        {
+            stringBuilder.append(" WHERE ");
+            foreach (var pk in pk_fields)
+            {
+                index++;
+                params[index - 1] = pk.old_value;
+                stringBuilder.append_printf("%s = $%d AND ", pk.column.name, index);
+            }
+
+            stringBuilder.erase(stringBuilder.len - 4, 4);
+        }
+
+        var query = new Query.with_params(stringBuilder.free_and_steal(), params);
+
+        yield exec_query_params(query);
+    }
+
+    private string escape_tablename(Table table) {
+        string schema_name   = active_db.escape_identifier(table.schema.name);
+        string escape_tbname = active_db.escape_identifier(table.name);
+
+        return(@"$schema_name.$escape_tbname");
     }
 
     private void check_connection_status() throws PsequelError {
@@ -154,13 +213,13 @@ public class SQLService : Object {
 
         // Boilerplate
         SourceFunc callback = exec_query_internal.callback;
-        Result result = null;
+        Result     result   = null;
         try {
             // Important line.
             var worker = new Worker("exec query", () => {
                     // Important line.
                     result = active_db.exec(query);
-                    Idle.add((owned) callback);
+                    Idle.add((owned)callback);
                 });
 
             background.add(worker);
@@ -180,14 +239,14 @@ public class SQLService : Object {
         TimePerf.begin();
 
         SourceFunc callback = exec_query_params_internal.callback;
-        Result result       = null;
+        Result     result   = null;
 
 
         try {
             var worker = new Worker("exec query params", () => {
                     result = active_db.exec_params(query, (int)params.length, null, params.as_array(), null, null, 0);
                     // Jump to yield
-                    Idle.add((owned) callback);
+                    Idle.add((owned)callback);
                 });
             background.add(worker);
             yield;

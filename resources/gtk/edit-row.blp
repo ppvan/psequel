@@ -51,10 +51,13 @@ template $PsequelEditRowDialog: Adw.Dialog {
 
                 Button {
                     label: "Cancel";
+                    clicked => $cancel_update();
                 }
 
                 Button {
                     label: "Update";
+                    clicked => $update_row();
+                    sensitive: bind template.has_changed;
 
                     styles [
                         "suggested-action"
