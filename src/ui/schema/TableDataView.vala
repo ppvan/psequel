@@ -26,24 +26,6 @@ public class TableDataView : Gtk.Box {
             });
     }
 
-    //  [GtkCallback]
-    private async void filter_query(Gtk.Button btn) {
-        yield tabledata_viewmodel.reload_data();
-    }
-
-    //  [GtkCallback]
-    private void on_filter_changed(Gtk.Editable entry) {
-
-        if (entry.text == tabledata_viewmodel.where_query) {
-            return;
-        }
-
-
-        this.tabledata_viewmodel.where_query = entry.text;
-    }
-
-    
-
     [GtkCallback]
     private async void next_page() {
         yield tabledata_viewmodel.next_page();
@@ -53,7 +35,6 @@ public class TableDataView : Gtk.Box {
     private async void pre_page() {
         yield tabledata_viewmodel.pre_page();
     }
-
 
     //  [GtkChild]
     //  private unowned Gtk.Entry filter_entry;

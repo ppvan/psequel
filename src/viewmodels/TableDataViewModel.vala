@@ -1,6 +1,6 @@
 namespace Psequel {
 public class TableDataViewModel : DataViewModel {
-    public const int MAX_FETCHED_ROW = 50;
+    public const int MAX_FETCHED_ROW = 100;
 
     public Table ?selected_table { get; set; }
 
@@ -73,6 +73,7 @@ public class TableDataViewModel : DataViewModel {
 
             is_loading = false;
             debug("Rows: %d", current_relation.rows);
+            debug("Cells: %d", DataCell.cell_pool.length);
         } catch (PsequelError err) {
             this.err_msg = err.message;
         }

@@ -179,7 +179,7 @@ public class Vec <T> : Object {
         return vec;
     }
 
-    public new T get(int index) {
+    public new T @get(int index) {
         bound_check(index);
 
         return(this.data[index]);

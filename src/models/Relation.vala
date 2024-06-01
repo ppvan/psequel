@@ -123,6 +123,10 @@ public class Relation : Object {
         return(this.data.as_list());
     }
 
+    public Relation.Row[] as_array() {
+        return this.data.as_array();
+    }
+    
     public string name { get; set; }
 
     public new Row @get(int index) {

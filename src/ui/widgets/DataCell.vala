@@ -6,8 +6,9 @@ namespace Psequel {
 public class DataCell : Adw.Bin {
     private Relation.Row current_row;
     private int current_index;
+    public bool is_busy { get; set; default = false; }
 
-    public static List <DataCell> cell_pool;
+    public static Vec <DataCell> cell_pool;
 
     const ActionEntry[] ACTION_ENTRIES = {
         { "copy",     on_cell_copy },
@@ -29,12 +30,15 @@ public class DataCell : Adw.Bin {
 
 
     public void bind_data(Psequel.Relation.Row row, int index) {
-        this.current_row   = row;
-        this.current_index = index;
-        this.label.label   = row[index];
+        this.current_row     = row;
+        this.current_index   = index;
+        var val = row[index];
+        this.label.text      = val;
+        this.label.min_chars = val.length + 1;
     }
 
     public void unbind_data(Psequel.Relation.Row row) {
+        this._is_busy = false;
     }
 
     [GtkCallback]
@@ -81,7 +85,7 @@ public class DataCell : Adw.Bin {
     private void on_cell_edit() {
         //  viewmodel.active_connection.begin (viewmodel.selected_connection);
         debug("on_cell_edit");
-        var app = autowire<Application>();
+        var app    = autowire <Application>();
         var window = app.active_window;
 
         var dialog = new EditRowDialog(current_row);
@@ -90,7 +94,7 @@ public class DataCell : Adw.Bin {
     }
 
     [GtkChild]
-    private unowned Gtk.Label label;
+    private unowned Gtk.Inscription label;
 
     [GtkChild]
     private unowned Gtk.PopoverMenu popover;

@@ -51,7 +51,6 @@ public class QueryResults : Adw.Bin {
     construct {
         stack.visible_child_name = EMPTY;
         rows = new ObservableList <Relation.Row> ();
-        alloc_columns();
 
         this.bind_property("is-loading", stack, "visible-child-name", BindingFlags.SYNC_CREATE, (binging, from, ref to) => {
                 bool current_name = from.get_boolean();
@@ -80,9 +79,14 @@ public class QueryResults : Adw.Bin {
     }
 
     private async void load_data_to_view(Relation relation) {
+
+        data_view.get_hadjustment().set_value(0);
+        data_view.get_vadjustment().set_value(0);
+
+        alloc_columns(relation.cols);
         var columns = data_view.columns;
         debug("Begin add rows to views");
-        for (int i = 0;; i++)
+        for (int i = 0; i < relation.cols; i++)
         {
             var raw_col = columns.get_item(i);
             if (raw_col == null)
@@ -90,11 +94,7 @@ public class QueryResults : Adw.Bin {
                 break;
             }
             var col = raw_col as Gtk.ColumnViewColumn;
-            if (i >= relation.cols)
-            {
-                col.set_visible(false);
-                continue;
-            }
+
             auto_set_sorter(col, relation.get_column_type(i), i);
             col.set_title(relation.get_header(i));
             col.set_visible(true);
@@ -103,31 +103,30 @@ public class QueryResults : Adw.Bin {
         this.selection_model.unselect_all();
         this.sort_model.sorter = data_view.get_sorter();
 
-        rows.freeze_notify();
-        rows.clear();
-        rows.append_all(relation.steal());
-        rows.thaw_notify();
+        rows.replace(relation);
     }
 
-    private void alloc_columns() {
-        for (int i = 0; i < Application.MAX_COLUMNS; i++)
+    private void alloc_columns(int size) {
+        for (int i = 0; i < size; i++)
         {
             var factory = new Gtk.SignalListItemFactory();
             factory.set_data <int> ("index", i);
 
             factory.setup.connect((_fact, obj) => {
                     var _item = (Gtk.ListItem)obj;
-                    if (DataCell.cell_pool == null || DataCell.cell_pool.next == null)
-                    {
-                        for (size_t j = 0; j < Application.BATCH_SIZE; j++)
-                        {
-                            DataCell.cell_pool.append(new DataCell());
-                        }
-                    }
 
-                    var cell           = DataCell.cell_pool.data;
-                    DataCell.cell_pool = (owned)DataCell.cell_pool.next;
-                    _item.child        = cell;
+                    if (DataCell.cell_pool.length >= 1)
+                    {
+                        var cell     = DataCell.cell_pool.pop();
+                        cell.is_busy = true;
+                        _item.child  = cell;
+                    }
+                    else
+                    {
+                        var cell     = new DataCell();
+                        cell.is_busy = true;
+                        _item.child  = cell;
+                    }
                 });
 
             factory.bind.connect((_fact, obj) => {
@@ -135,8 +134,9 @@ public class QueryResults : Adw.Bin {
                     var row   = _item.item as Relation.Row;
                     var cell  = _item.child as Psequel.DataCell;
                     int index = _fact.get_data <int> ("index");
-                    if (index >= row.size) {
-                        return ;
+                    if (index >= row.size)
+                    {
+                        return;
                     }
                     cell.bind_data(row, index);
                 });
@@ -149,9 +149,10 @@ public class QueryResults : Adw.Bin {
                 });
 
             factory.teardown.connect((obj) => {
-                    var _item = (Gtk.ListItem)obj;
-                    var cell  = _item.child as Psequel.DataCell;
-                    DataCell.cell_pool.append((owned)cell);
+                    var _item    = (Gtk.ListItem)obj;
+                    var cell     = (Psequel.DataCell)_item.child;
+                    cell.is_busy = false;
+                    DataCell.cell_pool.append(cell);
                 });
 
             Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn("", factory);
@@ -164,9 +165,7 @@ public class QueryResults : Adw.Bin {
 
         this.sort_model             = new Gtk.SortListModel(rows, null);
         this.sort_model.incremental = true;
-
         this.selection_model = new Gtk.SingleSelection(sort_model);
-
         data_view.set_model(this.selection_model);
     }
 

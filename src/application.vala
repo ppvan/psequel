@@ -35,9 +35,9 @@ public class Application : Adw.Application {
     public static ThreadPool <Worker> background;
 
     public int color_scheme { get; set; }
-    public const int MAX_COLUMNS        = 128;
-    public const int PRE_ALLOCATED_CELL = 1024;
-    public const int BATCH_SIZE         = 16;
+    public const int MAX_COLUMNS        = 24;
+    public const int PRE_ALLOCATED_CELL = 256;
+    public const int BATCH_SIZE         = 32;
     public const int MIGRATION_VERSION  = 1;
 
     public static List <uint> tasks;
@@ -76,9 +76,9 @@ public class Application : Adw.Application {
 
 
         // Pre-allocated widget, scheduled after window presented
-        DataCell.cell_pool = new List <DataCell> ();
+        DataCell.cell_pool = new Vec <DataCell>.with_capacity(Application.PRE_ALLOCATED_CELL);
         var id = Idle.add(() => {
-                size_t empty_cells = DataCell.cell_pool.length();
+                size_t empty_cells = DataCell.cell_pool.length;
                 if (empty_cells < Application.PRE_ALLOCATED_CELL)
                 {
                     //  debug("Empty Cell: %llu", empty_cells);

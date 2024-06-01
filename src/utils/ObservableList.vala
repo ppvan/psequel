@@ -57,6 +57,10 @@ public class ObservableList <T> : Object, ListModel {
         items.foreach((item) => _data.append((Object)item));
     }
 
+    public void replace(Relation relation) {
+        _data.splice(0, size, relation.as_array());
+    }
+
     public void append(T item) {
         _data.append((Object)item);
     }

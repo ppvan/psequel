@@ -2,6 +2,11 @@
 
 debug:
 	rm -rf build/resources/gtk
+	meson configure -Dbuildtype=debug build
+	ninja -C build/ && G_MESSAGES_DEBUG=Psequel ./build/src/psequel
+
+release:
+	meson configure -Dbuildtype=release build
 	ninja -C build/ && G_MESSAGES_DEBUG=Psequel ./build/src/psequel
 
 clean:
