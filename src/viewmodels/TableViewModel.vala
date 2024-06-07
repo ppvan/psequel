@@ -9,161 +9,161 @@ namespace Psequel {
 
         // public signal void table_changed (Table table);
 
-        public TableViewModel (SQLService sql_service) {
-            base ();
+        public TableViewModel(SQLService sql_service){
+            base();
             this.sql_service = sql_service;
-            this.notify["selected-table"].connect (() => {
-                EventBus.instance ().selected_table_changed (selected_table);
+            this.notify["selected-table"].connect(() => {
+                EventBus.instance().selected_table_changed(selected_table);
             });
 
-            EventBus.instance ().schema_changed.connect ((schema) => {
-                tables.clear ();
-                load_tables.begin (schema);
+            EventBus.instance().schema_changed.connect((schema) => {
+                tables.clear();
+                load_tables.begin(schema);
             });
         }
 
-        public void select_table (Table ? table) {
+        public void select_table (Table ? table){
             if (table == null) {
                 return;
             }
-            debug ("selecting table %s", table.name);
+            debug("selecting table %s", table.name);
             selected_table = table;
         }
 
-        public void select_index (int index) {
+        public void select_index (int index){
             if (tables[index] == null) {
                 return;
             }
-            debug ("selecting table %s", tables[index].name);
+            debug("selecting table %s", tables[index].name);
             selected_table = tables[index];
         }
 
         private async void load_tables (Schema schema) throws PsequelError {
-            debug ("loading tables in %s", schema.name);
-            var query = new Query.with_params (TABLE_LIST, { schema.name });
+            debug("loading tables in %s", schema.name);
+            var query = new Query.with_params(TABLE_LIST, { schema.name });
             var relation = yield sql_service.exec_query_params (query);
 
             var table_vec = new Vec<Table>();
 
             foreach (var item in relation) {
-                var table = new Table (schema);
+                var table = new Table(schema);
                 table.name = item[0];
-                table.row_count = int64.parse (item[1], 10);
+                table.row_count = int64.parse(item[1], 10);
 
-                table_vec.append (table);
+                table_vec.append(table);
             }
 
-            debug ("%d tables loaded", table_vec.length);
+            debug("%d tables loaded", table_vec.length);
 
-            var columns_query = new Query.with_params (COLUMN_SQL, { schema.name });
+            var columns_query = new Query.with_params(COLUMN_SQL, { schema.name });
             var columns_relation = yield sql_service.exec_query_params (columns_query);
 
             foreach (var item in columns_relation) {
-                var col = new Column ();
+                var col = new Column();
                 col.table = item[0];
                 col.name = item[1];
                 col.column_type = item[2];
                 col.nullable = item[3] == "t" ? true : false;
                 col.default_val = item[4];
 
-                int index = table_vec.find ((table) => {
-                    return (table.name == col.table);
+                int index = table_vec.find((table) => {
+                    return(table.name == col.table);
                 });
 
                 if (index == -1) {
-                    var new_table = new Table (schema);
+                    var new_table = new Table(schema);
                     new_table.name = col.table;
-                    new_table.columns.append (col);
-                    table_vec.append (new_table);
+                    new_table.columns.append(col);
+                    table_vec.append(new_table);
                     continue;
                 }
 
-                table_vec[index].columns.append (col);
+                table_vec[index].columns.append(col);
 
-                debug ("table-name: %s, columns: %d, col-name: %s", table_vec[index].name, table_vec[index].columns.length, col.name);
+                debug("table-name: %s, columns: %d, col-name: %s", table_vec[index].name, table_vec[index].columns.length, col.name);
             }
 
-            var indexes_query = new Query.with_params (INDEX_SQL, { schema.name });
+            var indexes_query = new Query.with_params(INDEX_SQL, { schema.name });
             var indexes_relation = yield sql_service.exec_query_params (indexes_query);
 
             foreach (var item in indexes_relation) {
-                var index = new Index ();
+                var index = new Index();
                 index.name = item[0];
                 index.table = item[1];
-                index.columns = parse_array_result (item[2]);
+                index.columns = parse_array_result(item[2]);
                 index.indexdef = item[2];
                 index.size = item[3];
                 index.unique = item[4] == "t" ? true : false;
                 index.index_type = item[5];
 
-                int idx = table_vec.find ((table) => {
-                    return (table.name == index.table);
+                int idx = table_vec.find((table) => {
+                    return(table.name == index.table);
                 });
 
                 if (idx == -1) {
-                    var new_table = new Table (schema);
+                    var new_table = new Table(schema);
                     new_table.name = index.table;
-                    new_table.indexes.append (index);
-                    table_vec.append (new_table);
+                    new_table.indexes.append(index);
+                    table_vec.append(new_table);
                     continue;
                 }
 
-                table_vec[idx].indexes.append (index);
+                table_vec[idx].indexes.append(index);
             }
 
-            var primary_query = new Query.with_params (PK_SQL, { schema.name });
+            var primary_query = new Query.with_params(PK_SQL, { schema.name });
             var primary_relation = yield sql_service.exec_query_params (primary_query);
 
             foreach (var item in primary_relation) {
-                var pk = new PrimaryKey ();
+                var pk = new PrimaryKey();
                 pk.name = item[0];
                 pk.table = item[1];
-                pk.columns = parse_array_result (item[2]);
+                pk.columns = parse_array_result(item[2]);
 
 
 
-                int idx = table_vec.find ((table) => {
-                    return (table.name == pk.table);
+                int idx = table_vec.find((table) => {
+                    return(table.name == pk.table);
                 });
 
                 if (idx == -1) {
-                    var new_table = new Table (schema);
+                    var new_table = new Table(schema);
                     new_table.name = pk.table;
-                    new_table.primaty_keys.append (pk);
-                    table_vec.append (new_table);
+                    new_table.primaty_keys.append(pk);
+                    table_vec.append(new_table);
                     continue;
                 }
 
-                table_vec[idx].primaty_keys.append (pk);
+                table_vec[idx].primaty_keys.append(pk);
             }
 
-            var foreignkey_query = new Query.with_params (FK_SQL, { schema.name });
+            var foreignkey_query = new Query.with_params(FK_SQL, { schema.name });
             var foreignkey_relation = yield sql_service.exec_query_params (foreignkey_query);
 
             foreach (var item in foreignkey_relation) {
-                var fk = new ForeignKey ();
+                var fk = new ForeignKey();
                 fk.name = item[0];
                 fk.table = item[1];
-                fk.columns = parse_array_result (item[2]);
+                fk.columns = parse_array_result(item[2]);
                 fk.fk_table = item[3];
-                fk.fk_columns = parse_array_result (item[4]);
+                fk.fk_columns = parse_array_result(item[4]);
 
-                int idx = table_vec.find ((table) => {
-                    return (table.name == fk.table);
+                int idx = table_vec.find((table) => {
+                    return(table.name == fk.table);
                 });
 
                 if (idx == -1) {
-                    var new_table = new Table (schema);
+                    var new_table = new Table(schema);
                     new_table.name = fk.table;
-                    new_table.foreign_keys.append (fk);
-                    table_vec.append (new_table);
+                    new_table.foreign_keys.append(fk);
+                    table_vec.append(new_table);
                     continue;
                 }
 
-                table_vec[idx].foreign_keys.append (fk);
+                table_vec[idx].foreign_keys.append(fk);
             }
 
-            this.tables.clear ();
+            this.tables.clear();
             foreach (var item in table_vec) {
 
                 foreach (var col in item.columns) {
@@ -183,7 +183,7 @@ namespace Psequel {
                 }
 
 
-                this.tables.append (item);
+                this.tables.append(item);
             }
         }
 

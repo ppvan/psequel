@@ -9,27 +9,27 @@ namespace Psequel {
 
         private SQLService sql_service;
 
-        public SchemaService (SQLService service) {
+        public SchemaService(SQLService service){
             this.sql_service = service;
         }
 
         /** Get the schema list.
          */
-        public async List<Schema> schema_list () {
+        public async List<Schema> schema_list (){
             var list = new List<Schema> ();
             try {
-                var query = new Query (SCHEMA_LIST_SQL);
+                var query = new Query(SCHEMA_LIST_SQL);
                 var relation = yield sql_service.exec_query (query);
 
                 for (int i = 0; i < relation.rows; i++) {
-                    var s = new Schema (relation[i][0]);
-                    list.append (s);
+                    var s = new Schema(relation[i][0]);
+                    list.append(s);
                 }
             } catch (PsequelError err) {
-                debug (err.message);
+                debug(err.message);
             }
 
-            return (list);
+            return(list);
         }
     }
 }

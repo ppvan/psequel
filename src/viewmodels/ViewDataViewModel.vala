@@ -4,16 +4,16 @@ namespace Psequel {
         // public View? current_view {get; set;}
 
 
-        public ViewDataViewModel (SQLService service) {
-            base ();
+        public ViewDataViewModel(SQLService service){
+            base();
             this.sql_service = service;
 
-            this.notify["selected-view"].connect (() => {
+            this.notify["selected-view"].connect(() => {
                 current_page = 0;
-                reload_data.begin ();
+                reload_data.begin();
             });
 
-            this.notify["current-page"].connect (() => {
+            this.notify["current-page"].connect(() => {
                 if (current_page > 0) {
                     has_pre_page = true;
                 } else {
@@ -21,7 +21,7 @@ namespace Psequel {
                 }
             });
 
-            this.notify["current-relation"].connect (() => {
+            this.notify["current-relation"].connect(() => {
                 int offset = TableDataViewModel.MAX_FETCHED_ROW * current_page;
                 row_ranges = @"Rows $(1 + offset) - $(offset + current_relation.rows)";
 
@@ -33,38 +33,38 @@ namespace Psequel {
                 }
             });
 
-            EventBus.instance ().selected_view_changed.connect ((view) => {
+            EventBus.instance().selected_view_changed.connect((view) => {
                 selected_view = view;
             });
         }
 
-        public async void reload_data () {
+        public async void reload_data (){
             yield load_data (selected_view, current_page);
         }
 
-        public async void next_page () {
+        public async void next_page (){
             current_page = current_page + 1;
             yield load_data (selected_view, current_page);
         }
 
-        public async void pre_page () {
+        public async void pre_page (){
             current_page = current_page - 1;
             yield load_data (selected_view, current_page);
         }
 
         [GtkCallback]
-        public async void filter_query (Gtk.Button btn) {
+        public async void filter_query (Gtk.Button btn){
 
-            debug ("Hey");
+            debug("Hey");
         }
 
-        private inline async void load_data (View view, int page) {
+        private inline async void load_data (View view, int page){
             try {
                 is_loading = true;
                 current_relation = yield sql_service.select (view, page, TableDataViewModel.MAX_FETCHED_ROW);
 
                 is_loading = false;
-                debug ("Rows: %d", current_relation.rows);
+                debug("Rows: %d", current_relation.rows);
             } catch (PsequelError err) {
                 this.err_msg = err.message;
             }

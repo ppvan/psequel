@@ -14,22 +14,22 @@ namespace Psequel {
         }
 
         private static EventBus _instance;
-        public static EventBus instance () {
+        public static EventBus instance (){
             if (EventBus._instance == null) {
-                _instance = new EventBus ();
+                _instance = new EventBus();
             }
 
-            return (_instance);
+            return(_instance);
         }
 
-        public static void clone () {
+        public static void clone (){
             if (_instance != null) {
-                _protypes.append (_instance);
+                _protypes.append(_instance);
             }
 
-            _instance = new EventBus ();
+            _instance = new EventBus();
         }
 
-        private EventBus () {}
+        private EventBus(){}
     }
 }

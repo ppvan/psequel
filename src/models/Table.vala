@@ -13,8 +13,8 @@ namespace Psequel {
         public Vec<ForeignKey> foreign_keys { get; owned set; default = new Vec<ForeignKey> (); }
         public Vec<PrimaryKey> primaty_keys { get; owned set; default = new Vec<PrimaryKey> (); }
 
-        public Table (Schema schema) {
-            Object (schema: schema);
+        public Table(Schema schema){
+            Object(schema: schema);
         }
     }
 
@@ -22,8 +22,8 @@ namespace Psequel {
         public Vec<Column> columns { get; owned set; default = new Vec<Column> (); }
         public string defs { get; set; default = ""; }
 
-        public View (Schema schema) {
-            Object (schema: schema);
+        public View(Schema schema){
+            Object(schema: schema);
         }
     }
 }

@@ -43,8 +43,8 @@ namespace Psequel {
         public static bool is_running = false;
         public static Settings settings;
 
-        public Application () {
-            Object (application_id: Config.APP_ID, flags: ApplicationFlags.DEFAULT_FLAGS);
+        public Application(){
+            Object(application_id: Config.APP_ID, flags: ApplicationFlags.DEFAULT_FLAGS);
         }
 
         construct {
@@ -54,35 +54,36 @@ namespace Psequel {
                 { "new-window", this.on_new_window },
                 { "quit", this.quit }
             };
-            this.add_action_entries (action_entries, this);
+            this.add_action_entries(action_entries, this);
 
-            this.set_accels_for_action ("app.new-window", { "<Ctrl><Shift>n" });
-            this.set_accels_for_action ("app.quit", { "<primary>q" });
-            this.set_accels_for_action ("app.preferences", { "<primary>comma" });
 
-            this.set_accels_for_action ("win.import", { "<Ctrl><Shift>o" });
-            this.set_accels_for_action ("win.export", { "<Ctrl><Shift>e" });
-            this.set_accels_for_action ("win.run-query", { "<Ctrl>Return" });
+            this.set_accels_for_action("app.new-window", { "<Ctrl><Shift>n" });
+            this.set_accels_for_action("app.quit", { "<primary>q" });
+            this.set_accels_for_action("app.preferences", { "<primary>comma" });
+
+            this.set_accels_for_action("win.import", { "<Ctrl><Shift>o" });
+            this.set_accels_for_action("win.export", { "<Ctrl><Shift>e" });
+            this.set_accels_for_action("win.run-query", { "<Ctrl>Return" });
 
             // this.set_accels_for_action ("conn.dupplicate", { "<Ctrl>D" });
         }
 
-        public override void activate () {
-            base.activate ();
+        public override void activate (){
+            base.activate();
 
-            var window = new_window ();
-            window.present ();
+            var window = new_window();
+            window.present();
 
 
             // Pre-allocated widget, scheduled after window presented
             DataCell.cell_pool = new Vec<DataCell>.with_capacity (Application.PRE_ALLOCATED_CELL);
 
-            var id = Idle.add (() => {
+            var id = Idle.add(() => {
                 size_t empty_cells = DataCell.cell_pool.length;
                 if (empty_cells < Application.PRE_ALLOCATED_CELL) {
                     // debug("Empty Cell: %llu", empty_cells);
                     for (size_t i = 0; i < Application.BATCH_SIZE; i++) {
-                        DataCell.cell_pool.append (new DataCell ());
+                        DataCell.cell_pool.append(new DataCell());
                     }
                 } else if (empty_cells >= Application.PRE_ALLOCATED_CELL) {
                     return false;
@@ -91,40 +92,40 @@ namespace Psequel {
                 return Application.is_running;
             }, Priority.DEFAULT_IDLE);
 
-            Application.tasks.append (id);
+            Application.tasks.append(id);
         }
 
-        public override void startup () {
-            base.startup ();
-            GtkSource.init ();
-            set_up_logging ();
+        public override void startup (){
+            base.startup();
+            GtkSource.init();
+            set_up_logging();
 
-            Application.settings = new Settings (this.application_id);
-            settings.bind ("color-scheme", this, "color_scheme", SettingsBindFlags.GET);
-            this.notify["color-scheme"].connect (update_color_scheme);
+            Application.settings = new Settings(this.application_id);
+            settings.bind("color-scheme", this, "color_scheme", SettingsBindFlags.GET);
+            this.notify["color-scheme"].connect(update_color_scheme);
 
             Application.tasks = new List<uint> ();
             Application.is_running = true;
 
-            debug ("Begin to load resources");
+            debug("Begin to load resources");
             try {
                 // Don't change the max_thread because libpq did not support many query with 1 connection.
                 background = new ThreadPool<Worker>.with_owned_data ((worker) => {
-                    worker.run ();
+                    worker.run();
                 }, 1, false);
             } catch (ThreadError err) {
-                debug (err.message);
-                assert_not_reached ();
+                debug(err.message);
+                assert_not_reached();
             }
-            debug ("Resources loaded");
+            debug("Resources loaded");
         }
 
-        public override void shutdown () {
-            base.shutdown ();
+        public override void shutdown (){
+            base.shutdown();
             Application.is_running = false;
         }
 
-        public void update_color_scheme () {
+        public void update_color_scheme (){
             switch (this.color_scheme) {
                 case ApplicationStyle.SYSTEM:
                     style_manager.color_scheme = Adw.ColorScheme.DEFAULT;
@@ -139,12 +140,12 @@ namespace Psequel {
                     break;
 
                 default:
-                    assert_not_reached ();
+                    assert_not_reached();
             }
         }
 
-        public void on_something () {
-            debug ("Dark: %b", style_manager.dark);
+        public void on_something (){
+            debug("Dark: %b", style_manager.dark);
             if (style_manager.dark) {
                 style_manager.color_scheme = Adw.ColorScheme.FORCE_LIGHT;
             } else {
@@ -154,42 +155,42 @@ namespace Psequel {
             // style_manager.dark = !style_manager.dark;
         }
 
-        public static int main (string[] args) {
-            ensure_types ();
-            var app = new Psequel.Application ();
+        public static int main (string[] args){
+            ensure_types();
+            var app = new Psequel.Application();
 
-            return app.run (args);
+            return app.run(args);
         }
 
         /* register needed types, allow me to ref a template inside a template */
-        private static void ensure_types () {
-            typeof (Psequel.StyleSwitcher).ensure ();
-            typeof (Psequel.TableRow).ensure ();
-            typeof (Psequel.TableGraph).ensure ();
-            typeof (Psequel.WhereEntry).ensure ();
-            typeof (Psequel.DataCell).ensure ();
-            typeof (Psequel.BackupDialog).ensure ();
-            typeof (Psequel.RestoreDialog).ensure ();
-            typeof (Psequel.SchemaView).ensure ();
+        private static void ensure_types (){
+            typeof (Psequel.StyleSwitcher).ensure();
+            typeof (Psequel.TableRow).ensure();
+            typeof (Psequel.TableGraph).ensure();
+            typeof (Psequel.WhereEntry).ensure();
+            typeof (Psequel.DataCell).ensure();
+            typeof (Psequel.BackupDialog).ensure();
+            typeof (Psequel.RestoreDialog).ensure();
+            typeof (Psequel.SchemaView).ensure();
 
-            typeof (Psequel.ConnectionRow).ensure ();
-            typeof (Psequel.ConnectionView).ensure ();
-            typeof (Psequel.QueryResults).ensure ();
-            typeof (Psequel.QueryEditor).ensure ();
-            typeof (Psequel.EditRowDialog).ensure ();
-            typeof (Psequel.TableStructureView).ensure ();
-            typeof (Psequel.TableColumnInfo).ensure ();
-            typeof (Psequel.TableIndexInfo).ensure ();
-            typeof (Psequel.ViewStructureView).ensure ();
-            typeof (Psequel.TableDataView).ensure ();
-            typeof (Psequel.ViewDataView).ensure ();
+            typeof (Psequel.ConnectionRow).ensure();
+            typeof (Psequel.ConnectionView).ensure();
+            typeof (Psequel.QueryResults).ensure();
+            typeof (Psequel.QueryEditor).ensure();
+            typeof (Psequel.EditRowDialog).ensure();
+            typeof (Psequel.TableStructureView).ensure();
+            typeof (Psequel.TableColumnInfo).ensure();
+            typeof (Psequel.TableIndexInfo).ensure();
+            typeof (Psequel.ViewStructureView).ensure();
+            typeof (Psequel.TableDataView).ensure();
+            typeof (Psequel.ViewDataView).ensure();
         }
 
-        private void on_about_action () {
+        private void on_about_action (){
             string[] developers = { "ppvan" };
 
-            var about = new Adw.AboutWindow () {
-                transient_for = this.get_active_window (),
+            var about = new Adw.AboutWindow(){
+                transient_for = this.get_active_window(),
                 application_name = Config.APP_NAME,
                 application_icon = Config.APP_ID,
                 developer_name = "Phạm Văn Phúc",
@@ -204,22 +205,22 @@ namespace Psequel {
                 },
             };
 
-            about.present ();
+            about.present();
         }
 
-        private void on_new_window () {
-            var window = new_window ();
-            window.present ();
+        private void on_new_window (){
+            var window = new_window();
+            window.present();
         }
 
-        private void on_preferences_action () {
-            var preference = new PreferencesWindow (){
+        private void on_preferences_action (){
+            var preference = new PreferencesWindow(){
                 transient_for = this.active_window,
                 modal = true,
                 application = this,
             };
 
-            preference.present ();
+            preference.present();
         }
 
         /**
@@ -228,76 +229,76 @@ namespace Psequel {
          * Because child widget is created before window, signals can only be connect when window is init.
          * This result to another event to notify window is ready and widget should setup signals
          */
-        private Window new_window () {
+        private Window new_window (){
             // Clone all singleton instances for each window
-            Container.clone ();
-            EventBus.clone ();
-            create_viewmodels ();
-            var window = new Window (this);
+            Container.clone();
+            EventBus.clone();
+            create_viewmodels();
+            var window = new Window(this);
 
             return window;
         }
 
-        private Container create_viewmodels () {
-            var container = Container.instance ();
-            var app_data_dir = Path.build_filename (GLib.Environment.get_user_data_dir (), Config.APP_ID);
-            DirUtils.create_with_parents (app_data_dir, 0777);
+        private Container create_viewmodels (){
+            var container = Container.instance();
+            var app_data_dir = Path.build_filename(GLib.Environment.get_user_data_dir(), Config.APP_ID);
+            DirUtils.create_with_parents(app_data_dir, 0777);
 
-            var db_file = File.new_for_path (Path.build_filename (app_data_dir, "database.sqlite3"));
+            var db_file = File.new_for_path(Path.build_filename(app_data_dir, "database.sqlite3"));
 
             // global things
-            container.register (this);
-            container.register (Application.settings);
+            container.register(this);
+            container.register(Application.settings);
 
 
             // services
-            var storage_service = new StorageService (db_file.get_path ());
-            container.register (storage_service);
+            var storage_service = new StorageService(db_file.get_path());
+            container.register(storage_service);
 
-            var migration_service = new MigrationService ();
-            migration_service.set_up_baseline ();
-            migration_service.apply_migrations (Application.MIGRATION_VERSION);
-            container.register (migration_service);
+            var migration_service = new MigrationService();
+            migration_service.set_up_baseline();
+            migration_service.apply_migrations(Application.MIGRATION_VERSION);
+            container.register(migration_service);
 
 
-            var sql_service = new SQLService (Application.background);
-            var schema_service = new SchemaService (sql_service);
-            var connection_repo = new ConnectionRepository ();
-            var query_repo = new QueryRepository ();
-            var navigation = new NavigationService ();
-            var export = new ExportService ();
-            var backup_service = new BackupService ();
-            var completer = new CompleterService (sql_service);
+            var sql_service = new SQLService(Application.background);
+            var schema_service = new SchemaService(sql_service);
+            var connection_repo = new ConnectionRepository();
+            var query_repo = new QueryRepository();
+            var navigation = new NavigationService();
+            var export = new ExportService();
+            var backup_service = new BackupService();
+            var completer = new CompleterService(sql_service);
 
             // viewmodels
-            var conn_vm = new ConnectionViewModel (connection_repo, sql_service, navigation);
-            var sche_vm = new SchemaViewModel (schema_service);
-            var table_vm = new TableViewModel (sql_service);
-            var view_vm = new ViewViewModel (sql_service);
+            var conn_vm = new ConnectionViewModel(connection_repo, sql_service, navigation);
+            var sche_vm = new SchemaViewModel(schema_service);
+            var table_vm = new TableViewModel(sql_service);
+            var view_vm = new ViewViewModel(sql_service);
             // var table_structure_vm = new TableStructureViewModel(sql_service);
-            var view_structure_vm = new ViewStructureViewModel (sql_service);
-            var table_data_vm = new TableDataViewModel (sql_service);
-            var view_data_vm = new ViewDataViewModel (sql_service);
-            var query_history_vm = new QueryHistoryViewModel (sql_service, query_repo);
-            var query_vm = new QueryViewModel (query_history_vm);
+            var view_structure_vm = new ViewStructureViewModel(sql_service);
+            var table_data_vm = new TableDataViewModel(sql_service);
+            var view_data_vm = new ViewDataViewModel(sql_service);
+            var query_history_vm = new QueryHistoryViewModel(sql_service, query_repo);
+            var query_vm = new QueryViewModel(query_history_vm);
 
-            container.register (sql_service);
-            container.register (backup_service);
-            container.register (completer);
-            container.register (schema_service);
-            container.register (export);
-            container.register (connection_repo);
-            container.register (navigation);
-            container.register (conn_vm);
-            container.register (sche_vm);
-            container.register (table_vm);
-            container.register (view_vm);
+            container.register(sql_service);
+            container.register(backup_service);
+            container.register(completer);
+            container.register(schema_service);
+            container.register(export);
+            container.register(connection_repo);
+            container.register(navigation);
+            container.register(conn_vm);
+            container.register(sche_vm);
+            container.register(table_vm);
+            container.register(view_vm);
             // container.register(table_structure_vm);
-            container.register (view_structure_vm);
-            container.register (table_data_vm);
-            container.register (view_data_vm);
-            container.register (query_history_vm);
-            container.register (query_vm);
+            container.register(view_structure_vm);
+            container.register(table_data_vm);
+            container.register(view_data_vm);
+            container.register(query_history_vm);
+            container.register(query_vm);
 
 
             return container;

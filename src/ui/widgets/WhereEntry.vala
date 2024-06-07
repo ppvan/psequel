@@ -3,7 +3,7 @@ using Adw;
 using GtkSource;
 
 namespace Psequel {
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/where-entry.ui")]
+    [GtkTemplate(ui = "/me/ppvan/psequel/gtk/where-entry.ui")]
     public class WhereEntry : Gtk.Box {
         // private GtkSource.
 
@@ -15,31 +15,31 @@ namespace Psequel {
         private TableDataViewModel table_data_viewmodel;
 
 
-        public WhereEntry () {
-            Object ();
+        public WhereEntry(){
+            Object();
         }
 
         construct {
             this.app = autowire<Application>();
             this.table_data_viewmodel = autowire<TableDataViewModel>();
-            default_setttings ();
+            default_setttings();
 
-            this.buffer.insert_text.connect ((ref pos, text, len) => {
+            this.buffer.insert_text.connect((ref pos, text, len) => {
                 if (text == "\n") {
-                    this.filter_query.begin ();
-                    Signal.stop_emission_by_name (this.buffer, "insert_text");
+                    this.filter_query.begin();
+                    Signal.stop_emission_by_name(this.buffer, "insert_text");
                 } else if (text == "\t") {
-                    this.editor.move_focus (Gtk.DirectionType.RIGHT);
-                    Signal.stop_emission_by_name (this.buffer, "insert_text");
+                    this.editor.move_focus(Gtk.DirectionType.RIGHT);
+                    Signal.stop_emission_by_name(this.buffer, "insert_text");
                 }
             });
 
-            this.table_data_viewmodel.bind_property ("where_query", this.buffer, "text", BindingFlags.BIDIRECTIONAL);
+            this.table_data_viewmodel.bind_property("where_query", this.buffer, "text", BindingFlags.BIDIRECTIONAL);
         }
 
 
         [GtkCallback]
-        private async void filter_query () {
+        private async void filter_query (){
             table_data_viewmodel.where_query = this.buffer.text;
             yield table_data_viewmodel.reload_data ();
         }
@@ -49,29 +49,29 @@ namespace Psequel {
 
         // }
 
-        private void default_setttings () {
-            lang_manager = LanguageManager.get_default ();
-            style_manager = StyleSchemeManager.get_default ();
-            var lang = lang_manager.get_language ("sql");
+        private void default_setttings (){
+            lang_manager = LanguageManager.get_default();
+            style_manager = StyleSchemeManager.get_default();
+            var lang = lang_manager.get_language("sql");
             buffer.language = lang;
-            completion = editor.get_completion ();
+            completion = editor.get_completion();
             completion.select_on_show = true;
             completion.page_size = 8;
-            provider = new TableColumnCompletionService ();
-            completion.add_provider (provider);
+            provider = new TableColumnCompletionService();
+            completion.add_provider(provider);
 
 
-            app.style_manager.bind_property ("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
-                var is_dark = from.get_boolean ();
+            app.style_manager.bind_property("dark", buffer, "style_scheme", BindingFlags.SYNC_CREATE, (binding, from, ref to) => {
+                var is_dark = from.get_boolean();
                 if (is_dark) {
-                    var scheme = style_manager.get_scheme ("Adwaita-dark");
-                    to.set_object (scheme);
+                    var scheme = style_manager.get_scheme("Adwaita-dark");
+                    to.set_object(scheme);
                 } else {
-                    var scheme = style_manager.get_scheme ("Adwaita");
-                    to.set_object (scheme);
+                    var scheme = style_manager.get_scheme("Adwaita");
+                    to.set_object(scheme);
                 }
 
-                return (true);
+                return(true);
             });
         }
 

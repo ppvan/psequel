@@ -7,7 +7,7 @@ namespace Psequel {
 
         // protected EventManager event_manager;
 
-        protected BaseViewModel () {
+        protected BaseViewModel(){
             // event_manager = new EventManager();
             // debug ("BaseViewModel created");
         }

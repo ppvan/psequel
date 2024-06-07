@@ -16,11 +16,11 @@ namespace Psequel {
         public SQLService sql_service { get; construct; }
         public State state { get; set; }
 
-        public QueryViewModel (QueryHistoryViewModel query_history_viewmodel) {
-            Object (query_history_viewmodel : query_history_viewmodel);
+        public QueryViewModel(QueryHistoryViewModel query_history_viewmodel){
+            Object(query_history_viewmodel : query_history_viewmodel);
         }
 
-        public async void run_selected_query () requires (this.state == State.IDLE) ensures (this.state == State.IDLE || this.state == State.ERROR) {
+        public async void run_selected_query () requires(this.state == State.IDLE) ensures(this.state == State.IDLE || this.state == State.ERROR){
             if (selected_query == null || selected_query.sql == "") {
                 return;
             }
@@ -30,15 +30,15 @@ namespace Psequel {
             this.state = State.IDLE;
         }
 
-        public async void run_query (Query query) {
+        public async void run_query (Query query){
             this.state = State.EXEC;
             yield query_history_viewmodel.exec_query (query);
 
             this.state = State.IDLE;
         }
 
-        public void selected_query_changed (string text) {
-            Query query = new Query (text);
+        public void selected_query_changed (string text){
+            Query query = new Query(text);
             selected_query = query;
         }
     }

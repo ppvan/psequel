@@ -23,12 +23,12 @@ namespace Psequel {
         private Settings settings;
 
 
-        public QueryHistoryViewModel (SQLService sql_service, QueryRepository query_repository) {
-            Object (sql_service : sql_service, query_repository : query_repository);
+        public QueryHistoryViewModel(SQLService sql_service, QueryRepository query_repository){
+            Object(sql_service : sql_service, query_repository : query_repository);
 
             this.settings = autowire<Settings>();
-            this.query_history.append_all (query_repository.get_queries ());
-            this.notify["current-relation"].connect (() => {
+            this.query_history.append_all(query_repository.get_queries());
+            this.notify["current-relation"].connect(() => {
                 success = true;
                 row_affected = @"$(current_relation.row_affected) row affected.";
 
@@ -44,34 +44,34 @@ namespace Psequel {
             });
         }
 
-        public async void exec_query (Query query) {
+        public async void exec_query (Query query){
             yield run_query_internal (query);
 
-            query_history.prepend (query);
-            query_repository.append_query (query);
+            query_history.prepend(query);
+            query_repository.append_query(query);
             selected_query = query;
         }
 
-        public async void exec_history (Query query) {
-            if (!settings.get_boolean ("auto-exec-history")) {
+        public async void exec_history (Query query){
+            if (!settings.get_boolean("auto-exec-history")) {
                 return;
             }
 
-            debug ("setting: %s", settings.get_boolean ("auto-exec-history") ? "true" : "false");
+            debug("setting: %s", settings.get_boolean("auto-exec-history") ? "true" : "false");
 
             yield run_query_internal (query);
 
-            query_history.remove (query);
-            query_history.prepend (query);
+            query_history.remove(query);
+            query_history.prepend(query);
             selected_query = query;
         }
 
-        public async void clear_history () {
-            query_history.clear ();
-            query_repository.clear ();
+        public async void clear_history (){
+            query_history.clear();
+            query_repository.clear();
         }
 
-        private inline async bool run_query_internal (Query query) {
+        private inline async bool run_query_internal (Query query){
             is_loading = true;
 
             try {
@@ -79,13 +79,13 @@ namespace Psequel {
 
                 is_loading = false;
 
-                return (true);
+                return(true);
             } catch (PsequelError err) {
                 this.err_msg = err.message;
             }
 
             is_loading = false;
-            return (false);
+            return(false);
         }
     }
 }

@@ -6,40 +6,40 @@ namespace Psequel {
         private TableViewModel table_viewmodel;
 
         private SchemaViewModel schema_viewmodel;
-        public SQLCompletionService () {
-            base ();
+        public SQLCompletionService(){
+            base();
             this.table_viewmodel = autowire<TableViewModel>();
             this.schema_viewmodel = autowire<SchemaViewModel> ();
             this.completer = autowire<CompleterService> ();
 
-            var expression = new Gtk.PropertyExpression (typeof (Candidate), null, "value");
-            filter = new Gtk.StringFilter (expression);
+            var expression = new Gtk.PropertyExpression(typeof (Candidate), null, "value");
+            filter = new Gtk.StringFilter(expression);
             filter.match_mode = Gtk.StringFilterMatchMode.PREFIX;
             filter.ignore_case = true;
 
-            model = new Gtk.FilterListModel (null, filter);
+            model = new Gtk.FilterListModel(null, filter);
         }
 
-        public int get_priority (GtkSource.CompletionContext context) {
-            return (2000);
+        public int get_priority (GtkSource.CompletionContext context){
+            return(2000);
         }
 
-        public void activate (GtkSource.CompletionContext context, GtkSource.CompletionProposal proposal) {
+        public void activate (GtkSource.CompletionContext context, GtkSource.CompletionProposal proposal){
             var model = (Candidate) proposal;
-            var buf = context.get_buffer ();
+            var buf = context.get_buffer();
 
-            buf.begin_user_action ();
+            buf.begin_user_action();
             Gtk.TextIter start, end;
-            context.get_bounds (out start, out end);
+            context.get_bounds(out start, out end);
 
-            if (start.compare (end) != 0) {
-                buf.delete_range (start, end);
+            if (start.compare(end) != 0) {
+                buf.delete_range(start, end);
             }
-            buf.insert_at_cursor (model.value, model.value.length);
-            buf.end_user_action ();
+            buf.insert_at_cursor(model.value, model.value.length);
+            buf.end_user_action();
         }
 
-        public void display (GtkSource.CompletionContext context, GtkSource.CompletionProposal proposal, GtkSource.CompletionCell cell) {
+        public void display (GtkSource.CompletionContext context, GtkSource.CompletionProposal proposal, GtkSource.CompletionCell cell){
             var candidate = (Candidate) proposal;
             switch (cell.column) {
                 // name
@@ -72,158 +72,158 @@ namespace Psequel {
             }
         }
 
-        public bool is_trigger (Gtk.TextIter iter, unichar ch) {
-            var buf = (GtkSource.Buffer) iter.get_buffer ();
+        public bool is_trigger (Gtk.TextIter iter, unichar ch){
+            var buf = (GtkSource.Buffer) iter.get_buffer();
 
-            if (buf.iter_has_context_class (iter, "comment") || buf.iter_has_context_class (iter, "string")) {
-                return (false);
+            if (buf.iter_has_context_class(iter, "comment") || buf.iter_has_context_class(iter, "string")) {
+                return(false);
             }
 
-            return (ch.to_string () == ".");
+            return(ch.to_string() == ".");
         }
 
-        public async GLib.ListModel populate_async (GtkSource.CompletionContext context, GLib.Cancellable ? cancellable) {
-            var token = context.get_word ();
+        public async GLib.ListModel populate_async (GtkSource.CompletionContext context, GLib.Cancellable ? cancellable){
+            var token = context.get_word();
             var candidates = new ObservableList<Candidate> ();
-            var buffer = context.get_buffer ();
+            var buffer = context.get_buffer();
             Gtk.TextIter begin, end;
-            context.get_bounds (out begin, out end);
+            context.get_bounds(out begin, out end);
 
-            if (is_field_access (context)) {
+            if (is_field_access(context)) {
 
-                var table = table_viewmodel.tables.find ((item) => {
-                    return item.name == get_table_name (context);
+                var table = table_viewmodel.tables.find((item) => {
+                    return item.name == get_table_name(context);
                 });
-                var fields = get_columns (table).as_list ();
+                var fields = get_columns(table).as_list();
                 var tmp = new ObservableList<Candidate>();
-                tmp.append_all (fields);
+                tmp.append_all(fields);
 
 
                 return tmp;
             }
 
 
-            if (context.get_activation () == GtkSource.CompletionActivation.INTERACTIVE) {
-                var ctx_class = buffer.get_context_classes_at_iter (begin);
+            if (context.get_activation() == GtkSource.CompletionActivation.INTERACTIVE) {
+                var ctx_class = buffer.get_context_classes_at_iter(begin);
                 if ("string" in ctx_class || "comment" in ctx_class) {
-                    return (new ObservableList<Candidate> ());
+                    return(new ObservableList<Candidate> ());
                 }
             }
 
 
-            if (token.strip () == "") {
-                var cur_stmt = buffer.text.substring (0, buffer.cursor_position).strip ();
+            if (token.strip() == "") {
+                var cur_stmt = buffer.text.substring(0, buffer.cursor_position).strip();
 
-                candidates.append_all (completer.suggestionns_from_current_query (cur_stmt));
+                candidates.append_all(completer.suggestionns_from_current_query(cur_stmt));
             } else {
-                candidates.append_all (completer.suggestionns_from_current_token (token.strip ()));
+                candidates.append_all(completer.suggestionns_from_current_token(token.strip()));
             }
 
             model.model = candidates;
 
 
-            return (model);
+            return(model);
         }
 
-        public void refilter (GtkSource.CompletionContext context, GLib.ListModel _model) {
-            var word = context.get_word ();
+        public void refilter (GtkSource.CompletionContext context, GLib.ListModel _model){
+            var word = context.get_word();
             var strfilter = (Gtk.StringFilter) this.model.filter;
             strfilter.search = word;
         }
 
-        private bool is_field_access (GtkSource.CompletionContext context) {
+        private bool is_field_access (GtkSource.CompletionContext context){
             Gtk.TextIter begin, end;
-            context.get_bounds (out begin, out end);
+            context.get_bounds(out begin, out end);
 
-            if (begin.backward_char ()) {
-                if (begin.get_char ().to_string () == ".") {
-                    return (true);
+            if (begin.backward_char()) {
+                if (begin.get_char().to_string() == ".") {
+                    return(true);
                 }
             }
 
-            return (false);
+            return(false);
         }
 
-        private Vec<Candidate> get_columns (Table table) {
+        private Vec<Candidate> get_columns (Table table){
 
             // foreach (var item in tabl)
             return table.columns.map<Candidate> ((col) => {
-                return new Candidate (col.name, "columns");
+                return new Candidate(col.name, "columns");
             });
         }
 
-        private string get_table_name (GtkSource.CompletionContext context) {
+        private string get_table_name (GtkSource.CompletionContext context){
             Gtk.TextIter begin, end;
-            var buf = context.get_buffer ();
-            context.get_bounds (out begin, out end);
-            assert (is_field_access (context));
+            var buf = context.get_buffer();
+            context.get_bounds(out begin, out end);
+            assert(is_field_access(context));
 
-            begin.backward_char ();
-            begin.backward_word_start ();
-            end.backward_char (); // skip .
+            begin.backward_char();
+            begin.backward_word_start();
+            end.backward_char(); // skip .
 
-            return buf.get_slice (begin, end, true);
+            return buf.get_slice(begin, end, true);
         }
     }
 
     public class CompleterService : Object {
         public SQLService sql_service { get; construct; }
 
-        public CompleterService (SQLService sql_service) {
-            Object (sql_service: sql_service);
+        public CompleterService(SQLService sql_service){
+            Object(sql_service: sql_service);
         }
 
-        public List<Candidate> suggestionns_from_current_query (string cur_stmt) {
-            var keywords = suggest_keywords ("");
+        public List<Candidate> suggestionns_from_current_query (string cur_stmt){
+            var keywords = suggest_keywords("");
 
             Vec<Candidate> final = new Vec<Candidate>();
 
             foreach (var item in keywords) {
-                var propose_query = cur_stmt.strip () + " " + item.value;
-                if (PGQuery.split_statement (propose_query, true) != null) {
-                    final.append (item);
+                var propose_query = cur_stmt.strip() + " " + item.value;
+                if (PGQuery.split_statement(propose_query, true) != null) {
+                    final.append(item);
                 }
             }
 
 
-            return (final.as_list ());
+            return(final.as_list());
         }
 
-        public List<Candidate> suggestionns_from_current_token (string last_word) {
-            var keywords = suggest_keywords (last_word);
-            return (keywords);
+        public List<Candidate> suggestionns_from_current_token (string last_word){
+            var keywords = suggest_keywords(last_word);
+            return(keywords);
         }
 
-        private List<Candidate> suggest_keywords (string prefix = "") {
+        private List<Candidate> suggest_keywords (string prefix = ""){
             var candidates = new List<Candidate> ();
 
             for (int i = 0; i < PGListerals.KEYWORDS.length; i++) {
                 var keyword = PGListerals.KEYWORDS[i];
-                if (match (keyword, prefix)) {
-                    candidates.append (new Candidate (PGListerals.KEYWORDS[i], "keyword"));
+                if (match(keyword, prefix)) {
+                    candidates.append(new Candidate(PGListerals.KEYWORDS[i], "keyword"));
                 }
             }
 
             for (int i = 0; i < PGListerals.FUNCTIONS.length; i++) {
                 var keyword = PGListerals.FUNCTIONS[i];
-                if (match (keyword, prefix)) {
-                    candidates.append (new Candidate (PGListerals.FUNCTIONS[i], "functions"));
+                if (match(keyword, prefix)) {
+                    candidates.append(new Candidate(PGListerals.FUNCTIONS[i], "functions"));
                 }
             }
 
             for (int i = 0; i < PGListerals.DATATYPES.length; i++) {
                 var keyword = PGListerals.DATATYPES[i];
-                if (match (keyword, prefix)) {
-                    candidates.append (new Candidate (PGListerals.DATATYPES[i], "datatypes"));
+                if (match(keyword, prefix)) {
+                    candidates.append(new Candidate(PGListerals.DATATYPES[i], "datatypes"));
                 }
             }
 
 
-            return (candidates);
+            return(candidates);
         }
 
-        private bool match (string text, string needle) {
-            return (text.up ().has_prefix (needle.up ()));
+        private bool match (string text, string needle){
+            return(text.up().has_prefix(needle.up()));
         }
     }
 
@@ -232,7 +232,7 @@ namespace Psequel {
         public string value { get; set; }
         public string group { get; set; }
 
-        public Candidate (string value, string group) {
+        public Candidate(string value, string group){
             this.value = value;
             this.group = group;
         }

@@ -21,7 +21,7 @@
 using GLib;
 
 namespace Psequel {
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/window.ui")]
+    [GtkTemplate(ui = "/me/ppvan/psequel/gtk/window.ui")]
     public class Window : Adw.ApplicationWindow {
         const ActionEntry[] ACTIONS = {
             { "import", import_connection },
@@ -43,8 +43,8 @@ namespace Psequel {
 
 
 
-        public Window (Application app) {
-            Object (
+        public Window(Application app){
+            Object(
                 application : app
             );
         }
@@ -55,70 +55,70 @@ namespace Psequel {
             this.query_viewmodel = autowire<QueryViewModel> ();
             this.settings = autowire<Settings> ();
             this.backup_service = autowire<BackupService>();
-            settings.bind ("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
-            settings.bind ("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
-            this.add_action_entries (ACTIONS, this);
+            settings.bind("window-width", this, "default-width", SettingsBindFlags.DEFAULT);
+            settings.bind("window-height", this, "default-height", SettingsBindFlags.DEFAULT);
+            this.add_action_entries(ACTIONS, this);
         }
 
-        public void add_toast (Adw.Toast toast) {
-            overlay.add_toast (toast);
+        public void add_toast (Adw.Toast toast){
+            overlay.add_toast(toast);
         }
 
         // Actions:
-        public void run_query () {
+        public void run_query (){
             if (query_viewmodel == null) {
                 return;
             }
 
-            query_viewmodel.run_selected_query.begin ();
+            query_viewmodel.run_selected_query.begin();
         }
 
-        public void import_connection () {
-            open_file_dialog.begin ("Import connections");
+        public void import_connection (){
+            open_file_dialog.begin("Import connections");
         }
 
-        public void export_connection () {
-            save_file_dialog.begin ("Export connections");
+        public void export_connection (){
+            save_file_dialog.begin("Export connections");
         }
 
-        public void backup_database () {
-            this.backup_dialog = new BackupDialog (connection_viewmodel);
-            var window = get_parrent_window (this);
+        public void backup_database (){
+            this.backup_dialog = new BackupDialog(connection_viewmodel);
+            var window = get_parrent_window(this);
 
-            backup_dialog.on_backup.connect ((conn, options) => {
-                save_backup_dialog.begin (conn, options, (obj, res) => {
+            backup_dialog.on_backup.connect((conn, options) => {
+                save_backup_dialog.begin(conn, options, (obj, res) => {
                     // backup_dialog.close();
                 });
             });
 
-            backup_dialog.present (window);
+            backup_dialog.present(window);
         }
 
-        public void restore_database () {
-            restore_dialog = new RestoreDialog (this.connection_viewmodel);
-            var window = get_parrent_window (this);
+        public void restore_database (){
+            restore_dialog = new RestoreDialog(this.connection_viewmodel);
+            var window = get_parrent_window(this);
 
-            restore_dialog.on_restore.connect ((conn, options) => {
-                save_restore_dialog.begin (conn, options, (obj, res) => {
-                    restore_dialog.close ();
+            restore_dialog.on_restore.connect((conn, options) => {
+                save_restore_dialog.begin(conn, options, (obj, res) => {
+                    restore_dialog.close();
                 });
             });
 
-            restore_dialog.present (window);
+            restore_dialog.present(window);
         }
 
-        private async void open_file_dialog (string title = "Open File") {
-            var filter = new Gtk.FileFilter ();
-            filter.add_mime_type ("application/json");
+        private async void open_file_dialog (string title = "Open File"){
+            var filter = new Gtk.FileFilter();
+            filter.add_mime_type("application/json");
 
-            var filters = new ListStore (typeof (Gtk.FileFilter));
-            filters.append (filter);
+            var filters = new ListStore(typeof (Gtk.FileFilter));
+            filters.append(filter);
 
-            var window = (Window) get_parrent_window (this);
+            var window = (Window) get_parrent_window(this);
 
-            var file_dialog = new Gtk.FileDialog () {
+            var file_dialog = new Gtk.FileDialog(){
                 modal = true,
-                initial_folder = File.new_for_path (Environment.get_home_dir ()),
+                initial_folder = File.new_for_path(Environment.get_home_dir()),
                 title = title,
                 initial_name = "connections.json",
                 default_filter = filter,
@@ -133,96 +133,96 @@ namespace Psequel {
                 yield file.load_contents_async (null, out contents, null);
 
                 var json_str = (string) contents;
-                var conns = ValueConverter.deserialize_connection (json_str);
-                connection_viewmodel.import_connections (conns);
+                var conns = ValueConverter.deserialize_connection(json_str);
+                connection_viewmodel.import_connections(conns);
 
-                var toast = new Adw.Toast (@"Loaded $(conns.length ()) connections") {
+                var toast = new Adw.Toast(@"Loaded $(conns.length ()) connections"){
                     timeout = 3,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             } catch (Error err) {
-                debug (err.message);
+                debug(err.message);
 
-                var toast = new Adw.Toast (err.message) {
+                var toast = new Adw.Toast(err.message){
                     timeout = 3,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             }
         }
 
-        private async void save_file_dialog (string title = "Save to file") {
-            var filter = new Gtk.FileFilter ();
+        private async void save_file_dialog (string title = "Save to file"){
+            var filter = new Gtk.FileFilter();
 
-            filter.add_mime_type ("application/json");
+            filter.add_mime_type("application/json");
 
-            var filters = new ListStore (typeof (Gtk.FileFilter));
-            filters.append (filter);
+            var filters = new ListStore(typeof (Gtk.FileFilter));
+            filters.append(filter);
 
-            var file_dialog = new Gtk.FileDialog () {
+            var file_dialog = new Gtk.FileDialog(){
                 modal = true,
-                initial_folder = File.new_for_path (Environment.get_home_dir ()),
+                initial_folder = File.new_for_path(Environment.get_home_dir()),
                 title = title,
                 initial_name = "connections.json",
                 default_filter = filter,
                 filters = filters,
             };
 
-            var conns = connection_viewmodel.export_connections ();
-            var content = ValueConverter.serialize_connection (conns);
-            var bytes = new Bytes.take (content.data);  // Move data to byte so it live when out scope
-            var window = (Window) get_parrent_window (this);
+            var conns = connection_viewmodel.export_connections();
+            var content = ValueConverter.serialize_connection(conns);
+            var bytes = new Bytes.take(content.data); // Move data to byte so it live when out scope
+            var window = (Window) get_parrent_window(this);
 
             try {
                 var file = yield file_dialog.save (window, null);
 
                 yield file.replace_contents_bytes_async (bytes, null, false, FileCreateFlags.NONE, null, null);
 
-                var toast = new Adw.Toast ("Data saved successfully.") {
+                var toast = new Adw.Toast("Data saved successfully."){
                     timeout = 2,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             } catch (Error err) {
-                debug (err.message);
+                debug(err.message);
 
-                var toast = new Adw.Toast (err.message) {
+                var toast = new Adw.Toast(err.message){
                     timeout = 3,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             }
         }
 
-        private async void save_backup_dialog (Connection conn, Vec<string> options) {
-            var custom_filter = new Gtk.FileFilter ();
-            custom_filter.add_mime_type ("text/x-sql");
-            custom_filter.add_mime_type ("application/x-tar");
-            custom_filter.add_mime_type ("application/octet-stream");
+        private async void save_backup_dialog (Connection conn, Vec<string> options){
+            var custom_filter = new Gtk.FileFilter();
+            custom_filter.add_mime_type("text/x-sql");
+            custom_filter.add_mime_type("application/x-tar");
+            custom_filter.add_mime_type("application/octet-stream");
 
-            var all_files = new Gtk.FileFilter ();
-            all_files.add_pattern ("*");
-            all_files.set_filter_name ("All Files");
+            var all_files = new Gtk.FileFilter();
+            all_files.add_pattern("*");
+            all_files.set_filter_name("All Files");
 
-            var filters = new ListStore (typeof (Gtk.FileFilter));
-            filters.append (custom_filter);
-            filters.append (all_files);
+            var filters = new ListStore(typeof (Gtk.FileFilter));
+            filters.append(custom_filter);
+            filters.append(all_files);
 
-            var local = time_local ();
+            var local = time_local();
             var dbname = conn.database ?? "database";
-            var ext = backup_dialog.get_extension ();
+            var ext = backup_dialog.get_extension();
             var initial_name = @"$(dbname)-backup-$(local)$(ext)";
 
-            var file_dialog = new Gtk.FileDialog () {
+            var file_dialog = new Gtk.FileDialog(){
                 modal = true,
-                initial_folder = File.new_for_path (Environment.get_home_dir ()),
-                title = backup_dialog.is_choose_directory () ? "Select target directory" : "Select target file",
+                initial_folder = File.new_for_path(Environment.get_home_dir()),
+                title = backup_dialog.is_choose_directory() ? "Select target directory" : "Select target file",
                 initial_name = initial_name,
                 default_filter = custom_filter,
                 filters = filters,
             };
 
-            var window = get_parrent_window (this);
+            var window = get_parrent_window(this);
             try {
                 File ? file = null;
-                if (backup_dialog.is_choose_directory ()) {
+                if (backup_dialog.is_choose_directory()) {
                     file = yield file_dialog.select_folder (window, null);
                 } else {
                     file = yield file_dialog.save (window, null);
@@ -230,52 +230,52 @@ namespace Psequel {
 
                 yield backup_service.backup_db (file, conn, options);
 
-                var toast = new Adw.Toast (@"Backup $dbname successfully") {
+                var toast = new Adw.Toast(@"Backup $dbname successfully"){
                     timeout = 2,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             } catch (Error err) {
-                debug (err.message);
+                debug(err.message);
 
-                var toast = new Adw.Toast (err.message) {
+                var toast = new Adw.Toast(err.message){
                     timeout = 3,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             }
         }
 
-        private async void save_restore_dialog (Connection conn, Vec<string> options) {
-            var custom_filter = new Gtk.FileFilter ();
-            custom_filter.add_mime_type ("text/x-sql");
-            custom_filter.add_mime_type ("application/x-tar");
-            custom_filter.add_mime_type ("application/octet-stream");
-            custom_filter.set_filter_name ("Backup file");
+        private async void save_restore_dialog (Connection conn, Vec<string> options){
+            var custom_filter = new Gtk.FileFilter();
+            custom_filter.add_mime_type("text/x-sql");
+            custom_filter.add_mime_type("application/x-tar");
+            custom_filter.add_mime_type("application/octet-stream");
+            custom_filter.set_filter_name("Backup file");
 
-            var all_files = new Gtk.FileFilter ();
-            all_files.add_pattern ("*");
-            all_files.set_filter_name ("All Files");
-            var filters = new ListStore (typeof (Gtk.FileFilter));
-            filters.append (custom_filter);
-            filters.append (all_files);
+            var all_files = new Gtk.FileFilter();
+            all_files.add_pattern("*");
+            all_files.set_filter_name("All Files");
+            var filters = new ListStore(typeof (Gtk.FileFilter));
+            filters.append(custom_filter);
+            filters.append(all_files);
 
-            var local = time_local ();
+            var local = time_local();
             var dbname = conn.database ?? "database";
-            var ext = restore_dialog.get_extension ();
+            var ext = restore_dialog.get_extension();
             var initial_name = @"$(dbname)-backup-$(local)$(ext)";
 
-            var file_dialog = new Gtk.FileDialog () {
+            var file_dialog = new Gtk.FileDialog(){
                 modal = true,
-                initial_folder = File.new_for_path (Environment.get_home_dir ()),
-                title = restore_dialog.is_choose_directory () ? "Select target directory" : "Select target file",
+                initial_folder = File.new_for_path(Environment.get_home_dir()),
+                title = restore_dialog.is_choose_directory() ? "Select target directory" : "Select target file",
                 initial_name = initial_name,
                 default_filter = custom_filter,
                 filters = filters,
             };
 
-            var window = get_parrent_window (this);
+            var window = get_parrent_window(this);
             try {
                 File ? file = null;
-                if (restore_dialog.is_choose_directory ()) {
+                if (restore_dialog.is_choose_directory()) {
                     file = yield file_dialog.select_folder (window, null);
                 } else {
                     file = yield file_dialog.open (window, null);
@@ -283,17 +283,17 @@ namespace Psequel {
 
                 yield backup_service.restore_db (file, conn, options);
 
-                var toast = new Adw.Toast (@"Restore $dbname successfully") {
+                var toast = new Adw.Toast(@"Restore $dbname successfully"){
                     timeout = 2,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             } catch (Error err) {
-                debug (err.message);
+                debug(err.message);
 
-                var toast = new Adw.Toast (err.message) {
+                var toast = new Adw.Toast(err.message){
                     timeout = 3,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
             }
         }
 

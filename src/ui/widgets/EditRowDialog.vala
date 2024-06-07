@@ -1,5 +1,5 @@
 namespace Psequel {
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/edit-row.ui")]
+    [GtkTemplate(ui = "/me/ppvan/psequel/gtk/edit-row.ui")]
     public class EditRowDialog : Adw.Dialog {
         private TableDataViewModel tabledata_viewmodel;
         private Relation.Row current_row;
@@ -7,8 +7,8 @@ namespace Psequel {
 
         public bool has_changed { get; set; default = false; }
 
-        public EditRowDialog (Relation.Row current_row) {
-            Object ();
+        public EditRowDialog(Relation.Row current_row){
+            Object();
             this.current_row = current_row;
         }
 
@@ -17,41 +17,41 @@ namespace Psequel {
         }
 
 
-        public new void present (Gtk.Widget ? parent) {
+        public new void present (Gtk.Widget ? parent){
             var table = this.tabledata_viewmodel.selected_table;
             this.fields = new Vec<TableField>.with_capacity (table.columns.length);
 
             int index = 0;
             foreach (var col in table.columns) {
-                var label = col.is_primarykey ? new Gtk.Label (@"$(col.name)*") : new Gtk.Label (col.name);
+                var label = col.is_primarykey ? new Gtk.Label(@"$(col.name)*") : new Gtk.Label(col.name);
 
                 label.halign = Gtk.Align.START;
-                grid.attach (label, 0, index, 1, 1);
+                grid.attach(label, 0, index, 1, 1);
 
-                var entry = new Gtk.Entry ();
+                var entry = new Gtk.Entry();
                 if (col.is_primarykey) {
                     entry.sensitive = false;
                     entry.tooltip_text = "Update primary key values is not supported";
                 }
-                var default_value = (current_row.get_by_header (col.name)) ?? "";
-                entry.changed.connect (() => {
-                    check_changed ();
+                var default_value = (current_row.get_by_header(col.name)) ?? "";
+                entry.changed.connect(() => {
+                    check_changed();
                 });
 
 
-                var field = new TableField (col, default_value, entry);
-                fields.append (field);
+                var field = new TableField(col, default_value, entry);
+                fields.append(field);
 
                 entry.text = default_value;
-                grid.attach (entry, 1, index, 3, 1);
+                grid.attach(entry, 1, index, 3, 1);
 
                 index++;
             }
 
-            base.present (parent);
+            base.present(parent);
         }
 
-        private void check_changed () {
+        private void check_changed (){
             if (this.fields == null) {
                 return;
             }
@@ -64,7 +64,7 @@ namespace Psequel {
         }
 
         [GtkCallback]
-        private async void update_row (Gtk.Button btn) {
+        private async void update_row (Gtk.Button btn){
             if (this.fields == null) {
                 return;
             }
@@ -73,12 +73,12 @@ namespace Psequel {
             yield this.tabledata_viewmodel.update_row (this.fields);
 
             this.can_close = true;
-            this.close ();
+            this.close();
         }
 
         [GtkCallback]
-        private void cancel_update (Gtk.Button btn) {
-            this.close ();
+        private void cancel_update (Gtk.Button btn){
+            this.close();
         }
 
         [GtkChild]
@@ -91,14 +91,14 @@ namespace Psequel {
         public string new_value { get; set; default = ""; }
         public Gtk.Entry field_entry { get; set; }
 
-        public TableField (Column col, string old_value, Gtk.Entry entry) {
-            base ();
+        public TableField(Column col, string old_value, Gtk.Entry entry){
+            base();
 
             this.column = col;
             this.old_value = old_value;
             this.field_entry = entry;
 
-            entry.bind_property ("text", this, "new_value", BindingFlags.BIDIRECTIONAL);
+            entry.bind_property("text", this, "new_value", BindingFlags.BIDIRECTIONAL);
         }
     }
 }

@@ -6,24 +6,24 @@ namespace Psequel {
 
         public string current_view { get; set; default = CONNECTION_VIEW; }
 
-        public NavigationService () {
-            EventBus.instance ().connection_disabled.connect_after (() => {
-                this.navigate (CONNECTION_VIEW);
+        public NavigationService(){
+            EventBus.instance().connection_disabled.connect_after(() => {
+                this.navigate(CONNECTION_VIEW);
             });
 
-            EventBus.instance ().connection_active.connect_after ((_conn) => {
-                this.navigate (QUERY_VIEW);
+            EventBus.instance().connection_active.connect_after((_conn) => {
+                this.navigate(QUERY_VIEW);
             });
         }
 
-        public void navigate (string view_name) {
+        public void navigate (string view_name){
             if (view_name == current_view) {
                 return;
             }
 
             for (int i = 0; i < VIEW_NAMES.length; i++) {
                 if (VIEW_NAMES[i] == view_name) {
-                    debug ("Navigating to " + view_name);
+                    debug("Navigating to " + view_name);
                     current_view = view_name;
                     return;
                 }

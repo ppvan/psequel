@@ -1,10 +1,10 @@
 namespace Psequel {
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-data-view.ui")]
+    [GtkTemplate(ui = "/me/ppvan/psequel/gtk/table-data-view.ui")]
     public class TableDataView : Gtk.Box {
         public TableDataViewModel tabledata_viewmodel { get; set; }
 
-        public TableDataView () {
-            Object ();
+        public TableDataView(){
+            Object();
         }
 
         construct {
@@ -14,25 +14,25 @@ namespace Psequel {
         }
 
         [GtkCallback]
-        private void reload_data (Gtk.Button btn) {
+        private void reload_data (Gtk.Button btn){
             btn.sensitive = false;
-            tabledata_viewmodel.reload_data.begin ((obj, res) => {
-                var window = get_parrent_window (this);
-                Adw.Toast toast = new Adw.Toast ("Data Reloaded") {
+            tabledata_viewmodel.reload_data.begin((obj, res) => {
+                var window = get_parrent_window(this);
+                Adw.Toast toast = new Adw.Toast("Data Reloaded"){
                     timeout = 1,
                 };
-                window.add_toast (toast);
+                window.add_toast(toast);
                 btn.sensitive = true;
             });
         }
 
         [GtkCallback]
-        private async void next_page () {
+        private async void next_page (){
             yield tabledata_viewmodel.next_page ();
         }
 
         [GtkCallback]
-        private async void pre_page () {
+        private async void pre_page (){
             yield tabledata_viewmodel.pre_page ();
         }
 

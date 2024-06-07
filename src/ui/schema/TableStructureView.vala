@@ -1,5 +1,5 @@
 namespace Psequel {
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-structure-view.ui")]
+    [GtkTemplate(ui = "/me/ppvan/psequel/gtk/table-structure-view.ui")]
     public class TableStructureView : Gtk.Box {
         public TableViewModel table_viewmodel { get; private set; }
 
@@ -8,8 +8,8 @@ namespace Psequel {
         // public Gtk.FilterListModel fks { get; private set; }
         // public Gtk.StringFilter filter { get; private set; }
 
-        public TableStructureView () {
-            Object ();
+        public TableStructureView(){
+            Object();
         }
 
         construct {
@@ -23,14 +23,14 @@ namespace Psequel {
             // this.fks          = new Gtk.FilterListModel(this.tablestructure_viewmodel.foreign_keys, filter);
             // filter.search     = "";
 
-            table_viewmodel.notify["selected-table"].connect (() => {
+            table_viewmodel.notify["selected-table"].connect(() => {
                 var table = table_viewmodel.selected_table;
                 var obs_list = new ObservableList<Column> ();
-                obs_list.append_all (table.columns.as_list ());
+                obs_list.append_all(table.columns.as_list());
                 columns = obs_list;
 
                 var indexes_list = new ObservableList<Index> ();
-                indexes_list.append_all (table.indexes.as_list ());
+                indexes_list.append_all(table.indexes.as_list());
                 indexes = indexes_list;
             });
         }

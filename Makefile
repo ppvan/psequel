@@ -18,7 +18,7 @@ test:
 flatpak:
 	flatpak-builder --install-deps-from=flathub build-aux/ me.ppvan.psequel.json --force-clean
 	flatpak build-export export build-aux
-	flatpak build-bundle export me.ppvan.psequel.flatpak me.ppvan.psequel --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+	flatpak build-bundle export ./build-aux/me.ppvan.psequel.flatpak me.ppvan.psequel --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
 
 run:
 	G_MESSAGES_DEBUG=Psequel ./build/src/psequel

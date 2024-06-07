@@ -10,42 +10,42 @@ namespace Psequel {
             Container._protypes = new Vec<Container>();
         }
 
-        public static Container instance () {
+        public static Container instance (){
             if (_instance == null) {
-                _instance = new Container ();
+                _instance = new Container();
             }
 
-            return (_instance);
+            return(_instance);
         }
 
-        public static void clone () {
+        public static void clone (){
             if (_instance != null) {
-                Container._protypes.append (_instance);
+                Container._protypes.append(_instance);
             }
-            _instance = new Container ();
+            _instance = new Container();
         }
 
         /** Manual dependency injection map */
-        private Container () {
-            Object ();
+        private Container(){
+            Object();
             dependencies = new HashTable<GLib.Type, Object> (direct_hash, direct_equal);
         }
 
-        public void register (Object obj) {
-            if (!dependencies.contains (obj.get_type ())) {
-                dependencies.replace (obj.get_type (), obj);
+        public void register (Object obj){
+            if (!dependencies.contains(obj.get_type())) {
+                dependencies.replace(obj.get_type(), obj);
             } else {
-                warning ("Register type is already in the map");
+                warning("Register type is already in the map");
             }
         }
 
-        public Object find_type (GLib.Type type) {
-            if (!dependencies.contains (type)) {
-                warning ("Type %s not found in the map", type.name ());
-                assert_not_reached ();
+        public Object find_type (GLib.Type type){
+            if (!dependencies.contains(type)) {
+                warning("Type %s not found in the map", type.name());
+                assert_not_reached();
             }
 
-            return (dependencies.lookup (type));
+            return(dependencies.lookup(type));
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Psequel {
     public class Schema : Object {
         public string name { get; private set; }
 
-        public Schema (string name) {
-            Object ();
+        public Schema(string name){
+            Object();
             this.name = name;
         }
     }
@@ -17,8 +17,8 @@ namespace Psequel {
         public string schemaname { get; set; default = ""; }
         public string table { get; set; default = ""; }
 
-        public string to_string () {
-            return (@"$schemaname.$name");
+        public string to_string (){
+            return(@"$schemaname.$name");
         }
     }
 
@@ -32,15 +32,15 @@ namespace Psequel {
         private string _indexdef;
         public string indexdef {
             get {
-                return (_indexdef);
+                return(_indexdef);
             }
             set {
                 this._indexdef = value ?? "";
-                this.extract_info ();
+                this.extract_info();
             }
         }
 
-        private void extract_info () {
+        private void extract_info (){
             // unique = indexdef.contains ("UNIQUE");
 
             ////  Match the index type and column from indexdef, group 1 is type, group 2 is the column list.
@@ -65,7 +65,7 @@ namespace Psequel {
         public bool is_primarykey { get; set; default = false; }
         public bool is_foreignkey { get; set; default = false; }
 
-        public Column () {}
+        public Column(){}
     }
 
 
@@ -74,7 +74,7 @@ namespace Psequel {
         public string name { get; set; default = ""; }
         public string[] columns { get; set; }
 
-        public PrimaryKey () {}
+        public PrimaryKey(){}
     }
 /** Table foreign key info */
     public class ForeignKey : Object {

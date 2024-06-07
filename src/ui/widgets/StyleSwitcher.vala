@@ -1,5 +1,5 @@
 namespace Psequel {
-    [GtkTemplate (ui = "/me/ppvan/psequel/gtk/style-switcher.ui")]
+    [GtkTemplate(ui = "/me/ppvan/psequel/gtk/style-switcher.ui")]
     public class StyleSwitcher : Gtk.Widget {
         [GtkChild] unowned Gtk.CheckButton system_selector;
         [GtkChild] unowned Gtk.CheckButton light_selector;
@@ -9,19 +9,19 @@ namespace Psequel {
         public bool show_system { get; set; default = true; }
 
         static construct {
-            set_layout_manager_type (typeof (Gtk.BinLayout));
-            set_css_name ("themeswitcher");
+            set_layout_manager_type(typeof (Gtk.BinLayout));
+            set_css_name("themeswitcher");
         }
 
         construct {
-            this.notify["style"].connect (this.on_style_changed);
+            this.notify["style"].connect(this.on_style_changed);
 
             var s = autowire<Settings> ();
-            s.bind ("color-scheme", this, "style", GLib.SettingsBindFlags.DEFAULT);
+            s.bind("color-scheme", this, "style", GLib.SettingsBindFlags.DEFAULT);
         }
 
-        private void on_style_changed () {
-            this.freeze_notify ();
+        private void on_style_changed (){
+            this.freeze_notify();
             if (this.style == ApplicationStyle.SYSTEM) {
                 this.system_selector.active = true;
                 this.light_selector.active = false;
@@ -35,11 +35,11 @@ namespace Psequel {
                 this.light_selector.active = false;
                 this.dark_selector.active = true;
             }
-            this.thaw_notify ();
+            this.thaw_notify();
         }
 
         [GtkCallback]
-        private void theme_check_active_changed () {
+        private void theme_check_active_changed (){
             if (this.system_selector.active) {
                 if (this.style != ApplicationStyle.SYSTEM) {
                     this.style = ApplicationStyle.SYSTEM;

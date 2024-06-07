@@ -6,21 +6,21 @@ namespace Psequel {
 
         public Vec<string> params { get; owned set; default = new Vec<string>(); }
 
-        public Query (string sql) {
-            base ();
+        public Query(string sql){
+            base();
             this.sql = sql;
         }
 
-        public Query.with_params (string sql, string[] params) {
+        public Query.with_params(string sql, string[] params){
             this(sql);
 
             for (int i = 0; i < params.length; i++) {
-                this.params.append ((owned) params[i]);
+                this.params.append((owned) params[i]);
             }
         }
 
-        public Query clone () {
-            return ((Query) Json.gobject_deserialize (typeof (Query), Json.gobject_serialize (this)));
+        public Query clone (){
+            return((Query) Json.gobject_deserialize(typeof (Query), Json.gobject_serialize(this)));
         }
     }
 }
