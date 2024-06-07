@@ -5,7 +5,7 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-index.ui")]
     public class TableIndexInfo : Adw.Bin {
 
-        public GLib.ListModel indexes {get; set;}
+        public GLib.ListModel indexes { get; set; }
 
 
         public TableIndexInfo () {
@@ -26,7 +26,7 @@ namespace Psequel {
             factory.setup.connect ((obj) => {
                 var listitem = obj as Gtk.ListItem;
                 var label = new Gtk.Label (null);
-                label.css_classes = {"table-cell"};
+                label.css_classes = { "table-cell" };
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
@@ -97,7 +97,7 @@ namespace Psequel {
                 label.label = string.joinv (", ", item.columns);
             });
             var col = new Gtk.ColumnViewColumn ("Index Columns", factory);
-            //  col.fixed_width = 300;
+            // col.fixed_width = 300;
             col.expand = true;
             view.append_column (col);
         }
@@ -122,7 +122,6 @@ namespace Psequel {
             col.fixed_width = 120;
             view.append_column (col);
         }
-
 
         [GtkChild]
         private unowned Gtk.ColumnView view;

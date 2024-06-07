@@ -5,8 +5,8 @@ namespace Psequel {
     [GtkTemplate (ui = "/me/ppvan/psequel/gtk/table-cols.ui")]
     public class TableColumnInfo : Adw.Bin {
 
-        public ObservableList<Column> columns {get; set;}
-        //  public GLib.ListModel columns {get; set;}
+        public ObservableList<Column> columns { get; set; }
+        // public GLib.ListModel columns {get; set;}
 
         public TableColumnInfo () {
             Object ();
@@ -26,7 +26,7 @@ namespace Psequel {
                 var listitem = obj as Gtk.ListItem;
 
                 var label = new Gtk.Label (null);
-                label.css_classes = {"table-cell"};
+                label.css_classes = { "table-cell" };
                 label.halign = Gtk.Align.START;
                 listitem.child = label;
             });
@@ -41,7 +41,6 @@ namespace Psequel {
                 } else {
                     label.label = @"$(item.name)";
                 }
-
             });
             var col = new Gtk.ColumnViewColumn ("Column Name", factory);
             col.fixed_width = 250;
@@ -107,7 +106,6 @@ namespace Psequel {
             col.set_expand (true);
             view.append_column (col);
         }
-
 
         [GtkChild]
         private unowned Gtk.ColumnView view;

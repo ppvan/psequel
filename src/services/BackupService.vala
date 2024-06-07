@@ -1,72 +1,67 @@
 using GLib;
 
 namespace Psequel {
-public class BackupService : Object {
-    public BackupService() {
-    }
+    public class BackupService : Object {
+        public BackupService () {}
 
-    public async void backup_db(File dest, Connection conn, Vec<string> options) throws GLib.Error {
-        //  var flags      = SubprocessFlags.NONE;
-        var          flags = SubprocessFlags.STDERR_PIPE;
-        Vec <string> args  = new Vec <string>();
-        args.append("pg_dump");
+        public async void backup_db (File dest, Connection conn, Vec<string> options) throws GLib.Error {
+            // var flags      = SubprocessFlags.NONE;
+            var flags = SubprocessFlags.STDERR_PIPE;
+            Vec<string> args = new Vec<string>();
+            args.append ("pg_dump");
 
-        foreach (var item in options)
-        {
-            args.append(item);
+            foreach (var item in options) {
+                args.append (item);
+            }
+
+            args.append (conn.backup_connection_string ());
+            args.append ("-f");
+            args.append (dest.get_path ());
+
+            var subprocess = new Subprocess.newv (args.as_array (), flags);
+
+            // Wait for the subprocess to finish asynchronously
+            yield subprocess.wait_async ();
+
+            string ? stderr_buf = null;
+
+            // Get the exit status
+            int exit_status = subprocess.get_exit_status ();
+
+            if (exit_status != 0) {
+                yield subprocess.communicate_utf8_async (null, null, null, out stderr_buf);
+
+                throw new PsequelError.BACKUP_ERROR (stderr_buf);
+            }
         }
 
-        args.append(conn.backup_connection_string());
-        args.append("-f");
-        args.append(dest.get_path());
+        public async void restore_db (File source, Connection conn, Vec<string> options) throws GLib.Error {
+            var flags = SubprocessFlags.STDERR_PIPE;
+            Vec<string> args = new Vec<string>();
+            args.append ("pg_restore");
+            args.append (source.get_path ());
 
-        var subprocess = new Subprocess.newv(args.as_array(), flags);
+            foreach (var item in options) {
+                args.append (item);
+            }
+            args.append ("--dbname");
+            args.append (conn.backup_connection_string ());
 
-        // Wait for the subprocess to finish asynchronously
-        yield subprocess.wait_async();
+            var subprocess = new Subprocess.newv (args.as_array (), flags);
 
-        string ?stderr_buf = null;
+            // Wait for the subprocess to finish asynchronously
+            yield subprocess.wait_async ();
 
-        // Get the exit status
-        int exit_status = subprocess.get_exit_status();
+            string ? stderr_buf = null;
 
-        if (exit_status != 0)
-        {
-            yield subprocess.communicate_utf8_async(null, null, null, out stderr_buf);
+            // Get the exit status
+            int exit_status = subprocess.get_exit_status ();
 
-            throw new PsequelError.BACKUP_ERROR(stderr_buf);
-        }
-    }
+            if (exit_status != 0) {
+                yield subprocess.communicate_utf8_async (null, null, null, out stderr_buf);
 
-    public async void restore_db(File source, Connection conn, Vec<string> options) throws GLib.Error {
-        var          flags = SubprocessFlags.STDERR_PIPE;
-        Vec <string> args  = new Vec <string>();
-        args.append("pg_restore");
-        args.append(source.get_path());
-
-        foreach (var item in options)
-        {
-            args.append(item);
-        }
-        args.append("--dbname");
-        args.append(conn.backup_connection_string());
-
-        var subprocess = new Subprocess.newv(args.as_array(), flags);
-
-        // Wait for the subprocess to finish asynchronously
-        yield subprocess.wait_async();
-
-        string ?stderr_buf = null;
-
-        // Get the exit status
-        int exit_status = subprocess.get_exit_status();
-
-        if (exit_status != 0)
-        {
-            yield subprocess.communicate_utf8_async(null, null, null, out stderr_buf);
-
-            throw new PsequelError.BACKUP_ERROR(stderr_buf);
+                throw new PsequelError.BACKUP_ERROR (stderr_buf);
+            }
         }
     }
-}
 }
