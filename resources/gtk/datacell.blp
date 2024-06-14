@@ -15,21 +15,21 @@ menu menu {
         }
     }
 
-    // section {
-    //     item {
-    //         label: _("_Edit Row");
-    //         action: "schema.edit";
-    //     }
-    // }
+    section {
+        item {
+            label: _("_Edit Row");
+            action: "schema.edit";
+        }
+    }
 }
 
 template $PsequelDataCell: Adw.Bin {
     Box {
-        Label label {
+        Inscription label {
             styles [
                 "table-cell"
             ]
-
+            text-overflow: ellipsize_end;
             halign: start;
         }
 

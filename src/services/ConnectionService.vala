@@ -1,6 +1,5 @@
 namespace Psequel {
-public class ConnectionService : Object {
-    public ConnectionService() {
+    public class ConnectionService : Object {
+        public ConnectionService(){}
     }
-}
 }
