@@ -68,31 +68,14 @@ Next, it can be installed by `meson install`.
 # Dependencies
 If you use GNOME Builder or Flatpak, dependencies will be installed automatically. If you use pure Meson, dependencies will be:
 - vala >= 0.56
-- gtk >= 4.10
+- gtk >= 4.16
 - gtksourceview >= 5.0
-- gio >= 2.74
+- gio >= 2.80
 - json-glib >= 1.6
-- libadwaita >= 1.4
-- postgres-libs >= 15.3
+- libadwaita >= 1.6
+- postgres-libs >= 16.2
 - libcsv >= 3.0 (built as subproject if missing)
 - pgquery-vala
-
-```
-pg_dump -s --no-comments -t "actor" -O -x --dbname "user=postgres password=postgres port=5432 dbname=dvdrental"| grep -v '^$' | grep -v '^(--\s*|SET\s+\w+\s*=).*$'
-SELECT pg_catalog.set_config('search_path', '', false);
-CREATE TABLE public.actor (
-    actor_id integer DEFAULT nextval('public.actor_actor_id_seq'::regclass) NOT NULL,
-    first_name character varying(45) NOT NULL,
-    last_name character varying(45) NOT NULL,
-    last_update timestamp without time zone DEFAULT now() NOT NULL
-);
-ALTER TABLE ONLY public.actor
-    ADD CONSTRAINT actor_pkey PRIMARY KEY (actor_id);
-CREATE INDEX idx_actor_last_name ON public.actor USING btree (last_name);
-CREATE TRIGGER last_updated BEFORE UPDATE ON public.actor FOR EACH ROW EXECUTE FUNCTION public.last_updated();
-
-```
-
 
 # Contributions
 Contributions are welcome.

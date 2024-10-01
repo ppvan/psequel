@@ -1,0 +1,6 @@
+{
+    "mesonbuild.configureOnOpen": true,
+    "lldb.showDisassembly": "never",
+    "lldb.dereferencePointers": true,
+    "lldb.consoleMode": "commands"
+}

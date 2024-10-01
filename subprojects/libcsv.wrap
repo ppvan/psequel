@@ -4,3 +4,5 @@ url = https://github.com/ppvan/libcsv.git
 revision = master
 depth = 1
 
+[provide]
+csv = libcsv_deps
