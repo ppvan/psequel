@@ -4,9 +4,8 @@ builddir
 build
 export
 *~
-/subprojects/blueprint-compiler
-/subprojects/libcsv
-
+subprojects/*
+!subprojects/*.wrap
 /.cache
 
 /build-aux

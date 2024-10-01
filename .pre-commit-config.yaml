@@ -1,7 +1,0 @@
-fail_fast: false
-repos:
-  - repo: https://github.com/ppvan/pre-commit-hooks
-    rev: 2ce5a35bba2a6031563657dd4421250d644dd914
-    hooks:
-      - id: uncrustify
-        args: [--no-diff, -l, VALA, -c, uncrustify.cfg, --replace, --no-backup]

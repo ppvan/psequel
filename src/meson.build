@@ -84,25 +84,22 @@ conf.set_quoted(
 )
 configure_file(output: 'config.h', configuration: conf)
 
-csv_dep = dependency('csv', required: false)
-if not csv_dep.found()
-    libsimple_proj = subproject('libcsv')
-    libsimple_dep = libsimple_proj.get_variable('libcsv_deps')
-endif
-
 cc = meson.get_compiler('c')
 math_dep = cc.find_library('m', required: false)
 
 psequel_deps = [
-    dependency('glib-2.0', version: '>=2.74'),
-    dependency('gtk4', version: '>=4.10'),
-    dependency('libadwaita-1', version: '>= 1.4'),
+    # assume exists typical gtk system
+    dependency('glib-2.0', version: '>=2.80'),
+    dependency('gtk4', version: '>=4.16'),
+    dependency('libadwaita-1', version: '>= 1.6'),
     dependency('json-glib-1.0', version: '>= 1.6'),
     dependency('gtksourceview-5', version: '>= 5.0'),
     dependency('libpq', version: '>= 15.3'),
-    dependency('sqlite3', version: '>= 3'),
-    csv_dep,
     math_dep,
+
+    # custom, fallback to subproject
+    dependency('sqlite3', version: '>= 3.46'),
+    dependency('csv', version: '>= 3'),
     dependency('pgquery-vala'),
     valac.find_library('config', dirs: vapi_dir),
 ]
@@ -112,16 +109,22 @@ add_project_arguments(
         '--target-glib=2.80',
         '--vapidir', vapi_dir,
         '--gresourcesdir', psequel_resources_dir,
-        '--enable-deprecated'
+        '--enable-deprecated',
+        '--pkg', 'libcsv',
+        '--pkg', 'sqlite3',
+        '--pkg', 'libpq',
     ],
     language: 'vala',
 )
+
+
 add_project_arguments(
     '-include', 'config.h',
     '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
     language: 'c',
 )
-add_global_arguments(
+
+add_project_arguments(
     [
         '-Wno-pointer-sign',
         '-Wno-deprecated-declarations',

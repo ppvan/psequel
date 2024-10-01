@@ -1,5 +1,9 @@
 # This is just a file for me to type command faster, not the build file.
 
+SHELL := /bin/bash
+VALA_FILES := $(shell find $(SRC_DIR) -name '*.vala')
+PROJECT_NAME := psequel
+
 debug:
 	rm -rf build/resources/gtk
 	meson configure -Dbuildtype=debug build
@@ -8,6 +12,10 @@ debug:
 release:
 	meson configure -Dbuildtype=release build
 	ninja -C build/ && G_MESSAGES_DEBUG=Psequel ./build/src/psequel
+
+format:
+	@echo "Formatting Vala files..."
+	uncrustify -l VALA -c uncrustify.cfg --replace --no-backup $(VALA_FILES)
 
 clean:
 	rm -rf build/resources
