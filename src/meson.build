@@ -99,8 +99,8 @@ psequel_deps = [
 
     # custom, fallback to subproject
     dependency('sqlite3', version: '>= 3.46'),
-    dependency('csv', version: '>= 3'),
     dependency('pgquery-vala'),
+    dependency('csv'),
     valac.find_library('config', dirs: vapi_dir),
 ]
 
@@ -110,9 +110,7 @@ add_project_arguments(
         '--vapidir', vapi_dir,
         '--gresourcesdir', psequel_resources_dir,
         '--enable-deprecated',
-        '--pkg', 'libcsv',
-        '--pkg', 'sqlite3',
-        '--pkg', 'libpq',
+        '--pkg', 'csv'
     ],
     language: 'vala',
 )
