@@ -194,7 +194,7 @@ namespace Psequel {
         """;
 
         public const string COLUMN_SQL = """
-        SELECT cls.relname AS tbl, attname AS col, format_type(a.atttypid, a.atttypmod) AS datatype, attnotnull, pg_get_expr(d.adbin, d.adrelid) AS default_value
+        SELECT cls.relname AS tbl, attname AS col, format_type(a.atttypid, a.atttypmod) AS datatype, NOT attnotnull AS nullable, pg_get_expr(d.adbin, d.adrelid) AS default_value
         FROM   pg_attribute a
         LEFT JOIN pg_catalog.pg_attrdef d ON (a.attrelid, a.attnum) = (d.adrelid, d.adnum)
         LEFT JOIN pg_class cls ON cls.oid = a.attrelid
