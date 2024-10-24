@@ -49,6 +49,7 @@ namespace Psequel {
         construct {
             stack.visible_child_name = EMPTY;
             rows = new ObservableList<Relation.Row> ();
+            alloc_columns(100);
 
             this.bind_property("is-loading", stack, "visible-child-name", BindingFlags.SYNC_CREATE, (binging, from, ref to) => {
                 bool current_name = from.get_boolean();
@@ -74,20 +75,19 @@ namespace Psequel {
         }
 
         private async void load_data_to_view (Relation relation){
+
             // Reset scrollbar
             data_view.get_hadjustment().set_value(0);
             data_view.get_vadjustment().set_value(0);
 
-            alloc_columns(1);
             var columns = data_view.columns;
             debug("Begin add rows to views");
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < relation.cols; i++) {
                 var raw_col = columns.get_item(i);
                 if (raw_col == null) {
                     break;
                 }
                 var col = raw_col as Gtk.ColumnViewColumn;
-
                 auto_set_sorter(col, relation.get_column_type(i), i);
                 col.set_title(relation.get_header(i));
                 col.set_visible(true);
