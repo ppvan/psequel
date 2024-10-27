@@ -1,9 +1,0 @@
-[wrap-git]
-directory = pgquery_vala
-url = https://github.com/ppvan/pg_query_vala.git
-clone-recursive = true
-revision = main
-depth = 1
-
-[provide]
-pgquery-vala = pgquery_vala_dep

@@ -7,9 +7,6 @@ namespace Psequel {
         private Relation.Row current_row;
         private int current_index;
         public bool is_busy { get; set; default = false; }
-
-        public static Vec<DataCell> cell_pool;
-
         const ActionEntry[] ACTION_ENTRIES = {
             { "copy", on_cell_copy },
             { "edit", on_cell_edit },

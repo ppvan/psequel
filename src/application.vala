@@ -70,29 +70,8 @@ namespace Psequel {
 
         public override void activate (){
             base.activate();
-
             var window = new_window();
             window.present();
-
-
-            // Pre-allocated widget, scheduled after window presented
-            DataCell.cell_pool = new Vec<DataCell>.with_capacity (Application.PRE_ALLOCATED_CELL);
-
-            var id = Idle.add(() => {
-                size_t empty_cells = DataCell.cell_pool.length;
-                if (empty_cells < Application.PRE_ALLOCATED_CELL) {
-                    // debug("Empty Cell: %llu", empty_cells);
-                    for (size_t i = 0; i < Application.BATCH_SIZE; i++) {
-                        DataCell.cell_pool.append(new DataCell());
-                    }
-                } else if (empty_cells >= Application.PRE_ALLOCATED_CELL) {
-                    return false;
-                }
-
-                return Application.is_running;
-            }, Priority.DEFAULT_IDLE);
-
-            Application.tasks.append(id);
         }
 
         public override void startup (){

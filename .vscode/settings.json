@@ -1,10 +1,5 @@
 {
     "mesonbuild.configureOnOpen": false,
-    "lldb.showDisassembly": "never",
-    "lldb.dereferencePointers": true,
-    "lldb.consoleMode": "commands",
-    "C_Cpp.default.compileCommands": "/home/ppvan/Documents/code/pet-projects/psequel/builddir/compile_commands.json",
-    "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild",
     "files.watcherExclude": {
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,

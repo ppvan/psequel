@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/@PREFIX@">
     <file alias="style.css">gtk/style.css</file>
+    <file alias="style-dark.css">gtk/style-dark.css</file>
     <file>migrations/version-0.sql</file>
     <file>migrations/version-1.sql</file>
     @UI_FILES@

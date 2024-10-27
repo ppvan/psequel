@@ -28,7 +28,7 @@ template $PsequelQueryEditor: Adw.Bin {
                     show-line-numbers: true;
                     smart-backspace: true;
                     smart-home-end: before;
-                    top-margin: 6;
+                    // top-margin: 6;
                     highlight-current-line: true;
                     insert-spaces-instead-of-tabs: true;
                 }
@@ -48,7 +48,7 @@ template $PsequelQueryEditor: Adw.Bin {
 
                 MenuButton {
                     styles [
-                        "big-icon"
+                       "flat"
                     ]
 
                     tooltip-text: "editor setting";
@@ -61,7 +61,7 @@ template $PsequelQueryEditor: Adw.Bin {
 
                 MenuButton {
                     styles [
-                        "big-icon"
+                        "flat"
                     ]
 
                     icon-name: "history-undo-symbolic";
@@ -115,10 +115,11 @@ template $PsequelQueryEditor: Adw.Bin {
 
                 Button export {
                     styles [
-                        "export"
+                        "flat"
                     ]
                     tooltip-text: "Export Result";
                     icon-name: "export-symbolic";
+                    visible: bind template.query-history-viewmodel as <$PsequelQueryHistoryViewModel>.success;
                     clicked => $on_export_csv();
                 }
 

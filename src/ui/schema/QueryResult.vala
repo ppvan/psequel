@@ -41,6 +41,7 @@ namespace Psequel {
         private ObservableList<Relation.Row> rows;
         private Gtk.SortListModel sort_model;
         private Gtk.SelectionModel selection_model;
+        private Gtk.GestureClick clickEvent;
 
         public class QueryResults(bool show_loading){
             Object();
@@ -49,7 +50,6 @@ namespace Psequel {
         construct {
             stack.visible_child_name = EMPTY;
             rows = new ObservableList<Relation.Row> ();
-            alloc_columns(100);
 
             this.bind_property("is-loading", stack, "visible-child-name", BindingFlags.SYNC_CREATE, (binging, from, ref to) => {
                 bool current_name = from.get_boolean();
@@ -81,12 +81,16 @@ namespace Psequel {
             data_view.get_vadjustment().set_value(0);
 
             var columns = data_view.columns;
+            var column = columns.get_item (0);
+            while (column != null) {
+                this.data_view.remove_column ((Gtk.ColumnViewColumn)column);
+                column = columns.get_item (0);
+            }
+            alloc_columns (relation.cols);
+
             debug("Begin add rows to views");
             for (int i = 0; i < relation.cols; i++) {
                 var raw_col = columns.get_item(i);
-                if (raw_col == null) {
-                    break;
-                }
                 var col = raw_col as Gtk.ColumnViewColumn;
                 auto_set_sorter(col, relation.get_column_type(i), i);
                 col.set_title(relation.get_header(i));
@@ -103,57 +107,43 @@ namespace Psequel {
             for (int i = 0; i < size; i++) {
                 var factory = new Gtk.SignalListItemFactory();
                 factory.set_data<int> ("index", i);
-
                 factory.setup.connect((_fact, obj) => {
-                    var _item = (Gtk.ListItem) obj;
-
-                    if (DataCell.cell_pool.length >= 1) {
-                        var cell = DataCell.cell_pool.pop();
-                        cell.is_busy = true;
-                        _item.child = cell;
-                    } else {
-                        var cell = new DataCell();
-                        cell.is_busy = true;
-                        _item.child = cell;
-                    }
+                    var _item = (Gtk.ColumnViewCell) obj;
+                    var label = new Gtk.Label ("");
+                    label.set_halign (Gtk.Align.START);
+                    label.set_hexpand (true);
+                    label.set_vexpand (true);
+                    label.set_selectable (true);
+                    _item.set_child (label);
+                    _item.set_focusable (true);
                 });
 
                 factory.bind.connect((_fact, obj) => {
                     var _item = (Gtk.ListItem) obj;
                     var row = _item.item as Relation.Row;
-                    var cell = _item.child as Psequel.DataCell;
+                    var cell = _item.child as Gtk.Label;
                     int index = _fact.get_data<int> ("index");
                     if (index >= row.size) {
                         return;
                     }
-                    cell.bind_data(row, index);
+                    cell.set_text (row[index]);
                 });
 
                 factory.unbind.connect((obj) => {
                     var _item = (Gtk.ListItem) obj;
-                    var row = _item.item as Relation.Row;
-                    var cell = _item.child as Psequel.DataCell;
-                    cell.unbind_data(row);
-                });
-
-                factory.teardown.connect((obj) => {
-                    var _item = (Gtk.ListItem) obj;
-                    var cell = (Psequel.DataCell) _item.child;
-                    cell.is_busy = false;
-                    DataCell.cell_pool.append(cell);
+                    var cell = _item.child as Gtk.Label;
+                    cell.set_text ("");
                 });
 
                 Gtk.ColumnViewColumn column = new Gtk.ColumnViewColumn("", factory);
                 column.set_expand(true);
-                // column.fixed_width = 200;
                 column.set_visible(false);
-
                 data_view.append_column(column);
             }
 
             this.sort_model = new Gtk.SortListModel(rows, null);
             this.sort_model.incremental = true;
-            this.selection_model = new Gtk.SingleSelection(sort_model);
+            this.selection_model = new Gtk.NoSelection (sort_model);
             data_view.set_model(this.selection_model);
         }
 

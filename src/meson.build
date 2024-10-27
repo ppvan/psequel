@@ -90,17 +90,15 @@ math_dep = cc.find_library('m', required: false)
 psequel_deps = [
     # assume exists typical gtk system
     dependency('glib-2.0', version: '>=2.80'),
-    dependency('gtk4', version: '>=4.16'),
-    dependency('libadwaita-1', version: '>= 1.6'),
+    dependency('gtk4', version: '>=4.10'),
+    dependency('libadwaita-1', version: '>= 1.5'),
     dependency('json-glib-1.0', version: '>= 1.6'),
     dependency('gtksourceview-5', version: '>= 5.0'),
     dependency('libpq', version: '>= 15.3'),
     math_dep,
-
-    # custom, fallback to subproject
-    dependency('sqlite3', version: '>= 3.46'),
+    dependency('sqlite3'),
     dependency('pgquery-vala'),
-    dependency('csv'),
+    cc.find_library('csv', has_headers: ['csv.h'], required: true),
     valac.find_library('config', dirs: vapi_dir),
 ]
 

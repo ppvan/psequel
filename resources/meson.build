@@ -110,5 +110,6 @@ psequel_resources = gnome.compile_resources(
     psequel_resources_xml,
     c_name: 'psequel_resources',
     dependencies: [blueprints],
+    build_by_default: true
 )
 

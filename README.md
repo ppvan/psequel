@@ -49,12 +49,34 @@ Small tool for quick sql query, specialized in PostgresSQL. Written in Vala for 
 <a href="https://flathub.org/apps/me.ppvan.psequel">Click here</a> to install app from Flathub.
 
 ## Build from source
+
 ### Via GNOME Builder
 PSequel can be built with GNOME Builder >= 3.38. Clone this repo and click run button.
 
 > (Warning: required to rebuild postgres, will take a little bit of time)
 
 ### Via Meson
+> You really don't want to do this unless you want to contribute to this project.
+
+*Fedora 40 instuctions*
+
+```sh
+sudo dnf install vala gtk4-devel libadwaita-devel json-glib-devel gtksourceview5-devel libpq-devel sqlite-devel libcsv-devel
+```
+
+*Install - pgquery-vala*
+
+```
+git clone --recurse-submodules https://github.com/ppvan/pg_query_vala.git
+
+meson setup --prefix=/usr build/ && ninja -C build install
+```
+
+*Other distro*
+
+> TBU
+
+
 Psequel can be built directly via Meson:
 ```bash
 git clone https://github.com/ppvan/psequel
@@ -74,7 +96,7 @@ If you use GNOME Builder or Flatpak, dependencies will be installed automaticall
 - json-glib >= 1.6
 - libadwaita >= 1.6
 - postgres-libs >= 16.2
-- libcsv >= 3.0 (built as subproject if missing)
+- libcsv >= 3.0
 - pgquery-vala
 
 # Contributions
